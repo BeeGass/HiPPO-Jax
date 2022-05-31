@@ -5,6 +5,7 @@ from flax import linen as nn
 from jax.nn.initializers import lecun_normal, uniform
 from jax.numpy.linalg import eig, inv, matrix_power
 from jax.scipy.signal import convolve
+from scipy import special as ss
 from numpy import ndarray
 
 
@@ -84,23 +85,29 @@ def make_HiPPO(N, HiPPO_type="legs"):
             if HiPPO_type == "legt":
                 mat = build_LegT(n, k)
                 # TODO
-            if HiPPO_type == "legs":
+            elif HiPPO_type == "legs":
                 mat = build_LegS(n, k)
                 # TODO
-            if HiPPO_type == "lagt":
+            elif HiPPO_type == "lagt":
                 mat = build_LagT(n, k)
                 # TODO
-            if HiPPO_type == "fourier":
+            elif HiPPO_type == "fourier":
                 mat = build_Fourier()
                 # TODO
-            if HiPPO_type == "random":
-                mat = jax.random.uniform(rng, (N, N))
-                # TODO
+            elif HiPPO_type == "random":
+                A = np.random.randn(N, N) / N
+                B = np.random.randn(N, 1)
+                #TODO
+            elif HiPPO_type == "diagonal":
+                A = -np.diag(np.exp(np.random.randn(N)))
+                B = np.random.randn(N, 1)
+                #TODO
             else:
                 raise ValueError("Invalid HiPPO type")
     
     return -np.array(mat)
 
+# Translated Legendre (LegT)
 def build_LegT(n, k, lambda_n=1):
     A = None
     if lambda_n == 1:
@@ -125,14 +132,18 @@ def build_LegT(n, k, lambda_n=1):
         
     return A, B
         
-
-def build_LagT(n, k, gamma, alpha, beta, N):
-    big_lambda = np.eye(N) * ((gamma * np.sqrt(n + alpha + 1)) / (gamma * np.sqrt(n+1)))
-    A = -np.linalg.inv(big_lambda) @ np.fill_diagonal(np.zeros((N, N), int), ((1+beta)/2)) @ np.tril(np.ones(N,N)) @ big_lambda
-    B = gamma * np.power(np.sqrt(1-alpha), (-1*(1/2))) @ np.power(beta, (-1*((1-alpha)/2))) @ np.linalg.inv(big_lambda) @ np.ndarray([np.ndarray([[i + alpha], [i]]) for i in range(N-1)])
+# Translated Laguerre (LagT)
+def build_LagT(alpha, beta, N):
+    big_lambda = np.exp(.5 * (ss.gammaln(np.arange(N)+alpha+1) - ss.gammaln(np.arange(N)+1)))
+    inverse_lambda = 1./big_lambda[:, None]
+    pre_A = (np.eye(N) * ((1 + beta) / 2)) + np.tril(np.ones((N, N)), -1)
+    pre_B = ss.binom(alpha + np.arange(N), np.arange(N))[:, None]
     
+    A = -inverse_lambda * pre_A * big_lambda[None, :]
+    B =  np.exp(-.5 * ss.gammaln(1-alpha)) * np.power(beta, (1-alpha)/2) * inverse_lambda * pre_B 
     return A, B
 
+#Scaled Legendre (LegS)
 def build_LegS(n, k):
     A = None
     B = np.sqrt(2*n+1)
@@ -141,9 +152,10 @@ def build_LegS(n, k):
     elif n == k:
         A = n + 1
     else:
-        A = 0
+        A = np.zeros((n, n))
     return A, B
     
+# Translated Fourier
 def build_FourierT(n, k, theta):
     A = None
     B = 1 / theta
@@ -152,10 +164,12 @@ def build_FourierT(n, k, theta):
     else:
         A = (2*np.pi*i*n) / theta
     return A, B
-    
+
+# Fourier Recurrent Unit (FRU)
 def build_FRU(n, k):
     pass
 
+# Analog of the Fourier transform: Translated Chebyshev
 def build_ChebT(n, k):
     pass
 
