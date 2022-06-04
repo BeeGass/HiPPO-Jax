@@ -155,24 +155,51 @@ def build_LegS(n, k):
         A = np.zeros((n, n))
     return A, B
     
-# Translated Fourier
-def build_FourierT(n, k, theta):
-    A = None
-    B = 1 / theta
-    if not k == n:
-        A = -1/theta
-    else:
-        A = (2*np.pi*i*n) / theta
-    return A, B
-
 # Fourier Recurrent Unit (FRU)
-def build_FRU(n, k):
-    pass
+def build_FRU(N, theta=0.5, measure='fourier'):
+    if measure == 'fourier':
+        freqs = np.arange(N//2)
+        d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
+        pre_A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
+        pre_B = np.zeros(N)
+        pre_B[0::2] = 2**.5
+        pre_B[0] = 1
+
+        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
+        A = pre_A - pre_B[:, None] * pre_B[None, :]
+        B = pre_B[:, None]
+    elif measure == 'fourier_decay':
+        freqs = np.arange(N//2)
+        d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
+        A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
+        B = np.zeros(N)
+        B[0::2] = 2**.5
+        B[0] = 1
+
+        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
+        A = A - .5 * B[:, None] * B[None, :]
+        B = .5 * B[:, None]
+        
+    elif measure == 'fourier2': # Double everything: orthonormal on [0, 1]
+        freqs = 2*np.arange(N//2)
+        d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
+        A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
+        B = np.zeros(N)
+        B[0::2] = 2**.5
+        B[0] = 1
+
+        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
+        A = A - B[:, None] * B[None, :] * 2
+        B = B[:, None] * 2
+        
+    else:
+        raise ValueError("Invalid measure")
+    
+    return A, B
 
 # Analog of the Fourier transform: Translated Chebyshev
 def build_ChebT(n, k):
     pass
-
 
 def example_legendre(N=8):
     # Random hidden state as coefficients
