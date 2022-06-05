@@ -114,7 +114,7 @@ def build_LegT(n, k, lambda_n=1):
         B = np.sqrt(2*n+1)
         A_base = np.sqrt(2*n+1) * np.sqrt(2*k+1)
         if k <= n:
-            A = A_base * 1
+            A = A_base
         elif k >= n:
             A = A_base * np.power(-1, (n-k))
         else:
@@ -147,58 +147,72 @@ def build_LagT(alpha, beta, N):
 def build_LegS(n, k):
     A = None
     B = np.sqrt(2*n+1)
+    A_base = -np.sqrt(2*n+1) * np.sqrt(2*k+1)
     if n > k:
-        A = np.sqrt(2*n+1) * np.sqrt(2*k+1)
+        A = A_base
     elif n == k:
-        A = n + 1
+        A = ((n + 1)/(2*n+1)) * A_base
     else:
         A = np.zeros((n, n))
     return A, B
     
-# Fourier Recurrent Unit (FRU)
-def build_FRU(N, theta=0.5, measure='fourier'):
-    if measure == 'fourier':
-        freqs = np.arange(N//2)
-        d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
-        pre_A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
-        pre_B = np.zeros(N)
-        pre_B[0::2] = 2**.5
-        pre_B[0] = 1
-
-        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
-        A = pre_A - pre_B[:, None] * pre_B[None, :]
-        B = pre_B[:, None]
-    elif measure == 'fourier_decay':
-        freqs = np.arange(N//2)
-        d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
-        A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
-        B = np.zeros(N)
-        B[0::2] = 2**.5
-        B[0] = 1
-
-        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
-        A = A - .5 * B[:, None] * B[None, :]
-        B = .5 * B[:, None]
-        
-    elif measure == 'fourier2': # Double everything: orthonormal on [0, 1]
-        freqs = 2*np.arange(N//2)
-        d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
-        A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
-        B = np.zeros(N)
-        B[0::2] = 2**.5
-        B[0] = 1
-
-        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
-        A = A - B[:, None] * B[None, :] * 2
-        B = B[:, None] * 2
-        
-    else:
-        raise ValueError("Invalid measure")
+# truncated Fourier (FouT)
+def build_FouT(n, k, N):
+    A = np.zeros((N, N))
+    B = np.zeros((N, 1))
+    if n == 0:
+        B.at[n].set(2)
+    elif not (n % 2 == 0):
+        B.at[n].set(2*np.sqrt(2))
+    else: 
+        B.at[n].set(0)
     
+    if n == k and k == 0:
+        A.at[n, k].set(-2)
+    elif n == 0 and not (k % 2 == 0):
+        A.at[n, k].set(-2*jnp.sqrt(2))
+    elif k == 0 and not (n % 2 == 0):
+        A.at[n, k].set(-2*jnp.sqrt(2))
+    elif not (k % 2 == 0) and not (n % 2 == 0):
+        A.at[n, k].set(-4)
+    elif (n - k == 1) and not (k % 2 == 0):
+        A.at[n, k].set(-2*jnp.pi*n)
+    elif (k - n == 1) and not (n % 2 == 0):
+        A.at[n, k].set(-2*jnp.pi*k)
+    else:
+        A.at[n, k].set(0)
+        
     return A, B
 
-# Analog of the Fourier transform: Translated Chebyshev
-def build_ChebT(n, k):
+# Fourier Basis (FouT)
+def build_Fourier(N):
+    freqs = np.arange(N//2)
+    d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
+    pre_A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
+    pre_B = np.zeros(N)
+    pre_B[0::2] = 2**0.5
+    pre_B[0] = 1
+
+    # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
+    A = pre_A - pre_B[:, None] * pre_B[None, :]
+    B = pre_B[:, None]
+
+# Translated Fourier (TFou)
+def build_TFou(n, k, N):
+    pass
+
+# Fourier Recurrent Unit (FouT)
+def build_FRU(n, k, N):
+    pass
+
+# Translated Chebyshev (build_TCheb)
+def build_TCheb(n, k):
+    pre_A = 
+    A = 4 * pre_A
+    
+    pre_B = jnp.sqrt(2) * jnp.ones(10, dtype=int)
+    pre_B = pre_B.at[0].set(1)
+    B = (2**(3/2) / jnp.pi) * pre_B 
     pass
 
 def example_legendre(N=8):
