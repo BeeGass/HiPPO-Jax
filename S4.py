@@ -5,6 +5,8 @@ from flax import linen as nn
 from jax.nn.initializers import lecun_normal, uniform
 from jax.numpy.linalg import eig, inv, matrix_power
 from jax.scipy.signal import convolve
+from scipy import linalg as la
+from scipy import signal
 from scipy import special as ss
 from numpy import ndarray
 
@@ -107,29 +109,33 @@ def make_HiPPO(N, HiPPO_type="legs"):
     
     return -np.array(mat)
 
-# Translated Legendre (LegT)
-def build_LegT(n, k, lambda_n=1):
+# Translated Legendre (LegT) - vectorized
+def build_LegT(N):
+    Q = np.arange(N, dtype=np.float64)
+    R = (2*Q + 1)[:, None] # / theta
+    n, k = np.meshgrid(Q, Q)
+    A = np.where(n < k, -1, (-1.)**(n-k+1)) * R
+    B = (-1.)**Q[:, None] * R
+
+# Translated Legendre (LegT) - vectorized
+def build_LegT_V(N, lambda_n=1):
+    q = jnp.arange(N, dtype=jnp.float64)
+    n, k = jnp.meshgrid(q, q)
+    case = jnp.power(-1.0, (n-k))
     A = None
+    B = None
+    
     if lambda_n == 1:
-        B = np.sqrt(2*n+1)
-        A_base = np.sqrt(2*n+1) * np.sqrt(2*k+1)
-        if k <= n:
-            A = A_base
-        elif k >= n:
-            A = A_base * np.power(-1, (n-k))
-        else:
-            raise ValueError("Invalid n and k")
-            
-    elif lambda_n == (np.sqrt(2*n+1) * np.power(-1, n)):
-        B = (2*n+1) * np.power(-1, n)
-        A_base = (2*n+1)
-        if n <= k:
-            A = A_base
-        elif n >= k:
-            A = A_base * np.power(-1, n-k)
-        else:
-            raise ValueError("Invalid n and k")
+        A_base = (-jnp.sqrt(2*n+1)) * jnp.sqrt(2*k+1)
+        pre_D = jnp.sqrt(jnp.diag(2*q+1))
+        B = D = jnp.diag(pre_D)[:, None]
+        A = jnp.where(n >= k, A_base * case, A_base) # if n >= k, then case_2 * A_base is used, otherwise A_base
         
+    elif lambda_n == (np.sqrt(2*n+1) * np.power(-1, n)):
+        A_base = 2*n+1
+        B = jnp.diag(2*q+1) * jnp.power(-1, n)
+        A = jnp.where(n >= k, A_base, A_base * case) # if n >= k, then case_2 * A_base is used, otherwise A_base
+
     return A, B
         
 # Translated Laguerre (LagT)
@@ -143,19 +149,44 @@ def build_LagT(alpha, beta, N):
     B =  np.exp(-.5 * ss.gammaln(1-alpha)) * np.power(beta, (1-alpha)/2) * inverse_lambda * pre_B 
     return A, B
 
-#Scaled Legendre (LegS)
-def build_LegS(n, k):
-    A = None
-    B = np.sqrt(2*n+1)
-    A_base = -np.sqrt(2*n+1) * np.sqrt(2*k+1)
-    if n > k:
-        A = A_base
-    elif n == k:
-        A = ((n + 1)/(2*n+1)) * A_base
-    else:
-        A = np.zeros((n, n))
-    return A, B
+#Scaled Legendre (LegS), non-vectorized
+def build_LegS(N):
+    q = jnp.arange(N, dtype=jnp.float64) # q represents the values 1, 2, ..., N each column has
+    n, k = jnp.meshgrid(q, q)
+    M = -(jnp.where(n >= k, 2*q+1, 0) - jnp.diag(q)) # represents the state matrix M 
+    D = jnp.sqrt(jnp.diag(2*q+1)) # represents the diagonal matrix D $D := \text{diag}[(2n+1)^{\frac{1}{2}}]^{N-1}_{n=0}$
+    A = D @ M @ jnp.linalg.inv(D)
+    B = jnp.diag(D)[:, None]
     
+    return A, B
+
+#Scaled Legendre (LegS) vectorized 
+def build_LegS_V(N):
+    q = jnp.arange(N, dtype=jnp.float64)
+    n, k = jnp.meshgrid(q, q)
+    pre_D = jnp.sqrt(jnp.diag(2*q+1))
+    B = D = jnp.diag(pre_D)[:, None]
+    
+    A_base = (-jnp.sqrt(2*n+1)) * jnp.sqrt(2*k+1)
+    case_2 = (n+1)/(2*n+1) 
+    
+    A = jnp.where(n > k, A_base, 0.0) # if n > k, then A_base is used, otherwise 0
+    A = jnp.where(n == k, (A_base * case_2), A) # if n == k, then A_base is used, otherwise A
+    
+    return A, B
+
+# truncated Fourier (FouT)
+def build_FouT(N):
+    freqs = np.arange(N//2)
+    d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
+    A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
+    
+    B = np.zeros(N)
+    B[0::2] = 2**.5
+    B[0] = 1
+    
+    return A, B
+
 # truncated Fourier (FouT)
 def build_FouT(n, k, N):
     A = np.zeros((N, N))
@@ -196,8 +227,9 @@ def build_Fourier(N):
     # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
     A = pre_A - pre_B[:, None] * pre_B[None, :]
     B = pre_B[:, None]
+    
 
-# Translated Fourier (TFou)
+# Truncated Fourier (TFou)
 def build_TFou(n, k, N):
     pass
 
