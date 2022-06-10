@@ -1,6 +1,6 @@
 from functools import partial
 import jax
-import jax.numpy as np
+import jax.numpy as jnp
 from flax import linen as nn
 from jax.nn.initializers import lecun_normal, uniform
 from jax.numpy.linalg import eig, inv, matrix_power
@@ -85,13 +85,16 @@ def make_HiPPO(N, HiPPO_type="legs"):
     for k in range(1, N + 1):
         for n in range(1, N + 1):
             if HiPPO_type == "legt":
-                mat = build_LegT(n, k)
+                mat = build_LegT(N)
                 # TODO
             elif HiPPO_type == "legs":
-                mat = build_LegS(n, k)
+                mat = build_LegS(N)
                 # TODO
             elif HiPPO_type == "lagt":
-                mat = build_LagT(n, k)
+                mat = build_LagT(alpha, beta, N)
+                # TODO
+            elif HiPPO_type == "FouT":
+                mat = build_FouT(N)
                 # TODO
             elif HiPPO_type == "fourier":
                 mat = build_Fourier()
@@ -109,13 +112,14 @@ def make_HiPPO(N, HiPPO_type="legs"):
     
     return -np.array(mat)
 
-# Translated Legendre (LegT) - vectorized
+# Translated Legendre (LegT) - non-vectorized
 def build_LegT(N):
     Q = np.arange(N, dtype=np.float64)
     R = (2*Q + 1)[:, None] # / theta
     n, k = np.meshgrid(Q, Q)
     A = np.where(n < k, -1, (-1.)**(n-k+1)) * R
     B = (-1.)**Q[:, None] * R
+    return A, B
 
 # Translated Legendre (LegT) - vectorized
 def build_LegT_V(N, lambda_n=1):
@@ -129,7 +133,7 @@ def build_LegT_V(N, lambda_n=1):
         A_base = (-jnp.sqrt(2*n+1)) * jnp.sqrt(2*k+1)
         pre_D = jnp.sqrt(jnp.diag(2*q+1))
         B = D = jnp.diag(pre_D)[:, None]
-        A = jnp.where(n >= k, A_base * case, A_base) # if n >= k, then case_2 * A_base is used, otherwise A_base
+        A = jnp.where(n <= k, A_base * case, A_base) # if n >= k, then case_2 * A_base is used, otherwise A_base
         
     elif lambda_n == (np.sqrt(2*n+1) * np.power(-1, n)):
         A_base = 2*n+1
@@ -138,7 +142,7 @@ def build_LegT_V(N, lambda_n=1):
 
     return A, B
         
-# Translated Laguerre (LagT)
+# Translated Laguerre (LagT) - non-vectorized
 def build_LagT(alpha, beta, N):
     big_lambda = np.exp(.5 * (ss.gammaln(np.arange(N)+alpha+1) - ss.gammaln(np.arange(N)+1)))
     inverse_lambda = 1./big_lambda[:, None]
@@ -177,13 +181,16 @@ def build_LegS_V(N):
 
 # truncated Fourier (FouT)
 def build_FouT(N):
-    freqs = np.arange(N//2)
-    d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
-    A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
+    freqs = jnp.arange(N//2)
+    d = jnp.stack([jnp.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
+    A = jnp.pi*(-jnp.diag(d, 1) + jnp.diag(d, -1))
     
-    B = np.zeros(N)
-    B[0::2] = 2**.5
-    B[0] = 1
+    B = jnp.zeros(N)
+    B = B.at[0::2].set(2**.5)
+    B = B.at[0].set(1)
+    
+    A = A - B[:, None] * B[None, :]
+    B = B[:, None]
     
     return A, B
 
@@ -217,16 +224,18 @@ def build_FouT(n, k, N):
 
 # Fourier Basis (FouT)
 def build_Fourier(N):
-    freqs = np.arange(N//2)
-    d = np.stack([np.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
-    pre_A = np.pi*(-np.diag(d, 1) + np.diag(d, -1))
-    pre_B = np.zeros(N)
-    pre_B[0::2] = 2**0.5
-    pre_B[0] = 1
-
-    # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
-    A = pre_A - pre_B[:, None] * pre_B[None, :]
-    B = pre_B[:, None]
+    freqs = jnp.arange(N//2)
+    d = jnp.stack([jnp.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
+    A = jnp.pi*(-jnp.diag(d, 1) + jnp.diag(d, -1))
+    
+    B = jnp.zeros(N)
+    B = B.at[0::2].set(2**.5)
+    B = B.at[0].set(1)
+    
+    A = A - B[:, None] * B[None, :]
+    B = B[:, None]
+    
+    return A, B
     
 
 # Truncated Fourier (TFou)
