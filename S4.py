@@ -108,17 +108,18 @@ def make_HiPPO(N, HiPPO_type="legs"):
                 B = np.random.randn(N, 1)
                 #TODO
             else:
-                raise ValueError("Invalid HiPPO type")
+                raise NotImplementedError
     
     return -np.array(mat)
 
 # Translated Legendre (LegT) - non-vectorized
 def build_LegT(N):
-    Q = np.arange(N, dtype=np.float64)
+    Q = jnp.arange(N, dtype=jnp.float64)
     R = (2*Q + 1)[:, None] # / theta
-    n, k = np.meshgrid(Q, Q)
-    A = np.where(n < k, -1, (-1.)**(n-k+1)) * R
+    n, k = jnp.meshgrid(Q, Q)
+    A = jnp.where(n < k, -1, (-1.)**(n-k+1)) * R
     B = (-1.)**Q[:, None] * R
+    
     return A, B
 
 # Translated Legendre (LegT) - vectorized
