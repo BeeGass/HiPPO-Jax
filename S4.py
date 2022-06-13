@@ -185,8 +185,8 @@ def build_FouT(N):
     d = jnp.stack([jnp.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
     A = jnp.pi*(-jnp.diag(d, 1) + jnp.diag(d, -1))
     
-    B = jnp.zeros(N)
-    B = B.at[0::2].set(2**.5)
+    B = jnp.zeros(A.shape[1])
+    B = B.at[0::2].set(jnp.sqrt(2))
     B = B.at[0].set(1)
     
     A = A - B[:, None] * B[None, :]
@@ -195,30 +195,32 @@ def build_FouT(N):
     return A, B
 
 # truncated Fourier (FouT)
-def build_FouT(n, k, N):
-    A = np.zeros((N, N))
-    B = np.zeros((N, 1))
-    if n == 0:
-        B.at[n].set(2)
-    elif not (n % 2 == 0):
-        B.at[n].set(2*np.sqrt(2))
-    else: 
-        B.at[n].set(0)
+def build_FouT_V(N):
+    A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
+    B = jnp.zeros(A.shape[1], dtype=jnp.float64)
+    q = jnp.arange((N//2)*2, dtype=jnp.float64)
+    n, k = jnp.meshgrid(q, q)
+    n_odd = n % 2 == 0
+    k_odd = k % 2 == 0
     
-    if n == k and k == 0:
-        A.at[n, k].set(-2)
-    elif n == 0 and not (k % 2 == 0):
-        A.at[n, k].set(-2*jnp.sqrt(2))
-    elif k == 0 and not (n % 2 == 0):
-        A.at[n, k].set(-2*jnp.sqrt(2))
-    elif not (k % 2 == 0) and not (n % 2 == 0):
-        A.at[n, k].set(-4)
-    elif (n - k == 1) and not (k % 2 == 0):
-        A.at[n, k].set(-2*jnp.pi*n)
-    elif (k - n == 1) and not (n % 2 == 0):
-        A.at[n, k].set(-2*jnp.pi*k)
-    else:
-        A.at[n, k].set(0)
+    case_1 = (n==k) & (n==0)
+    case_2_3 = ((k==0) & (n_odd)) | ((n==0) & (k_odd))
+    case_4 = (n_odd) & (k_odd)
+    case_5 = (n-k==1) & (k_odd)
+    case_6 = (k-n==1) & (n_odd)
+    
+    A = jnp.where(case_1, -1.0, 
+                  jnp.where(case_2_3, -jnp.sqrt(2),
+                            jnp.where(case_4, -2, 
+                                      jnp.where(case_5, -jnp.pi * (n//2), 
+                                                jnp.where(case_6, jnp.pi * (k//2), 0.0)))))
+    
+    B = B.at[::2].set(jnp.sqrt(2))
+    B = B.at[0].set(1)
+    #A = 2 * A
+    #B = 2 * B
+    
+    B = B[:, None]
         
     return A, B
 
