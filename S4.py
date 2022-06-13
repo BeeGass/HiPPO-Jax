@@ -144,16 +144,16 @@ def build_LegT_V(N, lambda_n=1):
         
 # Translated Laguerre (LagT) - non-vectorized
 def build_LagT(alpha, beta, N):
-    big_lambda = np.exp(.5 * (ss.gammaln(np.arange(N)+alpha+1) - ss.gammaln(np.arange(N)+1)))
+    big_lambda = jnp.exp(.5 * (ss.gammaln(jnp.arange(N)+alpha+1) - ss.gammaln(jnp.arange(N)+1)))
     inverse_lambda = 1./big_lambda[:, None]
-    pre_A = (np.eye(N) * ((1 + beta) / 2)) + np.tril(np.ones((N, N)), -1)
-    pre_B = ss.binom(alpha + np.arange(N), np.arange(N))[:, None]
+    pre_A = (jnp.eye(N) * ((1 + beta) / 2)) + jnp.tril(np.ones((N, N)), -1)
+    pre_B = ss.binom(alpha + jnp.arange(N), jnp.arange(N))[:, None]
     
     A = -inverse_lambda * pre_A * big_lambda[None, :]
-    B =  np.exp(-.5 * ss.gammaln(1-alpha)) * np.power(beta, (1-alpha)/2) * inverse_lambda * pre_B 
+    B =  jnp.exp(-.5 * ss.gammaln(1-alpha)) * jnp.power(beta, (1-alpha)/2) * inverse_lambda * pre_B 
     return A, B
 
-#Scaled Legendre (LegS), non-vectorized
+# Scaled Legendre (LegS), non-vectorized
 def build_LegS(N):
     q = jnp.arange(N, dtype=jnp.float64) # q represents the values 1, 2, ..., N each column has
     n, k = jnp.meshgrid(q, q)
@@ -179,7 +179,7 @@ def build_LegS_V(N):
     
     return A, B
 
-# truncated Fourier (FouT)
+# truncated Fourier (FouT) - non-vectorized
 def build_FouT(N):
     freqs = jnp.arange(N//2)
     d = jnp.stack([jnp.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
@@ -194,7 +194,7 @@ def build_FouT(N):
     
     return A, B
 
-# truncated Fourier (FouT)
+# truncated Fourier (FouT) - vectorized
 def build_FouT_V(N):
     A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
     B = jnp.zeros(A.shape[1], dtype=jnp.float64)
