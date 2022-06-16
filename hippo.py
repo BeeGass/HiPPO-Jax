@@ -30,42 +30,40 @@ except:
 def make_HiPPO(N, v='nv', HiPPO_type="legs", lambda_n=1, fourier_type="FRU", alpha=0, beta=1):
     A = None
     B = None
-    for k in range(1, N + 1):
-        for n in range(1, N + 1):
-            if HiPPO_type == "legt":
-                if v == 'nv':
-                    A, B = build_LegT(N=N, lambda_n=lambda_n)
-                else:
-                 A, B = build_LegT_V(N=N, lambda_n=lambda_n) 
-                
-            elif HiPPO_type == "lagt":
-                if v == 'nv':
-                    A, B = build_LagT(alpha=alpha, beta=beta, N=N)
-                else:
-                    A, B = build_LagT_V(alpha=alpha, beta=beta, N=N)
-                
-            elif HiPPO_type == "legs":
-                if v == 'nv':
-                    A, B = build_LegS(N=N)
-                else:
-                    A, B = build_LegS_V(N=N)
-                
-            elif HiPPO_type == "fourier":
-                if v == 'nv':
-                    A, B = build_Fourier(N=N, fourier_type=fourier_type)
-                else:
-                    A, B = build_Fourier_V(N=N, fourier_type=fourier_type)
-                
-            elif HiPPO_type == "random":
-                A = jnp.random.randn(N, N) / N
-                B = jnp.random.randn(N, 1)
-                
-            elif HiPPO_type == "diagonal":
-                A = -jnp.diag(jnp.exp(jnp.random.randn(N)))
-                B = jnp.random.randn(N, 1)
-                
-            else:
-                raise ValueError("Invalid HiPPO type")
+    if HiPPO_type == "legt":
+        if v == 'nv':
+            A, B = build_LegT(N=N, lambda_n=lambda_n)
+        else:
+            A, B = build_LegT_V(N=N, lambda_n=lambda_n) 
+        
+    elif HiPPO_type == "lagt":
+        if v == 'nv':
+            A, B = build_LagT(alpha=alpha, beta=beta, N=N)
+        else:
+            A, B = build_LagT_V(alpha=alpha, beta=beta, N=N)
+        
+    elif HiPPO_type == "legs":
+        if v == 'nv':
+            A, B = build_LegS(N=N)
+        else:
+            A, B = build_LegS_V(N=N)
+        
+    elif HiPPO_type == "fourier":
+        if v == 'nv':
+            A, B = build_Fourier(N=N, fourier_type=fourier_type)
+        else:
+            A, B = build_Fourier_V(N=N, fourier_type=fourier_type)
+        
+    elif HiPPO_type == "random":
+        A = jnp.random.randn(N, N) / N
+        B = jnp.random.randn(N, 1)
+        
+    elif HiPPO_type == "diagonal":
+        A = -jnp.diag(jnp.exp(jnp.random.randn(N)))
+        B = jnp.random.randn(N, 1)
+        
+    else:
+        raise ValueError("Invalid HiPPO type")
     
     return -jnp.array(A), B
 
@@ -285,66 +283,96 @@ def build_Fourier_V(N, fourier_type='FRU'):
     return A, B
 
 
-def discretize(A, B, C, step, alpha=0.5, ZOH_bool=False):
-    '''
-    - forward Euler corresponds to α = 0,
-    - backward Euler corresponds to α = 1,
-    - bilinear corresponds to α = 0.5,
-    '''
-    I = jnp.eye(A.shape[0])
-    GBT = jnp.linalg.inv(I - ((step * alpha) * A))
-    GBT_A = GBT @ (I + ((step * (1-alpha)) * A))
-    GBT_B = (step * GBT) @ B
-    
-    if ZOH_bool: # Zero-order Hold
-        GBT_A = jax.scipy.linalg.expm(step * A)
-        GBT_B = (jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step * A) - I)) @ B 
-    
-    return GBT_A, GBT_B, C   
-
-class HiPPO_LegS(nn.Module):
-    """ Vanilla HiPPO-LegS model (scale invariant instead of time invariant) """
-    N: int
-    max_length: int = 1024
-    measure: str
-    step: float
+class HiPPO(nn.Module):
+    """HiPPO model"""
+    N: int # order of the HiPPO projection, aka the number of coefficients to describe the matrix
+    max_length: int # maximum sequence length to be input
+    measure: str # the measure used to define which way to instantiate the HiPPO matrix
+    step: float # step size used for discretization
+    GBT_alpha: float # represents which descretization transformation to use based off the alpha value
+    seq_L: int # length of the sequence to be used for training
     
     def setup(self):
         A, B = make_HiPPO(N=self.N, v='v', HiPPO_type="legs", lambda_n=1, fourier_type="FRU", alpha=0, beta=1)
-        B = B.squeeze(-1)
-        A, B, C = discretize(A, B, C, step, alpha=0.5, ZOH_bool=False)
-        vals = jnp.linspace(0.0, 1.0, self.max_length)
-        self.eval_matrix = (B[:, None] * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)).T
-
+        self.A = A
+        self.B = B.squeeze(-1)
+        self.C = jnp.ones((1, self.N))
+        self.D = jnp.zeros((1,))
         
+        if self.measure == "legt":
+            L = self.seq_L
+            vals = jnp.arange(0.0, 1.0, L)
+            self.eval_matrix = jnp.ndarray(ss.eval_legendre(jnp.arange(self.N)[:, None], 1 - 2 * vals).T)
+            
+        elif self.measure == "legs":
+            L = self.max_length
+            vals = jnp.linspace(0.0, 1.0, L)
+            self.eval_matrix = jnp.ndarray((B[:, None] * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)).T)
         
+    def __call__(self, inputs, kernel=True):
         
-    def __call__():
-        pass
-    
-    def ODE(self):
-        pass
-        
-        
-    def forward(self, inputs, fast=False):
-        """
-        inputs : (length, ...)
-        output : (length, ..., N) where N is the order of the HiPPO projection
-        """
-
-        L = inputs.shape[0]
-
-        inputs = inputs.unsqueeze(-1)
-        u = torch.transpose(inputs, 0, -2)
-        u = u * self.B_stacked[:L]
-        u = torch.transpose(u, 0, -2) # (length, ..., N)
-
-        if fast:
-            result = unroll.variable_unroll_matrix(self.A_stacked[:L], u)
+        if not kernel:
+            Ab, Bb, Cb, Db = self.collect_SSM_vars(self.A, self.B, self.C, u, alpha=self.GBT_alpha)
+            c_k = self.scan_SSM(Ab, Bb, Cb, Db, u[:, jnp.newaxis], jnp.zeros((self.N,)))[1]
         else:
-            result = unroll.variable_unroll_matrix_sequential(self.A_stacked[:L], u)
-        return result
-
+            Ab, Bb, Cb, Db = self.discretize(self.A, self.B, self.C, self.D, step=self.step, alpha=self.GBT_alpha)
+            c_k = self.causal_convolution(u, self.K_conv(Ab, Bb, Cb, Db, L=self.max_length))
+            
+        return c_k
+    
     def reconstruct(self, c):
-        a = self.eval_matrix @ c.unsqueeze(-1)
+        a = self.eval_matrix @ jnp.expand_dims(c, -1)
         return a.squeeze(-1)
+    
+    def discretize(self, A, B, C, D, step, alpha=0.5):
+        '''
+        function used for descretizing the HiPPO matrix
+        - forward Euler corresponds to α = 0,
+        - backward Euler corresponds to α = 1,
+        - bilinear corresponds to α = 0.5,
+        - Zero-order Hold corresponds to α > 1
+        '''
+        I = jnp.eye(A.shape[0])
+        GBT = jnp.linalg.inv(I - ((step * alpha) * A))
+        GBT_A = GBT @ (I + ((step * (1-alpha)) * A))
+        GBT_B = (step * GBT) @ B
+        
+        if alpha > 1: # Zero-order Hold
+            GBT_A = jax.scipy.linalg.expm(step * A)
+            GBT_B = (jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step * A) - I)) @ B 
+        
+        return GBT_A, GBT_B, C, D
+    
+    def collect_SSM_vars(self, A, B, C, D, u, alpha=0.5):
+        L = u.shape[0]
+        assert L == self.seq_L
+        N = A.shape[0]
+        Ab, Bb, Cb, Db = self.discretize(A, B, C, D, step=1.0 / L, alpha=alpha)
+    
+        return Ab, Bb, Cb, Db
+    
+    def scan_SSM(self, Ab, Bb, Cb, Db, u, x0):
+        '''
+        This is for returning the discretized hidden state often needed for an RNN. 
+        params:
+            Ab: the discretized A matrix
+            Bb: the discretized B matrix
+            Cb: the discretized C matrix
+            u: the input sequence
+            x0: the initial hidden state
+        returns:
+            the next hidden state (aka coefficients representing the function, f(t))
+        '''
+        def step(x_k_1, u_k):
+            '''
+            x_k_1: previous hidden state
+            u_k: output from function f at, descritized, time step, k.
+            returns: 
+                x_k: current hidden state
+                y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
+            '''
+            x_k = (Ab @ x_k_1) + (Bb @ u_k)
+            y_k = (Cb @ x_k) + (Db @ u_k)
+            return x_k, y_k
+
+        return jax.lax.scan(step, x0, u)
