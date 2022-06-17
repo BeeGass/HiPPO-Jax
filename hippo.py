@@ -24,41 +24,65 @@ try:
 except:
     pass
 
-# ----------------------------------------------------------------------------------------------------------------------
-# ---------------- HiPPO -------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------
-def make_HiPPO(N, v='nv', HiPPO_type="legs", lambda_n=1, fourier_type="FRU", alpha=0, beta=1):
+
+def make_HiPPO(N, v='nv', measure="legs", lambda_n=1, fourier_type="fru", alpha=0, beta=1):
+    """
+        Instantiates the HiPPO matrix of a given order using a particular measure. 
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            v (str): choose between this repo's implementation or hazy research's implementation.
+            measure (str): 
+                choose between 
+                    - HiPPO w/ Translated Legendre (LegT) - legt
+                    - HiPPO w/ Translated Laguerre (LagT) - lagt
+                    - HiPPO w/ Scaled Legendre (LegS) - legs
+                    - HiPPO w/ Fourier basis - fourier
+                        - FRU: Fourier Recurrent Unit 
+                        - FouT: Translated Fourier 
+            lambda_n (int): The amount of tilt applied to the HiPPO-LegS basis, determines between LegS and LMU. 
+            fourier_type (str): chooses between the following:
+                - FRU: Fourier Recurrent Unit - fru
+                - FouT: Translated Fourier - fout
+                - FourD: Fourier Decay - fourd
+            alpha (float): The order of the Laguerre basis.
+            beta (float): The scale of the Laguerre basis.
+            
+        Returns:
+            A (jnp.ndarray): The HiPPO matrix multiplied by -1.
+            B (jnp.ndarray): The other corresponding state space matrix. 
+            
+    """
     A = None
     B = None
-    if HiPPO_type == "legt":
+    if measure == "legt":
         if v == 'nv':
             A, B = build_LegT(N=N, lambda_n=lambda_n)
         else:
             A, B = build_LegT_V(N=N, lambda_n=lambda_n) 
         
-    elif HiPPO_type == "lagt":
+    elif measure == "lagt":
         if v == 'nv':
             A, B = build_LagT(alpha=alpha, beta=beta, N=N)
         else:
             A, B = build_LagT_V(alpha=alpha, beta=beta, N=N)
         
-    elif HiPPO_type == "legs":
+    elif measure == "legs":
         if v == 'nv':
             A, B = build_LegS(N=N)
         else:
             A, B = build_LegS_V(N=N)
         
-    elif HiPPO_type == "fourier":
+    elif measure == "fourier":
         if v == 'nv':
             A, B = build_Fourier(N=N, fourier_type=fourier_type)
         else:
             A, B = build_Fourier_V(N=N, fourier_type=fourier_type)
         
-    elif HiPPO_type == "random":
+    elif measure == "random":
         A = jnp.random.randn(N, N) / N
         B = jnp.random.randn(N, 1)
         
-    elif HiPPO_type == "diagonal":
+    elif measure == "diagonal":
         A = -jnp.diag(jnp.exp(jnp.random.randn(N)))
         B = jnp.random.randn(N, 1)
         
@@ -71,6 +95,20 @@ def make_HiPPO(N, v='nv', HiPPO_type="legs", lambda_n=1, fourier_type="FRU", alp
 # ----------------------------------------------------------------------------------------------------------------------
 # Translated Legendre (LegT) - non-vectorized
 def build_LegT(N, legt_type="legt"):
+    """
+        The, non-vectorized implementation of the, measure derived from the translated Legendre basis
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            legt_type (str): Choice between the two different tilts of basis.
+                - legt: translated Legendre - 'legt'
+                - lmu: Legendre Memory Unit - 'lmu'
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     Q = jnp.arange(N, dtype=jnp.float64)
     pre_R = (2*Q + 1)
     k, n = jnp.meshgrid(Q, Q)
@@ -95,6 +133,20 @@ def build_LegT(N, legt_type="legt"):
 
 # Translated Legendre (LegT) - vectorized
 def build_LegT_V(N, lambda_n=1):
+    """
+        The measure derived from the translated Legendre basis
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            legt_type (str): Choice between the two different tilts of basis.
+                - legt: translated Legendre - 'legt'
+                - lmu: Legendre Memory Unit - 'lmu'
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     q = jnp.arange(N, dtype=jnp.float64)
     k, n = jnp.meshgrid(q, q)
     case = jnp.power(-1.0, (n-k))
@@ -195,7 +247,7 @@ def build_Fourier(N, fourier_type='FRU'):
         A = A - B[:, None] * B[None, :] * 2
         B = B[:, None] * 2
         
-    elif fourier_type == "fourier_decay":
+    elif fourier_type == "fourd":
         d = jnp.stack([jnp.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
         A = jnp.pi*(-jnp.diag(d, 1) + jnp.diag(d, -1))
         
@@ -211,7 +263,7 @@ def build_Fourier(N, fourier_type='FRU'):
     return A, B
 
 # Fourier Basis OPs and functions - vectorized
-def build_Fourier_V(N, fourier_type='FRU'):    
+def build_Fourier_V(N, fourier_type='fru'):    
     q = jnp.arange((N//2)*2, dtype=jnp.float64)
     k, n = jnp.meshgrid(q, q)
     
@@ -227,7 +279,7 @@ def build_Fourier_V(N, fourier_type='FRU'):
     A = None
     B = None
     
-    if fourier_type == "FRU": # Fourier Recurrent Unit (FRU) - vectorized
+    if fourier_type == "fru": # Fourier Recurrent Unit (FRU) - vectorized
         A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
         B = jnp.zeros(A.shape[1], dtype=jnp.float64)
         q = jnp.arange((N//2)*2, dtype=jnp.float64)
@@ -241,7 +293,7 @@ def build_Fourier_V(N, fourier_type='FRU'):
         B = B.at[::2].set(jnp.sqrt(2))
         B = B.at[0].set(1)
         
-    elif fourier_type == "FouT": # truncated Fourier (FouT) - vectorized
+    elif fourier_type == "fout": # truncated Fourier (FouT) - vectorized
         A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
         B = jnp.zeros(A.shape[1], dtype=jnp.float64)
         k, n = jnp.meshgrid(q, q)
@@ -260,7 +312,7 @@ def build_Fourier_V(N, fourier_type='FRU'):
         A = 2 * A
         B = 2 * B
         
-    elif fourier_type == "fourier_decay":
+    elif fourier_type == "foud": 
         A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
         B = jnp.zeros(A.shape[1], dtype=jnp.float64)
         
