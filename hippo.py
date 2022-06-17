@@ -134,7 +134,7 @@ def build_LegT(N, legt_type="legt"):
 # Translated Legendre (LegT) - vectorized
 def build_LegT_V(N, lambda_n=1):
     """
-        The measure derived from the translated Legendre basis
+        The, vectorized implementation of the, measure derived from the translated Legendre basis.
         
         Args:
             N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
@@ -169,6 +169,19 @@ def build_LegT_V(N, lambda_n=1):
 # ----------------------------------------------------------------------------------------------------------------------
 # Translated Laguerre (LagT) - non-vectorized
 def build_LagT(alpha, beta, N):
+    """
+        The, non-vectorized implementation of the, measure derived from the translated Laguerre basis. 
+        
+        Args:
+            alpha (float): The order of the Laguerre basis.
+            beta (float): The scale of the Laguerre basis.
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     A = -jnp.eye(N) * (1 + beta) / 2 - jnp.tril(jnp.ones((N, N)), -1)
     B = ss.binom(alpha + jnp.arange(N), jnp.arange(N))[:, None]
 
@@ -180,6 +193,19 @@ def build_LagT(alpha, beta, N):
 
 # Translated Laguerre (LagT) - non-vectorized
 def build_LagT_V(alpha, beta, N):
+    """
+        The, vectorized implementation of the, measure derived from the translated Laguerre basis. 
+        
+        Args:
+            alpha (float): The order of the Laguerre basis.
+            beta (float): The scale of the Laguerre basis.
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     L = jnp.exp(.5 * (ss.gammaln(jnp.arange(N)+alpha+1) - ss.gammaln(jnp.arange(N)+1)))
     inv_L = 1./L[:, None]
     pre_A = (jnp.eye(N) * ((1 + beta) / 2)) + jnp.tril(jnp.ones((N, N)), -1)
@@ -193,6 +219,17 @@ def build_LagT_V(alpha, beta, N):
 # ----------------------------------------------------------------------------------------------------------------------
 #Scaled Legendre (LegS), non-vectorized
 def build_LegS(N):
+    """
+        The, non-vectorized implementation of the, measure derived from the Scaled Legendre basis. 
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     q = jnp.arange(N, dtype=jnp.float64)  # q represents the values 1, 2, ..., N each column has
     k, n = jnp.meshgrid(q, q)
     r = 2 * q + 1
@@ -206,6 +243,17 @@ def build_LegS(N):
 
 #Scaled Legendre (LegS) vectorized
 def build_LegS_V(N):
+    """
+        The, vectorized implementation of the, measure derived from the Scaled Legendre basis. 
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     q = jnp.arange(N, dtype=jnp.float64)
     k, n = jnp.meshgrid(q, q)
     pre_D = jnp.sqrt(jnp.diag(2*q+1))
@@ -220,10 +268,25 @@ def build_LegS_V(N):
     return A, B
 
 # ----------------------------------------------------------------------------------------------------------------------
-def build_Fourier(N, fourier_type='FRU'):
+def build_Fourier(N, fourier_type='fru'):
+    """
+        Non-vectorized measure implementations derived from fourier basis. 
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            fourier_type (str): The type of Fourier measure.
+                - FRU: Fourier Recurrent Unit - fru
+                - FouT: truncated Fourier - fout
+                - fouD: decayed Fourier - foud
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     freqs = jnp.arange(N//2)
     
-    if fourier_type == "FRU": # Fourier Recurrent Unit (FRU) - non-vectorized
+    if fourier_type == "fru": # Fourier Recurrent Unit (FRU) - non-vectorized
         d = jnp.stack([jnp.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
         A = jnp.pi*(-jnp.diag(d, 1) + jnp.diag(d, -1))
         
@@ -234,7 +297,7 @@ def build_Fourier(N, fourier_type='FRU'):
         A = A - B[:, None] * B[None, :]
         B = B[:, None]
 
-    elif fourier_type == "FouT": # truncated Fourier (FouT) - non-vectorized
+    elif fourier_type == "fout": # truncated Fourier (FouT) - non-vectorized
         freqs *= 2
         d = jnp.stack([jnp.zeros(N//2), freqs], axis=-1).reshape(-1)[1:]
         A = jnp.pi*(-jnp.diag(d, 1) + jnp.diag(d, -1))
@@ -264,6 +327,21 @@ def build_Fourier(N, fourier_type='FRU'):
 
 # Fourier Basis OPs and functions - vectorized
 def build_Fourier_V(N, fourier_type='fru'):    
+    """
+        Vectorized measure implementations derived from fourier basis. 
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            fourier_type (str): The type of Fourier measure.
+                - FRU: Fourier Recurrent Unit - fru
+                - FouT: truncated Fourier - fout
+                - fouD: decayed Fourier - foud
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
     q = jnp.arange((N//2)*2, dtype=jnp.float64)
     k, n = jnp.meshgrid(q, q)
     
@@ -336,13 +414,25 @@ def build_Fourier_V(N, fourier_type='fru'):
 
 
 class HiPPO(nn.Module):
-    """HiPPO model"""
-    N: int # order of the HiPPO projection, aka the number of coefficients to describe the matrix
-    max_length: int # maximum sequence length to be input
-    measure: str # the measure used to define which way to instantiate the HiPPO matrix
-    step: float # step size used for discretization
-    GBT_alpha: float # represents which descretization transformation to use based off the alpha value
-    seq_L: int # length of the sequence to be used for training
+    '''
+    class that constructs HiPPO model using the defined measure. 
+    
+    Args:
+        N (int): order of the HiPPO projection, aka the number of coefficients to describe the matrix
+        max_length (int): maximum sequence length to be input
+        measure (str): the measure used to define which way to instantiate the HiPPO matrix
+        step (float): step size used for discretization
+        GBT_alpha (float): represents which descretization transformation to use based off the alpha value
+        seq_L (int): length of the sequence to be used for training
+        
+    
+    '''
+    N: int 
+    max_length: int 
+    measure: str 
+    step: float 
+    GBT_alpha: float 
+    seq_L: int 
     
     def setup(self):
         A, B = make_HiPPO(N=self.N, v='v', HiPPO_type="legs", lambda_n=1, fourier_type="FRU", alpha=0, beta=1)
@@ -373,16 +463,33 @@ class HiPPO(nn.Module):
         return c_k
     
     def reconstruct(self, c):
+        '''
+        Uses coeffecients to reconstruct the signal
+        
+        Args: 
+            c (jnp.ndarray): coefficients of the HiPPO projection
+            
+        Returns:
+            reconstructed signal
+        '''
         a = self.eval_matrix @ jnp.expand_dims(c, -1)
         return a.squeeze(-1)
     
     def discretize(self, A, B, C, D, step, alpha=0.5):
         '''
         function used for descretizing the HiPPO matrix
-        - forward Euler corresponds to α = 0,
-        - backward Euler corresponds to α = 1,
-        - bilinear corresponds to α = 0.5,
-        - Zero-order Hold corresponds to α > 1
+        
+        Args:
+            A (jnp.ndarray): matrix to be discretized
+            B (jnp.ndarray): matrix to be discretized
+            C (jnp.ndarray): matrix to be discretized
+            D (jnp.ndarray): matrix to be discretized
+            step (float): step size used for discretization
+            alpha (float, optional): used for determining which generalized bilinear transformation to use
+                - forward Euler corresponds to α = 0,
+                - backward Euler corresponds to α = 1,
+                - bilinear corresponds to α = 0.5,
+                - Zero-order Hold corresponds to α > 1
         '''
         I = jnp.eye(A.shape[0])
         GBT = jnp.linalg.inv(I - ((step * alpha) * A))
@@ -396,6 +503,23 @@ class HiPPO(nn.Module):
         return GBT_A, GBT_B, C, D
     
     def collect_SSM_vars(self, A, B, C, D, u, alpha=0.5):
+        '''
+        turns the continous HiPPO matrix components into a discrete ones
+        
+        Args:
+            A (jnp.ndarray): matrix to be discretized
+            B (jnp.ndarray): matrix to be discretized
+            C (jnp.ndarray): matrix to be discretized
+            D (jnp.ndarray): matrix to be discretized
+            u (jnp.ndarray): input signal
+            alpha (float, optional): used for determining which generalized bilinear transformation to use
+            
+        Returns:
+            Ab (jnp.ndarray): discrete form of the HiPPO matrix
+            Bb (jnp.ndarray): discrete form of the HiPPO matrix
+            Cb (jnp.ndarray): discrete form of the HiPPO matrix
+            Db (jnp.ndarray): discrete form of the HiPPO matrix
+        '''
         L = u.shape[0]
         assert L == self.seq_L
         N = A.shape[0]
@@ -406,20 +530,23 @@ class HiPPO(nn.Module):
     def scan_SSM(self, Ab, Bb, Cb, Db, u, x0):
         '''
         This is for returning the discretized hidden state often needed for an RNN. 
-        params:
-            Ab: the discretized A matrix
-            Bb: the discretized B matrix
-            Cb: the discretized C matrix
-            u: the input sequence
-            x0: the initial hidden state
-        returns:
+        Args:
+            Ab (jnp.ndarray): the discretized A matrix
+            Bb (jnp.ndarray): the discretized B matrix
+            Cb (jnp.ndarray): the discretized C matrix
+            u (jnp.ndarray): the input sequence
+            x0 (jnp.ndarray): the initial hidden state
+        Returns:
             the next hidden state (aka coefficients representing the function, f(t))
         '''
         def step(x_k_1, u_k):
             '''
-            x_k_1: previous hidden state
-            u_k: output from function f at, descritized, time step, k.
-            returns: 
+            Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
+            Args:
+                x_k_1: previous hidden state
+                u_k: output from function f at, descritized, time step, k.
+            
+            Returns: 
                 x_k: current hidden state
                 y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
             '''
