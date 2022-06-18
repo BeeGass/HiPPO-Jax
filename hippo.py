@@ -435,7 +435,7 @@ class HiPPO(nn.Module):
     seq_L: int 
     
     def setup(self):
-        A, B = make_HiPPO(N=self.N, v='v', HiPPO_type="legs", lambda_n=1, fourier_type="FRU", alpha=0, beta=1)
+        A, B = make_HiPPO(N=self.N, v='v', measure="legs", lambda_n=1, fourier_type="FRU", alpha=0, beta=1)
         self.A = A
         self.B = B.squeeze(-1)
         self.C = jnp.ones((1, self.N))
