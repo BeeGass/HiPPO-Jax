@@ -50,7 +50,6 @@ def make_HiPPO(N, v='nv', measure="legs", lambda_n=1, fourier_type="fru", alpha=
         Returns:
             A (jnp.ndarray): The HiPPO matrix multiplied by -1.
             B (jnp.ndarray): The other corresponding state space matrix. 
-            
     """
     A = None
     B = None
@@ -110,7 +109,6 @@ def build_LegT_V(N, lambda_n=1):
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
-            
     """
     q = jnp.arange(N, dtype=jnp.float64)
     k, n = jnp.meshgrid(q, q)
@@ -145,7 +143,6 @@ def build_LegT(N, legt_type="legt"):
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
-            
     """
     Q = jnp.arange(N, dtype=jnp.float64)
     pre_R = (2*Q + 1)
@@ -183,7 +180,6 @@ def build_LagT_V(alpha, beta, N):
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
-            
     """
     L = jnp.exp(.5 * (ss.gammaln(jnp.arange(N)+alpha+1) - ss.gammaln(jnp.arange(N)+1)))
     inv_L = 1./L[:, None]
@@ -208,7 +204,6 @@ def build_LagT(alpha, beta, N):
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
-            
     """
     A = -jnp.eye(N) * (1 + beta) / 2 - jnp.tril(jnp.ones((N, N)), -1)
     B = ss.binom(alpha + jnp.arange(N), jnp.arange(N))[:, None]
@@ -231,7 +226,6 @@ def build_LegS_V(N):
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
-            
     """
     q = jnp.arange(N, dtype=jnp.float64)
     k, n = jnp.meshgrid(q, q)
@@ -257,7 +251,6 @@ def build_LegS(N):
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
-            
     """
     q = jnp.arange(N, dtype=jnp.float64)  # q represents the values 1, 2, ..., N each column has
     k, n = jnp.meshgrid(q, q)
@@ -372,7 +365,6 @@ def build_Fourier(N, fourier_type='fru'):
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
-            
     """
     freqs = jnp.arange(N//2)
     
