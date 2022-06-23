@@ -12,7 +12,6 @@
 | dev    | ![tests](https://github.com/Dana-Farber-AIOS/pathml/actions/workflows/tests-conda.yml/badge.svg?branch=dev) |
 
 This repo implements and benchmarks a number of drop-in replacements for attention:
-
 - HiPPO
 - S4
 
