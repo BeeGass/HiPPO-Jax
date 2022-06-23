@@ -1,0 +1,12 @@
+cff-version: 0.0.1
+message: "Citation for this repository"
+authors:
+  - family-names: Gass
+    given-names: Bryan
+  - family-names: Rosenthal
+    given-names: Jacob
+  - family-names: Umeton
+    given-names: Renato
+title: ""
+date-released: 2023-06-23
+url: https://github.com/Dana-Farber-AIOS/Vision-S4former

@@ -89,10 +89,48 @@ def make_HiPPO(N, v='nv', measure="legs", lambda_n=1, fourier_type="fru", alpha=
     else:
         raise ValueError("Invalid HiPPO type")
     
-    return -jnp.array(A), B
+    A_copy = A.copy()
+    B_copy = B.copy()
+    
+    return jnp.array(A_copy), B_copy
 
 
 # ----------------------------------------------------------------------------------------------------------------------
+# Translated Legendre (LegT) - vectorized
+def build_LegT_V(N, lambda_n=1):
+    """
+        The, vectorized implementation of the, measure derived from the translated Legendre basis.
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            legt_type (str): Choice between the two different tilts of basis.
+                - legt: translated Legendre - 'legt'
+                - lmu: Legendre Memory Unit - 'lmu'
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
+    q = jnp.arange(N, dtype=jnp.float64)
+    k, n = jnp.meshgrid(q, q)
+    case = jnp.power(-1.0, (n-k))
+    A = None
+    B = None
+    
+    if lambda_n == 1:
+        A_base = -jnp.sqrt(2*n+1) * jnp.sqrt(2*k+1)
+        pre_D = jnp.sqrt(jnp.diag(2*q+1))
+        B = D = jnp.diag(pre_D)[:, None]
+        A = jnp.where(k <= n, A_base, A_base * case) # if n >= k, then case_2 * A_base is used, otherwise A_base
+        
+    elif lambda_n == 2: #(jnp.sqrt(2*n+1) * jnp.power(-1, n)):
+        A_base = -(2*n+1)
+        B = jnp.diag((2*q+1) * jnp.power(-1, n))[:, None]
+        A = jnp.where(k <= n, A_base * case, A_base) # if n >= k, then case_2 * A_base is used, otherwise A_base
+
+    return A, B
+
 # Translated Legendre (LegT) - non-vectorized
 def build_LegT(N, legt_type="legt"):
     """
@@ -131,66 +169,7 @@ def build_LegT(N, legt_type="legt"):
         
     return A, B
 
-# Translated Legendre (LegT) - vectorized
-def build_LegT_V(N, lambda_n=1):
-    """
-        The, vectorized implementation of the, measure derived from the translated Legendre basis.
-        
-        Args:
-            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-            legt_type (str): Choice between the two different tilts of basis.
-                - legt: translated Legendre - 'legt'
-                - lmu: Legendre Memory Unit - 'lmu'
-            
-        Returns:
-            A (jnp.ndarray): The A HiPPO matrix.
-            B (jnp.ndarray): The B HiPPO matrix.
-            
-    """
-    q = jnp.arange(N, dtype=jnp.float64)
-    k, n = jnp.meshgrid(q, q)
-    case = jnp.power(-1.0, (n-k))
-    A = None
-    B = None
-    
-    if lambda_n == 1:
-        A_base = -jnp.sqrt(2*n+1) * jnp.sqrt(2*k+1)
-        pre_D = jnp.sqrt(jnp.diag(2*q+1))
-        B = D = jnp.diag(pre_D)[:, None]
-        A = jnp.where(k <= n, A_base, A_base * case) # if n >= k, then case_2 * A_base is used, otherwise A_base
-        
-    elif lambda_n == 2: #(jnp.sqrt(2*n+1) * jnp.power(-1, n)):
-        A_base = -(2*n+1)
-        B = jnp.diag((2*q+1) * jnp.power(-1, n))[:, None]
-        A = jnp.where(k <= n, A_base * case, A_base) # if n >= k, then case_2 * A_base is used, otherwise A_base
-
-    return A, B
-
 # ----------------------------------------------------------------------------------------------------------------------
-# Translated Laguerre (LagT) - non-vectorized
-def build_LagT(alpha, beta, N):
-    """
-        The, non-vectorized implementation of the, measure derived from the translated Laguerre basis. 
-        
-        Args:
-            alpha (float): The order of the Laguerre basis.
-            beta (float): The scale of the Laguerre basis.
-            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-            
-        Returns:
-            A (jnp.ndarray): The A HiPPO matrix.
-            B (jnp.ndarray): The B HiPPO matrix.
-            
-    """
-    A = -jnp.eye(N) * (1 + beta) / 2 - jnp.tril(jnp.ones((N, N)), -1)
-    B = ss.binom(alpha + jnp.arange(N), jnp.arange(N))[:, None]
-
-    L = jnp.exp(.5 * (ss.gammaln(jnp.arange(N)+alpha+1) - ss.gammaln(jnp.arange(N)+1)))
-    A = (1./L[:, None]) * A * L[None, :]
-    B = (1./L[:, None]) * B * jnp.exp(-.5 * ss.gammaln(1-alpha)) * beta**((1-alpha)/2)
-    
-    return A, B
-
 # Translated Laguerre (LagT) - non-vectorized
 def build_LagT_V(alpha, beta, N):
     """
@@ -216,7 +195,57 @@ def build_LagT_V(alpha, beta, N):
     
     return A, B
 
+# Translated Laguerre (LagT) - non-vectorized
+def build_LagT(alpha, beta, N):
+    """
+        The, non-vectorized implementation of the, measure derived from the translated Laguerre basis. 
+        
+        Args:
+            alpha (float): The order of the Laguerre basis.
+            beta (float): The scale of the Laguerre basis.
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
+    A = -jnp.eye(N) * (1 + beta) / 2 - jnp.tril(jnp.ones((N, N)), -1)
+    B = ss.binom(alpha + jnp.arange(N), jnp.arange(N))[:, None]
+
+    L = jnp.exp(.5 * (ss.gammaln(jnp.arange(N)+alpha+1) - ss.gammaln(jnp.arange(N)+1)))
+    A = (1./L[:, None]) * A * L[None, :]
+    B = (1./L[:, None]) * B * jnp.exp(-.5 * ss.gammaln(1-alpha)) * beta**((1-alpha)/2)
+    
+    return A, B
+
 # ----------------------------------------------------------------------------------------------------------------------
+#Scaled Legendre (LegS) vectorized
+def build_LegS_V(N):
+    """
+        The, vectorized implementation of the, measure derived from the Scaled Legendre basis. 
+        
+        Args:
+            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            
+        Returns:
+            A (jnp.ndarray): The A HiPPO matrix.
+            B (jnp.ndarray): The B HiPPO matrix.
+            
+    """
+    q = jnp.arange(N, dtype=jnp.float64)
+    k, n = jnp.meshgrid(q, q)
+    pre_D = jnp.sqrt(jnp.diag(2*q+1))
+    B = D = jnp.diag(pre_D)[:, None]
+    
+    A_base = (-jnp.sqrt(2*n+1)) * jnp.sqrt(2*k+1)
+    case_2 = (n+1)/(2*n+1)
+    
+    A = jnp.where(n > k, A_base, 0.0) # if n > k, then A_base is used, otherwise 0
+    A = jnp.where(n == k, (A_base * case_2), A) # if n == k, then A_base is used, otherwise A
+
+    return A, B
+
 #Scaled Legendre (LegS), non-vectorized
 def build_LegS(N):
     """
@@ -241,33 +270,94 @@ def build_LegS(N):
     
     return A, B
 
-#Scaled Legendre (LegS) vectorized
-def build_LegS_V(N):
+# ----------------------------------------------------------------------------------------------------------------------
+# Fourier Basis OPs and functions - vectorized
+def build_Fourier_V(N, fourier_type='fru'): 
     """
-        The, vectorized implementation of the, measure derived from the Scaled Legendre basis. 
+        Vectorized measure implementations derived from fourier basis. 
         
         Args:
             N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
+            fourier_type (str): The type of Fourier measure.
+                - FRU: Fourier Recurrent Unit - fru
+                - FouT: truncated Fourier - fout
+                - fouD: decayed Fourier - foud
             
         Returns:
             A (jnp.ndarray): The A HiPPO matrix.
             B (jnp.ndarray): The B HiPPO matrix.
             
-    """
-    q = jnp.arange(N, dtype=jnp.float64)
+    """   
+    q = jnp.arange((N//2)*2, dtype=jnp.float64)
     k, n = jnp.meshgrid(q, q)
-    pre_D = jnp.sqrt(jnp.diag(2*q+1))
-    B = D = jnp.diag(pre_D)[:, None]
     
-    A_base = (-jnp.sqrt(2*n+1)) * jnp.sqrt(2*k+1)
-    case_2 = (n+1)/(2*n+1)
+    n_odd = n % 2 == 0
+    k_odd = k % 2 == 0
     
-    A = jnp.where(n > k, A_base, 0.0) # if n > k, then A_base is used, otherwise 0
-    A = jnp.where(n == k, (A_base * case_2), A) # if n == k, then A_base is used, otherwise A
+    case_1 = (n==k) & (n==0)
+    case_2_3 = ((k==0) & (n_odd)) | ((n==0) & (k_odd))
+    case_4 = (n_odd) & (k_odd)
+    case_5 = (n-k==1) & (k_odd)
+    case_6 = (k-n==1) & (n_odd)
     
+    A = None
+    B = None
+    
+    if fourier_type == "fru": # Fourier Recurrent Unit (FRU) - vectorized
+        A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
+        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
+        q = jnp.arange((N//2)*2, dtype=jnp.float64)
+        
+        A = jnp.where(case_1, -1.0, 
+                    jnp.where(case_2_3, -jnp.sqrt(2),
+                                jnp.where(case_4, -2, 
+                                        jnp.where(case_5, jnp.pi * (n//2), 
+                                                    jnp.where(case_6, -jnp.pi * (k//2), 0.0)))))
+        
+        B = B.at[::2].set(jnp.sqrt(2))
+        B = B.at[0].set(1)
+        
+    elif fourier_type == "fout": # truncated Fourier (FouT) - vectorized
+        A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
+        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
+        k, n = jnp.meshgrid(q, q)
+        n_odd = n % 2 == 0
+        k_odd = k % 2 == 0
+        
+        A = jnp.where(case_1, -1.0, 
+                    jnp.where(case_2_3, -jnp.sqrt(2),
+                                jnp.where(case_4, -2, 
+                                        jnp.where(case_5, jnp.pi * (n//2), 
+                                                    jnp.where(case_6, -jnp.pi * (k//2), 0.0)))))
+        
+        B = B.at[::2].set(jnp.sqrt(2))
+        B = B.at[0].set(1)
+        
+        A = 2 * A
+        B = 2 * B
+        
+    elif fourier_type == "fourd":
+        A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
+        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
+        
+        A = jnp.where(case_1, -1.0, 
+                    jnp.where(case_2_3, -jnp.sqrt(2),
+                                jnp.where(case_4, -2, 
+                                        jnp.where(case_5, 2 * jnp.pi * (n//2), 
+                                                    jnp.where(case_6, 2 * -jnp.pi * (k//2), 0.0)))))
+        
+        B = B.at[::2].set(jnp.sqrt(2))
+        B = B.at[0].set(1)
+        
+        A = 0.5 * A
+        B = 0.5 * B
+        
+    
+    
+    B = B[:, None]
+        
     return A, B
 
-# ----------------------------------------------------------------------------------------------------------------------
 def build_Fourier(N, fourier_type='fru'):
     """
         Non-vectorized measure implementations derived from fourier basis. 
@@ -325,95 +415,8 @@ def build_Fourier(N, fourier_type='fru'):
             
     return A, B
 
-# Fourier Basis OPs and functions - vectorized
-def build_Fourier_V(N, fourier_type='fru'):    
-    """
-        Vectorized measure implementations derived from fourier basis. 
-        
-        Args:
-            N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-            fourier_type (str): The type of Fourier measure.
-                - FRU: Fourier Recurrent Unit - fru
-                - FouT: truncated Fourier - fout
-                - fouD: decayed Fourier - foud
-            
-        Returns:
-            A (jnp.ndarray): The A HiPPO matrix.
-            B (jnp.ndarray): The B HiPPO matrix.
-            
-    """
-    q = jnp.arange((N//2)*2, dtype=jnp.float64)
-    k, n = jnp.meshgrid(q, q)
-    
-    n_odd = n % 2 == 0
-    k_odd = k % 2 == 0
-    
-    case_1 = (n==k) & (n==0)
-    case_2_3 = ((k==0) & (n_odd)) | ((n==0) & (k_odd))
-    case_4 = (n_odd) & (k_odd)
-    case_5 = (n-k==1) & (k_odd)
-    case_6 = (k-n==1) & (n_odd)
-    
-    A = None
-    B = None
-    
-    if fourier_type == "fru": # Fourier Recurrent Unit (FRU) - vectorized
-        A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
-        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
-        q = jnp.arange((N//2)*2, dtype=jnp.float64)
-        
-        A = jnp.where(case_1, -1.0, 
-                    jnp.where(case_2_3, -jnp.sqrt(2),
-                                jnp.where(case_4, -2, 
-                                        jnp.where(case_5, jnp.pi * (n//2), 
-                                                    jnp.where(case_6, -jnp.pi * (k//2), 0.0)))))
-        
-        B = B.at[::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-        
-    elif fourier_type == "fout": # truncated Fourier (FouT) - vectorized
-        A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
-        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
-        k, n = jnp.meshgrid(q, q)
-        n_odd = n % 2 == 0
-        k_odd = k % 2 == 0
-        
-        A = jnp.where(case_1, -1.0, 
-                    jnp.where(case_2_3, -jnp.sqrt(2),
-                                jnp.where(case_4, -2, 
-                                        jnp.where(case_5, jnp.pi * (n//2), 
-                                                    jnp.where(case_6, -jnp.pi * (k//2), 0.0)))))
-        
-        B = B.at[::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-        
-        A = 2 * A
-        B = 2 * B
-        
-    elif fourier_type == "foud": 
-        A = jnp.diag(jnp.stack([jnp.zeros(N//2), jnp.zeros(N//2)], axis=-1).reshape(-1))
-        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
-        
-        A = jnp.where(case_1, -1.0, 
-                    jnp.where(case_2_3, -jnp.sqrt(2),
-                                jnp.where(case_4, -2, 
-                                        jnp.where(case_5, 2 * jnp.pi * (n//2), 
-                                                    jnp.where(case_6, 2 * -jnp.pi * (k//2), 0.0)))))
-        
-        B = B.at[::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-        
-        A = 0.5 * A
-        B = 0.5 * B
-        
-    
-    
-    B = B[:, None]
-        
-    return A, B
 
-
-class HiPPO(nn.Module):
+class HiPPO(jnn.Module):
     '''
     class that constructs HiPPO model using the defined measure. 
     
@@ -421,11 +424,21 @@ class HiPPO(nn.Module):
         N (int): order of the HiPPO projection, aka the number of coefficients to describe the matrix
         max_length (int): maximum sequence length to be input
         measure (str): the measure used to define which way to instantiate the HiPPO matrix
-        step (float): step size used for discretization
+        step (float): step size used for descretization
         GBT_alpha (float): represents which descretization transformation to use based off the alpha value
         seq_L (int): length of the sequence to be used for training
-        
-    
+        v (str): choice of vectorized or non-vectorized function instantiation 
+            - 'v': vectorized
+            - 'nv': non-vectorized
+        lambda_n (float): value associated with the tilt of legt
+            - 1: tilt on legt
+            - \sqrt(2n+1)(-1)^{N}: tilt associated with the legendre memory unit (LMU)
+        fourier_type (str): choice of fourier measures
+            - fru: fourier recurrent unit measure (FRU) - 'fru'
+            - fout: truncated Fourier (FouT) - 'fout'
+            - fourd: decaying fourier transform - 'fourd'
+        alpha (float): The order of the Laguerre basis.
+        beta (float): The scale of the Laguerre basis.
     '''
     N: int 
     max_length: int 
@@ -433,29 +446,46 @@ class HiPPO(nn.Module):
     step: float 
     GBT_alpha: float 
     seq_L: int 
+    v: str 
+    lambda_n: float
+    fourier_type: str
+    alpha: float
+    beta: float
     
     def setup(self):
-        A, B = make_HiPPO(N=self.N, v='v', measure="legs", lambda_n=1, fourier_type="FRU", alpha=0, beta=1)
+        A, B = make_HiPPO(N=self.N,
+                          v=self.v, 
+                          measure=self.measure, 
+                          lambda_n=self.lambda_n, 
+                          fourier_type=self.fourier_type,
+                          alpha=self.alpha,
+                          beta=self.beta)
+        
         self.A = A
-        self.B = B.squeeze(-1)
-        self.C = jnp.ones((1, self.N))
+        self.B = B #.squeeze(-1)
+        self.C = jnp.ones((1, self.N)).squeeze(0)
         self.D = jnp.zeros((1,))
         
         if self.measure == "legt":
             L = self.seq_L
             vals = jnp.arange(0.0, 1.0, L)
-            self.eval_matrix = jnp.ndarray(ss.eval_legendre(jnp.arange(self.N)[:, None], 1 - 2 * vals).T)
+            n = jnp.arange(self.N)[:, None]
+            x = 1 - 2 * vals
+            self.eval_matrix = ss.eval_legendre(n, x).T
             
         elif self.measure == "legs":
             L = self.max_length
             vals = jnp.linspace(0.0, 1.0, L)
-            self.eval_matrix = jnp.ndarray((B[:, None] * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)).T)
+            n = jnp.arange(self.N)[:, None]
+            x =  2 * vals - 1
+            self.eval_matrix = (B[:, None] * ss.eval_legendre(n, x)).T
+        else:
+            raise ValueError("invalid measure")
         
-    def __call__(self, inputs, kernel=True):
-        
+    def __call__(self, u, kernel=False):
         if not kernel:
-            Ab, Bb, Cb, Db = self.collect_SSM_vars(self.A, self.B, self.C, u, alpha=self.GBT_alpha)
-            c_k = self.scan_SSM(Ab, Bb, Cb, Db, u[:, jnp.newaxis], jnp.zeros((self.N,)))[1]
+            Ab, Bb, Cb, Db = self.collect_SSM_vars(self.A, self.B, self.C, self.D, u, alpha=self.GBT_alpha)
+            c_k = self.scan_SSM(Ab, Bb, Cb, Db, u, x0=jnp.zeros((self.N, )))[1]
         else:
             Ab, Bb, Cb, Db = self.discretize(self.A, self.B, self.C, self.D, step=self.step, alpha=self.GBT_alpha)
             c_k = self.causal_convolution(u, self.K_conv(Ab, Bb, Cb, Db, L=self.max_length))
@@ -472,12 +502,11 @@ class HiPPO(nn.Module):
         Returns:
             reconstructed signal
         '''
-        a = self.eval_matrix @ jnp.expand_dims(c, -1)
-        return a.squeeze(-1)
+        return (self.eval_matrix @ jnp.expand_dims(c, -1)).squeeze(-1)
     
     def discretize(self, A, B, C, D, step, alpha=0.5):
         '''
-        function used for descretizing the HiPPO matrix
+        function used for discretizing the HiPPO matrix
         
         Args:
             A (jnp.ndarray): matrix to be discretized
@@ -492,8 +521,8 @@ class HiPPO(nn.Module):
                 - Zero-order Hold corresponds to α > 1
         '''
         I = jnp.eye(A.shape[0])
-        GBT = jnp.linalg.inv(I - ((step * alpha) * A))
-        GBT_A = GBT @ (I + ((step * (1-alpha)) * A))
+        GBT = jnp.linalg.inv(I - (step * alpha * A))
+        GBT_A = GBT @ (I + (step * (1-alpha) * A))
         GBT_B = (step * GBT) @ B
         
         if alpha > 1: # Zero-order Hold
@@ -504,7 +533,7 @@ class HiPPO(nn.Module):
     
     def collect_SSM_vars(self, A, B, C, D, u, alpha=0.5):
         '''
-        turns the continous HiPPO matrix components into a discrete ones
+        turns the continuos HiPPO matrix components into discrete ones
         
         Args:
             A (jnp.ndarray): matrix to be discretized
@@ -521,9 +550,11 @@ class HiPPO(nn.Module):
             Db (jnp.ndarray): discrete form of the HiPPO matrix
         '''
         L = u.shape[0]
-        assert L == self.seq_L
         N = A.shape[0]
-        Ab, Bb, Cb, Db = self.discretize(A, B, C, D, step=1.0 / L, alpha=alpha)
+        assert L == self.seq_L
+        assert N == self.N
+
+        Ab, Bb, Cb, Db = self.discretize(A, B, C, D, step=1.0/L, alpha=alpha)
     
         return Ab, Bb, Cb, Db
     
@@ -550,8 +581,10 @@ class HiPPO(nn.Module):
                 x_k: current hidden state
                 y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
             '''
+
             x_k = (Ab @ x_k_1) + (Bb @ u_k)
             y_k = (Cb @ x_k) + (Db @ u_k)
+            
             return x_k, y_k
 
         return jax.lax.scan(step, x0, u)
