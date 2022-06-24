@@ -580,3 +580,4 @@ class HiPPO(jnn.Module):
             return x_k, y_k
 
         return jax.lax.scan(step, x0, u)
+    
