@@ -6,6 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: rickstaa/action-black@v1
-        with:
-          black_args: ". --check"
+      - name: Black Code Formatter
+        uses: lgeiger/black-action@v1.0.1
