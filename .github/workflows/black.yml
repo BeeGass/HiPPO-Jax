@@ -6,7 +6,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v1
       - name: We make Python Style Guide
         uses: wemake-services/wemake-python-styleguide@0.16.1
         continue-on-error: true
