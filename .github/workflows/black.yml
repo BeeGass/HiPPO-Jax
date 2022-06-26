@@ -3,7 +3,8 @@ name: Lint
 on: [pull_request]
 
 jobs:
-  lint:
+  qa:
+    name: Quality check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
