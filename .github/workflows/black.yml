@@ -11,11 +11,10 @@ jobs:
       #   uses: psf/black@stable
       #   with:
       #     src: "./src/"
-      - name: We make Python Style Guide
-        uses: wemake-services/wemake-python-styleguide@0.16.1
+      - name: Wemake Python Stylguide
+        uses: wemake-services/wemake-python-styleguide@0.13.4
         continue-on-error: true
         with:
           reporter: "github-pr-review"
-          path: "./src/"
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
