@@ -11,6 +11,8 @@
 | master | ![tests](https://github.com/Dana-Farber-AIOS/pathml/actions/workflows/tests-conda.yml/badge.svg?branch=master) |
 | dev    | ![tests](https://github.com/Dana-Farber-AIOS/pathml/actions/workflows/tests-conda.yml/badge.svg?branch=dev) |
 
+TODO: Change banners from pathML's to VS4's
+
 This repo implements and benchmarks a number of drop-in replacements for attention:
 - HiPPO
 - S4
