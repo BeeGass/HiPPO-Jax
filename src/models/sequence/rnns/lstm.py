@@ -7,6 +7,7 @@ class LSTM(nn.Module):
     """
     Own implementation of LSTM cell.
     """
+
     def __init__(self, lstm_hidden_dim, embedding_size):
         """
         Initialize all parameters of the LSTM class.
@@ -67,96 +68,83 @@ class LSTM(nn.Module):
         # PUT YOUR CODE HERE  #
         #######################
 
-
-        k = float(1./torch.sqrt(torch.Tensor([self.hidden_dim])))
+        k = float(1.0 / torch.sqrt(torch.Tensor([self.hidden_dim])))
 
         # input modulation params
         self.W_gx = nn.Parameter(
-                                torch.FloatTensor(self.embed_dim, self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True
-                                )
+            torch.FloatTensor(self.embed_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
 
         self.W_gh = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim, self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True
-                                )
-        
-        self.b_g = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                # +
-                                # torch.ones(self.hidden_dim)
-                                ,requires_grad=True
-                                )
+            torch.FloatTensor(self.hidden_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
 
+        self.b_g = nn.Parameter(
+            torch.FloatTensor(self.hidden_dim).uniform_(-1 * k, 1 * k)
+            # +
+            # torch.ones(self.hidden_dim)
+            ,
+            requires_grad=True,
+        )
 
         # input gate params
         self.W_ix = nn.Parameter(
-                                torch.FloatTensor(self.embed_dim, self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True
-                                )
+            torch.FloatTensor(self.embed_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
 
         self.W_ih = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim, self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True
-                                )
+            torch.FloatTensor(self.hidden_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
 
         self.b_i = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                # +
-                                # torch.ones(self.hidden_dim)
-                                ,requires_grad=True
-                                )
+            torch.FloatTensor(self.hidden_dim).uniform_(-1 * k, 1 * k)
+            # +
+            # torch.ones(self.hidden_dim)
+            ,
+            requires_grad=True,
+        )
 
         # forget gate params
 
         self.W_fx = nn.Parameter(
-                                torch.FloatTensor(self.embed_dim, self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True     
-                                )                                                   
+            torch.FloatTensor(self.embed_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
 
         self.W_fh = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim, self.hidden_dim)                                     
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True             
-                                )
+            torch.FloatTensor(self.hidden_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
 
         self.b_f = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                +
-                                torch.ones(self.hidden_dim) 
-                                ,requires_grad=True
-                                )          
-
+            torch.FloatTensor(self.hidden_dim).uniform_(-1 * k, 1 * k)
+            + torch.ones(self.hidden_dim),
+            requires_grad=True,
+        )
 
         # output gate params
 
         self.W_ox = nn.Parameter(
-                                torch.FloatTensor(self.embed_dim, self.hidden_dim)                          
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True
-                                )
+            torch.FloatTensor(self.embed_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
 
         self.W_oh = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim, self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                ,requires_grad=True
-                                )
-        
+            torch.FloatTensor(self.hidden_dim, self.hidden_dim).uniform_(-1 * k, 1 * k),
+            requires_grad=True,
+        )
+
         self.b_o = nn.Parameter(
-                                torch.FloatTensor(self.hidden_dim)
-                                .uniform_(-1*k, 1*k)
-                                # +
-                                # torch.ones(self.hidden_dim)
-                                ,requires_grad=True
-                                )
+            torch.FloatTensor(self.hidden_dim).uniform_(-1 * k, 1 * k)
+            # +
+            # torch.ones(self.hidden_dim)
+            ,
+            requires_grad=True,
+        )
 
         #######################
         # END OF YOUR CODE    #
@@ -181,35 +169,49 @@ class LSTM(nn.Module):
         # PUT YOUR CODE HERE  #
         #######################
 
-        
         # initialize hidden state if not given
         if h_t is None:
-            h_t = torch.zeros(embeds.size(1),self.hidden_dim).to(embeds.device)
-
+            h_t = torch.zeros(embeds.size(1), self.hidden_dim).to(embeds.device)
 
         # initialize cell state if not given
         if c_t is None:
             c_t = torch.zeros(embeds.size(1), self.hidden_dim).to(embeds.device)
 
-        
-
         # initialize output
-        output = torch.zeros(embeds.size(0), embeds.size(1), self.hidden_dim).to(embeds.device)
+        output = torch.zeros(embeds.size(0), embeds.size(1), self.hidden_dim).to(
+            embeds.device
+        )
 
         # iterate over time steps
 
         for t in range(embeds.size(0)):
             # calculate input gate
-            i_t = torch.sigmoid(torch.matmul(embeds[t], self.W_ix) + torch.matmul(h_t, self.W_ih) + self.b_i)
+            i_t = torch.sigmoid(
+                torch.matmul(embeds[t], self.W_ix)
+                + torch.matmul(h_t, self.W_ih)
+                + self.b_i
+            )
 
             # calculate forget gate
-            f_t = torch.sigmoid(torch.matmul(embeds[t], self.W_fx) + torch.matmul(h_t, self.W_fh) + self.b_f)
+            f_t = torch.sigmoid(
+                torch.matmul(embeds[t], self.W_fx)
+                + torch.matmul(h_t, self.W_fh)
+                + self.b_f
+            )
 
             # calculate input modulation gate
-            g_t = torch.tanh(torch.matmul(embeds[t], self.W_gx) + torch.matmul(h_t, self.W_gh) + self.b_g)
+            g_t = torch.tanh(
+                torch.matmul(embeds[t], self.W_gx)
+                + torch.matmul(h_t, self.W_gh)
+                + self.b_g
+            )
 
             # calculate output gate
-            o_t = torch.sigmoid(torch.matmul(embeds[t], self.W_ox) + torch.matmul(h_t, self.W_oh) + self.b_o)
+            o_t = torch.sigmoid(
+                torch.matmul(embeds[t], self.W_ox)
+                + torch.matmul(h_t, self.W_oh)
+                + self.b_o
+            )
 
             # calculate cell state
             c_t = f_t * c_t + i_t * g_t
@@ -223,4 +225,4 @@ class LSTM(nn.Module):
         # We save the hidden state for sampling
         self.c_t = c_t.clone()
 
-        return output    
+        return output
