@@ -12,7 +12,7 @@ jobs:
       #   with:
       #     src: "./src/"
       - name: We make Python Style Guide
-        uses: wemake-services/wemake-python-styleguide
+        uses: wemake-services/wemake-python-styleguide@0.16.1
         with:
           reporter: "github-pr-review"
         env:
