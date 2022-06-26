@@ -474,10 +474,14 @@ class HiPPO(jnn.Module):
         else:
             raise ValueError("invalid measure")
         
-    def __call__(self, u, kernel=False):
+    def __call__(self, u, init_state=None, kernel=False):
+        
         if not kernel:
+            if init_state is None:
+                init_state = jnp.zeros((self.N, ))
+                
             Ab, Bb, Cb, Db = self.collect_SSM_vars(self.A, self.B, self.C, self.D, u, alpha=self.GBT_alpha)
-            c_k = self.scan_SSM(Ab, Bb, Cb, Db, u, x0=jnp.zeros((self.N, )))[1]
+            c_k = self.scan_SSM(Ab, Bb, Cb, Db, u, x0=init_state)[1]
         else:
             Ab, Bb, Cb, Db = self.discretize(self.A, self.B, self.C, self.D, step=self.step, alpha=self.GBT_alpha)
             c_k = self.causal_convolution(u, self.K_conv(Ab, Bb, Cb, Db, L=self.max_length))
@@ -580,4 +584,3 @@ class HiPPO(jnn.Module):
             return x_k, y_k
 
         return jax.lax.scan(step, x0, u)
-    
