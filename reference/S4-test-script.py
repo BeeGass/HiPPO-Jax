@@ -2,7 +2,7 @@
 Train an S4 model on sequential CIFAR10 / sequential MNIST with PyTorch for demonstration purposes.
 This code borrows heavily from https://github.com/kuangliu/pytorch-cifar.
 
-This file only depends on the standalone S4 layer 
+This file only depends on the standalone S4 layer
 available in s4.py at src/models/sequence/ss/standalone.
 
 * Train standard sequential CIFAR:
@@ -16,7 +16,7 @@ The `S4Model` class defined in this file provides a simple backbone to train S4 
 This backbone is a good starting point for many problems, although some tasks (especially generation)
 may require using other backbones.
 
-The default CIFAR10 model trained by this file should get 
+The default CIFAR10 model trained by this file should get
 89+% accuracy on the CIFAR10 test set in 80 epochs.
 
 Each epoch takes approximately 7m20s on a T4 GPU (will be much faster on V100 / A100).
@@ -75,7 +75,7 @@ def split_train_val(train, val_split):
     return train, val
 
 if args.dataset == 'cifar10':
- 
+
     if args.grayscale:
         transform = transforms.Compose([
             transforms.Grayscale(),
@@ -96,7 +96,7 @@ if args.dataset == 'cifar10':
     trainset = torchvision.datasets.CIFAR10(
         root='./data', train=True, download=True, transform=transform_train)
     trainset, _ = split_train_val(trainset, val_split=0.1)
-        
+
     valset = torchvision.datasets.CIFAR10(
         root='./data', train=True, download=True, transform=transform_test)
     _, valset = split_train_val(valset, val_split=0.1)
@@ -140,11 +140,11 @@ testloader = torch.utils.data.DataLoader(
 class S4Model(nn.Module):
 
     def __init__(
-        self, 
-        d_input, 
-        d_output=10, 
-        d_model=256, 
-        n_layers=4, 
+        self,
+        d_input,
+        d_output=10,
+        d_model=256,
+        n_layers=4,
         dropout=0.2,
         prenorm=False,
     ):
@@ -162,11 +162,11 @@ class S4Model(nn.Module):
         for _ in range(n_layers):
             self.s4_layers.append(
                 S4(
-                    d_model=d_model, 
-                    l_max=1024, 
+                    d_model=d_model,
+                    l_max=1024,
                     bidirectional=True,
                     postact='glu',
-                    dropout=dropout, 
+                    dropout=dropout,
                     transposed=True,
                 )
             )
@@ -181,7 +181,7 @@ class S4Model(nn.Module):
         Input x is shape (B, L, d_input)
         """
         x = self.encoder(x)  # (B, L, d_input) -> (B, L, d_model)
-        
+
         x = x.transpose(-1, -2)  # (B, L, d_model) -> (B, d_model, L)
         for layer, norm, dropout in zip(self.s4_layers, self.norms, self.dropouts):
             # Each iteration of this loop will map (B, d_model, L) -> (B, d_model, L)
@@ -190,7 +190,7 @@ class S4Model(nn.Module):
             if self.prenorm:
                 # Prenorm
                 z = norm(z.transpose(-1, -2)).transpose(-1, -2)
-            
+
             # Apply S4 block: we ignore the state input and output
             z, _ = layer(z)
 
@@ -217,10 +217,10 @@ class S4Model(nn.Module):
 # Model
 print('==> Building model..')
 model = S4Model(
-    d_input=d_input, 
-    d_output=d_output, 
-    d_model=args.d_model, 
-    n_layers=args.n_layers, 
+    d_input=d_input,
+    d_output=d_output,
+    d_model=args.d_model,
+    n_layers=args.n_layers,
     dropout=args.dropout,
     prenorm=args.prenorm,
 )
@@ -243,23 +243,23 @@ def setup_optimizer(model, lr, weight_decay, patience):
     """
     S4 requires a specific optimizer setup.
 
-    The S4 layer (A, B, C, dt) parameters typically 
-    require a smaller learning rate (typically 0.001), with no weight decay. 
+    The S4 layer (A, B, C, dt) parameters typically
+    require a smaller learning rate (typically 0.001), with no weight decay.
 
-    The rest of the model can be trained with a higher learning rate (e.g. 0.004, 0.01) 
+    The rest of the model can be trained with a higher learning rate (e.g. 0.004, 0.01)
     and weight decay (if desired).
     """
 
     # All parameters in the model
     all_parameters = list(model.parameters())
-    
+
     # General parameters don't contain the special _optim key
     params = [p for p in all_parameters if not hasattr(p, "_optim")]
 
     # Create an optimizer with the general parameters
     optimizer = optim.AdamW(
-        params, 
-        lr=lr, 
+        params,
+        lr=lr,
         weight_decay=weight_decay,
     )
 
@@ -276,8 +276,8 @@ def setup_optimizer(model, lr, weight_decay, patience):
 
     # Create a lr scheduler
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=patience, factor=0.2)
-    
-    # Print optimizer info 
+
+    # Print optimizer info
     keys = sorted(set([k for hp in hps for k in hp.keys()]))
     for i, g in enumerate(optimizer.param_groups):
         group_hps = {k: g.get(k, None) for k in keys}
@@ -318,7 +318,7 @@ def train():
         correct += predicted.eq(targets).sum().item()
 
         pbar.set_description(
-            'Batch Idx: (%d/%d) | Loss: %.3f | Acc: %.3f%% (%d/%d)' % 
+            'Batch Idx: (%d/%d) | Loss: %.3f | Acc: %.3f%% (%d/%d)' %
             (batch_idx, len(trainloader), train_loss/(batch_idx+1), 100.*correct/total, correct, total)
         )
 
@@ -342,7 +342,7 @@ def eval(epoch, dataloader, checkpoint=False):
             correct += predicted.eq(targets).sum().item()
 
             pbar.set_description(
-                'Batch Idx: (%d/%d) | Loss: %.3f | Acc: %.3f%% (%d/%d)' % 
+                'Batch Idx: (%d/%d) | Loss: %.3f | Acc: %.3f%% (%d/%d)' %
                 (batch_idx, len(dataloader), eval_loss/(batch_idx+1), 100.*correct/total, correct, total)
             )
 
@@ -372,4 +372,3 @@ for epoch in pbar:
     val_acc = eval(epoch, valloader, checkpoint=True)
     eval(epoch, testloader)
     scheduler.step(val_acc)
-    
