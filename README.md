@@ -1,4 +1,4 @@
-# Vision S4'former
+# S4'former
 
 [![black](https://github.com/Dana-Farber-AIOS/Vision-S4former/actions/workflows/black.yml/badge.svg)](https://github.com/Dana-Farber-AIOS/Vision-S4former/actions/workflows/black.yml)
 
