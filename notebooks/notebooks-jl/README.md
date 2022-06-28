@@ -4,8 +4,6 @@ Im using julia here to quickly look at and experiment with HiPPO, S4, S4D and an
 
 ## HiPPO
 
----
-
 ### LegT Measure
 
 The LegT measure assigns uniform weight to the most recent history
