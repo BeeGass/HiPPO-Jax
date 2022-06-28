@@ -15,6 +15,7 @@ The LegT measure assigns uniform weight to the most recent history
 **When $\lambda_{n} = 1$**
 
 **Time Measure:**
+
 $$
 \begin{align}
 \mu^{(t)}(x) = \frac{1}{\theta}\mathbb{I}_{[t-\theta, t]}(x)
@@ -22,6 +23,7 @@ $$
 $$
 
 **HiPPO-LegT Operator:**
+
 $$
 \begin{align}
 \frac{d}{dt} c(t) &= -\frac{1}{\theta}Ac(t) + \frac{1}{\theta}Bf(t)
@@ -44,6 +46,7 @@ $$
 **When $\lambda_{n} = (2n+1)^{\frac{1}{2}}(-1)^{n}$, which is equivalent to an LMU (Legendre Memory Unit).**
 
 **Time Measure:**
+
 $$
 \begin{align}
 \mu^{(t)}(x) = \frac{1}{\theta}\mathbb{I}_{[t-\theta, t]}(x)
@@ -51,12 +54,15 @@ $$
 $$
 
 **HiPPO-LegT Operator:**
+
 $$
 \begin{align}
 \frac{d}{dt} c(t) &= -\frac{1}{\theta}Ac(t) + \frac{1}{\theta}Bf(t)
 \end{align}
 $$
+
 where
+
 $$
 \begin{align}
 A_{nk} &= (2n+1) \cdot
@@ -75,6 +81,7 @@ The LagT measure instead use the exponentially decaying measure, assigning more 
 ![HiPPO-LagT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LagT_Unit_Impulse_Response.gif)
 
 **Time Measure:**
+
 $$
 \begin{align}
 \mu^{(t)}(x) &= e^{-(t-x)}\mathbb{I}[-\infty, t](x) =
@@ -86,12 +93,15 @@ e^{x-t} & \text{ if } x \leq t  \\
 $$
 
 **HiPPO-LagT Operator:**
+
 $$
 \begin{align}
 \frac{d}{dt}c(t) &= - \frac{1}{t} Ac(t) + \frac{1}{t} Bf(t)
 \end{align}
 $$
+
 where
+
 $$
 \begin{align}
 A_{nk} &=
@@ -110,6 +120,7 @@ The LegS measure assigns equal importance over the cumulative history
 ![HiPPO-LagT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LegS_Unit_Impulse_Response.gif)
 
 **Time Measure:**
+
 $$
 \begin{align}
 \mu^{(t)} &= \frac{1}{t}\mathbb{I}_{[0, t]}
@@ -119,6 +130,7 @@ $$
 **HiPPO-LegS Operator:**
 
 (Continous)
+
 $$
 \begin{align}
 \frac{d}{dt}c(t) &= - \frac{1}{t} Ac(t) + \frac{1}{t} Bf(t)
@@ -126,6 +138,7 @@ $$
 $$
 
 (Discrete)
+
 $$
 \begin{align}
 c_{k+1} &= (1-\frac{A}{k})c_{k}+\frac{1}{k}Bf_{k}
