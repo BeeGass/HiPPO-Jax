@@ -8,7 +8,7 @@ Im using julia here to quickly look at and experiment with HiPPO, S4, S4D and an
 
 The LegT measure assigns uniform weight to the most recent history
 
-![HiPPO-LagT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LegT_Unit_Impulse_Response.gif)
+![HiPPO-LegT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LegT_Unit_Impulse_Response-A.gif)
 
 **When $\lambda_{n} = 1$**
 
@@ -40,6 +40,8 @@ A_{nk} &= (2n+1)^{\frac{1}{2}}(2k+1)^{\frac{1}{2}} \cdot
 B_{n} &= (2n+1)
 \end{align}
 $$
+
+![HiPPO-LegT/LMU Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LegT_Unit_Impulse_Response-B.gif)
 
 **When $\lambda_{n} = (2n+1)^{\frac{1}{2}}(-1)^{n}$, which is equivalent to an LMU (Legendre Memory Unit).**
 
@@ -76,7 +78,7 @@ $$
 
 The LagT measure instead use the exponentially decaying measure, assigning more importance to recent history
 
-![HiPPO-LagT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LagT_Unit_Impulse_Response.gif)
+![HiPPO-LagT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LagT_Unit_Impulse_Response-A.gif)
 
 **Time Measure:**
 
@@ -115,7 +117,7 @@ $$
 
 The LegS measure assigns equal importance over the cumulative history
 
-![HiPPO-LagT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LegS_Unit_Impulse_Response.gif)
+![HiPPO-LegS Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-LegS_Unit_Impulse_Response-A.gif)
 
 **Time Measure:**
 
@@ -161,12 +163,40 @@ $$
 
 #### Fourier Recurrent Unit Measure
 
-# TODO
+TODO
 
 #### Truncated Fourier Measure
 
-# TODO
+TODO
 
 #### Decaying Fourier Measure
 
-# TODO
+TODO
+
+### Other GIFs
+
+#### Interpolation
+
+##### HiPPO-LegS to HiPPO-LegT Unit Impulse Response
+
+![HiPPO-LegS to HiPPO-LegT Unit Impulse Response](../notebooks-jl/gifs/HiPPO-LegS_to_HiPPO-LegT_Unit_Impulse_Response-A.gif)
+
+##### HiPPO-LegS to HiPPO-LagT Unit Impulse Response
+
+![HiPPO-LegS to HiPPO-LagT Unit Impulse Response](../notebooks-jl/gifs/HiPPO-LegS_to_HiPPO-LagT_Unit_Impulse_Response-B.gif)
+
+##### HiPPO-LegT to HiPPO-LegS Unit Impulse Response
+
+![HiPPO-LegT to HiPPO-LegS Unit Impulse Response](../notebooks-jl/gifs/HiPPO-LegT_to_HiPPO-LegS_Unit_Impulse_Response-C.gif)
+
+##### HiPPO-LegT to HiPPO-LagT Unit Impulse Response
+
+![HiPPO-LegT to HiPPO-LagT Unit Impulse Response](../notebooks-jl/gifs/HiPPO-LegT_to_HiPPO-LagT_Unit_Impulse_Response-D.gif)
+
+##### HiPPO-LagT to HiPPO-LegT Unit Impulse Response
+
+![HiPPO-LagT to HiPPO-LegT Unit Impulse Response](../notebooks-jl/gifs/HiPPO-LagT_to_HiPPO-LegT_Unit_Impulse_Response-E.gif)
+
+##### HiPPO-LagT to HiPPO-LegS Unit Impulse Response
+
+![HiPPO-LagT to HiPPO-LegS Unit Impulse Response](../notebooks-jl/gifs/HiPPO-LagT_to_HiPPO-LegS_Unit_Impulse_Response-F.gif)
