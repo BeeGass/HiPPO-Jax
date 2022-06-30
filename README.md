@@ -1,4 +1,4 @@
-# S4'former
+# S4'mer
 
 [![black](https://github.com/Dana-Farber-AIOS/s4former/actions/workflows/black.yml/badge.svg)](https://github.com/Dana-Farber-AIOS/s4former/actions/workflows/black.yml)
 
