@@ -1,6 +1,6 @@
 # S4'mer
 
-[![black](https://github.com/Dana-Farber-AIOS/s4former/actions/workflows/black.yml/badge.svg)](https://github.com/Dana-Farber-AIOS/s4former/actions/workflows/black.yml)
+[![black](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml/badge.svg)](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml)
 
 | Branch | Test status   |
 | ------ | ------------- |
