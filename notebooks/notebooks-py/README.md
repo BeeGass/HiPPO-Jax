@@ -20,6 +20,8 @@
 
 - [On the Parameterization and Initialization of Diagonal State Space Models](https://arxiv.org/pdf/2206.11893.pdf) - S4D
 
+- [Towards a General Purpose CNN for Long Range Dependencies in N-D](https://arxiv.org/abs/2206.03398?s=09) - CCNN
+
 **SaShiMi/S4-applied**
 
 - [It's Raw! Audio Generation with State-Space Models](https://arxiv.org/pdf/2202.09729.pdf) - SaShiMi
