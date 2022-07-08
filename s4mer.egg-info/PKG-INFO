@@ -1,0 +1,84 @@
+Metadata-Version: 2.1
+Name: s4mer
+Version: 1.0.0
+Summary: The test bench for how S4 works within various domains and regimes
+Author: Bryan Gass, Jacob Rosenthal, Renato Umeton et al.
+Author-email: bryan_gass@dfci.harvard.edu
+License: UNKNOWN
+Project-URL: Documentation, 
+Project-URL: Source Code, https://github.com/Dana-Farber-AIOS/s4mer
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: GNU General Public License v2 (GPLv2)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Framework :: Sphinx
+Classifier: Framework :: Pytest
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Image Processing
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# S4'mer
+
+[![black](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml/badge.svg)](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml)
+
+| Branch | Test status   |
+| ------ | ------------- |
+| master | ![tests](https://github.com/Dana-Farber-AIOS/pathml/actions/workflows/tests-conda.yml/badge.svg?branch=master) |
+| dev    | ![tests](https://github.com/Dana-Farber-AIOS/pathml/actions/workflows/tests-conda.yml/badge.svg?branch=dev) |
+
+TODO: Change banners from pathML's to VS4's
+
+This repo implements and benchmarks a number of drop-in replacements for attention:
+
+- HiPPO
+- S4
+
+The data we used to benchmark this is:
+
+- [Cifar10](https://www.cs.toronto.edu/~kriz/cifar.html)
+- [Camelyon17](https://camelyon17.grand-challenge.org/)
+- [TIGER](https://tiger.grand-challenge.org/)
+
+**View [documentation](https://pathml.readthedocs.io/en/latest/)**
+
+:construction: the `dev` branch is under active development, with experimental features, bug fixes, and refactors that may happen at any time!
+Stable versions are available as tagged releases on GitHub, or as versioned releases on PyPI
+
+# Installation
+
+There are several ways to run your own local `Vision S4'former (VS4)` experiments:
+
+TODO: add installation guide
+
+# Contributing
+
+TODO: add contributing guide
+
+# Citing
+
+TODO: add citation guide
+
+# License
+
+The GNU GPL v2 version of PathML is made available via Open Source licensing.
+The user is free to use, modify, and distribute under the terms of the GNU General Public License version 2.
+
+Commercial license options are available also.
+
+# Contact
+
+Questions? Comments? Suggestions? Get in touch!
+
+[bryan_gass@dfci.harvard.edu](mailto:bryan_gass@dfci.harvard.edu)
+
+<img src=https://raw.githubusercontent.com/Dana-Farber-AIOS/pathml/master/docs/source/_static/images/dfci_cornell_joint_logos.png width="750">
+
+
