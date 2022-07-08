@@ -486,7 +486,7 @@ def build_Fourier(N, fourier_type="fru"):
     return A, B
 
 
-class HiPPO(jnn.Module):
+class HiPPO(nn.Module):
     """
     class that constructs HiPPO model using the defined measure.
 
