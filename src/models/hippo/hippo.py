@@ -551,7 +551,12 @@ class HiPPO(nn.Module):
             vals = jnp.linspace(0.0, 1.0, L)
             n = jnp.arange(self.N)[:, None]
             x = 2 * vals - 1
-            self.eval_matrix = (B[:, None] * ss.eval_legendre(n, x)).T
+            self.eval_matrix = (
+                B[:, None]
+                * jax.scipy.special.lpmn_values(
+                    m=self.N - 1, n=self.N - 1, z=x, is_normalized=False
+                )
+            ).T  # ss.eval_legendre(n, x)).T
         else:
             raise ValueError("invalid measure")
 
