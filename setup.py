@@ -21,12 +21,7 @@ setuptools.setup(
         "Documentation": "",  # TODO
         "Source Code": "https://github.com/Dana-Farber-AIOS/s4mer",
     },
-    install_requires=[
-        "pip",
-        "numpy>=1.16.4",
-        "pandas",
-        # TODO
-    ],
+    install_requires=[],
     classifiers=[
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Programming Language :: Python :: 3",
