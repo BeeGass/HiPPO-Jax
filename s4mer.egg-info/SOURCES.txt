@@ -8,7 +8,9 @@ s4mer.egg-info/requires.txt
 s4mer.egg-info/top_level.txt
 src/__init__.py
 src/_version.py
-src/dataloaders/__init__.py
+src/data/__init__.py
+src/data/pipeline.py
+src/data/dataloaders/__init__.py
 src/models/__init__.py
 src/models/hippo/__init__.py
 src/models/hippo/hippo.py
@@ -16,3 +18,4 @@ src/models/ss/S4.py
 src/models/ss/__init__.py
 src/tasks/__init__.py
 src/utils/__init__.py
+src/utils/register.py
