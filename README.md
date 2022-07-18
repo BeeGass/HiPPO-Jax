@@ -30,6 +30,7 @@ Stable versions are available as tagged releases on GitHub, or as versioned rele
 ## Dev
 
 `poetry add --editable ../s4mer`
+refer to [this](https://python-poetry.org/docs/cli#add) in the future if you need help
 
 There are several ways to run your own local `S4'former` experiments:
 
