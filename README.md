@@ -29,7 +29,7 @@ Stable versions are available as tagged releases on GitHub, or as versioned rele
 
 ## Dev
 
-`poetry add --editable ../s4mer-poetry/`
+`poetry add --editable ../s4mer`
 
 There are several ways to run your own local `S4'former` experiments:
 
