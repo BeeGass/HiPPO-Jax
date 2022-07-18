@@ -27,7 +27,12 @@ Stable versions are available as tagged releases on GitHub, or as versioned rele
 
 # Installation
 
-There are several ways to run your own local `Vision S4'former (VS4)` experiments:
+## Dev
+
+`poetry add --editable ../s4mer`
+refer to [this](https://python-poetry.org/docs/cli#add) in the future if you need help
+
+There are several ways to run your own local `S4'former` experiments:
 
 TODO: add installation guide
 
