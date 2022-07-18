@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "s4mer-poetry"
+name = "s4mer"
 version = "0.1.0"
 license = "GPL-3.0-or-later"
 description = "Repo for the testing and developing of state space models, transformers and the hybrid between the two; trained on whole slide digital pathology image data."
@@ -11,6 +11,21 @@ maintainers = [
 ]
 readme = "README.md"
 repository = "https://github.com/Dana-Farber-AIOS/s4mer"
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Framework :: Sphinx",
+    "Framework :: Pytest",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
@@ -27,6 +42,7 @@ torchaudio = { url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.
 jupyter = "^1.0.0"
 ipykernel = "^6.15.1"
 ipython = "^8.4.0"
+pre-commit = "^2.20.0"
 
 [tool.poetry.dev-dependencies]
 
