@@ -639,8 +639,10 @@ class HiPPO(nn.Module):
         """
         L = u.shape[0]
         N = A.shape[0]
-        assert L == self.seq_L
-        assert N == self.N
+        assert (
+            L == self.seq_L
+        ), f"sequence length must match, currently {L} != {self.seq_L}"
+        assert N == self.N, f"Order number must match, currently {N} != {self.N}"
 
         Ab, Bb, Cb, Db = self.discretize(A, B, C, D, step=1.0 / L, alpha=alpha)
 
@@ -670,9 +672,16 @@ class HiPPO(nn.Module):
                 x_k: current hidden state
                 y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
             """
+            part1_x_k = Ab @ x_k_1
+            part2_x_k = Bb @ u_k
+            x_k = part1_x_k + part2_x_k
 
-            x_k = (Ab @ x_k_1) + (Bb @ u_k)
-            y_k = (Cb @ x_k) + (Db @ u_k)
+            part1_y_k = Cb @ x_k
+            part2_y_k = Db @ u_k
+            y_k = part1_y_k + part2_y_k
+
+            # x_k = (Ab @ x_k_1) + (Bb @ u_k)
+            # y_k = (Cb @ x_k) + (Db @ u_k)
 
             return x_k, y_k
 
