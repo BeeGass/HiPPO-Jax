@@ -31,7 +31,7 @@ classifiers = [
 python = ">=3.9,<3.11"
 scipy = { version = "^1.8.1" }
 jax = [
-    { version = "^0.3.14", extras = ["cpu"], markers = "sys_platform == 'macosx'" },
+    { version = "^0.3.14", extras = ["cpu"], markers = "sys_platform == 'darwin'" },
     { version = ">=0.2.27", extras = ["tpu"], markers = "sys_platform == 'linux'" }
     ]
 black = { version = "^22.6.0" }
