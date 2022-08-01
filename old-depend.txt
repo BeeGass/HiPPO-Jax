@@ -34,11 +34,9 @@ jax = [
     { version = "^0.3.14", extras = ["cpu"], markers = "sys_platform == 'darwin'" },
     { version = ">=0.2.27", extras = ["tpu"], markers = "sys_platform == 'linux'" }
     ]
-black = { version = "^22.6.0" }
 flax = { version = "^0.5.2" }
 optax = { version = "^0.1.3" }
 numpy = { version = "^1.23.1" }
-notebook = { version = "^6.4.12" }
 torch = [
     { markers = "sys_platform == 'linux'", url = "https://download.pytorch.org/whl/torch/" },
     { markers = "sys_platform == 'macosx'", url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220616-cp39-none-macosx_11_0_arm64.whl" },
@@ -54,6 +52,8 @@ torchaudio = [
     { markers = "sys_platform == 'macosx'", url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl" },
     { markers = "sys_platform == 'win32'", url = "https://download.pytorch.org/whl/torchaudio/" }
     ]
+notebook = { version = "^6.4.12" }
+black = { version = "^22.6.0" }
 jupyter = "^1.0.0"
 ipykernel = "^6.15.1"
 ipython = "^8.4.0"
