@@ -23,12 +23,10 @@ torchaudio = [
     {version = "^0.12.0", platform = "linux"},
     {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl"}
     ]
-black = [
-    {version = "^22.6.0", platform = "linux"},
-    {version = "^22.6.0", platform = "darwin"}
-    ]
+jax-tpu = {extras = ["tpu"], version = ">=0.2.16", url = "https://storage.googleapis.com/jax-releases/libtpu_releases.html", platform = "linux", optional = true}
+jax-gpu = {extras = ["cuda"], version = "^0.3.15", url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html", platform = "linux", optional = true}
 jax = [
-    {version = "^0.3.15", platform = "linux"},
+    {version = "^0.3.15", extras = ["cpu"], platform = "linux"},
     {version = "<0.3.14", extras = ["cpu"], platform = "darwin"}
     ]
 flax = [
@@ -59,6 +57,10 @@ ipython = [
     {version = "^8.4.0", platform = "linux"},
     {version = "^6.4.12", platform = "darwin"}
     ]
+black = [
+    {version = "^22.6.0", platform = "linux"},
+    {version = "^22.6.0", platform = "darwin"}
+    ]
 pre-commit = [
     {version = "^2.20.0", platform = "linux"},
     {version = "^6.4.12", platform = "darwin"}
@@ -67,3 +69,7 @@ pre-commit = [
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.extras]
+gpu = ["jax-gpu"]
+tpu = ["jax-tpu"]
