@@ -863,7 +863,7 @@ test = ["pytest", "coverage", "requests", "testpath", "nbval", "selenium", "pyte
 name = "numpy"
 version = "1.23.1"
 description = "NumPy is the fundamental package for array computing with Python."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 
@@ -1212,7 +1212,7 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 name = "scipy"
 version = "1.9.0"
 description = "SciPy: Scientific Library for Python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.8,<3.12"
 
@@ -1391,7 +1391,6 @@ typing-extensions = "*"
 [package.source]
 type = "url"
 url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220802-cp38-none-macosx_11_0_arm64.whl"
-
 [[package]]
 name = "tornado"
 version = "6.2"
@@ -1491,7 +1490,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.0,<=3.8.13"
-content-hash = "97d716a58fec4682d6960beff8de151fd39e972a3b03fc45a50ae655712e625a"
+content-hash = "9f380bf25a4d27be6d0dad247ac716a14ef2279f7e7ffc409b5b1bf59021ceaf"
 
 [metadata.files]
 absl-py = [
@@ -2484,22 +2483,6 @@ torch = [
     {file = "torch-1.12.0+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:1d9557d1e871794a31a71c40dec8589d6c3347f3f2953a8dd74cfd58e1ecb52e"},
     {file = "torch-1.12.0+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:72538e4505087668a4642f861578dfed470fae5da20b1758b0f34e4a070d6b21"},
     {file = "torch-1.12.0+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:7665e906995328746c6f70016ee90cafe50cbf434b6ef576e1de2678929ee63e"},
-    {file = "torch-1.12.0+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:aa43d7b54b86f723f17c5c44df1078c59a6149fc4d42fbef08aafab9d61451c9"},
-    {file = "torch-1.12.0+cu116-cp310-cp310-linux_x86_64.whl", hash = "sha256:74f5b137190a6face6859d630f129289e7fae6a4d9a747430b3b5d5c6297a3ae"},
-    {file = "torch-1.12.0+cu116-cp310-cp310-linux_x86_64.whl", hash = "sha256:74f5b137190a6face6859d630f129289e7fae6a4d9a747430b3b5d5c6297a3ae"},
-    {file = "torch-1.12.0+cu116-cp310-cp310-win_amd64.whl", hash = "sha256:97d63afcb6358071737f8325aa933e9db2f30cd2f068591d27d4ea72f3cabad2"},
-    {file = "torch-1.12.0+cu116-cp310-cp310-win_amd64.whl", hash = "sha256:97d63afcb6358071737f8325aa933e9db2f30cd2f068591d27d4ea72f3cabad2"},
-    {file = "torch-1.12.0+cu116-cp37-cp37m-linux_x86_64.whl", hash = "sha256:f772be831447dd01ebd26cbedf619e668d1b269d69bf6b4ff46b1378362bff26"},
-    {file = "torch-1.12.0+cu116-cp37-cp37m-linux_x86_64.whl", hash = "sha256:f772be831447dd01ebd26cbedf619e668d1b269d69bf6b4ff46b1378362bff26"},
-    {file = "torch-1.12.0+cu116-cp37-cp37m-win_amd64.whl", hash = "sha256:7ee1899e9afe5f5e35ba46bc70e17735d2c02cedede1fa69a288cc680b5ab3db"},
-    {file = "torch-1.12.0+cu116-cp37-cp37m-win_amd64.whl", hash = "sha256:7ee1899e9afe5f5e35ba46bc70e17735d2c02cedede1fa69a288cc680b5ab3db"},
-    {file = "torch-1.12.0+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:1d9557d1e871794a31a71c40dec8589d6c3347f3f2953a8dd74cfd58e1ecb52e"},
-    {file = "torch-1.12.0+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:1d9557d1e871794a31a71c40dec8589d6c3347f3f2953a8dd74cfd58e1ecb52e"},
-    {file = "torch-1.12.0+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:72538e4505087668a4642f861578dfed470fae5da20b1758b0f34e4a070d6b21"},
-    {file = "torch-1.12.0+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:72538e4505087668a4642f861578dfed470fae5da20b1758b0f34e4a070d6b21"},
-    {file = "torch-1.12.0+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:7665e906995328746c6f70016ee90cafe50cbf434b6ef576e1de2678929ee63e"},
-    {file = "torch-1.12.0+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:7665e906995328746c6f70016ee90cafe50cbf434b6ef576e1de2678929ee63e"},
-    {file = "torch-1.12.0+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:aa43d7b54b86f723f17c5c44df1078c59a6149fc4d42fbef08aafab9d61451c9"},
     {file = "torch-1.12.0+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:aa43d7b54b86f723f17c5c44df1078c59a6149fc4d42fbef08aafab9d61451c9"},
 ]
 tornado = [
