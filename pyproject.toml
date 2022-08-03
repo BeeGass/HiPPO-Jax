@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "s4mer"
+name = "s4mer-pkg"
 version = "0.1.0"
 description = "Repo for the testing and developing of state space models, transformers and the hybrid between the two; trained on whole slide digital pathology image data."
 authors = ["Bryan Gass <bryank123@live.com>"]
-license = "GPL-3.0-or-later"
-readme = "README.md"
 maintainers = [
     "Bryan Gass <bryank123@live.com>",
 ]
+license = "GPL-3.0-or-later"
+readme = "README.md"
 repository = "https://github.com/Dana-Farber-AIOS/s4mer"
 classifiers = [
     "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
