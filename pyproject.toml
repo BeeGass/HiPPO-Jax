@@ -38,16 +38,22 @@ optional = true
 # ~~~~~ PyTorch dependencies ~~~~~
 torch = [
     {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220616-cp39-none-macosx_11_0_arm64.whl"},
-    {version = "^1.12.0", platform = "linux"}
+    {platform = "linux", version = "^1.12.0", source = "pytorch"}
     ]
-torchvision = [
-    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchvision-0.14.0.dev20220616-cp39-cp39-macosx_11_0_arm64.whl"},
-    {version = "^0.13.0", platform = "linux"}
-    ]
-torchaudio = [
-    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl"},
-    {version = "^0.12.0", platform = "linux"}
-    ]
+#torchvision = [
+#    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchvision-0.14.0.dev20220616-cp39-cp39-macosx_11_0_arm64.whl"},
+#    {platform = "linux", version = "^0.12.0", source = "pytorch"}
+#    ]
+#torchaudio = [
+#    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl"},
+#    {platform = "linux", version = "^0.12.0", source = "pytorch"}
+#    ]
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu116"
+secondary = true
+default = false
 
 [tool.poetry.group.jax]
 optional = true
