@@ -5,6 +5,24 @@ description = "Repo for the testing and developing of state space models, transf
 authors = ["Bryan Gass <bryank123@live.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
+maintainers = [
+    "Bryan Gass <bryank123@live.com>",
+]
+repository = "https://github.com/Dana-Farber-AIOS/s4mer"
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Framework :: Sphinx",
+    "Framework :: Pytest",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 
 [tool.poetry.dependencies]
 python = ">=3.8.0,<=3.8.13"
@@ -12,104 +30,41 @@ numpy = [
     {version = "^1.23.1", platform = "linux"},
     {version = "^1.23.1", platform = "darwin"}
     ]
+
+[tool.poetry.group.torch]
+optional = true
+
+[tool.poetry.group.torch.dependencies]
+# ~~~~~ PyTorch dependencies ~~~~~
+torch = [
+    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220616-cp39-none-macosx_11_0_arm64.whl"},
+    {version = "^1.12.0", platform = "linux"}
+    ]
+torchvision = [
+    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchvision-0.14.0.dev20220616-cp39-cp39-macosx_11_0_arm64.whl"},
+    {version = "^0.13.0", platform = "linux"}
+    ]
+torchaudio = [
+    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl"},
+    {version = "^0.12.0", platform = "linux"}
+    ]
+
+[tool.poetry.group.jax]
+optional = true
+
+[tool.poetry.group.jax.dependencies]
+# ~~~~~ Jax dependencies ~~~~~
+jax = [
+    {extras = ["cuda"], version = "^0.3.15", platform = "linux"},
+    #{extras = ["cpu"], version = "^0.3.14", platform = "darwin"}
+    ]
 flax = [
     {version = "^0.5.3", platform = "linux"},
-    {version = "^0.5.2", platform = "darwin", python = "~3.8"} # issue with flax installing tensorstore that isnt compatible on mac
+    #{version = "^0.5.2", platform = "darwin", python = "~3.8"} # issue with flax installing tensorstore that isnt compatible on mac
     ]
 optax = [
     {version = "^0.1.3", platform = "linux"},
-    {version = "^0.1.3", platform = "darwin"}
-    ]
-
-[tool.poetry.group.torchcpu]
-optional = true
-
-[tool.poetry.group.torchcpu.dependencies]
-# ~~~~~ PyTorch CPU dependencies ~~~~~
-torch = [
-    {platform = "linux", version = "^1.12.0+cpu", source = "pytorch-cpu"},
-    {platform = "darwin", version = "^1.12.0", source = "pytorch-cpu"}
-    ]
-torchvision = [
-    {platform = "linux", version = "^0.13.0+cpu", source = "pytorch-cpu"},
-    {platform = "darwin", version = "^0.13.0", source = "pytorch-cpu"}
-    ]
-torchaudio = [
-    {platform = "linux", version = "^0.12.0+cpu", source = "pytorch-cpu"},
-    {platform = "darwin", version = "^0.12.0", source = "pytorch-cpu"}
-    ]
-
-[tool.poetry.group.torchMPS]
-optional = true
-
-[tool.poetry.group.torchMPS.dependencies]
-# ~~~~~ PyTorch MPS dependencies ~~~~~
-torch = [
-    {platform = "darwin", version = "^1.13.0", source = "pytorch-MPS"}
-    ]
-torchvision = [
-    {platform = "darwin", version = "^0.14.0", source = "pytorch-MPS"}
-    ]
-torchaudio = [
-    {platform = "darwin", version = "^0.12.0", source = "pytorch-MPS"}
-    ]
-
-[tool.poetry.group.torchcu113]
-optional = true
-
-[tool.poetry.group.torchcu113.dependencies]
-# ~~~~~ PyTorch GPU dependencies ~~~~~
-torch = [
-    {platform = "linux", version = "^1.12.0+cu113", source = "pytorch-cuda-113"}
-    ]
-torchvision = [
-    {platform = "linux", version = "^0.13.0+cu113", source = "pytorch-cuda-113"}
-    ]
-torchaudio = [
-    {platform = "linux", version = "^0.12.0+cu113", source = "pytorch-cuda-113"}
-    ]
-
-[tool.poetry.group.torchcu116]
-optional = true
-
-[tool.poetry.group.torchcu116.dependencies]
-# ~~~~~ PyTorch GPU dependencies ~~~~~
-torch = [
-    {platform = "linux", version = "^1.12.0+cu116", source = "pytorch-cuda-116"}
-    ]
-torchvision = [
-    {platform = "linux", version = "^0.13.0+cu116", source = "pytorch-cuda-116"}
-    ]
-torchaudio = [
-    {platform = "linux", version = "^0.12.0+cu116", source = "pytorch-cuda-116"}
-    ]
-
-[tool.poetry.group.jaxcpu]
-optional = true
-
-[tool.poetry.group.jaxcpu.dependencies]
-# ~~~~~ Jax CPU dependencies ~~~~~
-jax = [
-    {extras = ["cpu"], version = "^0.3.15", platform = "linux"},
-    {extras = ["cpu"], version = "<0.3.14", platform = "darwin"}
-    ]
-
-[tool.poetry.group.jaxgpu]
-optional = true
-
-[tool.poetry.group.jaxgpu.dependencies]
-# ~~~~~ Jax GPU dependencies ~~~~~
-jax = [
-    {extras = ["cuda"], version = "^0.3.15", platform = "linux", source = "jax-gpu"}
-    ]
-
-[tool.poetry.group.jaxtpu]
-optional = true
-
-[tool.poetry.group.jaxtpu.dependencies]
-# ~~~~~ Jax TPU dependencies ~~~~~
-jax = [
-    {extras = ["tpu"], version = ">=0.2.16", platform = "linux", source = "jax-tpu"}
+    #{version = "^0.1.3", platform = "darwin"}
     ]
 
 [tool.poetry.group.jupyter]
@@ -149,41 +104,11 @@ pre-commit = [
     ]
 
 [[tool.poetry.source]]
-name = "pytorch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-default = false
-secondary = true
-
-[[tool.poetry.source]]
-name = "pytorch-MPS"
-url = "https://download.pytorch.org/whl/nightly/cpu"
-default = false
-secondary = true
-
-[[tool.poetry.source]]
-name = "pytorch-cuda-113"
-url = "https://download.pytorch.org/whl/cu113"
-default = false
-secondary = true
-
-[[tool.poetry.source]]
-name = "pytorch-cuda-116"
-url = "https://download.pytorch.org/whl/cu116"
-default = false
-secondary = true
-
-[[tool.poetry.source]]
-name = "jax-gpu"
+name = "jax"
 url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
 default = false
-secondary = true
-
-[[tool.poetry.source]]
-name = "jax-tpu"
-url = "https://storage.googleapis.com/jax-releases/libtpu_releases.html"
-default = false
-secondary = true
+secondary = false
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
