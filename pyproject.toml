@@ -30,6 +30,7 @@ numpy = [
     {version = "^1.23.1", platform = "linux"},
     {version = "^1.23.1", platform = "darwin"}
     ]
+scipy = {version = "^1.9.0", platform = "darwin"}
 
 [tool.poetry.group.torch]
 optional = true
@@ -88,6 +89,7 @@ ipython = [
     {version = "^8.4.0", platform = "linux"},
     {version = "^8.4.0", platform = "darwin"}
     ]
+requests = {version = "^2.28.1", platform = "darwin"}
 
 [tool.poetry.group.additional]
 optional = true
