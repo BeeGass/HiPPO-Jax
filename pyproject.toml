@@ -1,14 +1,12 @@
 [tool.poetry]
-name = "s4mer"
+name = "s4mer-pkg"
 version = "0.1.0"
-license = "GPL-3.0-or-later"
 description = "Repo for the testing and developing of state space models, transformers and the hybrid between the two; trained on whole slide digital pathology image data."
-authors = [
-    "Bryan Gass <bryank123@live.com>",
-    ]
+authors = ["Bryan Gass <bryank123@live.com>"]
 maintainers = [
     "Bryan Gass <bryank123@live.com>",
 ]
+license = "GPL-3.0-or-later"
 readme = "README.md"
 repository = "https://github.com/Dana-Farber-AIOS/s4mer"
 classifiers = [
@@ -26,27 +24,111 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
-scipy = { version = "^1.8.1" }
-jax = { version = "^0.3.14", extras = ["cpu"] }
-black = { version = "^22.6.0" }
-flax = { version = "^0.5.2" }
-optax = { version = "^0.1.3" }
-numpy = { version = "^1.23.1" }
-notebook = { version = "^6.4.12" }
-torch = { url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220616-cp39-none-macosx_11_0_arm64.whl" }
-torchvision = { url = "https://download.pytorch.org/whl/nightly/cpu/torchvision-0.14.0.dev20220616-cp39-cp39-macosx_11_0_arm64.whl" }
-torchaudio = { url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl" }
-jupyter = "^1.0.0"
-ipykernel = "^6.15.1"
-ipython = "^8.4.0"
-pre-commit = "^2.20.0"
+python = ">=3.8.0,<=3.8.13"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.ml]
+optional = true
 
+[tool.poetry.group.ml.dependencies]
+# ~~~~~ ML dependencies ~~~~~
+numpy = [
+    {version = "^1.23.1", platform = "linux"},
+    {version = "^1.23.1", platform = "darwin"}
+    ]
+scipy = [
+    {version = "^1.9.0", platform = "linux"},
+    {version = "^1.9.0", platform = "darwin"}
+    ]
+
+[tool.poetry.group.torch]
+optional = true
+
+[tool.poetry.group.torch.dependencies]
+# ~~~~~ PyTorch dependencies ~~~~~
+torch = [
+    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220802-cp38-none-macosx_11_0_arm64.whl"},
+    {platform = "linux", version = "^1.12.0", source = "pytorch"}
+]
+#torchvision = [
+#    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchvision-0.14.0.dev20220616-cp39-cp39-macosx_11_0_arm64.whl"},
+#    {platform = "linux", version = "^0.12.0", source = "pytorch"}
+#    ]
+#torchaudio = [
+#    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl"},
+#    {platform = "linux", version = "^0.12.0", source = "pytorch"}
+#    ]
+
+[tool.poetry.group.jax]
+optional = true
+
+[tool.poetry.group.jax.dependencies]
+# ~~~~~ Jax dependencies ~~~~~
+jax = [
+    {extras = ["cuda"], version = "^0.3.15", platform = "linux"},
+    {extras = ["cpu"], version = "^0.3.15", platform = "darwin"}
+    ]
+flax = [
+    {version = "^0.5.3", platform = "linux"},
+    {version = "^0.5.2", platform = "darwin"} # issue with flax installing tensorstore that isnt compatible on mac
+    ]
+optax = [
+    {version = "^0.1.3", platform = "linux"},
+    {version = "^0.1.3", platform = "darwin"}
+    ]
+
+#[[tool.poetry.source]]
+#name = "jax-cuda"
+#url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
+#default = false
+#secondary = true
+
+[tool.poetry.group.jupyter]
+optional = true
+
+[tool.poetry.group.jupyter.dependencies]
+# ~~~~~ jupyter dependencies ~~~~~
+notebook = [
+    {version = "^6.4.12", platform = "linux"},
+    {version = "^6.4.12", platform = "darwin"}
+    ]
+jupyter = [
+    {version = "^1.0.0", platform = "linux"},
+    {version = "^1.0.0", platform = "darwin"}
+    ]
+ipykernel = [
+    {version = "^6.15.1", platform = "linux"},
+    {version = "^6.15.1", platform = "darwin"}
+    ]
+ipython = [
+    {version = "^8.4.0", platform = "linux"},
+    {version = "^8.4.0", platform = "darwin"}
+    ]
+requests = [
+    {version = "^2.28.1", platform = "darwin"}, 
+    {version = "^2.28.1", platform = "linux"}
+    ]
+
+[tool.poetry.group.additional]
+optional = true
+
+[tool.poetry.group.additional.dependencies]
+# ~~~~~ additional dependencies ~~~~~
+black = [
+    {version = "^22.6.0", platform = "linux"},
+    {version = "^22.6.0", platform = "darwin"}
+    ]
+pre-commit = [
+    {version = "^2.20.0", platform = "linux"},
+    {version = "^2.20.0", platform = "darwin"}
+    ]
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu116"
+secondary = true
+default = false
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

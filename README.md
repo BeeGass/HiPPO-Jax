@@ -11,8 +11,12 @@ TODO: Change banners from pathML's to VS4's
 
 This repo implements and benchmarks a number of drop-in replacements for attention:
 
-- HiPPO
-- S4
+- [HiPPO](https://arxiv.org/pdf/2008.07669.pdf)
+- [HtTYH](https://arxiv.org/pdf/2206.12037.pdf)
+- [DSS](https://arxiv.org/pdf/2203.14343.pdf)
+- [GSS](https://arxiv.org/pdf/2206.13947.pdf)
+- [S4](https://arxiv.org/pdf/2111.00396.pdf)
+- [S4D](https://arxiv.org/pdf/2206.11893.pdf)
 
 The data we used to benchmark this is:
 
@@ -27,10 +31,67 @@ Stable versions are available as tagged releases on GitHub, or as versioned rele
 
 # Installation
 
+Install [poetry](https://python-poetry.org/):
+
+```bash
+curl -sSL https://install.python-poetry.org | python3 - --preview
+```
+
+Ensure python version is set to 3.8:
+
+```bash
+$ python --version
+> 3.8.x
+```
+
+Install lock file dependencies:
+
+```bash
+poetry install --with torch,jax,ml
+```
+
+if you plan to use a jupyter notebook also install:
+
+```bash
+poetry install --with jupyter
+```
+
+Thats it!
+
 ## Dev
 
-`poetry add --editable ../s4mer`
-refer to [this](https://python-poetry.org/docs/cli#add) in the future if you need help
+## Installation
+
+Install [poetry](https://python-poetry.org/):
+
+```bash
+curl -sSL https://install.python-poetry.org | python3 - --preview
+```
+
+Ensure python version is set to 3.8:
+
+```bash
+$ python --version
+> 3.8.13
+```
+
+Install lock file dependencies:
+
+```bash
+poetry install --with torch,jax,ml
+```
+
+if you plan to use a jupyter notebook:
+
+```bash
+poetry install --with torch,jax,jupyter,ml,additional
+```
+
+Refer to [this](https://python-poetry.org/docs/cli#add) in the future if you need help
+
+```bash
+poetry add --editable ../s4mer/
+```
 
 There are several ways to run your own local `S4'former` experiments:
 
