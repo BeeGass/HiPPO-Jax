@@ -47,7 +47,7 @@ $ python --version
 Install lock file dependencies:
 
 ```bash
-poetry install --with torch,jax,ml
+poetry install --with jax,torch,mltools
 ```
 
 if you plan to use a jupyter notebook also install:
@@ -78,13 +78,13 @@ $ python --version
 Install lock file dependencies:
 
 ```bash
-poetry install --with torch,jax,ml
+poetry install --with torch,jax,mltools,additional
 ```
 
 if you plan to use a jupyter notebook:
 
 ```bash
-poetry install --with torch,jax,jupyter,ml,additional
+poetry install --with jupyter
 ```
 
 Refer to [this](https://python-poetry.org/docs/cli#add) in the future if you need help

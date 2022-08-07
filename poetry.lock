@@ -380,7 +380,7 @@ woff = ["zopfli (>=0.1.4)", "brotlicffi (>=0.8.0)", "brotli (>=1.0.1)"]
 
 [[package]]
 name = "identify"
-version = "2.5.2"
+version = "2.5.3"
 description = "File identification library for Python"
 category = "dev"
 optional = false
@@ -509,10 +509,7 @@ python-versions = ">=3.7"
 [package.dependencies]
 absl-py = "*"
 etils = {version = "*", extras = ["epath"]}
-jaxlib = [
-    {version = "0.3.15", optional = true, markers = "extra == \"cpu\""},
-    {version = "0.3.15+cuda11.cudnn82", optional = true, markers = "extra == \"cuda\""},
-]
+jaxlib = {version = "0.3.15", optional = true, markers = "extra == \"cpu\""}
 numpy = ">=1.19"
 opt_einsum = "*"
 scipy = ">=1.5"
@@ -527,9 +524,14 @@ cuda11_cudnn82 = ["jaxlib (==0.3.15+cuda11.cudnn82)"]
 minimum-jaxlib = ["jaxlib (==0.3.14)"]
 tpu = ["jaxlib (==0.3.15)", "libtpu-nightly (==0.1.dev20220722)", "requests"]
 
+[package.source]
+type = "legacy"
+url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
+reference = "jax"
+
 [[package]]
 name = "jaxlib"
-version = "0.3.15"
+version = "0.3.15+cuda11.cudnn82"
 description = "XLA library for JAX"
 category = "dev"
 optional = false
@@ -539,6 +541,11 @@ python-versions = ">=3.7"
 absl-py = "*"
 numpy = ">=1.19"
 scipy = ">=1.5"
+
+[package.source]
+type = "legacy"
+url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
+reference = "jax"
 
 [[package]]
 name = "jedi"
@@ -571,7 +578,7 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "jsonschema"
-version = "4.9.0"
+version = "4.9.1"
 description = "An implementation of JSON Schema validation for Python"
 category = "dev"
 optional = false
@@ -1234,7 +1241,7 @@ nativelib = ["pywin32", "pyobjc-framework-cocoa"]
 
 [[package]]
 name = "setuptools"
-version = "63.4.0"
+version = "63.4.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "dev"
 optional = false
@@ -1490,7 +1497,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.0,<=3.8.13"
-content-hash = "9f380bf25a4d27be6d0dad247ac716a14ef2279f7e7ffc409b5b1bf59021ceaf"
+content-hash = "d1f6b973ffb237f3bfcae13d9b61305beb8468718427d283bfe221a5210c222c"
 
 [metadata.files]
 absl-py = [
@@ -1756,8 +1763,8 @@ fonttools = [
     {file = "fonttools-4.34.4.zip", hash = "sha256:9a1c52488045cd6c6491fd07711a380f932466e317cb8e016fc4e99dc7eac2f0"},
 ]
 identify = [
-    {file = "identify-2.5.2-py2.py3-none-any.whl", hash = "sha256:feaa9db2dc0ce333b453ce171c0cf1247bbfde2c55fc6bb785022d411a1b78b5"},
-    {file = "identify-2.5.2.tar.gz", hash = "sha256:a3d4c096b384d50d5e6dc5bc8b9bc44f1f61cefebd750a7b3e9f939b53fb214d"},
+    {file = "identify-2.5.3-py2.py3-none-any.whl", hash = "sha256:25851c8c1370effb22aaa3c987b30449e9ff0cece408f810ae6ce408fdd20893"},
+    {file = "identify-2.5.3.tar.gz", hash = "sha256:887e7b91a1be152b0d46bbf072130235a8117392b9f1828446079a816a05ef44"},
 ]
 idna = [
     {file = "idna-3.3-py3-none-any.whl", hash = "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff"},
@@ -1787,17 +1794,10 @@ jax = [
     {file = "jax-0.3.15.tar.gz", hash = "sha256:7ab82cb617dfa3ca94e3e8cc22ad51fcdd2e59391182635e7fcd570aafa9a6c2"},
 ]
 jaxlib = [
-    {file = "jaxlib-0.3.15-cp310-none-macosx_10_14_x86_64.whl", hash = "sha256:7555be95d567572579a2010ed03506e31ff87d55c21c1bc80eddcccd87b3f723"},
-    {file = "jaxlib-0.3.15-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:89f5e27c59f8f5c2e5f3ad377ace2bc03e68728ff27aaf9e82e59d2a1a4c3c6d"},
-    {file = "jaxlib-0.3.15-cp310-none-manylinux2014_x86_64.whl", hash = "sha256:3af8343024ec44488bb542e62c7a61488df558e6da4bf072ebbdac319362a03f"},
-    {file = "jaxlib-0.3.15-cp37-none-macosx_10_14_x86_64.whl", hash = "sha256:8f999a69fda69976bdcfa45abcc99614160035ee878a544e713affd45cd5b4d1"},
-    {file = "jaxlib-0.3.15-cp37-none-manylinux2014_x86_64.whl", hash = "sha256:36570c1699b5bb4038f1f708d976afefff9fb745cc131c0c8c9340a072b38244"},
-    {file = "jaxlib-0.3.15-cp38-none-macosx_10_14_x86_64.whl", hash = "sha256:19038f91f49f44df1a9d2c00e11f7f61e922e4651c10cd928ac3dcb745234dbf"},
-    {file = "jaxlib-0.3.15-cp38-none-macosx_11_0_arm64.whl", hash = "sha256:30385dafe8299c60da1e1f6f3e0d095cfd2aeefc398c67501a772c8238fc57cd"},
-    {file = "jaxlib-0.3.15-cp38-none-manylinux2014_x86_64.whl", hash = "sha256:a97e80d533d1c66fe0c963e6a25cf85e00732710b6e17af568b1f4f026b52919"},
-    {file = "jaxlib-0.3.15-cp39-none-macosx_10_14_x86_64.whl", hash = "sha256:e8d63b156cbac46a15c2024f63761b0bc1f73df94d6a97fb641326c74aeab6ef"},
-    {file = "jaxlib-0.3.15-cp39-none-macosx_11_0_arm64.whl", hash = "sha256:c290ca60b1c08d0ac991be922146775a80943e7a970cde3fc42d6667ca0c115d"},
-    {file = "jaxlib-0.3.15-cp39-none-manylinux2014_x86_64.whl", hash = "sha256:ef58c67341c87789417891f7bd832fc84e23044ef6b085fb9c8306c60ec43bda"},
+    {file = "jaxlib-0.3.15+cuda11.cudnn82-cp310-none-manylinux2014_x86_64.whl", hash = "sha256:22d4f56f33e2813fe1623bd760618bdb5c97ba31c5fee801eedceb259f106a1a"},
+    {file = "jaxlib-0.3.15+cuda11.cudnn82-cp37-none-manylinux2014_x86_64.whl", hash = "sha256:8f7244de1f2ea1f9b11595e0fe7caec43bbd0de4cb158ffc9f60db7db8e69435"},
+    {file = "jaxlib-0.3.15+cuda11.cudnn82-cp38-none-manylinux2014_x86_64.whl", hash = "sha256:a91e457608646702a54681761e4745d97d77044b12bb87216f46c9f7e94cdd98"},
+    {file = "jaxlib-0.3.15+cuda11.cudnn82-cp39-none-manylinux2014_x86_64.whl", hash = "sha256:d536363501a638290e7807567e46ded1313c26e9bbf3de092432324e48683730"},
 ]
 jedi = [
     {file = "jedi-0.18.1-py2.py3-none-any.whl", hash = "sha256:637c9635fcf47945ceb91cd7f320234a7be540ded6f3e99a50cb6febdfd1ba8d"},
@@ -1808,8 +1808,8 @@ jinja2 = [
     {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
 ]
 jsonschema = [
-    {file = "jsonschema-4.9.0-py3-none-any.whl", hash = "sha256:5d0be0cd1b670438b71c3d3145b2abba1f9d197e3e91adc4c4bae4c0e114e252"},
-    {file = "jsonschema-4.9.0.tar.gz", hash = "sha256:df10e65c8f3687a48e93d0d348ce0ce5f897b5a28e9bbcbbe8f7c7eaf019e850"},
+    {file = "jsonschema-4.9.1-py3-none-any.whl", hash = "sha256:8ebad55894c002585271af2d327d99339ef566fb085d9129b69e2623867c4106"},
+    {file = "jsonschema-4.9.1.tar.gz", hash = "sha256:408c4c8ed0dede3b268f7a441784f74206380b04f93eb2d537c7befb3df3099f"},
 ]
 jupyter = [
     {file = "jupyter-1.0.0-py2.py3-none-any.whl", hash = "sha256:5b290f93b98ffbc21c0c7e749f054b3267782166d72fa5e3ed1ed4eaf34a2b78"},
@@ -2418,8 +2418,8 @@ send2trash = [
     {file = "Send2Trash-1.8.0.tar.gz", hash = "sha256:d2c24762fd3759860a0aff155e45871447ea58d2be6bdd39b5c8f966a0c99c2d"},
 ]
 setuptools = [
-    {file = "setuptools-63.4.0-py3-none-any.whl", hash = "sha256:db49784825568c9340e45e3322b8b8aed4ca598ce9bbf5277dcae95cc04dc469"},
-    {file = "setuptools-63.4.0.tar.gz", hash = "sha256:d36f579e989a90e8106b9061599c707d912e9cd296b30d62cb6b4dd3567a5ddc"},
+    {file = "setuptools-63.4.1-py3-none-any.whl", hash = "sha256:dc2662692f47d99cb8ae15a784529adeed535bcd7c277fee0beccf961522baf6"},
+    {file = "setuptools-63.4.1.tar.gz", hash = "sha256:7c7854ee1429a240090297628dc9f75b35318d193537968e2dc14010ee2f5bca"},
 ]
 setuptools-scm = [
     {file = "setuptools_scm-7.0.5-py3-none-any.whl", hash = "sha256:7930f720905e03ccd1e1d821db521bff7ec2ac9cf0ceb6552dd73d24a45d3b02"},

@@ -163,15 +163,54 @@ $$
 
 #### Fourier Recurrent Unit Measure
 
-TODO
+![HiPPO-FRU Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-FRU_Unit_Impulse_Response.gif)
 
 #### Truncated Fourier Measure
 
-TODO
+![HiPPO-FouT Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-FouT_Unit_Impulse_Response.gif)
+
+**Time Measure:**
+
+$$
+\begin{align}
+\mu^{(t)}(x) &= \mathbb{I}[0, 1](x)
+\end{align}
+$$
+
+**HiPPO-FouT Operator:**
+
+$$
+\begin{align}
+\frac{d}{dt}c(t) &= - \frac{1}{t} Ac(t) + \frac{1}{t} Bf(t)
+\end{align}
+$$
+
+where
+
+$$
+\begin{align}
+A_{nk} &=
+\begin{cases}
+-2 & \text{if } n = k = 0  \\
+-2\sqrt{2} & \text{if } n = 0, k \text{ odd}  \\
+-2\sqrt{2} & \text{if } k = 0, n \text{ odd}  \\
+-4 & \text{if } n, k \text{ odd}  \\
+2\pi n & \text{if } n - k = 1, k \text{ odd}  \\
+-2\pi k & \text{if } k - n = 1, n \text{ odd}  \\
+0 & \text{otherwise}  \\
+\end{cases} \\
+B_{n} &= 
+\begin{cases}
+2 & \text{if } n = 0  \\
+2\sqrt{2} & \text{if } n \text{ odd}  \\
+0 & \text{if } \text{otherwise}  \\
+\end{cases} \\
+\end{align}
+$$
 
 #### Decaying Fourier Measure
 
-TODO
+![HiPPO-FouD Unit Impulse Reponse](../notebooks-jl/gifs/HiPPO-FouD_Unit_Impulse_Response.gif)
 
 ### Other GIFs
 
