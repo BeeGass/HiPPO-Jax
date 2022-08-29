@@ -22,10 +22,13 @@
 
 - [Towards a General Purpose CNN for Long Range Dependencies in N-D](https://arxiv.org/abs/2206.03398?s=09) - CCNN
 
-**SaShiMi/S4-applied**
+- [Simplified State Space Layers for Sequence Modeling](https://arxiv.org/abs/2208.04933) - S5
+
+**Applied SSMs:**
 
 - [It's Raw! Audio Generation with State-Space Models](https://arxiv.org/pdf/2202.09729.pdf) - SaShiMi
 - [Long Movie Clip Classification with State-Space Video Models](https://arxiv.org/pdf/2204.01692.pdf)
+- [Diffusion-based Time Series Imputation and Forecasting with Structured State Space Models](https://arxiv.org/abs/2208.09399) - SSSD
 
 ### Blogs
 
