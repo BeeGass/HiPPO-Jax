@@ -5,23 +5,18 @@
 **HiPPO:**
 
 - [HiPPO: Recurrent Memory with Optimal Polynomial Projections](https://arxiv.org/pdf/2008.07669.pdf) - HiPPO
-
 - [How to Train Your HiPPO: State Space Models with Generalized Orthogonal Basis Projections](https://arxiv.org/pdf/2206.12037.pdf) - Updated HiPPO
 
 **DSS:**
 
 - [Diagonal State Spaces are as Effective as Structured State Spaces](https://arxiv.org/pdf/2203.14343.pdf) - DSS
-
 - [Long Range Language Modeling via Gated State Spaces](https://arxiv.org/pdf/2206.13947.pdf) - GSS
 
 **S4:**
 
 - [Efficiently Modeling Long Sequences with Structured State Spaces](https://arxiv.org/pdf/2111.00396.pdf) - S4
-
 - [On the Parameterization and Initialization of Diagonal State Space Models](https://arxiv.org/pdf/2206.11893.pdf) - S4D
-
 - [Towards a General Purpose CNN for Long Range Dependencies in N-D](https://arxiv.org/abs/2206.03398?s=09) - CCNN
-
 - [Simplified State Space Layers for Sequence Modeling](https://arxiv.org/abs/2208.04933) - S5
 
 **Applied SSMs:**
