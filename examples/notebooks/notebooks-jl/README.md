@@ -173,7 +173,7 @@ $$
 
 $$
 \begin{align}
-\mu^{(t)}(x) &= \mathbb{I}[0, 1](x)
+\mu^{(t)}(x) &= \mathbb{I}{[0, 1]}(x)
 \end{align}
 $$
 
