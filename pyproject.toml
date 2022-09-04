@@ -65,7 +65,7 @@ optional = true
 [tool.poetry.group.jax.dependencies]
 # ~~~~~ Jax dependencies ~~~~~
 jax = [
-    {extras = ["cuda11"], version = "^0.3.15", platform = "linux"},
+    {extras = ["cuda"], version = "^0.3.15", platform = "linux"},
     {extras = ["cpu"], version = "^0.3.15", platform = "darwin"}
     ]
 flax = [
