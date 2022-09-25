@@ -32,29 +32,15 @@ class HiPPO(nn.Module):
 
     N: int
     max_length: int
-    measure: str
     step: float
     GBT_alpha: float
     seq_L: int
-    v: str
-    lambda_n: float
-    fourier_type: str
-    alpha: float
-    beta: float
+    A: jnp.ndarray
+    B: jnp.ndarray
 
     def setup(self):
-        A, B = make_HiPPO(
-            N=self.N,
-            v=self.v,
-            measure=self.measure,
-            lambda_n=self.lambda_n,
-            fourier_type=self.fourier_type,
-            alpha=self.alpha,
-            beta=self.beta,
-        )
-
-        self.A = A
-        self.B = B  # .squeeze(-1)
+        A = self.A
+        B = self.B
         self.C = jnp.ones((self.N,))
         self.D = jnp.zeros((1,))
 
