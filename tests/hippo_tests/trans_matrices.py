@@ -1,6 +1,8 @@
 import pytest
-from transition import TransMatrix
-from gu_transition import GuTransMatrix
+from ...src.models.hippo.gu_transition import GuTransMatrix
+from ...src.models.hippo.transition import TransMatrix
+from hippo_utils import N, N2, N16, big_N
+from hippo_utils import random_input, ones_input, zeros_input, desc_input
 
 @pytest.fixture
 def legs_matrices(N16):

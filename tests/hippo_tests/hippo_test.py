@@ -1,7 +1,8 @@
 import pytest
 import jax.numpy as jnp
+import numpy as np
 
-from hippo_operator import (
+from hippo_operator import (  # fixtures for respective operators
     hippo_legs,
     hippo_legt,
     hippo_lmu,
@@ -10,7 +11,7 @@ from hippo_operator import (
     hippo_fout,
     hippo_fourd,
 )
-from hippo_operator import (
+from hippo_operator import (  # fixtures for respective operators made by Albert Gu
     gu_hippo_legs,
     gu_hippo_legt,
     gu_hippo_lmu,
@@ -19,7 +20,7 @@ from hippo_operator import (
     gu_hippo_fout,
     gu_hippo_fourd,
 )
-from trans_matrices import (
+from trans_matrices import (  # transition matrices A and B from respective polynomials
     legs_matrices,
     legt_matrices,
     legt_lmu_matrices,
@@ -28,7 +29,7 @@ from trans_matrices import (
     fout_matrices,
     fourd_matrices,
 )
-from trans_matrices import (
+from trans_matrices import (  # transition matrices A and B from respective polynomials made by Albert Gu
     gu_legs_matrices,
     gu_legt_matrices,
     gu_legt_lmu_matrices,
