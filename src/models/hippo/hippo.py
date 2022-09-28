@@ -45,7 +45,20 @@ class HiPPO(nn.Module):
         self.C = jnp.ones((self.N,))
         self.D = jnp.zeros((1,))
 
-        if self.measure == "legs":
+        if self.measure == "legt":
+            L = self.seq_L
+            vals = jnp.arange(0.0, 1.0, L)
+            # n = jnp.arange(self.N)[:, None]
+            zero_N = self.N - 1
+            x = 1 - 2 * vals
+            self.eval_matrix = jax.scipy.special.lpmn_values(
+                m=zero_N, n=zero_N, z=x, is_normalized=False
+            ).T  # ss.eval_legendre(n, x).T
+
+        elif self.measure == "lmu":
+            raise NotImplementedError("LMU measure not implemented yet")
+
+        elif self.measure == "legs":
             L = self.max_length
             vals = jnp.linspace(0.0, 1.0, L)
             # n = jnp.arange(self.N)[:, None]
@@ -57,6 +70,21 @@ class HiPPO(nn.Module):
                     m=zero_N, n=zero_N, z=x, is_normalized=False
                 )
             ).T  # ss.eval_legendre(n, x)).T
+
+        elif self.measure == "lagt":
+            raise NotImplementedError("Translated Laguerre measure not implemented yet")
+
+        elif self.measure == "fru":
+            raise NotImplementedError(
+                "Fourier Recurrent Unit measure not implemented yet"
+            )
+
+        elif self.measure == "fout":
+            raise NotImplementedError("Translated Fourier measure not implemented yet")
+
+        elif self.measure == "fourd":
+            raise NotImplementedError("Decaying Fourier measure not implemented yet")
+
         else:
             raise ValueError("invalid measure")
 

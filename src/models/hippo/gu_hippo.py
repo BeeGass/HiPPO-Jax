@@ -7,6 +7,9 @@ from scipy import linalg as la
 from scipy import signal
 from scipy import special as ss
 
+from src.models.hippo.gu_transition import GuTransMatrix
+from src.models.hippo.transition import TransMatrix
+
 import math
 
 
@@ -19,15 +22,9 @@ class HiPPO_LegS(nn.Module):
         """
         super().__init__()
         self.N = N
-        A, B = make_HiPPO(
-            N=self.N,
-            v="nv",
-            measure=measure,
-            lambda_n=1,
-            fourier_type="fru",
-            alpha=0,
-            beta=1,
-        )
+        legs_matrices = GuTransMatrix(N=N, measure=measure)
+        A = legs_matrices.A_matrix
+        B = legs_matrices.B_matrix
         # A, B = transition(measure, N)
         B = B.squeeze(-1)
         A_stacked = np.empty((max_length, N, N), dtype=A.dtype)
@@ -119,15 +116,9 @@ class HiPPO_LegT(nn.Module):
         super().__init__()
         self.N = N
         # A, B = transition('lmu', N)
-        A, B = make_HiPPO(
-            N=self.N,
-            v="v",
-            measure="legt",
-            lambda_n=1,
-            fourier_type="fru",
-            alpha=0,
-            beta=1,
-        )
+        legt_matrices = GuTransMatrix(N=N, measure="legt", lambda_n=1.0)
+        A = legt_matrices.A_matrix
+        B = legt_matrices.B_matrix
         C = np.ones((1, N))
         D = np.zeros((1,))
         # dt, discretization options

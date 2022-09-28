@@ -8,6 +8,10 @@ from src.tests.hippo_tests.hippo_utils import (
     desc_input,
 )
 
+# ----------------------------------------------------------
+# --- Home Grown, Grass Fed, All Organic Implementations ---
+# ----------------------------------------------------------
+
 
 @pytest.fixture
 def legs_matrices():
@@ -68,7 +72,11 @@ def fourd_matrices():
     return fourd_matrices.A_matrix, fourd_matrices.B_matrix
 
 
+# ----------------------------
 # --- Gu's Implementations ---
+# ----------------------------
+
+
 @pytest.fixture
 def gu_legs_matrices():
     the_measure = "legs"
