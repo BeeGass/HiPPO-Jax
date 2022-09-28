@@ -37,6 +37,7 @@ class HiPPO(nn.Module):
     seq_L: int
     A: jnp.ndarray
     B: jnp.ndarray
+    measure: str
 
     def setup(self):
         A = self.A

@@ -245,7 +245,7 @@ class TransMatrix:
             A = 2 * A
             B = 2 * B
 
-        elif fourier_type == "foud":
+        elif fourier_type == "fourd":
             A = jnp.where(
                 case_1,
                 -1.0,

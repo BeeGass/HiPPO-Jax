@@ -18,7 +18,8 @@
 - [On the Parameterization and Initialization of Diagonal State Space Models](https://arxiv.org/pdf/2206.11893.pdf) - S4D
 - [Towards a General Purpose CNN for Long Range Dependencies in N-D](https://arxiv.org/abs/2206.03398?s=09) - CCNN
 - [Simplified State Space Layers for Sequence Modeling](https://arxiv.org/abs/2208.04933) - S5
-- [Mega: Moving Average Equipped Gated Attention](https://arxiv.org/abs/2209.10655)
+- [Mega: Moving Average Equipped Gated Attention](https://arxiv.org/abs/2209.10655) - Mega
+- [Liquid Structural State-Space Models](https://arxiv.org/abs/2209.12951) - Liquid-S4
 
 **Applied SSMs:**
 

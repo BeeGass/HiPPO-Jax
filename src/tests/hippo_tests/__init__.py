@@ -41,4 +41,13 @@ from src.tests.hippo_tests.hippo_utils import (
     zeros_input,
     desc_input,
 )
-from src.tests.hippo_tests.hippo_utils import key_generator
+from src.tests.hippo_tests.hippo_utils import (
+    key_generator,
+    legt_key,
+    lmu_key,
+    lagt_key,
+    legs_key,
+    fru_key,
+    fout_key,
+    fourd_key,
+)

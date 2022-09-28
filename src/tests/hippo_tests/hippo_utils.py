@@ -10,8 +10,43 @@ import numpy as np
 def key_generator():
     seed = 1701
     key = jax.random.PRNGKey(seed)
-    num_copies = 5
+    num_copies = 8
     return jax.random.split(key, num=num_copies)
+
+
+@pytest.fixture
+def legt_key(key_generator):
+    return key_generator[1]
+
+
+@pytest.fixture
+def lmu_key(key_generator):
+    return key_generator[2]
+
+
+@pytest.fixture
+def lagt_key(key_generator):
+    return key_generator[3]
+
+
+@pytest.fixture
+def legs_key(key_generator):
+    return key_generator[4]
+
+
+@pytest.fixture
+def fru_key(key_generator):
+    return key_generator[5]
+
+
+@pytest.fixture
+def fout_key(key_generator):
+    return key_generator[6]
+
+
+@pytest.fixture
+def fourd_key(key_generator):
+    return key_generator[7]
 
 
 # --- Coefficients hyperparameter value ---
