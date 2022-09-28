@@ -1,6 +1,20 @@
 import pytest
+import jax
 import jax.numpy as jnp
 import numpy as np
+
+# --- Random Keys
+
+
+@pytest.fixture
+def key_generator():
+    seed = 1701
+    key = jax.random.PRNGKey(seed)
+    num_copies = 5
+    return jax.random.split(key, num=num_copies)
+
+
+# --- Coefficients hyperparameter value ---
 
 
 @pytest.fixture

@@ -1,8 +1,9 @@
 import pytest
 import jax.numpy as jnp
 import numpy as np
+import torch
 
-from hippo_operator import (  # fixtures for respective operators
+from src.tests.hippo_tests.hippo_operator import (  # fixtures for respective operators
     hippo_legs,
     hippo_legt,
     hippo_lmu,
@@ -11,7 +12,7 @@ from hippo_operator import (  # fixtures for respective operators
     hippo_fout,
     hippo_fourd,
 )
-from hippo_operator import (  # fixtures for respective operators made by Albert Gu
+from src.tests.hippo_tests.hippo_operator import (  # fixtures for respective operators made by Albert Gu
     gu_hippo_legs,
     gu_hippo_legt,
     gu_hippo_lmu,
@@ -20,7 +21,7 @@ from hippo_operator import (  # fixtures for respective operators made by Albert
     gu_hippo_fout,
     gu_hippo_fourd,
 )
-from trans_matrices import (  # transition matrices A and B from respective polynomials
+from src.tests.hippo_tests.trans_matrices import (  # transition matrices A and B from respective polynomials
     legs_matrices,
     legt_matrices,
     legt_lmu_matrices,
@@ -29,7 +30,7 @@ from trans_matrices import (  # transition matrices A and B from respective poly
     fout_matrices,
     fourd_matrices,
 )
-from trans_matrices import (  # transition matrices A and B from respective polynomials made by Albert Gu
+from src.tests.hippo_tests.trans_matrices import (  # transition matrices A and B from respective polynomials made by Albert Gu
     gu_legs_matrices,
     gu_legt_matrices,
     gu_legt_lmu_matrices,
@@ -43,59 +44,73 @@ from trans_matrices import (  # transition matrices A and B from respective poly
 
 
 def test_legt_matrices(legt_matrices, gu_legt_matrices):
-    assert jnp.allclose(legt_matrices.A, gu_legt_matrices.A)
-    assert jnp.allclose(legt_matrices.B, gu_legt_matrices.B)
+    A, B = legt_matrices
+    gu_A, gu_B = gu_legt_matrices
+    assert jnp.allclose(A, gu_A)
+    assert jnp.allclose(B, gu_B)
 
 
 def test_lmu_matrices(legt_lmu_matrices, gu_legt_lmu_matrices):
-    assert jnp.allclose(legt_lmu_matrices.A, gu_legt_lmu_matrices.A)
-    assert jnp.allclose(legt_lmu_matrices.B, gu_legt_lmu_matrices.B)
+    A, B = legt_lmu_matrices
+    gu_A, gu_B = gu_legt_lmu_matrices
+    assert jnp.allclose(A, gu_A)
+    assert jnp.allclose(B, gu_B)
 
 
 def test_lagt_matrices(lagt_matrices, gu_lagt_matrices):
-    assert jnp.allclose(lagt_matrices.A, gu_lagt_matrices.A)
-    assert jnp.allclose(lagt_matrices.B, gu_lagt_matrices.B)
+    A, B = lagt_matrices
+    gu_A, gu_B = gu_lagt_matrices
+    assert jnp.allclose(A, gu_A)
+    assert jnp.allclose(B, gu_B)
 
 
 def test_legs_matrices(legs_matrices, gu_legs_matrices):
-    assert jnp.allclose(legs_matrices.A, gu_legs_matrices.A)
-    assert jnp.allclose(legs_matrices.B, gu_legs_matrices.B)
+    A, B = legs_matrices
+    gu_A, gu_B = gu_legs_matrices
+    assert jnp.allclose(A, gu_A)
+    assert jnp.allclose(B, gu_B)
 
 
 def test_fru_matrices(fru_matrices, gu_fru_matrices):
-    assert jnp.allclose(fru_matrices.A, gu_fru_matrices.A)
-    assert jnp.allclose(fru_matrices.B, gu_fru_matrices.B)
+    A, B = fru_matrices
+    gu_A, gu_B = gu_fru_matrices
+    assert jnp.allclose(A, gu_A)
+    assert jnp.allclose(B, gu_B)
 
 
 def test_fout_matrices(fout_matrices, gu_fout_matrices):
-    assert jnp.allclose(fout_matrices.A, gu_fout_matrices.A)
-    assert jnp.allclose(fout_matrices.B, gu_fout_matrices.B)
+    A, B = fout_matrices
+    gu_A, gu_B = gu_fout_matrices
+    assert jnp.allclose(A, gu_A)
+    assert jnp.allclose(B, gu_B)
 
 
 def test_fourd_matrices(fourd_matrices, gu_fourd_matrices):
-    assert jnp.allclose(fourd_matrices.A, gu_fourd_matrices.A)
-    assert jnp.allclose(fourd_matrices.B, gu_fourd_matrices.B)
+    A, B = fourd_matrices
+    gu_A, gu_B = gu_fourd_matrices
+    assert jnp.allclose(A, gu_A)
+    assert jnp.allclose(B, gu_B)
 
 
 # --- Test HiPPO Operators --- #
 
 
-def test_hippo_legt_operator(hippo_legt, gu_hippo_legt):
-    assert hippo_legt.measure == "legt"
-    assert hippo_legt.lambda_n == 1.0
-    assert hippo_legt.N == hippo_legt.A.shape[0]
-    assert hippo_legt.A.shape == (16, 16)
-    assert hippo_legt.B.shape == (16,)
-    assert hippo_legt.seq_L == 16
-    assert hippo_legt.max_length == 16
-    assert hippo_legt.step == 1.0 / 16
-    assert hippo_legt.GBT_alpha == 0.5
-    assert hippo_legt.N == 16
-    assert jnp.allclose(hippo_legt.A, gu_hippo_legt.A)
-    assert jnp.allclose(hippo_legt.B, gu_hippo_legt.B)
+def test_hippo_legt_operator(hippo_legt, gu_hippo_legt, random_input, legt_key):
+    LTI_bool = True
+    c_k = []
+    i = 0
+    params = hippo_legt.init(legt_key, f=random_input, init_state=c_k, t_step=i)
+    c_k_list = hippo_legt.apply(params, f=random_input, t_step=(random_input.shape[0]))
+    x = torch.tensor(random_input, dtype=torch.float32)
+    for i, c_k in enumerate(c_k_list):
+        GU_c_k = gu_hippo_legt(x)
+        idx = i - 1
+        g_c_k = GU_c_k[0][idx]
+        gu = jnp.expand_dims(g_c_k, -1)
+        assert jnp.allclose(c_k, gu)
 
 
-def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu):
+def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu, random_input, lmu_key):
     assert hippo_lmu.measure == "legt"
     assert hippo_lmu.lambda_n == 2.0
     assert hippo_lmu.N == hippo_lmu.A.shape[0]
@@ -106,11 +121,11 @@ def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu):
     assert hippo_lmu.step == 1.0 / 16
     assert hippo_lmu.GBT_alpha == 0.5
     assert hippo_lmu.N == 16
-    assert jnp.allclose(hippo_lmu.A, gu_hippo_lmu.A)
-    assert jnp.allclose(hippo_lmu.B, gu_hippo_lmu.B)
+    # assert jnp.allclose(hippo_lmu.A, gu_hippo_lmu.A)
+    # assert jnp.allclose(hippo_lmu.B, gu_hippo_lmu.B)
 
 
-def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt):
+def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt, random_input, lagt_key):
     assert hippo_lagt.measure == "lagt"
     assert hippo_lagt.lambda_n == 1.0
     assert hippo_lagt.N == hippo_lagt.A.shape[0]
@@ -121,11 +136,11 @@ def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt):
     assert hippo_lagt.step == 1.0 / 16
     assert hippo_lagt.GBT_alpha == 0.5
     assert hippo_lagt.N == 16
-    assert jnp.allclose(hippo_lagt.A, gu_hippo_lagt.A)
-    assert jnp.allclose(hippo_lagt.B, gu_hippo_lagt.B)
+    # assert jnp.allclose(hippo_lagt.A, gu_hippo_lagt.A)
+    # assert jnp.allclose(hippo_lagt.B, gu_hippo_lagt.B)
 
 
-def test_hippo_legs_operator(hippo_legs, gu_hippo_legs):
+def test_hippo_legs_operator(hippo_legs, gu_hippo_legs, random_input, legs_key):
     assert hippo_legs.measure == "lagt"
     assert hippo_legs.lambda_n == 1.0
     assert hippo_legs.N == hippo_legs.A.shape[0]
@@ -136,11 +151,11 @@ def test_hippo_legs_operator(hippo_legs, gu_hippo_legs):
     assert hippo_legs.step == 1.0 / 16
     assert hippo_legs.GBT_alpha == 0.5
     assert hippo_legs.N == 16
-    assert jnp.allclose(hippo_legs.A, gu_hippo_legs.A)
-    assert jnp.allclose(hippo_legs.B, gu_hippo_legs.B)
+    # assert jnp.allclose(hippo_legs.A, gu_hippo_legs.A)
+    # assert jnp.allclose(hippo_legs.B, gu_hippo_legs.B)
 
 
-def test_hippo_fru_operator(hippo_fru, gu_hippo_fru):
+def test_hippo_fru_operator(hippo_fru, gu_hippo_fru, random_input, fru_key):
     assert hippo_fru.measure == "fru"
     assert hippo_fru.lambda_n == 1.0
     assert hippo_fru.N == hippo_fru.A.shape[0]
@@ -151,11 +166,11 @@ def test_hippo_fru_operator(hippo_fru, gu_hippo_fru):
     assert hippo_fru.step == 1.0 / 16
     assert hippo_fru.GBT_alpha == 0.5
     assert hippo_fru.N == 16
-    assert jnp.allclose(hippo_fru.A, gu_hippo_fru.A)
-    assert jnp.allclose(hippo_fru.B, gu_hippo_fru.B)
+    # assert jnp.allclose(hippo_fru.A, gu_hippo_fru.A)
+    # assert jnp.allclose(hippo_fru.B, gu_hippo_fru.B)
 
 
-def test_hippo_fout_operator(hippo_fout, gu_hippo_fout):
+def test_hippo_fout_operator(hippo_fout, gu_hippo_fout, random_input, fout_key):
     assert hippo_fout.measure == "fout"
     assert hippo_fout.lambda_n == 1.0
     assert hippo_fout.N == hippo_fout.A.shape[0]
@@ -166,11 +181,11 @@ def test_hippo_fout_operator(hippo_fout, gu_hippo_fout):
     assert hippo_fout.step == 1.0 / 16
     assert hippo_fout.GBT_alpha == 0.5
     assert hippo_fout.N == 16
-    assert jnp.allclose(hippo_fout.A, gu_hippo_fout.A)
-    assert jnp.allclose(hippo_fout.B, gu_hippo_fout.B)
+    # assert jnp.allclose(hippo_fout.A, gu_hippo_fout.A)
+    # assert jnp.allclose(hippo_fout.B, gu_hippo_fout.B)
 
 
-def test_hippo_fourd_operator(hippo_fourd, gu_hippo_fourd):
+def test_hippo_fourd_operator(hippo_fourd, gu_hippo_fourd, random_input, fourd_key):
     assert hippo_fourd.measure == "fourd"
     assert hippo_fourd.lambda_n == 1.0
     assert hippo_fourd.N == hippo_fourd.A.shape[0]
@@ -181,5 +196,5 @@ def test_hippo_fourd_operator(hippo_fourd, gu_hippo_fourd):
     assert hippo_fourd.step == 1.0 / 16
     assert hippo_fourd.GBT_alpha == 0.5
     assert hippo_fourd.N == 16
-    assert jnp.allclose(hippo_fourd.A, gu_hippo_fourd.A)
-    assert jnp.allclose(hippo_fourd.B, gu_hippo_fourd.B)
+    # assert jnp.allclose(hippo_fourd.A, gu_hippo_fourd.A)
+    # assert jnp.allclose(hippo_fourd.B, gu_hippo_fourd.B)

@@ -37,16 +37,16 @@ class TransMatrix:
         A = None
         B = None
         if measure == "legt":
-            A, B = build_LegT(N=N, lambda_n=lambda_n)
+            A, B = self.build_LegT(N=N, lambda_n=lambda_n)
 
         elif measure == "lagt":
-            A, B = build_LagT(alpha=alpha, beta=beta, N=N)
+            A, B = self.build_LagT(alpha=alpha, beta=beta, N=N)
 
         elif measure == "legs":
-            A, B = build_LegS(N=N)
+            A, B = self.build_LegS(N=N)
 
         elif measure == "fourier":
-            A, B = build_Fourier(N=N, fourier_type=fourier_type)
+            A, B = self.build_Fourier(N=N, fourier_type=fourier_type)
 
         elif measure == "random":
             A = jnp.random.randn(N, N) / N
@@ -59,7 +59,7 @@ class TransMatrix:
         else:
             raise ValueError("Invalid HiPPO type")
 
-        self.A_matrix = jnp.array(A.copy())
+        self.A_matrix = A.copy()
         self.B_matrix = B.copy()
 
     # Translated Legendre (LegT) - vectorized
@@ -79,7 +79,7 @@ class TransMatrix:
             B (jnp.ndarray): The B HiPPO matrix.
 
         """
-        q = jnp.arange(N, dtype=jnp.float64)
+        q = jnp.arange(N, dtype=jnp.float32)
         k, n = jnp.meshgrid(q, q)
         case = jnp.power(-1.0, (n - k))
         A = None
@@ -134,7 +134,7 @@ class TransMatrix:
             * pre_B
         )
 
-        A, B
+        return A, B
 
     # Scaled Legendre (LegS) vectorized
     @staticmethod
@@ -150,7 +150,7 @@ class TransMatrix:
             B (jnp.ndarray): The B HiPPO matrix.
 
         """
-        q = jnp.arange(N, dtype=jnp.float64)
+        q = jnp.arange(N, dtype=jnp.float32)
         k, n = jnp.meshgrid(q, q)
         pre_D = jnp.sqrt(jnp.diag(2 * q + 1))
         B = D = jnp.diag(pre_D)[:, None]
@@ -187,12 +187,12 @@ class TransMatrix:
             jnp.stack([jnp.zeros(N // 2), jnp.zeros(N // 2)], axis=-1).reshape(-1)[1:],
             1,
         )
-        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
+        B = jnp.zeros(A.shape[1], dtype=jnp.float32)
 
         B = B.at[0::2].set(jnp.sqrt(2))
         B = B.at[0].set(1)
 
-        q = jnp.arange(A.shape[1], dtype=jnp.float64)
+        q = jnp.arange(A.shape[1], dtype=jnp.float32)
         k, n = jnp.meshgrid(q, q)
 
         n_odd = n % 2 == 0

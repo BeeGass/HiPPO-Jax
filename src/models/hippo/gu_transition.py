@@ -2,11 +2,12 @@
 import jax.numpy as jnp
 from jax.numpy.linalg import inv
 from scipy import special as ss
+from src.models.hippo.unroll import *
 
 
 class GuTransMatrix:
     def __init__(
-        self, N, measure="legs", lambda_n=1, fourier_type="fru", alpha=0, beta=1
+        self, N, measure="legs", lambda_n=1.0, fourier_type="fru", alpha=0, beta=1
     ):
         """
         Instantiates the HiPPO matrix of a given order using a particular measure.
@@ -37,16 +38,16 @@ class GuTransMatrix:
         A = None
         B = None
         if measure == "legt":
-            A, B = build_gu_LegT(N=N, lambda_n=lambda_n)
+            A, B = self.build_gu_LegT(N=N, lambda_n=lambda_n)
 
         elif measure == "lagt":
-            A, B = build_gu_LagT(alpha=alpha, beta=beta, N=N)
+            A, B = self.build_gu_LagT(alpha=alpha, beta=beta, N=N)
 
         elif measure == "legs":
-            A, B = build_gu_LegS(N=N)
+            A, B = self.build_gu_LegS(N=N)
 
         elif measure == "fourier":
-            A, B = build_gu_Fourier(N=N, fourier_type=fourier_type)
+            A, B = self.build_gu_Fourier(N=N, fourier_type=fourier_type)
 
         elif measure == "random":
             A = jnp.random.randn(N, N) / N
@@ -59,7 +60,7 @@ class GuTransMatrix:
         else:
             raise ValueError("Invalid HiPPO type")
 
-        self.A_matrix = jnp.array(A.copy())
+        self.A_matrix = A.copy()
         self.B_matrix = B.copy()
 
     # Scaled Legendre (LegS), non-vectorized
@@ -95,7 +96,7 @@ class GuTransMatrix:
 
     # Translated Legendre (LegT) - non-vectorized
     @staticmethod
-    def build_gu_LegT(N, legt_type="legt"):
+    def build_gu_LegT(N, lambda_n=1.0):
         """
         The, non-vectorized implementation of the, measure derived from the translated Legendre basis
 
@@ -114,7 +115,7 @@ class GuTransMatrix:
         pre_R = 2 * Q + 1
         k, n = jnp.meshgrid(Q, Q)
 
-        if legt_type == "legt":
+        if lambda_n == 1.0:
             R = jnp.sqrt(pre_R)
             A = R[:, None] * jnp.where(n < k, (-1.0) ** (n - k), 1) * R[None, :]
             B = R[:, None]
@@ -125,7 +126,7 @@ class GuTransMatrix:
             # A *= 0.5
             # B *= 0.5
 
-        elif legt_type == "lmu":
+        elif lambda_n == 2.0:
             R = pre_R[:, None]
             A = jnp.where(n < k, -1, (-1.0) ** (n - k + 1)) * R
             B = (-1.0) ** Q[:, None] * R
@@ -208,7 +209,7 @@ class GuTransMatrix:
             A = A - B[:, None] * B[None, :] * 2
             B = B[:, None] * 2
 
-        elif fourier_type == "foud":
+        elif fourier_type == "fourd":
             d = jnp.stack([jnp.zeros(N // 2), freqs], axis=-1).reshape(-1)[1:]
             A = jnp.pi * (-jnp.diag(d, 1) + jnp.diag(d, -1))
 
