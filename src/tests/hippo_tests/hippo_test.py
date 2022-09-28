@@ -117,7 +117,7 @@ def test_hippo_legt_operator(hippo_legt, gu_hippo_legt, random_input, legt_key):
     params = hippo_legt.init(legt_key, f=random_input, init_state=c_k, t_step=i)
     c_k_list = hippo_legt.apply(params, f=random_input, t_step=(random_input.shape[0]))
     x = torch.tensor(random_input, dtype=torch.float32)
-    for i, c_k in enumerate(c_k_list):
+    for i, c_k in enumerate(c_k_list, start=1):
         GU_c_k = gu_hippo_legt(x)
         idx = i - 1
         g_c_k = GU_c_k[0][idx]
@@ -131,7 +131,7 @@ def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu, random_input, lmu_key):
     params = hippo_lmu.init(lmu_key, f=random_input, init_state=c_k, t_step=i)
     c_k_list = hippo_lmu.apply(params, f=random_input, t_step=(random_input.shape[0]))
     x = torch.tensor(random_input, dtype=torch.float32)
-    for i, c_k in enumerate(c_k_list):
+    for i, c_k in enumerate(c_k_list, start=1):
         GU_c_k = gu_hippo_lmu(x)
         idx = i - 1
         g_c_k = GU_c_k[0][idx]
