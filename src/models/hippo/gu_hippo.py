@@ -9,6 +9,10 @@ from scipy import special as ss
 
 from src.models.hippo.gu_transition import GuTransMatrix
 from src.models.hippo.transition import TransMatrix
+from src.models.hippo.unroll import (
+    variable_unroll_matrix,
+    variable_unroll_matrix_sequential,
+)
 
 import math
 
@@ -22,7 +26,7 @@ class HiPPO_LegS(nn.Module):
         """
         super().__init__()
         self.N = N
-        legs_matrices = GuTransMatrix(N=N, measure=measure)
+        legs_matrices = GuTransMatrix(N=self.N, measure=measure)
         A = legs_matrices.A_matrix
         B = legs_matrices.B_matrix
         # A, B = transition(measure, N)

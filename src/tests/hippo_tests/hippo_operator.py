@@ -44,7 +44,7 @@ def hippo_legs(legs_matrices, random_input):
     A, B = legs_matrices
     L = random_input.shape[0]
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -61,7 +61,7 @@ def hippo_legt(legt_matrices, random_input):
     A, B = legt_matrices
     L = random_input.shape[0]
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -78,7 +78,7 @@ def hippo_lmu(legt_lmu_matrices, random_input):
     A, B = legt_lmu_matrices
     L = random_input.shape[0]
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -95,7 +95,7 @@ def hippo_lagt(lagt_matrices, random_input):
     A, B = lagt_matrices
     L = random_input.shape[0]
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -112,7 +112,7 @@ def hippo_fru(fru_matrices, random_input):
     A, B = fru_matrices
     L = random_input.shape[0]
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -129,7 +129,7 @@ def hippo_fout(fout_matrices, random_input):
     A, B = fout_matrices
     L = random_input.shape[0]
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -146,7 +146,7 @@ def hippo_fourd(fourd_matrices, random_input):
     A, B = fourd_matrices
     L = random_input.shape[0]
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -163,11 +163,10 @@ def hippo_fourd(fourd_matrices, random_input):
 
 
 @pytest.fixture
-def gu_hippo_legs(gu_legs_matrices, random_input):
+def gu_hippo_legs(random_input):
     measure = "legs"
-    A, B = gu_legs_matrices
     L = random_input.shape[0]
-    return HiPPO_LegS(N=16, max_length=L, measure=measure, discretization="bilinear")
+    return HiPPO_LegS(N=8, max_length=L, measure=measure, discretization="bilinear")
 
 
 @pytest.fixture
@@ -175,7 +174,7 @@ def gu_hippo_legt(gu_legt_matrices, random_input):
     measure = "legt"
     A, B = gu_legt_matrices
     L = random_input.shape[0]
-    return HiPPO_LegT(N=16, dt=1.0, discretization="bilinear")
+    return HiPPO_LegT(N=8, dt=1.0, discretization="bilinear")
 
 
 @pytest.fixture
@@ -185,7 +184,7 @@ def gu_hippo_lmu(gu_legt_lmu_matrices, random_input):
     L = random_input.shape[0]
     raise NotImplementedError("HiPPO_LegT_LMU not implemented yet")
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -203,7 +202,7 @@ def gu_hippo_lagt(gu_lagt_matrices, random_input):
     L = random_input.shape[0]
     raise NotImplementedError("HiPPO_LagT not implemented yet")
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -221,7 +220,7 @@ def gu_hippo_fru(gu_fru_matrices, random_input):
     L = random_input.shape[0]
     raise NotImplementedError("HiPPO_FRU not implemented yet")
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -239,7 +238,7 @@ def gu_hippo_fout(gu_fout_matrices, random_input):
     L = random_input.shape[0]
     raise NotImplementedError("HiPPO_FouT not implemented yet")
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,
@@ -257,7 +256,7 @@ def gu_hippo_fourd(gu_fourd_matrices, random_input):
     L = random_input.shape[0]
     raise NotImplementedError("HiPPO_FourD not implemented yet")
     return HiPPO(
-        N=16,
+        N=8,
         max_length=L,
         step=1.0 / L,
         GBT_alpha=0.5,

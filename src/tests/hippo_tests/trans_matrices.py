@@ -16,14 +16,14 @@ from src.tests.hippo_tests.hippo_utils import (
 @pytest.fixture
 def legs_matrices():
     the_measure = "legs"
-    legs_matrices = TransMatrix(N=16, measure=the_measure)
+    legs_matrices = TransMatrix(N=8, measure=the_measure)
     return legs_matrices.A_matrix, legs_matrices.B_matrix
 
 
 @pytest.fixture
 def legt_matrices():
     the_measure = "legt"
-    legt_matrices = TransMatrix(N=16, measure=the_measure, lambda_n=1.0)
+    legt_matrices = TransMatrix(N=8, measure=the_measure, lambda_n=1.0)
     return legt_matrices.A_matrix, legt_matrices.B_matrix
 
 
@@ -31,7 +31,7 @@ def legt_matrices():
 def legt_lmu_matrices():
     the_measure = "legt"
     lmu_matrices = TransMatrix(
-        N=16, measure=the_measure, lambda_n=2.0
+        N=8, measure=the_measure, lambda_n=2.0
     )  # change lambda so resulting matrix is in the form of LMU
     return lmu_matrices.A_matrix, lmu_matrices.B_matrix
 
@@ -40,7 +40,7 @@ def legt_lmu_matrices():
 def lagt_matrices():
     the_measure = "lagt"
     lagt_matrices = TransMatrix(
-        N=16,
+        N=8,
         measure=the_measure,
         alpha=0.0,  # change resulting tilt through alpha and beta
         beta=1.0,
@@ -52,7 +52,7 @@ def lagt_matrices():
 def fru_matrices():
     the_measure = "fourier"
     fourier_type = "fru"
-    fru_matrices = TransMatrix(N=16, measure=the_measure, fourier_type=fourier_type)
+    fru_matrices = TransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
     return fru_matrices.A_matrix, fru_matrices.B_matrix
 
 
@@ -60,7 +60,7 @@ def fru_matrices():
 def fout_matrices():
     the_measure = "fourier"
     fourier_type = "fout"
-    fout_matrices = TransMatrix(N=16, measure=the_measure, fourier_type=fourier_type)
+    fout_matrices = TransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
     return fout_matrices.A_matrix, fout_matrices.B_matrix
 
 
@@ -68,7 +68,7 @@ def fout_matrices():
 def fourd_matrices():
     the_measure = "fourier"
     fourier_type = "fourd"
-    fourd_matrices = TransMatrix(N=16, measure=the_measure, fourier_type=fourier_type)
+    fourd_matrices = TransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
     return fourd_matrices.A_matrix, fourd_matrices.B_matrix
 
 
@@ -80,14 +80,14 @@ def fourd_matrices():
 @pytest.fixture
 def gu_legs_matrices():
     the_measure = "legs"
-    legs_matrices = GuTransMatrix(N=16, measure=the_measure)
+    legs_matrices = GuTransMatrix(N=8, measure=the_measure)
     return legs_matrices.A_matrix, legs_matrices.B_matrix
 
 
 @pytest.fixture
 def gu_legt_matrices():
     the_measure = "legt"
-    legt_matrices = GuTransMatrix(N=16, measure=the_measure, lambda_n=1.0)
+    legt_matrices = GuTransMatrix(N=8, measure=the_measure, lambda_n=1.0)
     return legt_matrices.A_matrix, legt_matrices.B_matrix
 
 
@@ -104,7 +104,7 @@ def gu_legt_lmu_matrices():
 def gu_lagt_matrices():
     the_measure = "lagt"
     lagt_matrices = GuTransMatrix(
-        N=16,
+        N=8,
         measure=the_measure,
         alpha=0.0,  # change resulting tilt through alpha and beta
         beta=1.0,
@@ -116,7 +116,7 @@ def gu_lagt_matrices():
 def gu_fru_matrices():
     the_measure = "fourier"
     fourier_type = "fru"
-    fru_matrices = GuTransMatrix(N=16, measure=the_measure, fourier_type=fourier_type)
+    fru_matrices = GuTransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
     return fru_matrices.A_matrix, fru_matrices.B_matrix
 
 
@@ -124,7 +124,7 @@ def gu_fru_matrices():
 def gu_fout_matrices():
     the_measure = "fourier"
     fourier_type = "fout"
-    fout_matrices = GuTransMatrix(N=16, measure=the_measure, fourier_type=fourier_type)
+    fout_matrices = GuTransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
     return fout_matrices.A_matrix, fout_matrices.B_matrix
 
 
@@ -132,5 +132,5 @@ def gu_fout_matrices():
 def gu_fourd_matrices():
     the_measure = "fourier"
     fourier_type = "fourd"
-    fourd_matrices = GuTransMatrix(N=16, measure=the_measure, fourier_type=fourier_type)
+    fourd_matrices = GuTransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
     return fourd_matrices.A_matrix, fourd_matrices.B_matrix
