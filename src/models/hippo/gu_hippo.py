@@ -112,7 +112,7 @@ class HiPPO_LegS(nn.Module):
 
 
 class HiPPO_LegT(nn.Module):
-    def __init__(self, N, dt=1.0, discretization="bilinear"):
+    def __init__(self, N, dt=1.0, discretization="bilinear", lambda_n=1.0):
         """
         N: the order of the HiPPO projection
         dt: discretization step size - should be roughly inverse to the length of the sequence
@@ -120,7 +120,7 @@ class HiPPO_LegT(nn.Module):
         super().__init__()
         self.N = N
         # A, B = transition('lmu', N)
-        legt_matrices = GuTransMatrix(N=N, measure="legt", lambda_n=1.0)
+        legt_matrices = GuTransMatrix(N=N, measure="legt", lambda_n=lambda_n)
         A = legt_matrices.A_matrix
         B = legt_matrices.B_matrix
         C = np.ones((1, N))

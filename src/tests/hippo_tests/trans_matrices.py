@@ -95,7 +95,7 @@ def gu_legt_matrices():
 def gu_legt_lmu_matrices():
     the_measure = "legt"
     lmu_matrices = GuTransMatrix(
-        N=16, measure=the_measure, lambda_n=2.0
+        N=8, measure=the_measure, lambda_n=2.0
     )  # change lambda so resulting matrix is in the form of LMU
     return lmu_matrices.A_matrix, lmu_matrices.B_matrix
 

@@ -69,6 +69,10 @@ def test_legt_matrices(legt_matrices, gu_legt_matrices):
 def test_lmu_matrices(legt_lmu_matrices, gu_legt_lmu_matrices):
     A, B = legt_lmu_matrices
     gu_A, gu_B = gu_legt_lmu_matrices
+    print(f"\nA:\n{A}\n")
+    print(f"B:\n{B}\n")
+    print(f"Gu's A:\n{gu_A}\n")
+    print(f"Gu's B:\n{gu_B}\n")
     assert jnp.allclose(A, gu_A)
     assert jnp.allclose(B, gu_B)
 

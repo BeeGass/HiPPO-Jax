@@ -174,7 +174,7 @@ def gu_hippo_legt(gu_legt_matrices, random_input):
     measure = "legt"
     A, B = gu_legt_matrices
     L = random_input.shape[0]
-    return HiPPO_LegT(N=8, dt=1.0, discretization="bilinear")
+    return HiPPO_LegT(N=8, dt=1.0, discretization="bilinear", lambda_n=1.0)
 
 
 @pytest.fixture
@@ -182,17 +182,8 @@ def gu_hippo_lmu(gu_legt_lmu_matrices, random_input):
     measure = "lmu"
     A, B = gu_legt_lmu_matrices
     L = random_input.shape[0]
-    raise NotImplementedError("HiPPO_LegT_LMU not implemented yet")
-    return HiPPO(
-        N=8,
-        max_length=L,
-        step=1.0 / L,
-        GBT_alpha=0.5,
-        seq_L=L,
-        A=A,
-        B=B,
-        measure=measure,
-    )
+    # raise NotImplementedError("HiPPO_LegT_LMU not implemented yet")
+    return HiPPO_LegT(N=8, dt=1.0, discretization="bilinear", lambda_n=2.0)
 
 
 @pytest.fixture
