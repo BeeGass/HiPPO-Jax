@@ -20,6 +20,7 @@
 - [Simplified State Space Layers for Sequence Modeling](https://arxiv.org/abs/2208.04933) - S5
 - [Mega: Moving Average Equipped Gated Attention](https://arxiv.org/abs/2209.10655) - Mega
 - [Liquid Structural State-Space Models](https://arxiv.org/abs/2209.12951) - Liquid-S4
+- [Hungry Hungry HiPPOs](https://openreview.net/pdf?id=COZDy0WYGg) - S4 LLM
 
 **Applied SSMs:**
 
