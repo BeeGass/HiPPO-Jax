@@ -59,8 +59,8 @@ class TransMatrix:
         else:
             raise ValueError("Invalid HiPPO type")
 
-        self.A_matrix = A.copy()
-        self.B_matrix = B.copy()
+        self.A_matrix = (A.copy()).astype(jnp.float32)
+        self.B_matrix = (B.copy()).astype(jnp.float32)
 
     # Translated Legendre (LegT) - vectorized
     @staticmethod
@@ -86,7 +86,7 @@ class TransMatrix:
         B = None
 
         if lambda_n == 1:
-            A_base = -jnp.sqrt(2 * n + 1) * jnp.sqrt(2 * k + 1)
+            A_base = jnp.sqrt(2 * n + 1) * jnp.sqrt(2 * k + 1)
             pre_D = jnp.sqrt(jnp.diag(2 * q + 1))
             B = D = jnp.diag(pre_D)[:, None]
             A = jnp.where(
@@ -94,13 +94,13 @@ class TransMatrix:
             )  # if n >= k, then case_2 * A_base is used, otherwise A_base
 
         elif lambda_n == 2:  # (jnp.sqrt(2*n+1) * jnp.power(-1, n)):
-            A_base = -(2 * n + 1)
+            A_base = 2 * n + 1
             B = jnp.diag((2 * q + 1) * jnp.power(-1, n))[:, None]
             A = jnp.where(
                 k <= n, A_base * case, A_base
             )  # if n >= k, then case_2 * A_base is used, otherwise A_base
 
-        return A, B
+        return -A, B
 
     # Translated Laguerre (LagT) - non-vectorized
     @staticmethod
@@ -155,15 +155,11 @@ class TransMatrix:
         pre_D = jnp.sqrt(jnp.diag(2 * q + 1))
         B = D = jnp.diag(pre_D)[:, None]
 
-        A_base = (-jnp.sqrt(2 * n + 1)) * jnp.sqrt(2 * k + 1)
-        case_2 = (n + 1) / (2 * n + 1)
+        A_base = jnp.sqrt(2 * n + 1) * jnp.sqrt(2 * k + 1)
 
-        A = jnp.where(n > k, A_base, 0.0)  # if n > k, then A_base is used, otherwise 0
-        A = jnp.where(
-            n == k, (A_base * case_2), A
-        )  # if n == k, then A_base is used, otherwise A
+        A = jnp.where(n > k, A_base, jnp.where(n == k, n + 1, 0.0))
 
-        return A, B
+        return -A.astype(jnp.float32), B.astype(jnp.float32)
 
     # Fourier Basis OPs and functions - vectorized
     @staticmethod
@@ -269,4 +265,4 @@ class TransMatrix:
 
         B = B[:, None]
 
-        return A, B
+        return A.astype(jnp.float32), B.astype(jnp.float32)
