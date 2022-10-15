@@ -98,14 +98,13 @@ class HiPPO(nn.Module):
             # Ab, Bb, Cb, Db = self.collect_SSM_vars(
             #     self.A, self.B, self.C, self.D, f, t_step=t_step, alpha=self.GBT_alpha
             # )
-            c_k, y_k = self.loop_SSM(
+            c_k, y_k, GBT_A, GBT_B = self.loop_SSM(
                 A=self.A,
                 B=self.B,
                 C=self.C,
                 D=self.D,
                 c_0=init_state,
                 f=f,
-                t_step=t_step,
                 alpha=self.GBT_alpha,
             )
             # c_k, y_k = self.scan_SSM(Ab=Ab, Bb=Bb, Cb=Cb, Db=Db, c_0=init_state, f=f)
@@ -118,7 +117,7 @@ class HiPPO(nn.Module):
                 f, self.K_conv(Ab, Bb, Cb, Db, L=self.max_length)
             )
 
-        return c_k
+        return c_k, y_k, GBT_A, GBT_B
 
     def reconstruct(self, c):
         """
@@ -150,8 +149,8 @@ class HiPPO(nn.Module):
         """
         I = jnp.eye(A.shape[0])
         step_size = 1 / step
-        part1 = I - (A * step_size * alpha)
-        part2 = I + (A * step_size * (1 - alpha))
+        part1 = I - (step_size * alpha * A)
+        part2 = I + (step_size * (1 - alpha) * A)
 
         GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
 
@@ -162,7 +161,12 @@ class HiPPO(nn.Module):
             GBT_A = jax.scipy.linalg.expm(step_size * A)
             GBT_B = (jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step_size * A) - I)) @ B
 
-        return GBT_A, GBT_B, C, D
+        return (
+            GBT_A.astype(jnp.float32),
+            GBT_B.astype(jnp.float32),
+            C.astype(jnp.float32),
+            D.astype(jnp.float32),
+        )
 
     def collect_SSM_vars(self, A, B, C, D, f, t_step=0, alpha=0.5):
         """
@@ -197,7 +201,12 @@ class HiPPO(nn.Module):
 
         Ab, Bb, Cb, Db = self.discretize(A, B, C, D, step=L, alpha=alpha)
 
-        return Ab, Bb, Cb, Db
+        return (
+            Ab.astype(jnp.float32),
+            Bb.astype(jnp.float32),
+            Cb.astype(jnp.float32),
+            Db.astype(jnp.float32),
+        )
 
     def scan_SSM(self, Ad, Bd, Cd, Dd, c_0, f):
         """
@@ -234,7 +243,7 @@ class HiPPO(nn.Module):
 
         return jax.lax.scan(step, c_0, f)
 
-    def loop_SSM(self, A, B, C, D, c_0, f, t_step=0, alpha=0.5):
+    def loop_SSM(self, A, B, C, D, c_0, f, alpha=0.5):
         """
         This is for returning the discretized hidden state often needed for an RNN.
         Args:
@@ -246,21 +255,25 @@ class HiPPO(nn.Module):
         Returns:
             the next hidden state (aka coefficients representing the function, f(t))
         """
+        GBT_A_lst = []
+        GBT_B_lst = []
         c_k_list = []
         y_k_list = []
+
         c_k = c_0.copy()
-        for i in range(1, (t_step + 1)):
-            f_idx = i - 1
+        for i in range(1, f.shape[0] + 1):
             Ad_i, Bd_i, Cd_i, Dd_i = self.collect_SSM_vars(
                 A=A, B=B, C=C, D=D, f=f, t_step=i, alpha=alpha
             )
             c_k, y_k = self.loop_step(
-                Ad=Ad_i, Bd=Bd_i, Cd=Cd_i, Dd=Dd_i, c_k_i=c_k, f_k=f[0][f_idx]
+                Ad=Ad_i, Bd=Bd_i, Cd=Cd_i, Dd=Dd_i, c_k_i=c_k, f_k=f[i - 1][0]
             )
             c_k_list.append(c_k.copy())
             y_k_list.append(y_k.copy())
+            GBT_A_lst.append(Ad_i.copy())
+            GBT_B_lst.append(Bd_i.copy())
 
-        return c_k_list, y_k_list
+        return c_k_list, y_k_list, GBT_A_lst, GBT_B_lst
 
     def loop_step(self, Ad, Bd, Cd, Dd, c_k_i, f_k):
         """
@@ -275,8 +288,8 @@ class HiPPO(nn.Module):
         """
 
         part1 = Ad @ c_k_i
-        part2 = f_k * Bd
+        part2 = Bd * f_k
         c_k = part1 + part2
         y_k = Cd @ c_k  # + (Db.T @ f_k)
 
-        return c_k, y_k
+        return c_k.astype(jnp.float32), y_k.astype(jnp.float32)
