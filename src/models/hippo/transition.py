@@ -2,6 +2,7 @@
 import jax.numpy as jnp
 from jax.numpy.linalg import inv
 from scipy import special as ss
+from opt_einsum import contract
 
 
 class TransMatrix:
@@ -241,7 +242,7 @@ class TransMatrix:
             A = 2 * A
             B = 2 * B
 
-        elif fourier_type == "fourd":
+        elif fourier_type == "foud":
             A = jnp.where(
                 case_1,
                 -1.0,
@@ -266,3 +267,199 @@ class TransMatrix:
         B = B[:, None]
 
         return A.astype(jnp.float32), B.astype(jnp.float32)
+
+
+class LowRankMatrix:
+    def __init__(
+        self,
+        N,
+        rank,
+        measure="legs",
+        lambda_n=1,
+        fourier_type="fru",
+        alpha=0,
+        beta=1,
+        DPLR=True,
+        dtype=jnp.float32,
+    ):
+        self.N = N
+        self.measure = measure
+        self.rank = rank
+        _trans_matrix = TransMatrix(N, measure, lambda_n, fourier_type, alpha, beta)
+
+        Lambda = None
+        B = None
+        V = None
+        A, B, P, S = self.make_NPLR(trans_matrix=_trans_matrix, dtype=dtype)
+        if DPLR:
+            Lambda, P, B, V = self.make_DPLR(A, B, S, P)
+            self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
+            self.V = (V.copy()).astype(dtype)  # imaginary (complex) eigenvalues
+
+        self.A = (B.copy()).astype(dtype)  # HiPPO A Matrix (N x N)
+        self.B = (B.copy()).astype(dtype)  # HiPPO B Matrix (N x 1)
+        self.P = (P.copy()).astype(dtype)  # HiPPO rank correction matrix (N x rank)
+        self.S = (B.copy()).astype(
+            dtype
+        )  # HiPPO normal (skew-symmetric) matrix (N x N)
+
+    def make_NPLR(self, trans_matrix, dtype=jnp.float32):
+        A = trans_matrix.A_matrix
+        B = trans_matrix.B_matrix
+
+        P = self.rank_correction(
+            measure=self.measure, N=self.N, rank=self.rank, dtype=dtype
+        )  # (r N)
+
+        S = A + jnp.sum(
+            P[:, jnp.newaxis] * P[jnp.newaxis, :], dim=-3
+        )  # rank correct if rank > 1, summation happens in outer most dimension
+        # S is nearly skew-symmetric
+
+        return A, B, P, S
+
+    def make_DPLR(self, A, B, S, P):
+        """Diagonalize NPLR representation"""
+
+        if not self.check_skew(S=S):
+            raise ValueError("Matrix is not skew symmetric")
+
+        # Check skew symmetry
+        S_diag = jnp.diagonal(S)
+        Lambda_real = jnp.mean(S_diag, -1, keepdim=True) * jnp.ones_like(
+            S_diag
+        )  # S itself is not skew-symmetric. It is skew-symmetric by: S + c * I. Extract the value c, c = mean(S_diag)
+
+        # Diagonalize S to V \Lambda V^*
+        Lambda_imaginary, V = jnp.linalg.eigh(S * -1j)
+        Lambda = Lambda_real + 1j * Lambda_imaginary
+
+        self.fix_zeroed_eigvals(Lambda=Lambda, V=V)
+
+        P = V.conj().transpose(-1, -2) @ P
+        B = V.conj().transpose(-1, -2) @ B
+        return Lambda, P, B, V
+
+    def discrete_DPLR(self, Lambda, P, Q, B, C, step, L):
+        # Convert parameters to matrices
+        B = B[:, jnp.newaxis]
+        Ct = C[jnp.newaxis, :]
+
+        N = Lambda.shape[0]
+        A = jnp.diag(Lambda) - P[:, jnp.newaxis] @ Q[:, jnp.newaxis].conj().T
+        I = jnp.eye(N)
+
+        # Forward Euler
+        A0 = (2.0 / step) * I + A
+
+        # Backward Euler
+        D = jnp.diag(1.0 / ((2.0 / step) - Lambda))
+        Qc = Q.conj().T.reshape(1, -1)
+        P2 = P.reshape(-1, 1)
+        A1 = D - (D @ P2 * (1.0 / (1 + (Qc @ D @ P2))) * Qc @ D)
+
+        # A bar and B bar
+        Ab = A1 @ A0
+        Bb = 2 * A1 @ B
+
+        # Recover Cbar from Ct
+        Cb = Ct @ inv(I - matrix_power(Ab, L)).conj()
+        return Ab, Bb, Cb.conj()
+
+    def check_skew(self, S):
+        """Check if a matrix is skew symmetric
+
+        refer to:
+        - https://www.cuemath.com/algebra/skew-symmetric-matrix/
+        - https://en.wikipedia.org/wiki/Skew-symmetric_matrix
+
+        """
+        skew_S = S + S.transpose(
+            -1, -2
+        )  # ensure matrices are skew symmetric by assuming S is skew symmetric, adding two skew symmetric matrices results in a skew symmetric matrix
+        skew_bool = False
+        if (
+            skew_S.T == -skew_S
+        ).all():  # the transpose of a skew symmetric matrix is equal to the negative of the matrix
+            print(f"Transposed matrix: {skew_S.T}\n\nSign changed matrix: {-skew_S}")
+            skew_bool = True
+        return skew_bool
+
+    def fix_zeroed_eigvals(self, Lambda, V):
+
+        # Only keep half of each conjugate pair
+        _, idx = jnp.sort(Lambda.imag)
+        Lambda_sorted = Lambda[idx]
+        V_sorted = V[:, idx]
+
+        # There is an edge case when eigenvalues can be 0, which requires some machinery to handle
+        # We use a huge hack here: Assume only one pair is 0, and that it is the first row/column of A (only happens in Fourier case)
+        V = V_sorted[:, : self.N // 2]
+        Lambda = Lambda_sorted[: self.N // 2]
+        if Lambda[-1].abs() < 1e-4:
+            V[:, -1] = 0.0
+            V[0, -1] = 2**-0.5
+            V[1, -1] = 2**-0.5 * 1j
+        else:
+            raise ValueError("Only 1 zero eigenvalue allowed in diagonal part of A")
+
+        _AP = V @ jnp.diag_embed(Lambda) @ V.conj().transpose(-1, -2)
+        if (err := jnp.sum((2 * _AP.real - AP) ** 2) / self.N) > 1e-5:
+            print(
+                "Warning: Diagonalization of A matrix not numerically precise - error",
+                err,
+            )
+
+    def rank_correction(self, measure, N, rank=1, dtype=jnp.float32):
+        """Return low-rank matrix L such that A + L is normal"""
+
+        if measure == "legs":
+            assert rank >= 1
+            P = jnp.sqrt(0.5 + jnp.arange(N, dtype=dtype)).unsqueeze(0)  # (1 N)
+
+        elif measure == "legt":
+            assert rank >= 2
+            P = jnp.sqrt(1 + 2 * jnp.arange(N, dtype=dtype))  # (N)
+            P0 = P.clone()
+            P0[0::2] = 0.0
+            P1 = P.clone()
+            P1[1::2] = 0.0
+            P = jnp.stack([P0, P1], dim=0)  # (2 N)
+            P *= 2 ** (
+                -0.5
+            )  # Halve the rank correct just like the original matrix was halved
+
+        elif measure == "lagt":
+            assert rank >= 1
+            P = 0.5**0.5 * jnp.ones(1, N, dtype=dtype)
+
+        elif measure in ["fourier", "fout"]:
+            P = jnp.zeros(N)
+            P[0::2] = 2**0.5
+            P[0] = 1
+            P = P.unsqueeze(0)
+
+        elif measure == "fourier_decay":
+            P = jnp.zeros(N)
+            P[0::2] = 2**0.5
+            P[0] = 1
+            P = P.unsqueeze(0)
+            P = P / 2**0.5
+
+        elif measure == "fourier2":
+            P = jnp.zeros(N)
+            P[0::2] = 2**0.5
+            P[0] = 1
+            P = 2**0.5 * P.unsqueeze(0)
+
+        elif measure in ["fourier_diag", "foud", "legsd"]:
+            P = jnp.zeros(1, N, dtype=dtype)
+
+        else:
+            raise NotImplementedError
+
+        d = P.size(0)
+        if rank > d:
+            P = jnp.cat([P, jnp.zeros(rank - d, N, dtype=dtype)], dim=0)  # (rank N)
+
+        return P

@@ -21,6 +21,7 @@
 - [Mega: Moving Average Equipped Gated Attention](https://arxiv.org/abs/2209.10655) - Mega
 - [Liquid Structural State-Space Models](https://arxiv.org/abs/2209.12951) - Liquid-S4
 - [Hungry Hungry HiPPOs](https://openreview.net/pdf?id=COZDy0WYGg) - S4 LLM
+- [S4ND](https://arxiv.org/abs/2210.06583) - S4ND
 
 **Applied SSMs:**
 
