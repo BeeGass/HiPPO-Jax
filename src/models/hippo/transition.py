@@ -334,13 +334,61 @@ class LowRankMatrix:
         Lambda_imaginary, V = jnp.linalg.eigh(S * -1j)
         Lambda = Lambda_real + 1j * Lambda_imaginary
 
-        self.fix_zeroed_eigvals(Lambda=Lambda, V=V)
+        Lambda, V = self.fix_zeroed_eigvals(Lambda=Lambda, V=V)
 
         P = V.conj().transpose(-1, -2) @ P
         B = V.conj().transpose(-1, -2) @ B
         return Lambda, P, B, V
 
     def discrete_DPLR(self, Lambda, P, Q, B, C, step, L):
+        """
+        A_bar = (I - (step/2) \dot A)^{-1} (I + (step/2) \dot A)
+        B_bar = (I - (step/2) \dot A)^{-1} (step/2) \dot B
+        
+        we can reconstruct the A_bar terms to more closely resemble euler methods
+        $$
+        \begin{align}
+            (I - (step/2) \dot A) &= I + (step/2)(\Lambda - PQ^{*}) \\
+            (I - (step/2) \dot A) &= step/2 [(step/2) \dot I + (\Lambda - PQ^{*})] \\
+            (I - (step/2) \dot A) &= \step/2 \dot A_{0}
+        \end{align}
+        $$
+        
+        
+        Same goes for backward Euler but using the woodbury identity, where $D = ((2/step) - \Lambda)^{-1}$ 
+        $$
+        \begin{align}
+            (I - (step/2) \dot A)^{-1} &= (I - (step/2)(\Lambda - PQ^{*}))^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)[(2/step) - \Lambda + PQ^{*}]^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)[D - DP(1 + Q^{*}DP)^{-1} Q^{*}D]^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)A_{1} \\
+        \end{align}
+        $$   
+        
+        making the discrete ssm:
+        $$
+        \begin{align}
+            x_{k} &= \Bar{A}x_{k-1} + \Bar{B}u_{k} \\
+                  &= A_{1}A_{0}x_{k-1} + 2A_{1}B_{0}u_{k} \\
+            y_{k} &= Cx_{k} + Du_{k}
+        \end{align}
+        $$
+
+        Args:
+            Lambda ([type]): [description]
+            P ([type]): [description]
+            Q ([type]): [description]
+            B ([type]): [description]
+            C ([type]): [description]
+            step ([type]): [description]
+            L ([type]): [description]
+        
+        Returns:
+            Ab ([type]): [description]
+            Bb ([type]): [description]
+            Cb ([type]): [description]
+        """
+
         # Convert parameters to matrices
         B = B[:, jnp.newaxis]
         Ct = C[jnp.newaxis, :]
@@ -363,7 +411,7 @@ class LowRankMatrix:
         Bb = 2 * A1 @ B
 
         # Recover Cbar from Ct
-        Cb = Ct @ inv(I - matrix_power(Ab, L)).conj()
+        Cb = Ct @ jnp.linalg.inv(I - jnp.linalg.matrix_power(Ab, L)).conj()
         return Ab, Bb, Cb.conj()
 
     def check_skew(self, S):
@@ -409,6 +457,8 @@ class LowRankMatrix:
                 "Warning: Diagonalization of A matrix not numerically precise - error",
                 err,
             )
+
+        return Lambda, V
 
     def rank_correction(self, measure, N, rank=1, dtype=jnp.float32):
         """Return low-rank matrix L such that A + L is normal"""
