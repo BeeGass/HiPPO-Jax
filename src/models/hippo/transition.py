@@ -292,7 +292,7 @@ class LowRankMatrix:
         V = None
         A, B, P, S = self.make_NPLR(trans_matrix=_trans_matrix, dtype=dtype)
         if DPLR:
-            Lambda, P, B, V = self.make_DPLR(A, B, S, P)
+            Lambda, P, B, V = self.make_DPLR(A=A, B=B, P=P, S=S)
             self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
             self.V = (V.copy()).astype(dtype)  # imaginary (complex) eigenvalues
 
@@ -307,18 +307,16 @@ class LowRankMatrix:
         A = trans_matrix.A_matrix
         B = trans_matrix.B_matrix
 
-        P = self.rank_correction(
-            measure=self.measure, N=self.N, rank=self.rank, dtype=dtype
-        )  # (r N)
+        P = self.rank_correction(dtype=dtype)  # (r N)
 
         S = A + jnp.sum(
-            P[:, jnp.newaxis] * P[jnp.newaxis, :], dim=-3
+            P[:, jnp.newaxis] * P[jnp.newaxis, :], axis=-3
         )  # rank correct if rank > 1, summation happens in outer most dimension
         # S is nearly skew-symmetric
 
         return A, B, P, S
 
-    def make_DPLR(self, A, B, S, P):
+    def make_DPLR(self, A, B, P, S):
         """Diagonalize NPLR representation"""
 
         if not self.check_skew(S=S):
@@ -339,80 +337,6 @@ class LowRankMatrix:
         P = V.conj().transpose(-1, -2) @ P
         B = V.conj().transpose(-1, -2) @ B
         return Lambda, P, B, V
-
-    def discrete_DPLR(self, Lambda, P, Q, B, C, step, L):
-        """
-        A_bar = (I - (step/2) \dot A)^{-1} (I + (step/2) \dot A)
-        B_bar = (I - (step/2) \dot A)^{-1} (step/2) \dot B
-        
-        we can reconstruct the A_bar terms to more closely resemble euler methods
-        $$
-        \begin{align}
-            (I - (step/2) \dot A) &= I + (step/2)(\Lambda - PQ^{*}) \\
-            (I - (step/2) \dot A) &= step/2 [(step/2) \dot I + (\Lambda - PQ^{*})] \\
-            (I - (step/2) \dot A) &= \step/2 \dot A_{0}
-        \end{align}
-        $$
-        
-        
-        Same goes for backward Euler but using the woodbury identity, where $D = ((2/step) - \Lambda)^{-1}$ 
-        $$
-        \begin{align}
-            (I - (step/2) \dot A)^{-1} &= (I - (step/2)(\Lambda - PQ^{*}))^{-1} \\
-            (I - (step/2) \dot A)^{-1} &= (2/step)[(2/step) - \Lambda + PQ^{*}]^{-1} \\
-            (I - (step/2) \dot A)^{-1} &= (2/step)[D - DP(1 + Q^{*}DP)^{-1} Q^{*}D]^{-1} \\
-            (I - (step/2) \dot A)^{-1} &= (2/step)A_{1} \\
-        \end{align}
-        $$   
-        
-        making the discrete ssm:
-        $$
-        \begin{align}
-            x_{k} &= \Bar{A}x_{k-1} + \Bar{B}u_{k} \\
-                  &= A_{1}A_{0}x_{k-1} + 2A_{1}B_{0}u_{k} \\
-            y_{k} &= Cx_{k} + Du_{k}
-        \end{align}
-        $$
-
-        Args:
-            Lambda ([type]): [description]
-            P ([type]): [description]
-            Q ([type]): [description]
-            B ([type]): [description]
-            C ([type]): [description]
-            step ([type]): [description]
-            L ([type]): [description]
-        
-        Returns:
-            Ab ([type]): [description]
-            Bb ([type]): [description]
-            Cb ([type]): [description]
-        """
-
-        # Convert parameters to matrices
-        B = B[:, jnp.newaxis]
-        Ct = C[jnp.newaxis, :]
-
-        N = Lambda.shape[0]
-        A = jnp.diag(Lambda) - P[:, jnp.newaxis] @ Q[:, jnp.newaxis].conj().T
-        I = jnp.eye(N)
-
-        # Forward Euler
-        A0 = (2.0 / step) * I + A
-
-        # Backward Euler
-        D = jnp.diag(1.0 / ((2.0 / step) - Lambda))
-        Qc = Q.conj().T.reshape(1, -1)
-        P2 = P.reshape(-1, 1)
-        A1 = D - (D @ P2 * (1.0 / (1 + (Qc @ D @ P2))) * Qc @ D)
-
-        # A bar and B bar
-        Ab = A1 @ A0
-        Bb = 2 * A1 @ B
-
-        # Recover Cbar from Ct
-        Cb = Ct @ jnp.linalg.inv(I - jnp.linalg.matrix_power(Ab, L)).conj()
-        return Ab, Bb, Cb.conj()
 
     def check_skew(self, S):
         """Check if a matrix is skew symmetric
@@ -437,17 +361,18 @@ class LowRankMatrix:
 
         # Only keep half of each conjugate pair
         _, idx = jnp.sort(Lambda.imag)
-        Lambda_sorted = Lambda[idx]
-        V_sorted = V[:, idx]
+        Lambda_sorted = Lambda.at[idx]
+        V_sorted = V.at[:, idx]
 
         # There is an edge case when eigenvalues can be 0, which requires some machinery to handle
         # We use a huge hack here: Assume only one pair is 0, and that it is the first row/column of A (only happens in Fourier case)
-        V = V_sorted[:, : self.N // 2]
-        Lambda = Lambda_sorted[: self.N // 2]
+        V = V_sorted.at[:, : self.N // 2]
+        Lambda = Lambda_sorted.at[: self.N // 2]
         if Lambda[-1].abs() < 1e-4:
-            V[:, -1] = 0.0
-            V[0, -1] = 2**-0.5
-            V[1, -1] = 2**-0.5 * 1j
+            # x = x.at[idx].set(y)
+            V = V.at[:, -1].set(0.0)  # V[:, -1] = 0.0
+            V = V.at[0, -1].set(2**-0.5)  # V[0, -1] = 2**-0.5
+            V = V.at[1, -1].set(2**-0.5 * 1j)  # V[1, -1] = 2**-0.5 * 1j
         else:
             raise ValueError("Only 1 zero eigenvalue allowed in diagonal part of A")
 
@@ -460,56 +385,61 @@ class LowRankMatrix:
 
         return Lambda, V
 
-    def rank_correction(self, measure, N, rank=1, dtype=jnp.float32):
+    def rank_correction(self, dtype=jnp.float32):
         """Return low-rank matrix L such that A + L is normal"""
 
-        if measure == "legs":
-            assert rank >= 1
-            P = jnp.sqrt(0.5 + jnp.arange(N, dtype=dtype)).unsqueeze(0)  # (1 N)
+        if self.measure == "legs":
+            assert self.rank >= 1
+            P = jnp.expand_dims(
+                jnp.sqrt(0.5 + jnp.arange(self.N, dtype=dtype)), 0
+            )  # (1 N)
 
-        elif measure == "legt":
-            assert rank >= 2
-            P = jnp.sqrt(1 + 2 * jnp.arange(N, dtype=dtype))  # (N)
+        elif self.measure == "legt":
+            assert self.rank >= 2
+            P = jnp.sqrt(1 + 2 * jnp.arange(self.N, dtype=dtype))  # (N)
             P0 = P.clone()
-            P0[0::2] = 0.0
+            # x = x.at[idx].set(y)
+            P0 = P0.at[0::2].set(0.0)  # P0[0::2] = 0.0
             P1 = P.clone()
-            P1[1::2] = 0.0
-            P = jnp.stack([P0, P1], dim=0)  # (2 N)
-            P *= 2 ** (
-                -0.5
+            P1 = P1.at[1::2].set(0.0)  # P1[1::2] = 0.0
+            P = jnp.stack([P0, P1], axis=0)  # (2 N)
+            P = P * (
+                2 ** (-0.5)
             )  # Halve the rank correct just like the original matrix was halved
 
-        elif measure == "lagt":
-            assert rank >= 1
-            P = 0.5**0.5 * jnp.ones(1, N, dtype=dtype)
+        elif self.measure == "lagt":
+            assert self.rank >= 1
+            P = 0.5**0.5 * jnp.ones(1, self.N, dtype=dtype)
 
-        elif measure in ["fourier", "fout"]:
-            P = jnp.zeros(N)
-            P[0::2] = 2**0.5
-            P[0] = 1
-            P = P.unsqueeze(0)
+        elif self.measure in ["fourier", "fout"]:
+            P = jnp.zeros(self.N)
+            P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
+            P = P.at(0).set(1)  # P[0] = 1
+            P = jnp.expand_dims(P, 0)
 
-        elif measure == "fourier_decay":
-            P = jnp.zeros(N)
-            P[0::2] = 2**0.5
-            P[0] = 1
-            P = P.unsqueeze(0)
+        elif self.measure == "fourier_decay":
+            P = jnp.zeros(self.N)
+            P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
+            P = P.at(0).set(1)  # P[0] = 1
+            P = jnp.expand_dims(P, 0)
             P = P / 2**0.5
 
-        elif measure == "fourier2":
-            P = jnp.zeros(N)
-            P[0::2] = 2**0.5
-            P[0] = 1
-            P = 2**0.5 * P.unsqueeze(0)
+        elif self.measure == "fourier2":
+            P = jnp.zeros(self.N)
+            P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
+            P = P.at(0).set(1)  # P[0] = 1
+            P = 2**0.5 * jnp.expand_dims(P, 0)
 
-        elif measure in ["fourier_diag", "foud", "legsd"]:
-            P = jnp.zeros(1, N, dtype=dtype)
+        elif self.measure in ["fourier_diag", "foud", "legsd"]:
+            P = jnp.zeros(1, self.N, dtype=dtype)
 
         else:
             raise NotImplementedError
 
-        d = P.size(0)
-        if rank > d:
-            P = jnp.cat([P, jnp.zeros(rank - d, N, dtype=dtype)], dim=0)  # (rank N)
+        d = P.shape[0]
+        if self.rank > d:
+            P = jnp.concatenate(
+                [P, jnp.zeros(self.rank - d, self.N, dtype=dtype)], axis=0
+            )  # (rank N)
 
         return P

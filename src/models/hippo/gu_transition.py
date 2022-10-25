@@ -243,7 +243,7 @@ class GuLowRankMatrix:
         alpha=0,
         beta=1,
         DPLR=True,
-        dtype=jnp.float32,
+        dtype=torch.float32,
     ):
         self.N = N
         self.measure = measure
@@ -251,20 +251,31 @@ class GuLowRankMatrix:
         _trans_matrix = GuTransMatrix(N, measure, lambda_n, fourier_type, alpha, beta)
 
         Lambda = None
+        P = None
         B = None
         V = None
-        A, B, P, S = self.make_NPLR(trans_matrix=_trans_matrix, dtype=dtype)
+        Lambda, P, B, V = self.nplr(
+            trans_matrix=_trans_matrix, dtype=torch.float, diagonalize_precision=True
+        )
         if DPLR:
-            Lambda, P, B, V = self.make_DPLR(A, B, S, P)
-            self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
-            self.V = (V.copy()).astype(dtype)  # imaginary (complex) eigenvalues
+            Lambda, P, B, V = self.dplr(
+                trans_matrix=_trans_matrix,
+                scaling="hippo",
+                H=1,
+                dtype=torch.float,
+                real_scale=1.0,
+                imag_scale=1.0,
+                random_real=False,
+                random_imag=False,
+                normalize=False,
+                diagonal=True,
+                random_B=False,
+            )
 
-        self.A = (B.copy()).astype(dtype)  # HiPPO A Matrix (N x N)
-        self.B = (B.copy()).astype(dtype)  # HiPPO B Matrix (N x 1)
+        self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
         self.P = (P.copy()).astype(dtype)  # HiPPO rank correction matrix (N x rank)
-        self.S = (B.copy()).astype(
-            dtype
-        )  # HiPPO normal (skew-symmetric) matrix (N x N)
+        self.B = (B.copy()).astype(dtype)  # HiPPO B Matrix (N x 1)
+        self.V = (V.copy()).astype(dtype)  # imaginary (complex) eigenvalues
 
     def rank_correction(self, measure, N, rank=1, dtype=torch.float):
         """Return low-rank matrix L such that A + L is normal"""
@@ -320,21 +331,7 @@ class GuLowRankMatrix:
 
         return P
 
-    def initial_C(self, measure, N, dtype=torch.float):
-        """Return C that captures the other endpoint in the HiPPO approximation"""
-
-        if measure == "legt":
-            C = (torch.arange(N, dtype=dtype) * 2 + 1) ** 0.5 * (-1) ** torch.arange(N)
-        elif measure == "fourier":
-            C = torch.zeros(N)
-            C[0::2] = 2**0.5
-            C[0] = 1
-        else:
-            C = torch.zeros(N, dtype=dtype)  # (N)
-
-        return C
-
-    def nplr(self, measure, N, rank=1, dtype=torch.float, diagonalize_precision=True):
+    def nplr(self, trans_matrix, dtype=torch.float, diagonalize_precision=True):
         """Return w, p, q, V, B such that
         (w - p q^*, B) is unitarily equivalent to the original HiPPO A, B by the matrix V
         i.e. A = V[w - p q^*]V^*, B = V B
@@ -342,17 +339,23 @@ class GuLowRankMatrix:
         assert dtype == torch.float or torch.double
         cdtype = torch.cfloat if dtype == torch.float else torch.cdouble
 
-        A, B = transition(measure, N)
-        A = torch.as_tensor(A, dtype=dtype)  # (N, N)
-        B = torch.as_tensor(B, dtype=dtype)[:, 0]  # (N,)
+        jnp_A, jnp_B = trans_matrix.A_matrix, trans_matrix.B_matrix
 
-        P = rank_correction(measure, N, rank=rank, dtype=dtype)  # (r N)
+        np_A = np.asarray(jnp_A)
+        A = torch.from_numpy(np_A, dtype=dtype)  # (N, N)
+
+        np_B = np.asarray(jnp_B)
+        B = torch.from_numpy(np_B, dtype=dtype)[:, 0]  # (N,)
+
+        P = self.rank_correction(
+            measure=self.measure, N=self.N, rank=self.rank, dtype=dtype
+        )  # (r N)
         AP = A + torch.sum(P.unsqueeze(-2) * P.unsqueeze(-1), dim=-3)
 
         # We require AP to be nearly skew-symmetric
         _A = AP + AP.transpose(-1, -2)
         if (
-            err := torch.sum((_A - _A[0, 0] * torch.eye(N)) ** 2) / N
+            err := torch.sum((_A - _A[0, 0] * torch.eye(self.N)) ** 2) / self.N
         ) > 1e-5:  # if not torch.allclose(_A - _A[0,0]*torch.eye(N), torch.zeros(N, N), atol=1e-5):
             print("WARNING: HiPPO matrix not skew symmetric", err)
 
@@ -378,8 +381,8 @@ class GuLowRankMatrix:
 
         # There is an edge case when eigenvalues can be 0, which requires some machinery to handle
         # We use a huge hack here: Assume only one pair is 0, and that it is the first row/column of A (only happens in Fourier case)
-        V = V_sorted[:, : N // 2]
-        w = w_sorted[: N // 2]
+        V = V_sorted[:, : self.N // 2]
+        w = w_sorted[: self.N // 2]
         assert (
             w[-2].abs() > 1e-4
         ), "Only 1 zero eigenvalue allowed in diagonal part of A"
@@ -389,7 +392,7 @@ class GuLowRankMatrix:
             V[1, -1] = 2**-0.5 * 1j
 
         _AP = V @ torch.diag_embed(w) @ V.conj().transpose(-1, -2)
-        if (err := torch.sum((2 * _AP.real - AP) ** 2) / N) > 1e-5:
+        if (err := torch.sum((2 * _AP.real - AP) ** 2) / self.N) > 1e-5:
             print(
                 "Warning: Diagonalization of A matrix not numerically precise - error",
                 err,
@@ -408,9 +411,8 @@ class GuLowRankMatrix:
 
     def dplr(
         self,
-        scaling="linear",
-        N=64,
-        rank=1,
+        trans_matrix,
+        scaling="hippo",
         H=1,
         dtype=torch.float,
         real_scale=1.0,
@@ -426,24 +428,24 @@ class GuLowRankMatrix:
 
         pi = torch.tensor(math.pi)
         if random_real:
-            real_part = torch.rand(H, N // 2)
+            real_part = torch.rand(H, self.N // 2)
 
         else:
-            real_part = 0.5 * torch.ones(H, N // 2)
+            real_part = 0.5 * torch.ones(H, self.N // 2)
 
         if random_imag:
-            imag_part = N // 2 * torch.rand(H, N // 2)
+            imag_part = self.N // 2 * torch.rand(H, self.N // 2)
 
         else:
-            imag_part = repeat(torch.arange(N // 2), "n -> h n", h=H)
+            imag_part = repeat(torch.arange(self.N // 2), "n -> h n", h=H)
 
         real_part = real_scale * real_part
         if scaling == "random":
-            imag_part = torch.randn(H, N // 2)
+            imag_part = torch.randn(H, self.N // 2)
 
         elif scaling == "real":
             imag_part = 0 * imag_part
-            real_part = 1 + repeat(torch.arange(N // 2), "n -> h n", h=H)
+            real_part = 1 + repeat(torch.arange(self.N // 2), "n -> h n", h=H)
 
         elif scaling in ["linear", "lin"]:
             imag_part = pi * imag_part
@@ -452,29 +454,32 @@ class GuLowRankMatrix:
             "inverse",
             "inv",
         ]:  # Based on asymptotics of the default HiPPO matrix
-            imag_part = 1 / pi * N * (N / (1 + 2 * imag_part) - 1)
+            imag_part = 1 / pi * self.N * (self.N / (1 + 2 * imag_part) - 1)
 
         elif scaling in ["inverse2", "inv2"]:
-            imag_part = 1 / pi * N * (N / (1 + imag_part) - 1)
+            imag_part = 1 / pi * self.N * (self.N / (1 + imag_part) - 1)
 
         elif scaling in ["quadratic", "quad"]:
             imag_part = 1 / pi * (1 + 2 * imag_part) ** 2
 
         elif scaling in ["legs", "hippo"]:
-            w, _, _, _ = hippo.nplr("legsd", N)
+            w, _, _, _ = self.nplr(
+                trans_matrix=trans_matrix, dtype=torch.float, diagonalize_precision=True
+            )
             imag_part = w.imag
 
         else:
             raise NotImplementedError
+
         imag_part = imag_scale * imag_part
         w = -real_part + 1j * imag_part
 
         # Initialize B
         if random_B:
-            B = torch.randn(H, N // 2, dtype=dtype)
+            B = torch.randn(H, self.N // 2, dtype=dtype)
 
         else:
-            B = torch.ones(H, N // 2, dtype=dtype)
+            B = torch.ones(H, self.N // 2, dtype=dtype)
 
         if normalize:
             norm = (
@@ -485,11 +490,11 @@ class GuLowRankMatrix:
             )  # Variance with a random C vector
             B = B / zeta**0.5
 
-        P = torch.randn(rank, H, N // 2, dtype=dtype)
+        P = torch.randn(self.rank, H, self.N // 2, dtype=dtype)
 
         if diagonal:
             P = P * 0.0
-        V = torch.eye(N, dtype=dtype)[:, : N // 2]  # Only used in testing
+        V = torch.eye(self.N, dtype=dtype)[:, : self.N // 2]  # Only used in testing
         V = repeat(V, "n m -> h n m", h=H)
 
         return w, P, B, V

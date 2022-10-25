@@ -7,7 +7,7 @@ from src.tests.hippo_tests.trans_matrices import (
     lagt_matrices,
     fru_matrices,
     fout_matrices,
-    fourd_matrices,
+    foud_matrices,
 )
 from src.tests.hippo_tests.trans_matrices import (
     gu_legs_matrices,
@@ -16,7 +16,7 @@ from src.tests.hippo_tests.trans_matrices import (
     gu_lagt_matrices,
     gu_fru_matrices,
     gu_fout_matrices,
-    gu_fourd_matrices,
+    gu_foud_matrices,
 )
 from src.tests.hippo_tests.hippo_utils import (
     random_input,
@@ -141,9 +141,9 @@ def hippo_fout(fout_matrices, random_input):
 
 
 @pytest.fixture
-def hippo_fourd(fourd_matrices, random_input):
+def hippo_foud(foud_matrices, random_input):
     measure = "fourd"
-    A, B = fourd_matrices
+    A, B = foud_matrices
     L = random_input.shape[0]
     return HiPPO(
         N=8,
@@ -241,11 +241,11 @@ def gu_hippo_fout(gu_fout_matrices, random_input):
 
 
 @pytest.fixture
-def gu_hippo_fourd(gu_fourd_matrices, random_input):
-    measure = "fourd"
-    A, B = gu_fourd_matrices
+def gu_hippo_foud(gu_foud_matrices, random_input):
+    measure = "foud"
+    A, B = gu_foud_matrices
     L = random_input.shape[0]
-    raise NotImplementedError("HiPPO_FourD not implemented yet")
+    raise NotImplementedError("HiPPO_FouD not implemented yet")
     return HiPPO(
         N=8,
         max_length=L,

@@ -293,3 +293,96 @@ class HiPPO(nn.Module):
         y_k = Cd @ c_k  # + (Db.T @ f_k)
 
         return c_k.astype(jnp.float32), y_k.astype(jnp.float32)
+
+
+class DLPR_HiPPO:
+    def __init__(self) -> None:
+        pass
+
+    def discrete_DPLR(self, Lambda, P, Q, B, C, step, L):
+        """
+        A_bar = (I - (step/2) \dot A)^{-1} (I + (step/2) \dot A)
+        B_bar = (I - (step/2) \dot A)^{-1} (step/2) \dot B
+        
+        we can reconstruct the A_bar terms to more closely resemble euler methods
+        $$
+        \begin{align}
+            (I - (step/2) \dot A) &= I + (step/2)(\Lambda - PQ^{*}) \\
+            (I - (step/2) \dot A) &= step/2 [(step/2) \dot I + (\Lambda - PQ^{*})] \\
+            (I - (step/2) \dot A) &= \step/2 \dot A_{0}
+        \end{align}
+        $$
+        
+        
+        Same goes for backward Euler but using the woodbury identity, where $D = ((2/step) - \Lambda)^{-1}$ 
+        $$
+        \begin{align}
+            (I - (step/2) \dot A)^{-1} &= (I - (step/2)(\Lambda - PQ^{*}))^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)[(2/step) - \Lambda + PQ^{*}]^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)[D - DP(1 + Q^{*}DP)^{-1} Q^{*}D]^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)A_{1} \\
+        \end{align}
+        $$   
+        
+        making the discrete ssm:
+        $$
+        \begin{align}
+            x_{k} &= \Bar{A}x_{k-1} + \Bar{B}u_{k} \\
+                  &= A_{1}A_{0}x_{k-1} + 2A_{1}B_{0}u_{k} \\
+            y_{k} &= Cx_{k} + Du_{k}
+        \end{align}
+        $$
+
+        Args:
+            Lambda ([type]): [description]
+            P ([type]): [description]
+            Q ([type]): [description]
+            B ([type]): [description]
+            C ([type]): [description]
+            step ([type]): [description]
+            L ([type]): [description]
+        
+        Returns:
+            Ab ([type]): [description]
+            Bb ([type]): [description]
+            Cb ([type]): [description]
+        """
+
+        # Convert parameters to matrices
+        B = B[:, jnp.newaxis]
+        Ct = C[jnp.newaxis, :]
+
+        N = Lambda.shape[0]
+        A = jnp.diag(Lambda) - P[:, jnp.newaxis] @ Q[:, jnp.newaxis].conj().T
+        I = jnp.eye(N)
+
+        # Forward Euler
+        A0 = (2.0 / step) * I + A
+
+        # Backward Euler
+        D = jnp.diag(1.0 / ((2.0 / step) - Lambda))
+        Qc = Q.conj().T.reshape(1, -1)
+        P2 = P.reshape(-1, 1)
+        A1 = D - (D @ P2 * (1.0 / (1 + (Qc @ D @ P2))) * Qc @ D)
+
+        # A bar and B bar
+        Ab = A1 @ A0
+        Bb = 2 * A1 @ B
+
+        # Recover Cbar from Ct
+        Cb = Ct @ jnp.linalg.inv(I - jnp.linalg.matrix_power(Ab, L)).conj()
+        return Ab, Bb, Cb.conj()
+
+    def initial_C(self, measure, N, dtype=jnp.float32):
+        """Return C that captures the other endpoint in the HiPPO approximation"""
+
+        if measure == "legt":
+            C = (jnp.arange(N, dtype=dtype) * 2 + 1) ** 0.5 * (-1) ** jnp.arange(N)
+        elif measure == "fourier":
+            C = jnp.zeros(N)
+            C[0::2] = 2**0.5
+            C[0] = 1
+        else:
+            C = jnp.zeros(N, dtype=dtype)  # (N)
+
+        return C

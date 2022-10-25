@@ -40,6 +40,7 @@ scipy = [
     {version = "^1.9.0", platform = "linux"},
     {version = "^1.9.0", platform = "darwin"}
     ]
+einops = "^0.5.0"
 
 [tool.poetry.group.torch]
 optional = true

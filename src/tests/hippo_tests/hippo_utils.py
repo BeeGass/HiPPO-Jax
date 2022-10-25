@@ -45,7 +45,7 @@ def fout_key(key_generator):
 
 
 @pytest.fixture
-def fourd_key(key_generator):
+def foud_key(key_generator):
     return key_generator[7]
 
 
