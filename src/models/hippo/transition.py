@@ -296,10 +296,10 @@ class LowRankMatrix:
             self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
             self.V = (V.copy()).astype(dtype)  # imaginary (complex) eigenvalues
 
-        self.A = (B.copy()).astype(dtype)  # HiPPO A Matrix (N x N)
+        self.A = (A.copy()).astype(dtype)  # HiPPO A Matrix (N x N)
         self.B = (B.copy()).astype(dtype)  # HiPPO B Matrix (N x 1)
         self.P = (P.copy()).astype(dtype)  # HiPPO rank correction matrix (N x rank)
-        self.S = (B.copy()).astype(
+        self.S = (S.copy()).astype(
             dtype
         )  # HiPPO normal (skew-symmetric) matrix (N x N)
 
@@ -310,7 +310,7 @@ class LowRankMatrix:
         P = self.rank_correction(dtype=dtype)  # (r N)
 
         S = A + jnp.sum(
-            P[:, jnp.newaxis] * P[jnp.newaxis, :], axis=-3
+            jnp.expand_dims(P, -2) * jnp.expand_dims(P, -1), axis=-3
         )  # rank correct if rank > 1, summation happens in outer most dimension
         # S is nearly skew-symmetric
 
@@ -336,6 +336,7 @@ class LowRankMatrix:
 
         P = V.conj().transpose(-1, -2) @ P
         B = V.conj().transpose(-1, -2) @ B
+
         return Lambda, P, B, V
 
     def check_skew(self, S):
@@ -351,10 +352,11 @@ class LowRankMatrix:
         )  # ensure matrices are skew symmetric by assuming S is skew symmetric, adding two skew symmetric matrices results in a skew symmetric matrix
         skew_bool = False
         if (
-            skew_S.T == -skew_S
+            S.transpose(-1, -2) == -S
         ).all():  # the transpose of a skew symmetric matrix is equal to the negative of the matrix
-            print(f"Transposed matrix: {skew_S.T}\n\nSign changed matrix: {-skew_S}")
             skew_bool = True
+
+        print(f"Transposed matrix: {S.transpose(-1, -2)}\n\nUnchanged matrix: {-S}")
         return skew_bool
 
     def fix_zeroed_eigvals(self, Lambda, V):
@@ -398,7 +400,6 @@ class LowRankMatrix:
             assert self.rank >= 2
             P = jnp.sqrt(1 + 2 * jnp.arange(self.N, dtype=dtype))  # (N)
             P0 = P.clone()
-            # x = x.at[idx].set(y)
             P0 = P0.at[0::2].set(0.0)  # P0[0::2] = 0.0
             P1 = P.clone()
             P1 = P1.at[1::2].set(0.0)  # P1[1::2] = 0.0
@@ -409,37 +410,37 @@ class LowRankMatrix:
 
         elif self.measure == "lagt":
             assert self.rank >= 1
-            P = 0.5**0.5 * jnp.ones(1, self.N, dtype=dtype)
+            P = 0.5**0.5 * jnp.ones((1, self.N), dtype=dtype)
 
         elif self.measure in ["fourier", "fout"]:
             P = jnp.zeros(self.N)
             P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
-            P = P.at(0).set(1)  # P[0] = 1
+            P = P.at[0].set(1)  # P[0] = 1
             P = jnp.expand_dims(P, 0)
 
         elif self.measure == "fourier_decay":
             P = jnp.zeros(self.N)
             P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
-            P = P.at(0).set(1)  # P[0] = 1
+            P = P.at[0].set(1)  # P[0] = 1
             P = jnp.expand_dims(P, 0)
             P = P / 2**0.5
 
         elif self.measure == "fourier2":
             P = jnp.zeros(self.N)
             P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
-            P = P.at(0).set(1)  # P[0] = 1
+            P = P.at[0].set(1)  # P[0] = 1
             P = 2**0.5 * jnp.expand_dims(P, 0)
 
         elif self.measure in ["fourier_diag", "foud", "legsd"]:
-            P = jnp.zeros(1, self.N, dtype=dtype)
+            P = jnp.zeros((1, self.N), dtype=dtype)
 
         else:
             raise NotImplementedError
 
-        d = P.shape[0]
+        d = jnp.size(P, axis=0)
         if self.rank > d:
             P = jnp.concatenate(
-                [P, jnp.zeros(self.rank - d, self.N, dtype=dtype)], axis=0
+                [P, jnp.zeros((self.rank - d, self.N), dtype=dtype)], axis=0
             )  # (rank N)
 
         return P

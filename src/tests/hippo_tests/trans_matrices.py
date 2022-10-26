@@ -27,7 +27,7 @@ def nplr_legs():
     the_measure = "legs"
     rank = 1
     nplr_legs = LowRankMatrix(N=8, rank=rank, measure=the_measure, DPLR=False)
-    return nplr_legs.Lambda, nplr_legs.P, nplr_legs.B, nplr_legs.V
+    return nplr_legs
 
 
 @pytest.fixture
@@ -35,7 +35,7 @@ def dplr_legs():
     the_measure = "legs"
     rank = 1
     dplr_legs = LowRankMatrix(N=8, rank=rank, measure=the_measure, DPLR=True)
-    return dplr_legs.Lambda, dplr_legs.P, dplr_legs.B, dplr_legs.V
+    return dplr_legs
 
 
 # ------------
@@ -55,7 +55,7 @@ def nplr_legt():
     nplr_legt = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=False
     )
-    return nplr_legt.Lambda, nplr_legt.P, nplr_legt.B, nplr_legt.V
+    return nplr_legt
 
 
 @pytest.fixture
@@ -65,7 +65,7 @@ def dplr_legt():
     dplr_legt = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=True
     )
-    return dplr_legt.Lambda, dplr_legt.P, dplr_legt.B, dplr_legt.V
+    return dplr_legt
 
 
 # ------------
@@ -87,7 +87,7 @@ def nplr_lmu():
     nplr_lmu = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=False
     )  # change lambda so resulting matrix is in the form of LMU
-    return nplr_lmu.Lambda, nplr_lmu.P, nplr_lmu.B, nplr_lmu.V
+    return nplr_lmu
 
 
 @pytest.fixture
@@ -97,7 +97,7 @@ def dplr_lmu():
     dplr_lmu = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=True
     )  # change lambda so resulting matrix is in the form of LMU
-    return dplr_lmu.Lambda, dplr_lmu.P, dplr_lmu.B, dplr_lmu.V
+    return dplr_lmu
 
 
 # ------------
@@ -127,7 +127,7 @@ def nplr_lagt():
         beta=1.0,
         DPLR=False,
     )  # change resulting tilt through alpha and beta
-    return nplr_lagt.Lambda, nplr_lagt.P, nplr_lagt.B, nplr_lagt.V
+    return nplr_lagt
 
 
 @pytest.fixture
@@ -142,7 +142,7 @@ def dplr_lagt():
         beta=1.0,
         DPLR=True,
     )  # change resulting tilt through alpha and beta
-    return dplr_lagt.Lambda, dplr_lagt.P, dplr_lagt.B, dplr_lagt.V
+    return dplr_lagt
 
 
 # ------------
@@ -164,7 +164,7 @@ def nplr_fru():
     nplr_fru = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=False
     )
-    return nplr_fru.Lambda, nplr_fru.P, nplr_fru.B, nplr_fru.V
+    return nplr_fru
 
 
 @pytest.fixture
@@ -175,7 +175,7 @@ def dplr_fru():
     dplr_fru = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=True
     )
-    return dplr_fru.Lambda, dplr_fru.P, dplr_fru.B, dplr_fru.V
+    return dplr_fru
 
 
 # ------------
@@ -197,7 +197,7 @@ def nplr_fout():
     nplr_fout = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=False
     )
-    return nplr_fout.Lambda, nplr_fout.P, nplr_fout.B, nplr_fout.V
+    return nplr_fout
 
 
 @pytest.fixture
@@ -208,7 +208,7 @@ def dplr_fout():
     dplr_fout = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=True
     )
-    return dplr_fout.Lambda, dplr_fout.P, dplr_fout.B, dplr_fout.V
+    return dplr_fout
 
 
 # ------------
@@ -230,7 +230,7 @@ def nplr_foud():
     nplr_foud = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=False
     )
-    return nplr_foud.Lambda, nplr_foud.P, nplr_foud.B, nplr_foud.V
+    return nplr_foud
 
 
 @pytest.fixture
@@ -241,7 +241,7 @@ def dplr_foud():
     dplr_foud = LowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=True
     )
-    return dplr_foud.Lambda, dplr_foud.P, dplr_foud.B, dplr_foud.V
+    return dplr_foud
 
 
 # ----------------------------------------------------
@@ -263,12 +263,7 @@ def gu_nplr_legs():
     the_measure = "legs"
     rank = 1
     gu_nplr_legs = GuLowRankMatrix(N=8, rank=rank, measure=the_measure, DPLR=False)
-    return (
-        gu_nplr_legs.Lambda,
-        gu_nplr_legs.P,
-        gu_nplr_legs.B,
-        gu_nplr_legs.V,
-    )
+    return gu_nplr_legs
 
 
 @pytest.fixture
@@ -276,12 +271,7 @@ def gu_dplr_legs():
     the_measure = "legs"
     rank = 1
     gu_dplr_legs = GuLowRankMatrix(N=8, rank=rank, measure=the_measure, DPLR=True)
-    return (
-        gu_dplr_legs.Lambda,
-        gu_dplr_legs.P,
-        gu_dplr_legs.B,
-        gu_dplr_legs.V,
-    )
+    return gu_dplr_legs
 
 
 # ------------
@@ -301,12 +291,7 @@ def gu_nplr_legt():
     gu_nplr_legt = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=False
     )
-    return (
-        gu_nplr_legt.Lambda,
-        gu_nplr_legt.P,
-        gu_nplr_legt.B,
-        gu_nplr_legt.V,
-    )
+    return gu_nplr_legt
 
 
 @pytest.fixture
@@ -316,12 +301,7 @@ def gu_dplr_legt():
     gu_dplr_legt = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=True
     )
-    return (
-        gu_dplr_legt.Lambda,
-        gu_dplr_legt.P,
-        gu_dplr_legt.B,
-        gu_dplr_legt.V,
-    )
+    return gu_dplr_legt
 
 
 # ------------
@@ -343,12 +323,7 @@ def gu_nplr_lmu():
     gu_nplr_lmu = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=False
     )  # change lambda so resulting matrix is in the form of LMU
-    return (
-        gu_nplr_lmu.Lambda,
-        gu_nplr_lmu.P,
-        gu_nplr_lmu.B,
-        gu_nplr_lmu.V,
-    )
+    return gu_nplr_lmu
 
 
 @pytest.fixture
@@ -358,12 +333,7 @@ def gu_dplr_lmu():
     gu_dplr_lmu = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=True
     )  # change lambda so resulting matrix is in the form of LMU
-    return (
-        gu_dplr_lmu.Lambda,
-        gu_dplr_lmu.P,
-        gu_dplr_lmu.B,
-        gu_dplr_lmu.V,
-    )
+    return gu_dplr_lmu
 
 
 # ------------
@@ -393,12 +363,7 @@ def gu_nplr_lagt():
         beta=1.0,
         DPLR=False,
     )  # change resulting tilt through alpha and beta
-    return (
-        gu_nplr_lagt.Lambda,
-        gu_nplr_lagt.P,
-        gu_nplr_lagt.B,
-        gu_nplr_lagt.V,
-    )
+    return gu_nplr_lagt
 
 
 @pytest.fixture
@@ -413,12 +378,7 @@ def gu_dplr_lagt():
         beta=1.0,
         DPLR=True,
     )  # change resulting tilt through alpha and beta
-    return (
-        gu_dplr_lagt.Lambda,
-        gu_dplr_lagt.P,
-        gu_dplr_lagt.B,
-        gu_dplr_lagt.V,
-    )
+    return gu_dplr_lagt
 
 
 # ------------
@@ -440,12 +400,7 @@ def gu_nplr_fru():
     gu_nplr_fru = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=False
     )
-    return (
-        gu_nplr_fru.Lambda,
-        gu_nplr_fru.P,
-        gu_nplr_fru.B,
-        gu_nplr_fru.V,
-    )
+    return gu_nplr_fru
 
 
 @pytest.fixture
@@ -456,12 +411,7 @@ def gu_dplr_fru():
     gu_dplr_fru = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=True
     )
-    return (
-        gu_dplr_fru.Lambda,
-        gu_dplr_fru.P,
-        gu_dplr_fru.B,
-        gu_dplr_fru.V,
-    )
+    return gu_dplr_fru
 
 
 # ------------
@@ -483,12 +433,7 @@ def gu_nplr_fout():
     gu_nplr_fout = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=False
     )
-    return (
-        gu_nplr_fout.Lambda,
-        gu_nplr_fout.P,
-        gu_nplr_fout.B,
-        gu_nplr_fout.V,
-    )
+    return gu_nplr_fout
 
 
 @pytest.fixture
@@ -499,12 +444,7 @@ def gu_dplr_fout():
     gu_dplr_fout = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=True
     )
-    return (
-        gu_dplr_fout.Lambda,
-        gu_dplr_fout.P,
-        gu_dplr_fout.B,
-        gu_dplr_fout.V,
-    )
+    return gu_dplr_fout
 
 
 # ------------
@@ -513,7 +453,7 @@ def gu_dplr_fout():
 @pytest.fixture
 def gu_foud_matrices():
     the_measure = "fourier"
-    fourier_type = "fourd"
+    fourier_type = "foud"
     foud_matrices = GuTransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
     return foud_matrices.A_matrix, foud_matrices.B_matrix
 
@@ -526,12 +466,7 @@ def gu_nplr_foud():
     gu_nplr_foud = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=False
     )
-    return (
-        gu_nplr_foud.Lambda,
-        gu_nplr_foud.P,
-        gu_nplr_foud.B,
-        gu_nplr_foud.V,
-    )
+    return gu_nplr_foud
 
 
 @pytest.fixture
@@ -542,9 +477,4 @@ def gu_dplr_foud():
     gu_dplr_foud = GuLowRankMatrix(
         N=8, rank=rank, measure=the_measure, fourier_type=fourier_type, DPLR=True
     )
-    return (
-        gu_dplr_foud.Lambda,
-        gu_dplr_foud.P,
-        gu_dplr_foud.B,
-        gu_dplr_foud.V,
-    )
+    return gu_dplr_foud

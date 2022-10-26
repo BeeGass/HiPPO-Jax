@@ -119,6 +119,8 @@ class GuTransMatrix:
             B (jnp.ndarray): The B HiPPO matrix.
 
         """
+        A = None
+        B = None
         Q = jnp.arange(N, dtype=jnp.float64)
         pre_R = 2 * Q + 1
         k, n = jnp.meshgrid(Q, Q)
@@ -191,6 +193,8 @@ class GuTransMatrix:
             B (jnp.ndarray): The B HiPPO matrix.
 
         """
+        A = None
+        B = None
         freqs = jnp.arange(N // 2)
 
         if fourier_type == "fru":  # Fourier Recurrent Unit (FRU) - non-vectorized
@@ -217,7 +221,7 @@ class GuTransMatrix:
             A = A - B[:, None] * B[None, :] * 2
             B = B[:, None] * 2
 
-        elif fourier_type == "fourd":
+        elif fourier_type == "foud":
             d = jnp.stack([jnp.zeros(N // 2), freqs], axis=-1).reshape(-1)[1:]
             A = jnp.pi * (-jnp.diag(d, 1) + jnp.diag(d, -1))
 
@@ -228,6 +232,8 @@ class GuTransMatrix:
             # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
             A = A - 0.5 * B[:, None] * B[None, :]
             B = 0.5 * B[:, None]
+        else:
+            raise ValueError("Invalid fourier_type")
 
         return A, B
 
@@ -254,9 +260,7 @@ class GuLowRankMatrix:
         P = None
         B = None
         V = None
-        Lambda, P, B, V = self.nplr(
-            trans_matrix=_trans_matrix, dtype=torch.float, diagonalize_precision=True
-        )
+        A, B, P, S = self.pre_nplr(trans_matrix=_trans_matrix, dtype=dtype)
         if DPLR:
             Lambda, P, B, V = self.dplr(
                 trans_matrix=_trans_matrix,
@@ -271,22 +275,26 @@ class GuLowRankMatrix:
                 diagonal=True,
                 random_B=False,
             )
+            self.Lambda = Lambda  # real eigenvalues
+            self.V = V  # imaginary (complex) eigenvalues
 
-        self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
-        self.P = (P.copy()).astype(dtype)  # HiPPO rank correction matrix (N x rank)
-        self.B = (B.copy()).astype(dtype)  # HiPPO B Matrix (N x 1)
-        self.V = (V.copy()).astype(dtype)  # imaginary (complex) eigenvalues
+        self.A = A  # HiPPO A Matrix (N x N)
+        self.B = B  # HiPPO B Matrix (N x 1)
+        self.P = P  # HiPPO rank correction matrix (N x rank)
+        self.S = S  # HiPPO normal (skew-symmetric) matrix (N x N)
 
-    def rank_correction(self, measure, N, rank=1, dtype=torch.float):
+    def rank_correction(self, dtype=torch.float):
         """Return low-rank matrix L such that A + L is normal"""
 
-        if measure == "legs":
-            assert rank >= 1
-            P = torch.sqrt(0.5 + torch.arange(N, dtype=dtype)).unsqueeze(0)  # (1 N)
+        if self.measure == "legs":
+            assert self.rank >= 1
+            P = torch.sqrt(0.5 + torch.arange(self.N, dtype=dtype)).unsqueeze(
+                0
+            )  # (1 N)
 
-        elif measure == "legt":
-            assert rank >= 2
-            P = torch.sqrt(1 + 2 * torch.arange(N, dtype=dtype))  # (N)
+        elif self.measure == "legt":
+            assert self.rank >= 2
+            P = torch.sqrt(1 + 2 * torch.arange(self.N, dtype=dtype))  # (N)
             P0 = P.clone()
             P0[0::2] = 0.0
             P1 = P.clone()
@@ -296,40 +304,57 @@ class GuLowRankMatrix:
                 -0.5
             )  # Halve the rank correct just like the original matrix was halved
 
-        elif measure == "lagt":
-            assert rank >= 1
-            P = 0.5**0.5 * torch.ones(1, N, dtype=dtype)
+        elif self.measure == "lagt":
+            assert self.rank >= 1
+            P = 0.5**0.5 * torch.ones(1, self.N, dtype=dtype)
 
-        elif measure in ["fourier", "fout"]:
-            P = torch.zeros(N)
+        elif self.measure in ["fourier", "fout"]:
+            P = torch.zeros(self.N)
             P[0::2] = 2**0.5
             P[0] = 1
             P = P.unsqueeze(0)
 
-        elif measure == "fourier_decay":
-            P = torch.zeros(N)
+        elif self.measure == "fourier_decay":
+            P = torch.zeros(self.N)
             P[0::2] = 2**0.5
             P[0] = 1
             P = P.unsqueeze(0)
             P = P / 2**0.5
 
-        elif measure == "fourier2":
-            P = torch.zeros(N)
+        elif self.measure == "fourier2":
+            P = torch.zeros(self.N)
             P[0::2] = 2**0.5
             P[0] = 1
             P = 2**0.5 * P.unsqueeze(0)
 
-        elif measure in ["fourier_diag", "foud", "legsd"]:
-            P = torch.zeros(1, N, dtype=dtype)
+        elif self.measure in ["fourier_diag", "foud", "legsd"]:
+            P = torch.zeros(1, self.N, dtype=dtype)
 
         else:
             raise NotImplementedError
 
         d = P.size(0)
-        if rank > d:
-            P = torch.cat([P, torch.zeros(rank - d, N, dtype=dtype)], dim=0)  # (rank N)
+        if self.rank > d:
+            P = torch.cat(
+                [P, torch.zeros((self.rank - d, self.N), dtype=dtype)], dim=0
+            )  # (rank N)
 
         return P
+
+    def pre_nplr(self, trans_matrix, dtype=torch.float):
+        jnp_A = trans_matrix.A_matrix
+        jnp_B = trans_matrix.B_matrix
+
+        np_A = np.asarray(jnp_A)
+        A = torch.from_numpy(np_A)  # (N, N)
+
+        np_B = np.asarray(jnp_B)
+        B = torch.from_numpy(np_B)  # [:, 0]  # (N,)
+
+        P = self.rank_correction(dtype=dtype)  # (r N)
+        AP = A + torch.sum(P.unsqueeze(-2) * P.unsqueeze(-1), dim=-3)
+
+        return A, B, P, AP
 
     def nplr(self, trans_matrix, dtype=torch.float, diagonalize_precision=True):
         """Return w, p, q, V, B such that
@@ -339,18 +364,7 @@ class GuLowRankMatrix:
         assert dtype == torch.float or torch.double
         cdtype = torch.cfloat if dtype == torch.float else torch.cdouble
 
-        jnp_A, jnp_B = trans_matrix.A_matrix, trans_matrix.B_matrix
-
-        np_A = np.asarray(jnp_A)
-        A = torch.from_numpy(np_A, dtype=dtype)  # (N, N)
-
-        np_B = np.asarray(jnp_B)
-        B = torch.from_numpy(np_B, dtype=dtype)[:, 0]  # (N,)
-
-        P = self.rank_correction(
-            measure=self.measure, N=self.N, rank=self.rank, dtype=dtype
-        )  # (r N)
-        AP = A + torch.sum(P.unsqueeze(-2) * P.unsqueeze(-1), dim=-3)
+        A, B, P, AP = self.pre_nplr(trans_matrix=trans_matrix, dtype=dtype)
 
         # We require AP to be nearly skew-symmetric
         _A = AP + AP.transpose(-1, -2)
