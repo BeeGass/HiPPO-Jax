@@ -86,7 +86,7 @@ class GuTransMatrix:
 
         """
         q = jnp.arange(
-            N, dtype=jnp.float64
+            N, dtype=jnp.float32
         )  # q represents the values 1, 2, ..., N each column has
         k, n = jnp.meshgrid(q, q)
         r = 2 * q + 1
@@ -121,7 +121,7 @@ class GuTransMatrix:
         """
         A = None
         B = None
-        Q = jnp.arange(N, dtype=jnp.float64)
+        Q = jnp.arange(N, dtype=jnp.float32)
         pre_R = 2 * Q + 1
         k, n = jnp.meshgrid(Q, Q)
 
@@ -356,6 +356,17 @@ class GuLowRankMatrix:
 
         return A, B, P, AP
 
+    def check_skew(self, AP):
+        """
+        We require AP to be nearly skew-symmetric. To be clear, AP IS NOT skew-symmetric.
+        However, it is skew-symmetric up to a small error. This function checks that error is within an acceptable tolerance.
+        """
+        _A = AP + AP.transpose(-1, -2)
+        if (
+            err := torch.sum((_A - _A[0, 0] * torch.eye(self.N)) ** 2) / self.N
+        ) > 1e-5:  # if not torch.allclose(_A - _A[0,0]*torch.eye(N), torch.zeros(N, N), atol=1e-5):
+            print("WARNING: HiPPO matrix not skew symmetric", err)
+
     def nplr(self, trans_matrix, dtype=torch.float, diagonalize_precision=True):
         """Return w, p, q, V, B such that
         (w - p q^*, B) is unitarily equivalent to the original HiPPO A, B by the matrix V
@@ -364,14 +375,11 @@ class GuLowRankMatrix:
         assert dtype == torch.float or torch.double
         cdtype = torch.cfloat if dtype == torch.float else torch.cdouble
 
-        A, B, P, AP = self.pre_nplr(trans_matrix=trans_matrix, dtype=dtype)
+        A, pre_B, P, AP = self.pre_nplr(trans_matrix=trans_matrix, dtype=dtype)
 
-        # We require AP to be nearly skew-symmetric
-        _A = AP + AP.transpose(-1, -2)
-        if (
-            err := torch.sum((_A - _A[0, 0] * torch.eye(self.N)) ** 2) / self.N
-        ) > 1e-5:  # if not torch.allclose(_A - _A[0,0]*torch.eye(N), torch.zeros(N, N), atol=1e-5):
-            print("WARNING: HiPPO matrix not skew symmetric", err)
+        B = pre_B[:, 0]
+
+        self.check_skew(AP)
 
         # Take advantage of identity + skew-symmetric form to calculate real and imaginary parts separately
         # Imaginary part can use eigh instead of eig
@@ -389,6 +397,9 @@ class GuLowRankMatrix:
         # print("check", V @ torch.diag_embed(w) @ V.conj().transpose(-1, -2))
 
         # Only keep half of each conjugate pair
+        imaginary_eigvals = w.imag
+        print(f"imaginary eigvals: {imaginary_eigvals}")
+        print(f"idx of imaginary eigvals: {torch.sort(imaginary_eigvals)}")
         _, idx = torch.sort(w.imag)
         w_sorted = w[idx]
         V_sorted = V[:, idx]

@@ -292,7 +292,7 @@ class LowRankMatrix:
         V = None
         A, B, P, S = self.make_NPLR(trans_matrix=_trans_matrix, dtype=dtype)
         if DPLR:
-            Lambda, P, B, V = self.make_DPLR(A=A, B=B, P=P, S=S)
+            Lambda, P, B, V = self.make_DPLR(B=B, P=P, S=S)
             self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
             self.V = (V.copy()).astype(dtype)  # imaginary (complex) eigenvalues
 
@@ -316,15 +316,14 @@ class LowRankMatrix:
 
         return A, B, P, S
 
-    def make_DPLR(self, A, B, P, S):
+    def make_DPLR(self, B, P, S):
         """Diagonalize NPLR representation"""
 
-        if not self.check_skew(S=S):
-            raise ValueError("Matrix is not skew symmetric")
+        self.check_skew(S=S)
 
         # Check skew symmetry
         S_diag = jnp.diagonal(S)
-        Lambda_real = jnp.mean(S_diag, -1, keepdim=True) * jnp.ones_like(
+        Lambda_real = jnp.mean(S_diag, -1, keepdims=True) * jnp.ones_like(
             S_diag
         )  # S itself is not skew-symmetric. It is skew-symmetric by: S + c * I. Extract the value c, c = mean(S_diag)
 
@@ -342,40 +341,46 @@ class LowRankMatrix:
     def check_skew(self, S):
         """Check if a matrix is skew symmetric
 
+        We require AP to be nearly skew-symmetric. To be clear, AP IS NOT skew-symmetric.
+        However, it is skew-symmetric up to a small error. This function checks that error is within an acceptable tolerance.
+
         refer to:
         - https://www.cuemath.com/algebra/skew-symmetric-matrix/
         - https://en.wikipedia.org/wiki/Skew-symmetric_matrix
 
         """
-        skew_S = S + S.transpose(
+        _S = S + S.transpose(
             -1, -2
         )  # ensure matrices are skew symmetric by assuming S is skew symmetric, adding two skew symmetric matrices results in a skew symmetric matrix
-        skew_bool = False
         if (
-            S.transpose(-1, -2) == -S
-        ).all():  # the transpose of a skew symmetric matrix is equal to the negative of the matrix
-            skew_bool = True
-
-        print(f"Transposed matrix: {S.transpose(-1, -2)}\n\nUnchanged matrix: {-S}")
-        return skew_bool
+            err := jnp.sum((_S - _S[0, 0] * jnp.eye(self.N)) ** 2) / self.N
+        ) > 1e-5:  # if not torch.allclose(_A - _A[0,0]*torch.eye(N), torch.zeros(N, N), atol=1e-5):
+            print("WARNING: HiPPO matrix not skew symmetric", err)
+            print(
+                f"Transposed matrix:\n{_S.transpose(-1, -2)}\n\nUnchanged matrix:\n{-_S}"
+            )  # the transpose of a skew symmetric matrix is equal to the negative of the matrix
 
     def fix_zeroed_eigvals(self, Lambda, V):
 
         # Only keep half of each conjugate pair
-        _, idx = jnp.sort(Lambda.imag)
-        Lambda_sorted = Lambda.at[idx]
-        V_sorted = V.at[:, idx]
+        imaginary_eigvals = Lambda.imag
+        print(f"jax - imaginary eigvals: {imaginary_eigvals}")
+        print(f"jax - idx of imaginary eigvals: {jnp.argsort(imaginary_eigvals)}")
+        idx = jnp.argsort(imaginary_eigvals)
+        Lambda_sorted = Lambda[idx]
+        V_sorted = V[:, idx]
 
         # There is an edge case when eigenvalues can be 0, which requires some machinery to handle
         # We use a huge hack here: Assume only one pair is 0, and that it is the first row/column of A (only happens in Fourier case)
-        V = V_sorted.at[:, : self.N // 2]
-        Lambda = Lambda_sorted.at[: self.N // 2]
-        if Lambda[-1].abs() < 1e-4:
+        V = V_sorted[:, : self.N // 2]
+        Lambda = Lambda_sorted[: self.N // 2]
+        if jnp.abs(Lambda[-1]) < 1e-4:
             # x = x.at[idx].set(y)
             V = V.at[:, -1].set(0.0)  # V[:, -1] = 0.0
             V = V.at[0, -1].set(2**-0.5)  # V[0, -1] = 2**-0.5
             V = V.at[1, -1].set(2**-0.5 * 1j)  # V[1, -1] = 2**-0.5 * 1j
         else:
+            print(f"Lambdas:\n{Lambda[-1]}\n\n")
             raise ValueError("Only 1 zero eigenvalue allowed in diagonal part of A")
 
         _AP = V @ jnp.diag_embed(Lambda) @ V.conj().transpose(-1, -2)
