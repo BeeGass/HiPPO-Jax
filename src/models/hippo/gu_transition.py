@@ -425,11 +425,21 @@ class GuLowRankMatrix:
         # print("check", V @ torch.diag_embed(w) @ V.conj().transpose(-1, -2))
 
         V_inv = V.conj().transpose(-1, -2)
+        print(f"Lambda:\n{w}")
+        print(f"V_inv:\n{V_inv}")
+        print(f"P:\n{P}")
+        print(f"B:\n{B}")
+        print(f"V_inv:\n{V_inv.shape}")
+        print(f"P:\n{P.shape}")
+        print(f"B:\n{B.shape}")
 
         # C = initial_C(measure, N, dtype=dtype)
         B = contract("ij, j -> i", V_inv, B.to(V))  # V^* B
         # C = contract('ij, j -> i', V_inv, C.to(V)) # V^* C
         P = contract("ij, ...j -> ...i", V_inv, P.to(V))  # V^* P
+
+        print(f"gu_B after einsum:\n{B}")
+        print(f"gu_P after einsum:\n{P}")
 
         # return w, P, B, C, V
         return w, P, B, V

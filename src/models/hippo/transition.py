@@ -303,41 +303,6 @@ class LowRankMatrix:
             dtype
         )  # HiPPO normal (skew-symmetric) matrix (N x N)
 
-    def make_NPLR(self, trans_matrix, dtype=jnp.float32):
-        A = trans_matrix.A_matrix
-        B = trans_matrix.B_matrix
-
-        P = self.rank_correction(dtype=dtype)  # (r N)
-
-        S = A + jnp.sum(
-            jnp.expand_dims(P, -2) * jnp.expand_dims(P, -1), axis=-3
-        )  # rank correct if rank > 1, summation happens in outer most dimension
-        # S is nearly skew-symmetric
-
-        return A, B, P, S
-
-    def make_DPLR(self, B, P, S):
-        """Diagonalize NPLR representation"""
-
-        self.check_skew(S=S)
-
-        # Check skew symmetry
-        S_diag = jnp.diagonal(S)
-        Lambda_real = jnp.mean(S_diag, -1, keepdims=True) * jnp.ones_like(
-            S_diag
-        )  # S itself is not skew-symmetric. It is skew-symmetric by: S + c * I. Extract the value c, c = mean(S_diag)
-
-        # Diagonalize S to V \Lambda V^*
-        Lambda_imaginary, V = jnp.linalg.eigh(S * -1j)
-        Lambda = Lambda_real + 1j * Lambda_imaginary
-
-        Lambda, V = self.fix_zeroed_eigvals(Lambda=Lambda, V=V)
-
-        P = V.conj().transpose(-1, -2) @ P
-        B = V.conj().transpose(-1, -2) @ B
-
-        return Lambda, P, B, V
-
     def check_skew(self, S):
         """Check if a matrix is skew symmetric
 
@@ -360,7 +325,9 @@ class LowRankMatrix:
                 f"Transposed matrix:\n{_S.transpose(-1, -2)}\n\nUnchanged matrix:\n{-_S}"
             )  # the transpose of a skew symmetric matrix is equal to the negative of the matrix
 
-    def fix_zeroed_eigvals(self, Lambda, V):
+        return _S
+
+    def fix_zeroed_eigvals(self, Lambda, V, S):
 
         # Only keep half of each conjugate pair
         imaginary_eigvals = Lambda.imag
@@ -384,13 +351,48 @@ class LowRankMatrix:
             raise ValueError("Only 1 zero eigenvalue allowed in diagonal part of A")
 
         _AP = V @ jnp.diag_embed(Lambda) @ V.conj().transpose(-1, -2)
-        if (err := jnp.sum((2 * _AP.real - AP) ** 2) / self.N) > 1e-5:
+        if (err := jnp.sum((2 * _AP.real - S) ** 2) / self.N) > 1e-5:
             print(
                 "Warning: Diagonalization of A matrix not numerically precise - error",
                 err,
             )
 
         return Lambda, V
+
+    def make_NPLR(self, trans_matrix, dtype=jnp.float32):
+        A = trans_matrix.A_matrix
+        B = trans_matrix.B_matrix
+
+        P = self.rank_correction(dtype=dtype)  # (r N)
+
+        S = A + jnp.sum(
+            jnp.expand_dims(P, -2) * jnp.expand_dims(P, -1), axis=-3
+        )  # rank correct if rank > 1, summation happens in outer most dimension
+        # S is nearly skew-symmetric
+
+        return A, B, P, S
+
+    def make_DPLR(self, B, P, S):
+        """Diagonalize NPLR representation"""
+
+        _S = self.check_skew(S=S)
+
+        # Check skew symmetry
+        S_diag = jnp.diagonal(S)
+        Lambda_real = jnp.mean(S_diag, -1, keepdims=True) * jnp.ones_like(
+            S_diag
+        )  # S itself is not skew-symmetric. It is skew-symmetric by: S + c * I. Extract the value c, c = mean(S_diag)
+
+        # Diagonalize S to V \Lambda V^*
+        Lambda_imaginary, V = jnp.linalg.eigh(S * -1j)
+        Lambda = Lambda_real + 1j * Lambda_imaginary
+
+        Lambda, V = self.fix_zeroed_eigvals(Lambda=Lambda, V=V, S=_S)
+
+        P = V.conj().transpose(-1, -2) @ P
+        B = V.conj().transpose(-1, -2) @ B
+
+        return Lambda, P, B, V
 
     def rank_correction(self, dtype=jnp.float32):
         """Return low-rank matrix L such that A + L is normal"""

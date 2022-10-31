@@ -3,6 +3,7 @@ import jax
 import jax.numpy as jnp
 from flax import linen as nn
 from jax.numpy.linalg import inv
+from scipy import special as ss
 
 
 class HiPPO(nn.Module):
@@ -45,48 +46,7 @@ class HiPPO(nn.Module):
         self.C = jnp.ones((self.N,))
         self.D = jnp.zeros((1,))
 
-        if self.measure == "legt":
-            L = self.seq_L
-            vals = jnp.arange(0.0, 1.0, L)
-            # n = jnp.arange(self.N)[:, None]
-            zero_N = self.N - 1
-            x = 1 - 2 * vals
-            self.eval_matrix = jax.scipy.special.lpmn_values(
-                m=zero_N, n=zero_N, z=x, is_normalized=False
-            ).T  # ss.eval_legendre(n, x).T
-
-        elif self.measure == "lmu":
-            raise NotImplementedError("LMU measure not implemented yet")
-
-        elif self.measure == "legs":
-            L = self.max_length
-            vals = jnp.linspace(0.0, 1.0, L)
-            # n = jnp.arange(self.N)[:, None]
-            zero_N = self.N - 1
-            x = 2 * vals - 1
-            self.eval_matrix = (
-                B[:, None]
-                * jax.scipy.special.lpmn_values(
-                    m=zero_N, n=zero_N, z=x, is_normalized=False
-                )
-            ).T  # ss.eval_legendre(n, x)).T
-
-        elif self.measure == "lagt":
-            raise NotImplementedError("Translated Laguerre measure not implemented yet")
-
-        elif self.measure == "fru":
-            raise NotImplementedError(
-                "Fourier Recurrent Unit measure not implemented yet"
-            )
-
-        elif self.measure == "fout":
-            raise NotImplementedError("Translated Fourier measure not implemented yet")
-
-        elif self.measure == "fourd":
-            raise NotImplementedError("Decaying Fourier measure not implemented yet")
-
-        else:
-            raise ValueError("invalid measure")
+        self.basis(c=0.0, truncate_measure=True)
 
     def __call__(self, f, init_state=None, t_step=0, kernel=False):
         # print(f"u shape:\n{f.shape}")
@@ -118,6 +78,80 @@ class HiPPO(nn.Module):
             )
 
         return c_k, y_k, GBT_A, GBT_B
+
+    def measure_fn(self, c=0.0):
+
+        if self.measure == "legt":
+            fn = lambda x: jnp.heaviside(x, 0.0) * jnp.heaviside(1.0 - x, 0.0)
+
+        elif self.measure == "legs":
+            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
+
+        elif self.measure == "lagt":
+            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
+
+        elif self.measure in ["fourier"]:
+            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.heaviside(1.0 - x, 1.0)
+
+        else:
+            raise NotImplementedError
+
+        fn_tilted = lambda x: jnp.exp(c * x) * fn(x)
+
+        return fn_tilted
+
+    def basis(self, c=0.0, truncate_measure=True):
+        """
+        vals: list of times (forward in time)
+        returns: shape (T, N) where T is length of vals
+        """
+        L = self.max_length
+        vals = jnp.linspace(0.0, 1.0, L)
+        eval_matrix = None
+        if self.measure == "legt":
+            eval_matrix = jax.scipy.special.lpmn_values(
+                m=(self.N - 1), n=(self.N - 1), z=(2 * _vals - 1), is_normalized=False
+            ).T
+            eval_matrix *= (2 * jnp.arange(self.N) + 1) ** 0.5 * (-1) ** jnp.arange(
+                self.N
+            )
+
+        elif self.measure == "legs":
+            _vals = jnp.exp(-vals)
+            eval_matrix = jax.scipy.special.lpmn_values(
+                m=(self.N - 1), n=(self.N - 1), z=(2 * _vals - 1), is_normalized=False
+            ).T
+            eval_matrix *= (2 * jnp.arange(self.N) + 1) ** 0.5 * (-1) ** jnp.arange(
+                self.N
+            )
+
+        elif self.measure == "lagt":
+            vals = vals[::-1]
+            eval_matrix = ss.eval_genlaguerre(jnp.arange(self.N)[:, None], 0, vals)
+            eval_matrix = eval_matrix * jnp.exp(-vals / 2)
+            eval_matrix = eval_matrix.T
+
+        elif self.measure == "fourier":
+            cos = 2**0.5 * jnp.cos(
+                2 * jnp.pi * jnp.arange(self.N // 2)[:, None] * (vals)
+            )  # (N/2, T/dt)
+            sin = 2**0.5 * jnp.sin(
+                2 * jnp.pi * jnp.arange(self.N // 2)[:, None] * (vals)
+            )  # (N/2, T/dt)
+            cos[0] /= 2**0.5
+            eval_matrix = jnp.stack([cos.T, sin.T], axis=-1).reshape(
+                -1, self.N
+            )  # (T/dt, N)
+        #     print("eval_matrix shape", eval_matrix.shape)
+
+        if truncate_measure:
+            eval_matrix.at[self.measure_fn()(vals) == 0.0].set(0.0)  # TODO: fix this
+
+        self.eval_matrix = eval_matrix
+
+        p = eval_matrix
+
+        self.p = p * jnp.exp(-c * vals)[:, None]  # [::-1, None]
 
     def reconstruct(self, c):
         """
