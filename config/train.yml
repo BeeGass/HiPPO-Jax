@@ -1,0 +1,31 @@
+models:
+  model_type: "rnn"
+  hippo:
+    n: 10 # int
+    GBT_alpha: 0.5 # float
+    measure: legs # str
+    lambda_n: 1.0
+    fourier_type: "fru"
+    alpha: 0.0
+    beta: 1.0
+  rnn:
+    input_size: 1
+    hidden_size: 128
+    num_layers: 2
+    bias: True
+    output_size: 10
+    activation: "tanh"
+  s4:
+    param_1:
+    param_2:
+    param_3:
+
+training:
+  seed: 1701
+  key_num: 2
+  num_epochs: 25
+  weight_decay: 0.0005
+  lr: 0.00003
+  batch_size: 64
+  input_length: #
+

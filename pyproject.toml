@@ -48,13 +48,14 @@ optional = true
 [tool.poetry.group.torch.dependencies]
 # ~~~~~ PyTorch dependencies ~~~~~
 torch = [
-    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220802-cp38-none-macosx_11_0_arm64.whl"},
+    # {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torch-1.13.0.dev20220802-cp38-none-macosx_11_0_arm64.whl"},
     {platform = "linux", version = "^1.12.0", source = "pytorch"}
 ]
-#torchvision = [
+torchvision = [
+    {version = "^0.14.0+cu116", platform = "linux"},
 #    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchvision-0.14.0.dev20220616-cp39-cp39-macosx_11_0_arm64.whl"},
 #    {platform = "linux", version = "^0.12.0", source = "pytorch"}
-#    ]
+    ]
 #torchaudio = [
 #    {platform = "darwin", url = "https://download.pytorch.org/whl/nightly/cpu/torchaudio-0.14.0.dev20220603-cp39-cp39-macosx_11_0_arm64.whl"},
 #    {platform = "linux", version = "^0.12.0", source = "pytorch"}
@@ -81,7 +82,7 @@ optax = [
 [tool.poetry.group.jupyter]
 optional = true
 
-[tool.poetry.group.jupyter.dependencies]
+[tool.poetry.group.jupyter.dependencies] 
 # ~~~~~ jupyter dependencies ~~~~~
 notebook = [
     {version = "^6.4.12", platform = "linux"},
@@ -127,6 +128,7 @@ name = "pytorch"
 url = "https://download.pytorch.org/whl/cu116"
 default = false
 secondary = true
+
 
 [[tool.poetry.source]]
 name = "jax"

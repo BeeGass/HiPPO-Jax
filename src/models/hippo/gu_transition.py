@@ -429,9 +429,9 @@ class GuLowRankMatrix:
         print(f"V_inv:\n{V_inv}")
         print(f"P:\n{P}")
         print(f"B:\n{B}")
-        print(f"V_inv:\n{V_inv.shape}")
-        print(f"P:\n{P.shape}")
-        print(f"B:\n{B.shape}")
+        print(f"V_inv  shape:\n{V_inv.shape}")
+        print(f"P shape:\n{P.shape}")
+        print(f"B shape:\n{B.shape}")
 
         # C = initial_C(measure, N, dtype=dtype)
         B = contract("ij, j -> i", V_inv, B.to(V))  # V^* B
