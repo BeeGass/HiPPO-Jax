@@ -1,5 +1,5 @@
 models:
-  model_type: "rnn"
+  model_type: "lstm"
   hippo:
     n: 10 # int
     GBT_alpha: 0.5 # float
@@ -9,13 +9,17 @@ models:
     alpha: 0.0
     beta: 1.0
   rnn:
-    input_size: 1
-    hidden_size: 128
+    input_size: 128
+    hidden_size: 256
     num_layers: 2
     bias: True
     output_size: 10
     activation: "tanh"
   s4:
+    param_1:
+    param_2:
+    param_3:
+  lstm:
     param_1:
     param_2:
     param_3:

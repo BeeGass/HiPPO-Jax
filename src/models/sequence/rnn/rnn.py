@@ -1,170 +1,189 @@
 import jax
-import jax.ops
-import jax.numpy as jnp
-from jax.experimental.host_callback import id_print
-from jax.tree_util import Partial
-
-import flax
 from flax import linen as nn
-from flax.linen.recurrent import RNNCellBase
-
-import optax
-
-import numpy as np  # convention: original numpy
-
+from flax.linen.initializers import zeros
+import jax.numpy as jnp
+from cells import RNNCell
 from typing import Any, Callable, Sequence, Optional, Tuple, Union
-from collections import defaultdict
-from functools import partial
-import pprint
-
-from src.models.hippo.hippo import HiPPO
+from dataclasses import field
 
 
-# TODO: refer to https://github.com/deepmind/dm-haiku/blob/main/haiku/_src/recurrent.py#L714-L762
-# also refer to https://dm-haiku.readthedocs.io/en/latest/api.html?highlight=DeepRNN#deeprnn
-class _DeepRNN(RNNCellBase):
+class SimpleRNN(nn.Module):
+    input_size: int
     hidden_size: int
-    layers: Sequence[Any]
-    skip_connections: bool
-    hidden_to_output_layer: bool
-    layer_name: Optional[str]
+    num_layers: int
+    output_size: int
+    bias: bool = True
+    activation: str = "tanh"
+    # rnn_cells: Sequence[nn.Module] = field(default_factory=list)
 
     def setup(self):
-        if self.skip_connections:
-            for layer in self.layers:
-                if not (isinstance(layer, RNNCellBase) or isinstance(layer, HiPPOCell)):
-                    raise ValueError(
-                        "skip_connections requires for all layers to be "
-                        "`hk.RNNCore`s. Layers is: {}".format(self.layers)
+        rnn_cells = []
+        if self.activation == "tanh":
+            for l in range(self.num_layers):
+                if l == 0:
+                    input_size = self.input_size
+                else:
+                    input_size = self.hidden_size
+
+                rnn_cells.append(
+                    RNNCell(
+                        input_size=input_size,
+                        hidden_size=self.hidden_size,
+                        bias=self.bias,
+                        nonlinearity="tanh",
                     )
-                    # raise ValueError(
-                    #     f"{self.layer_name} layer {layer} is not a RNNCellBase or HiPPOCell"
-                    # )
-
-    def __call__(self, carry, inputs):
-        current_carry = carry
-        next_states = []
-        h_t_outputs = []
-        c_t_outputs = []
-        state_idx = 0
-        # print(f"inside deep rnn, inputs:\n{inputs.shape}")
-        # print(f"inside deep rnn, carry:\n{carry.shape}")
-        h_t, c_t = carry  # c_t may actually be h_t in which case dont use it
-        (
-            h_t_copy,
-            c_t_copy,
-        ) = current_carry  # c_t may actually be h_t in which case dont use it
-        concat = lambda *args: jnp.concatenate(args, axis=-1)
-        print(f"before main loop")
-        for idx, layer in enumerate(self.layers):
-            print(f"inside deep rnn cell, h_t:\n{h_t.shape}\nc_t:\n{c_t.shape}")
-            print(f"inside deep rnn cell, THE INPUTS:\n{inputs[idx].shape}")
-            if self.skip_connections and idx > 0:
-                skip_h_t = jax.tree_map(concat, h_t, h_t_copy)
-                skip_c_t = jax.tree_map(concat, c_t, c_t_copy)
-                current_carry = tuple([skip_h_t, skip_c_t])
-
-            if isinstance(layer, RNNCellBase) or isinstance(layer, HiPPOCell):
-                # print(f"inside deep rnn, inputs:\n{inputs}")
-                # print(f"inside deep rnn, state_idx:\n{state_idx}")
-                print(f"inside deep rnn, inputs[state_idx]:\n{inputs[state_idx].shape}")
-                h_t, c_t, next_state = layer(
-                    current_carry, inputs[state_idx]
-                )  # problem line
-                h_t_outputs.append(h_t)
-                c_t_outputs.append(c_t)
-                next_states.append(next_state)
-                state_idx += 1
-
-            else:
-                print(f"current_carry before layer: {current_carry.shape}")
-                print(f"layer: {layer}")
-                current_carry = layer(current_carry)
-                print(f"current_carry:\n {current_carry.shape}")
-
-        print(f"third conditional")
-        if self.skip_connections:
-            skip_h_t_out = jax.tree_map(concat, *h_t_outputs)
-            skip_c_t_out = jax.tree_map(concat, *c_t_outputs)
-            next_carry = (skip_h_t_out, skip_c_t_out)
-        else:
-            next_carry = current_carry
-
-        print(f"next_states before tuple:\n", next_states)
-        pp.pprint(layer)
-        print(f"carry before return B:\n", next_carry)
-
-        return next_carry, next_states
-
-    @staticmethod
-    def initialize_state(
-        num_layers,
-        rng,
-        batch_size: tuple,
-        output_size: int,
-        init_fn=nn.initializers.zeros,
-    ):
-        states = []
-        for i in range(num_layers):
-            print(f"Layer: {i}\n")
-            states.append(
-                _DeepRNN.init_state(
-                    rng=rng,
-                    batch_size=batch_size,
-                    output_size=output_size,
-                    init_fn=init_fn,
                 )
-            )
 
-        return states
+        elif self.activation == "relu":
+            for l in range(self.num_layers):
+                if l == 0:
+                    input_size = self.input_size
+                else:
+                    input_size = self.hidden_size
+
+                rnn_cells.append(
+                    RNNCell(
+                        input_size=self.input_size,
+                        hidden_size=self.hidden_size,
+                        bias=self.bias,
+                        nonlinearity="relu",
+                    )
+                )
+        else:
+            raise ValueError("Invalid activation.")
+
+        self.rnn_cells = rnn_cells
+
+        self.fc = nn.Dense(self.output_size)
+
+    def __call__(self, carry, input):
+
+        # Input of shape (batch_size, seqence length, input_size)
+        #
+        # Output of shape (batch_size, output_size)
+        h_t, c_t = carry
+        print(f"input shape: {input.shape}")
+        print(f"h_t shape: {h_t.shape}")
+        out = []
+        hidden = []
+        for layer in range(self.num_layers):
+            # new_carry = (jnp.expand_dims(h_t, axis=-1), jnp.expand_dims(c_t, axis=-1))
+            hidden.append(carry)
+
+        for t in range(input.shape[1]):
+            for layer in range(self.num_layers):
+                if layer == 0:
+                    hidden_l = self.rnn_cells[layer](hidden[layer], input[:, :, t])
+
+                else:
+                    new_carry = hidden[layer - 1]
+                    # TODO: there is an issue where lists are becoming tuples preventing this logic from being possible
+                    print(f"new_carry: {new_carry}")
+                    new_input, _ = new_carry
+                    print(f"hidden[layer - 1]: {hidden[layer - 1]}")
+                    print(f"new_input: {new_input}")
+                    hidden_l = self.rnn_cells[layer](hidden[layer], new_input)
+
+                hidden[layer] = hidden_l
+
+            out.append(hidden_l)
+
+        # Take only last time step. Modify for seq to seq
+        out = jnp.expand_dims(out, axis=-1)
+
+        return self.fc(out)
 
     @staticmethod
-    def init_state(
-        rng, batch_size: tuple, output_size: int, init_fn=nn.initializers.zeros
-    ):
-        print(f"batch_size: {(batch_size,)}")
-        print(f"output_size: {(output_size,)}")
-        mem_shape = (batch_size,) + (output_size,)
-        print(f"state mem_shape: {mem_shape}")
+    def initialize_carry(rng, batch_dims, size, init_fn=zeros):
+        """Initialize the RNN cell carry.
 
-        return init_fn(rng, mem_shape)
-
-    @staticmethod
-    def initialize_carry(
-        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
-    ):
-        print(f"batch_size: {batch_size}")
-        print(f"hidden_size: {(hidden_size,)}")
-        mem_shape = batch_size + (1, hidden_size)
-        print(f"carry mem_shape: {mem_shape}")
-
-        return init_fn(rng, mem_shape), init_fn(rng, mem_shape)
+        Args:
+        rng: random number generator passed to the init_fn.
+        batch_dims: a tuple providing the shape of the batch dimensions.
+        size: the size or number of features of the memory.
+        init_fn: initializer function for the carry.
+        Returns:
+        An initialized carry for the given RNN cell.
+        """
+        key1, key2 = jax.random.split(rng)
+        mem_shape = batch_dims + (size,)
+        return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
 
 
-class DeepRNN(_DeepRNN):
-    r"""Wraps a sequence of cores and callables as a single core.
-        >>> deep_rnn = hk.DeepRNN([
-        ...     LSTMCell(hidden_size=4),
-        ...     jax.nn.relu,
-        ...     LSTMCell(hidden_size=2),
-        ... ])
-    The state of a :class:`DeepRNN` is a tuple with one element per
-    :class:`RNNCore`. If no layers are :class:`RNNCore`\ s, the state is an empty
-    tuple.
-    """
+def test():
+    seed = 1701
+    key = jax.random.PRNGKey(seed)
 
-    def __init__(
-        self,
-        hidden_size: int,
-        layers: Sequence[Any],
-        skip_connections: Optional[bool] = False,
-        hidden_to_output_layer: Optional[bool] = False,
-        name: Optional[str] = None,
-    ):
-        super().__init__(
-            hidden_size=hidden_size,
-            layers=layers,
-            skip_connections=skip_connections,
-            hidden_to_output_layer=hidden_to_output_layer,
-            layer_name=name,
-        )
+    num_copies = 4
+    rng, key, subkey, subsubkey = jax.random.split(key, num=num_copies)
+
+    hidden_size = 256
+
+    # batch size, sequence length, input size
+    batch_size = 64
+    seq_L = 1
+    input_size = 28 * 28
+
+    # fake data
+    x = jax.random.randint(rng, (batch_size, input_size), 1, 100)
+    # print(f"x:\n{x}\n")
+    print(f"x shape:\n{x.shape}\n")
+    x = jnp.expand_dims(x, axis=-1)
+    vals = jnp.ones((batch_size, input_size, batch_size - 1)) * input_size
+    # print(f"vals:\n{vals}\n")
+    print(f"vals shape:\n{vals.shape}\n")
+    x = jnp.concatenate([x, vals], axis=-1)
+
+    # model
+    model = SimpleRNN(
+        input_size=(28 * 28),
+        hidden_size=hidden_size,
+        num_layers=3,
+        output_size=10,
+        bias=True,
+        activation="tanh",
+    )
+
+    # get model params
+    params = model.init(
+        key,
+        model.initialize_carry(
+            rng=subkey,
+            batch_dims=(batch_size,),
+            size=hidden_size,
+            init_fn=nn.initializers.zeros,
+        ),
+        input=x,
+    )
+
+    out = model.apply(
+        params,
+        model.initialize_carry(
+            rng=subsubkey,
+            batch_dims=(batch_size,),
+            size=hidden_size,
+            init_fn=nn.initializers.zeros,
+        ),
+        x,
+    )
+
+    xshape = out.shape
+    return x, xshape
+
+
+def tester():
+    for i in range(1, 100):
+        testx, xdims = test()
+        if i % 10 == 0:
+            print(f"output array:\n{testx[i]}\n")
+            print(f"output array shape:\n{xdims}\n")
+        assert xdims == (64, 10)
+    print("Size test: passed.")
+
+
+def main():
+    tester()
+
+
+if __name__ == "__main__":
+    main()

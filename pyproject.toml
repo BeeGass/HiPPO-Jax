@@ -41,6 +41,15 @@ scipy = [
     {version = "^1.9.0", platform = "darwin"}
     ]
 einops = "^0.5.0"
+hydra-core = {version = "^1.2.0", platform = "linux"}
+omegaconf = {version = "^2.2.3", platform = "linux"}
+wandb = {version = "^0.13.5", platform = "linux"}
+
+[tool.poetry.group.dataset]
+optional = true
+
+[tool.poetry.group.dataset.dependencies]
+tensorflow-datasets = {version = "^4.7.0", platform = "linux"}
 
 [tool.poetry.group.torch]
 optional = true

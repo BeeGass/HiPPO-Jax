@@ -6,7 +6,10 @@ import optax
 
 from flax import linen as nn
 from flax.training import train_state
-from flax.linen.recurrent import RNNCellBase
+
+# from flax.linen.recurrent import RNNCellBase
+from rnn import SimpleRNN as RNN
+from src.models.hippo.hippo import HiPPO
 
 import time
 from typing import Any, Callable, Sequence, Optional, Tuple, Union
@@ -92,7 +95,7 @@ def preprocess_data(cfg, data):
         array_shape = (batch_size, seq_l, input_size)
         x = jnp.expand_dims(data, -1)
         _x = jnp.ones(array_shape) * (input_size)
-        x = torch.cat([x, _x], axis=-1)
+        x = jnp.concatenate([x, _x], axis=-1)
 
     elif cfg["models"]["model_type"] == "hippo":
         raise NotImplementedError
