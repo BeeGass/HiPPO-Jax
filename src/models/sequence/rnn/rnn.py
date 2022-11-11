@@ -3,7 +3,7 @@ from flax import linen as nn
 from flax.linen.initializers import zeros
 import jax.numpy as jnp
 from cells import RNNCell
-from typing import Any, Callable, Sequence, Optional, Tuple, Union
+from typing import Any, Callable
 from dataclasses import field
 
 
