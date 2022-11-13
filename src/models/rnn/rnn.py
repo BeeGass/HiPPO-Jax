@@ -1,10 +1,12 @@
+from dataclasses import field
+from typing import Any, Callable, Optional, Sequence
+
 import jax
+import jax.numpy as jnp
 from flax import linen as nn
 from flax.linen.initializers import zeros
-import jax.numpy as jnp
-from cells import RNNCell, LSTMCell, GRUCell, HiPPOCell
-from typing import Any, Callable, Sequence, Optional
-from dataclasses import field
+
+from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
 
 
 class DeepRNN(nn.Module):

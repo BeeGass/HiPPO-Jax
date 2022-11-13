@@ -2,7 +2,6 @@ import jax
 import jax.numpy as jnp
 
 from flax import linen as nn
-from flax.linen.recurrent import RNNCellBase
 from flax.linen.recurrent import GRUCell as r_GRUCell
 from flax.linen.activation import tanh
 from flax.linen.activation import sigmoid

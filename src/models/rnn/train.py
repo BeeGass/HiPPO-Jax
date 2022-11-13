@@ -8,7 +8,8 @@ from flax import linen as nn
 from flax.training import train_state
 
 # from flax.linen.recurrent import RNNCellBase
-from rnn import SimpleRNN as RNN
+from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
+from src.models.rnn.rnn import DeepRNN
 from src.models.hippo.hippo import HiPPO
 
 import time
@@ -36,7 +37,7 @@ def pick_model(cfg):
     model = None
     params = None
     if cfg["models"]["model_type"] == "rnn":
-        model = RNN(
+        model = DeepRNN(
             input_size=cfg["models"]["rnn"]["input_size"],
             hidden_size=cfg["models"]["rnn"]["hidden_size"],
             num_layers=cfg["models"]["rnn"]["num_layers"],
