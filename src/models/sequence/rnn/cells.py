@@ -2,6 +2,8 @@ import jax
 import jax.numpy as jnp
 
 from flax import linen as nn
+from flax.linen.recurrent import RNNCellBase
+from flax.linen.recurrent import GRUCell as r_GRUCell
 from flax.linen.activation import tanh
 from flax.linen.activation import sigmoid
 
@@ -311,6 +313,89 @@ class HiPPOCell(nn.Module):
         c_t = self.hippo(f=f_t, init_state=c_t_1, t_step=f_t.shape[0], kernel=False)
 
         return (h_t, c_t), h_t
+
+    @staticmethod
+    def initialize_carry(
+        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+    ):
+        print(f"batch_size: {batch_size}")
+        print(f"hidden_size: {(hidden_size,)}")
+        mem_shape = batch_size + (1, hidden_size)
+        print(f"carry mem_shape: {mem_shape}")
+
+        return init_fn(rng, mem_shape), init_fn(rng, mem_shape)
+
+
+# this version takes in flax's built-in recurrent cells
+class HIPPOCell(nn.Module):
+    """
+    Description:
+        z_t = sigmoid((W_{iz} @ x_{t} + b_{iz}) + (W_{hz} @ h_{t-1} + b_{hz}))
+        r_t = sigmoid((W_{ir} @ x_{t} + b_{ir}) + (W_{hr} @ h_{t-1} + b_{hr}))
+        n_t = tanh(((W_{in} @ x_{t} + b_{in}) + r_t) * (W_{hn} @ h_{t-1} + b_{hn}))
+        h_t = (z_t * h_{t-1}) + ((1 - z_t) * g_i)
+
+    Args:
+        hidden_size (int): hidden state size
+        carry (jnp.ndarray): hidden state from previous time step
+        input (jnp.ndarray): # input vector
+
+    Returns:
+        A tuple with the new carry and the output.
+    """
+
+    input_size: int
+    hidden_size: int
+    bias: bool = True
+    param_dtype: Any = jnp.float32
+    measure: str = "legs"
+    lambda_n: float = 1.0
+    fourier_type: str = "fru"
+    alpha: float = 0.0
+    beta: float = 1.0
+    GBT_alpha: float = 0.5
+    rnn_cell: Callable[..., Any] = r_GRUCell
+
+    def setup(self):
+        hippo_matrices = TransMatrix(
+            N=self.hidden_size,
+            measure=self.measure,
+            lambda_n=self.lambda_n,
+            fourier_type=self.fourier_type,
+            alpha=self.alpha,
+            beta=self.beta,
+        )
+        A = hippo_matrices.A_matrix
+        B = hippo_matrices.B_matrix
+        L = self.input_size
+
+        self.hippo = HiPPO(
+            N=self.hidden_size,
+            max_length=L,
+            step=1.0 / L,
+            GBT_alpha=self.GBT_alpha,
+            seq_L=L,
+            A=A,
+            B=B,
+            measure=self.measure,
+        )
+
+        self.rnn = self.rnn_cell()
+
+        self.dense_f_th = nn.Dense(
+            features=self.hidden_size, use_bias=self.bias, param_dtype=self.param_dtype
+        )
+
+    def __call__(self, carry, input):
+        _, c_t_1 = carry
+
+        carry = self.rnn(carry, input)
+        h_t, _ = carry
+
+        f_t = self.dense_f_th(h_t)
+        c_t = self.hippo(f=f_t, init_state=c_t_1, t_step=f_t.shape[0], kernel=False)
+
+        return (h_t, c_t)
 
     @staticmethod
     def initialize_carry(

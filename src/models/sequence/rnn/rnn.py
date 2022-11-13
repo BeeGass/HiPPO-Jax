@@ -2,111 +2,75 @@ import jax
 from flax import linen as nn
 from flax.linen.initializers import zeros
 import jax.numpy as jnp
-from cells import RNNCell
-from typing import Any, Callable
+from cells import RNNCell, LSTMCell, GRUCell, HiPPOCell
+from typing import Any, Callable, Sequence, Optional
 from dataclasses import field
 
 
-class SimpleRNN(nn.Module):
-    input_size: int
-    hidden_size: int
-    num_layers: int
+class DeepRNN(nn.Module):
     output_size: int
-    bias: bool = True
-    activation: str = "tanh"
-    # rnn_cells: Sequence[nn.Module] = field(default_factory=list)
+    layers: Sequence[Any]
+    skip_connections: bool
+    layer_name: Optional[str]
 
     def setup(self):
-        rnn_cells = []
-        if self.activation == "tanh":
-            for l in range(self.num_layers):
-                if l == 0:
-                    input_size = self.input_size
-                else:
-                    input_size = self.hidden_size
-
-                rnn_cells.append(
-                    RNNCell(
-                        input_size=input_size,
-                        hidden_size=self.hidden_size,
-                        bias=self.bias,
-                        nonlinearity="tanh",
+        if self.skip_connections:
+            for layer in self.layers:
+                if not isinstance(layer, nn.Module):
+                    raise ValueError(
+                        "skip_connections requires for all layers to be "
+                        "`nn.Module. Layers is: {}".format(self.layers)
                     )
-                )
 
-        elif self.activation == "relu":
-            for l in range(self.num_layers):
-                if l == 0:
-                    input_size = self.input_size
-                else:
-                    input_size = self.hidden_size
-
-                rnn_cells.append(
-                    RNNCell(
-                        input_size=self.input_size,
-                        hidden_size=self.hidden_size,
-                        bias=self.bias,
-                        nonlinearity="relu",
-                    )
-                )
-        else:
-            raise ValueError("Invalid activation.")
-
-        self.rnn_cells = rnn_cells
-
-        self.fc = nn.Dense(self.output_size)
+        self.dense_out = nn.Dense(features=self.output_size)
 
     def __call__(self, carry, input):
-
-        # Input of shape (batch_size, seqence length, input_size)
-        #
-        # Output of shape (batch_size, output_size)
+        out_carry = None
+        output = None
         h_t, c_t = carry
-        print(f"input shape: {input.shape}")
-        print(f"h_t shape: {h_t.shape}")
-        out = []
-        hidden = []
-        for layer in range(self.num_layers):
-            # new_carry = (jnp.expand_dims(h_t, axis=-1), jnp.expand_dims(c_t, axis=-1))
-            hidden.append(carry)
+        h_t_list = []
+        c_t_list = []
+        states = []
 
         for t in range(input.shape[1]):
-            for layer in range(self.num_layers):
-                if layer == 0:
-                    hidden_l = self.rnn_cells[layer](hidden[layer], input[:, :, t])
+            for idx, layer in enumerate(self.layers):
+                if isinstance(layer, nn.Module):
+                    if idx == 0:
+                        out_carry, output = layer(carry, input)
+                        h_t, c_t = out_carry
 
+                    else:
+                        h_t_1, c_t_1 = out_carry
+                        out_carry, output = layer(carry, h_t_1)
+                        h_t, c_t = out_carry
+                        if self.skip_connections:
+                            h_t = jnp.concatenate(h_t, h_t_1, axis=-1)
+                            c_t = jnp.concatenate(c_t, c_t_1, axis=-1)
+                            out_carry = tuple([h_t, c_t])
                 else:
-                    new_carry = hidden[layer - 1]
-                    # TODO: there is an issue where lists are becoming tuples preventing this logic from being possible
-                    print(f"new_carry: {new_carry}")
-                    new_input, _ = new_carry
-                    print(f"hidden[layer - 1]: {hidden[layer - 1]}")
-                    print(f"new_input: {new_input}")
-                    hidden_l = self.rnn_cells[layer](hidden[layer], new_input)
+                    out_carry, output = layer(out_carry)
 
-                hidden[layer] = hidden_l
+                h_t_list.append(h_t)
+                c_t_list.append(c_t)
+                states.append(output)
 
-            out.append(hidden_l)
+        next_carry = None
+        concat = lambda *args: jnp.concatenate(args, axis=-1)
+        if self.skip_connections:
+            h_t = jax.tree_map(concat, *h_t_list)
+            c_t = jax.tree_map(concat, *c_t_list)
+            next_carry = tuple([h_t, c_t])
+        else:
+            next_carry = out_carry
 
-        # Take only last time step. Modify for seq to seq
-        out = jnp.expand_dims(out, axis=-1)
-
-        return self.fc(out)
+        return next_carry, self.dense_out(output)
 
     @staticmethod
-    def initialize_carry(rng, batch_dims, size, init_fn=zeros):
-        """Initialize the RNN cell carry.
-
-        Args:
-        rng: random number generator passed to the init_fn.
-        batch_dims: a tuple providing the shape of the batch dimensions.
-        size: the size or number of features of the memory.
-        init_fn: initializer function for the carry.
-        Returns:
-        An initialized carry for the given RNN cell.
-        """
+    def initialize_carry(
+        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+    ):
         key1, key2 = jax.random.split(rng)
-        mem_shape = batch_dims + (size,)
+        mem_shape = batch_size + (1, hidden_size)
         return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
 
 
@@ -134,14 +98,29 @@ def test():
     print(f"vals shape:\n{vals.shape}\n")
     x = jnp.concatenate([x, vals], axis=-1)
 
+    num_of_rnns = 3
+    rnn_layers = [
+        RNNCell(input_size=input_size, hidden_size=hidden_size)
+        for _ in range(num_of_rnns)
+    ]
+    # lstm_layers = [
+    #     LSTMCell(input_size=input_size, hidden_size=hidden_size)
+    #     for _ in range(num_of_rnns)
+    # ]
+    # gru_layers = [
+    #     GRUCell(input_size=input_size, hidden_size=hidden_size)
+    #     for _ in range(num_of_rnns)
+    # ]
+    # hippo_layers = [
+    #     HiPPOCell(input_size=input_size, hidden_size=hidden_size)
+    #     for _ in range(num_of_rnns)
+    # ]
+
     # model
-    model = SimpleRNN(
-        input_size=(28 * 28),
-        hidden_size=hidden_size,
-        num_layers=3,
+    model = DeepRNN(
         output_size=10,
-        bias=True,
-        activation="tanh",
+        layers=rnn_layers,
+        skip_connections=True,
     )
 
     # get model params
