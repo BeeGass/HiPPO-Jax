@@ -34,7 +34,8 @@ class DeepRNN(nn.Module):
         c_t_list = []
         states = []
 
-        for t in range(input.shape[1]):
+        print("DeepRNN: input.shape: {}".format(input.shape))
+        for t in range(1, input.shape[-1] + 1):
             print("t: ", t)
             for idx, layer in enumerate(self.layers):
                 print(f"layer({idx+1})")
@@ -48,8 +49,10 @@ class DeepRNN(nn.Module):
                         out_carry, output = layer(carry, h_t_1)
                         h_t, c_t = out_carry
                         if self.skip_connections:
-                            h_t = jnp.concatenate([h_t, h_t_1], axis=-1)
-                            c_t = jnp.concatenate([c_t, c_t_1], axis=-1)
+                            h_t = jnp.concatenate([h_t, h_t_1], axis=1)
+                            c_t = jnp.concatenate([c_t, c_t_1], axis=1)
+                            print("h_t: ", h_t.shape)
+                            print("c_t: ", c_t.shape)
                             out_carry = tuple([h_t, c_t])
                 else:
                     out_carry, output = layer(out_carry)
@@ -57,6 +60,8 @@ class DeepRNN(nn.Module):
                 h_t_list.append(h_t)
                 c_t_list.append(c_t)
                 states.append(output)
+
+            carry = out_carry
 
         next_carry = None
         concat = lambda *args: jnp.concatenate(args, axis=-1)
@@ -71,10 +76,15 @@ class DeepRNN(nn.Module):
 
     @staticmethod
     def initialize_carry(
-        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+        rng,
+        batch_size: tuple,
+        input_size: int,
+        hidden_size: int,
+        init_fn=nn.initializers.zeros,
     ):
         key1, key2 = jax.random.split(rng)
-        mem_shape = batch_size + (1, hidden_size)
+        mem_shape = batch_size + (input_size, hidden_size)
+        print("mem_shape: ", mem_shape)
         return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
 
 
@@ -136,7 +146,7 @@ def test():
     model = DeepRNN(
         output_size=10,
         layers=layer_list,
-        skip_connections=True,
+        skip_connections=False,
     )
 
     # get model params
@@ -145,6 +155,7 @@ def test():
         model.initialize_carry(
             rng=subkey,
             batch_size=(batch_size,),
+            input_size=input_size,
             hidden_size=hidden_size,
             init_fn=nn.initializers.zeros,
         ),
@@ -157,21 +168,23 @@ def test():
         model.initialize_carry(
             rng=subsubkey,
             batch_size=(batch_size,),
+            input_size=input_size,
             hidden_size=hidden_size,
             init_fn=nn.initializers.zeros,
         ),
         x,
     )
 
-    xshape = out.shape
-    return x, xshape
+    return carry, out
 
 
 def tester():
     for i in range(1, 100):
-        testx, xdims = test()
-        if i % 10 == 0:
-            print(f"output array:\n{testx[i]}\n")
+        test_carry, testx = test()
+        xdims = testx.shape
+        carrydims = test_carry[0].shape
+        if i % 10 == 0 or i == 1 or i == 100:
             print(f"output array shape:\n{xdims}\n")
-        assert xdims == (32, 10)
+            print(f"h_t array shape:\n{carrydims}\n")
+        assert xdims == (32, 784, 10)
     print("Size test: passed.")

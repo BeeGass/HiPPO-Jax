@@ -44,12 +44,16 @@ class RNNCell(nn.Module):
 
     def __call__(self, carry, input):
         ht_1, _ = carry
+        print("input: ", input.shape)
+        print("ht_1: ", ht_1.shape)
 
-        w_hh = self.dense_i(ht_1)
-        w_xh = self.dense_h(input)
+        w_hh = self.dense_h(ht_1)
+        w_xh = self.dense_i(input)
+        print("w_hh: ", w_hh.shape)
+        print("w_xh: ", w_xh.shape)
 
         h_t = self.activation_fn(
-            w_hh + w_xh
+            (w_hh + w_xh)
         )  # H_{t} = tanh(H_{t-1} @ W_{hh}) + (x_{t} @ W_{xh})
 
         return (h_t, h_t), h_t
