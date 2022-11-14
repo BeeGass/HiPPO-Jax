@@ -83,10 +83,10 @@ def test():
     num_copies = 4
     rng, key, subkey, subsubkey = jax.random.split(key, num=num_copies)
 
-    hidden_size = 256
+    hidden_size = 128
 
     # batch size, sequence length, input size
-    batch_size = 64
+    batch_size = 32
     seq_L = 1
     input_size = 28 * 28
 
@@ -100,28 +100,40 @@ def test():
     print(f"vals shape:\n{vals.shape}\n")
     x = jnp.concatenate([x, vals], axis=-1)
 
+    layer_list = []
     num_of_rnns = 3
-    rnn_layers = [
-        RNNCell(input_size=input_size, hidden_size=hidden_size)
-        for _ in range(num_of_rnns)
-    ]
-    # lstm_layers = [
-    #     LSTMCell(input_size=input_size, hidden_size=hidden_size)
-    #     for _ in range(num_of_rnns)
-    # ]
-    # gru_layers = [
-    #     GRUCell(input_size=input_size, hidden_size=hidden_size)
-    #     for _ in range(num_of_rnns)
-    # ]
-    # hippo_layers = [
-    #     HiPPOCell(input_size=input_size, hidden_size=hidden_size)
-    #     for _ in range(num_of_rnns)
-    # ]
+    rnn_type = "rnn"
+    if rnn_type == "rnn":
+        layer_list = [
+            RNNCell(input_size=input_size, hidden_size=hidden_size)
+            for _ in range(num_of_rnns)
+        ]
+
+    elif rnn_type == "lstm":
+        layer_list = [
+            LSTMCell(input_size=input_size, hidden_size=hidden_size)
+            for _ in range(num_of_rnns)
+        ]
+
+    elif rnn_type == "gru":
+        layer_list = [
+            GRUCell(input_size=input_size, hidden_size=hidden_size)
+            for _ in range(num_of_rnns)
+        ]
+
+    elif rnn_type == "hippo":
+        layer_list = [
+            HiPPOCell(input_size=input_size, hidden_size=hidden_size)
+            for _ in range(num_of_rnns)
+        ]
+
+    else:
+        raise ValueError("rnn_type must be one of: rnn, lstm, gru, hippo")
 
     # model
     model = DeepRNN(
         output_size=10,
-        layers=rnn_layers,
+        layers=layer_list,
         skip_connections=True,
     )
 
@@ -137,6 +149,7 @@ def test():
         input=x,
     )
 
+    print(f"applying model:\n")
     out = model.apply(
         params,
         model.initialize_carry(
@@ -158,5 +171,5 @@ def tester():
         if i % 10 == 0:
             print(f"output array:\n{testx[i]}\n")
             print(f"output array shape:\n{xdims}\n")
-        assert xdims == (64, 10)
+        assert xdims == (32, 10)
     print("Size test: passed.")
