@@ -35,7 +35,9 @@ class DeepRNN(nn.Module):
         states = []
 
         for t in range(input.shape[1]):
+            print("t: ", t)
             for idx, layer in enumerate(self.layers):
+                print(f"layer({idx+1})")
                 if isinstance(layer, nn.Module):
                     if idx == 0:
                         out_carry, output = layer(carry, input)
@@ -83,7 +85,7 @@ def test():
     num_copies = 4
     rng, key, subkey, subsubkey = jax.random.split(key, num=num_copies)
 
-    hidden_size = 128
+    hidden_size = 256
 
     # batch size, sequence length, input size
     batch_size = 32
@@ -150,7 +152,7 @@ def test():
     )
 
     print(f"applying model:\n")
-    out = model.apply(
+    carry, out = model.apply(
         params,
         model.initialize_carry(
             rng=subsubkey,
