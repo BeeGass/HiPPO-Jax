@@ -13,7 +13,7 @@ class DeepRNN(nn.Module):
     output_size: int
     layers: Sequence[Any]
     skip_connections: bool
-    layer_name: Optional[str]
+    layer_name: Optional[str] = None
 
     def setup(self):
         if self.skip_connections:
@@ -46,8 +46,8 @@ class DeepRNN(nn.Module):
                         out_carry, output = layer(carry, h_t_1)
                         h_t, c_t = out_carry
                         if self.skip_connections:
-                            h_t = jnp.concatenate(h_t, h_t_1, axis=-1)
-                            c_t = jnp.concatenate(c_t, c_t_1, axis=-1)
+                            h_t = jnp.concatenate([h_t, h_t_1], axis=-1)
+                            c_t = jnp.concatenate([c_t, c_t_1], axis=-1)
                             out_carry = tuple([h_t, c_t])
                 else:
                     out_carry, output = layer(out_carry)
@@ -130,8 +130,8 @@ def test():
         key,
         model.initialize_carry(
             rng=subkey,
-            batch_dims=(batch_size,),
-            size=hidden_size,
+            batch_size=(batch_size,),
+            hidden_size=hidden_size,
             init_fn=nn.initializers.zeros,
         ),
         input=x,
@@ -141,8 +141,8 @@ def test():
         params,
         model.initialize_carry(
             rng=subsubkey,
-            batch_dims=(batch_size,),
-            size=hidden_size,
+            batch_size=(batch_size,),
+            hidden_size=hidden_size,
             init_fn=nn.initializers.zeros,
         ),
         x,
@@ -160,11 +160,3 @@ def tester():
             print(f"output array shape:\n{xdims}\n")
         assert xdims == (64, 10)
     print("Size test: passed.")
-
-
-def main():
-    tester()
-
-
-if __name__ == "__main__":
-    main()
