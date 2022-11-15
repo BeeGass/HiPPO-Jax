@@ -272,21 +272,19 @@ def hippo_legt_gru_cell_list():
     stack_number = 3
     input_size = 28 * 28
     hidden_size = 256
-    return jnp.array(
-        [
-            HiPPOCell(
-                input_size=input_size,
-                hidden_size=hidden_size,
-                bias=True,
-                param_dtype=jnp.float32,
-                activation_fn=tanh,
-                measure="legt",
-                lambda_n=1.0,
-                rnn_cell=GRUCell,
-            )
-            for _ in range(stack_number)
-        ]
-    )
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="legt",
+            lambda_n=1.0,
+            rnn_cell=GRUCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------

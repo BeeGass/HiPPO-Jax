@@ -11,6 +11,7 @@ from flax.training import train_state
 from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
 from src.models.rnn.rnn import DeepRNN
 from src.models.hippo.hippo import HiPPO
+from src.models.hippo.transition import TransMatrix
 
 import time
 from typing import Any, Callable, Sequence, Optional, Tuple, Union
@@ -32,20 +33,91 @@ def get_datasets():
     return train_ds, test_ds
 
 
-def pick_model(cfg):
+def pick_rnn_cell(cfg):
+    # set rnn cell from rnn_type
+    rnn_list = []
+    if cfg["models"]["cells"]["cell_type"] == "rnn":
+        rnn_list = [
+            RNNCell(
+                input_size=cfg["models"]["cells"]["rnn"]["input_size"],
+                hidden_size=cfg["models"]["cells"]["rnn"]["hidden_size"],
+                bias=cfg["models"]["cells"]["rnn"]["bias"],
+                param_dtype=cfg["models"]["cells"]["rnn"]["param_dtype"],
+                activation_fn=cfg["models"]["cells"]["rnn"]["activation_fn"],
+            )
+            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+        ]
+
+    elif cfg["models"]["cells"]["cell_type"] == "lstm":
+        rnn_list = [
+            LSTMCell(
+                input_size=cfg["models"]["cells"]["gated_rnn"]["input_size"],
+                hidden_size=cfg["models"]["cells"]["gated_rnn"]["hidden_size"],
+                bias=cfg["models"]["cells"]["gated_rnn"]["bias"],
+                param_dtype=cfg["models"]["cells"]["gated_rnn"]["param_dtype"],
+                gate_fn=cfg["models"]["cells"]["gated_rnn"]["gate_fn"],
+                activation_fn=cfg["models"]["cells"]["gated_rnn"]["activation_fn"],
+            )
+            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+        ]
+
+    elif cfg["models"]["cells"]["cell_type"] == "gru":
+        rnn_list = [
+            GRUCell(
+                input_size=cfg["models"]["cells"]["gated_rnn"]["input_size"],
+                hidden_size=cfg["models"]["cells"]["gated_rnn"]["hidden_size"],
+                bias=cfg["models"]["cells"]["gated_rnn"]["bias"],
+                param_dtype=cfg["models"]["cells"]["gated_rnn"]["param_dtype"],
+                gate_fn=cfg["models"]["cells"]["gated_rnn"]["gate_fn"],
+                activation_fn=cfg["models"]["cells"]["gated_rnn"]["activation_fn"],
+            )
+            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+        ]
+
+    elif cfg["models"]["cells"]["cell_type"] == "legs_lstm":
+        rnn_list = [
+            HiPPOCell(
+                input_size=cfg["models"]["cells"]["hippo"]["input_size"],
+                hidden_size=cfg["models"]["cells"]["hippo"]["hidden_size"],
+                bias=cfg["models"]["cells"]["hippo"]["bias"],
+                param_dtype=cfg["models"]["cells"]["hippo"]["param_dtype"],
+                gate_fn=cfg["models"]["cells"]["hippo"]["gate_fn"],
+                activation_fn=cfg["models"]["cells"]["hippo"]["activation_fn"],
+                measure=cfg["models"]["cells"]["hippo"]["measure"],
+                lambda_n=cfg["models"]["cells"]["hippo"]["lambda_n"],
+                fourier_type=cfg["models"]["cells"]["hippo"]["fourier_type"],
+                alpha=cfg["models"]["cells"]["hippo"]["alpha"],
+                beta=cfg["models"]["cells"]["hippo"]["beta"],
+                rnn_cell=cfg["models"]["cells"]["hippo"]["rnn_cell"],
+            )
+            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+        ]
+
+    else:
+        raise ValueError("Unknown rnn type")
+
+    return rnn_list
+
+
+def pick_model(key, cfg):
     # set model from net_type
     model = None
     params = None
+
     if cfg["models"]["model_type"] == "rnn":
+        rnn_list = pick_rnn_cell(cfg)
         model = DeepRNN(
-            input_size=cfg["models"]["rnn"]["input_size"],
-            hidden_size=cfg["models"]["rnn"]["hidden_size"],
-            num_layers=cfg["models"]["rnn"]["num_layers"],
-            bias=cfg["models"]["rnn"]["bias"],
-            output_size=cfg["models"]["rnn"]["output_size"],
-            activation=cfg["models"]["rnn"]["activation"],
+            output_size=cfg["models"]["deep_rnn"]["output_size"],
+            layers=rnn_list,
+            skip_connections=cfg["models"]["deep_rnn"]["skip_connections"],
         )
-        params = model.init(input, carry)
+        init_carry = model.initialize_carry(
+            rng=key,
+            batch_size=(cfg["training"]["batch_size"],),
+            hidden_size=cfg["models"]["deep_rnn"]["hidden_size"],
+            init_fn=nn.initializers.zeros,
+        )
+        params = model.init(input, init_carry)
 
     elif cfg["models"]["model_type"] == "hippo":
         L = cfg["training"]["input_length"]
@@ -71,12 +143,6 @@ def pick_model(cfg):
 
     elif cfg["models"]["model_type"] == "s4":
         raise NotImplementedError
-        # model = S4()
-        # params = model.init()
-
-    elif cfg["models"]["model_type"] == "lstm":
-        model = LSTMCell()
-        params = model.init(input, carry)
         # model = S4()
         # params = model.init()
 
@@ -134,7 +200,7 @@ def preprocess_labels(cfg, labels):
     return x
 
 
-def pick_optim(cfg, params, model):
+def pick_optim(cfg, model, params):
 
     tx = None
     if cfg["training"]["optimizer"] == "adam":
@@ -204,10 +270,10 @@ def _main(
         train_set, test_set = get_datasets()
 
         # pick a model
-        model, params = pick_model(cfg)
+        model, params = pick_model(keys[1], cfg)
 
         # pick an optimizer
-        state = pick_optim(cfg, params, model)
+        state = pick_optim(cfg, model, params)
 
         # pick a scheduler
         # TODO: implement choice of scheduler

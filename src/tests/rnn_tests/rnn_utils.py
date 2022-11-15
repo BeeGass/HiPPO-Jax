@@ -119,7 +119,7 @@ def random_32_input(key_generator):
     batch_size = 32
     data_size = 28 * 28
     input_size = 5
-    x = jax.random.randint(key_generator[21], (batch_size, data_size), 0, 244)
+    x = jax.random.randint(key_generator[21], (batch_size, data_size), 0, 255)
     return vmap(moving_window, in_axes=(0, None))(x, input_size)
 
 
@@ -128,5 +128,5 @@ def random_64_input(key_generator):
     batch_size = 64
     data_size = 28 * 28
     input_size = 5
-    x = jax.random.randint(key_generator[22], (batch_size, data_size), 0, 244)
+    x = jax.random.randint(key_generator[22], (batch_size, data_size), 0, 255)
     return vmap(moving_window, in_axes=(0, None))(x, input_size)
