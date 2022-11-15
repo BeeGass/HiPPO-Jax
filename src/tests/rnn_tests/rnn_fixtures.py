@@ -21,19 +21,19 @@ import jax.numpy as jnp
 @pytest.fixture
 def rnn_cell_list(rnn_cell):
     stack_number = 3
-    return jnp.array([rnn_cell for _ in range(stack_number)])
+    return [rnn_cell for _ in range(stack_number)]
 
 
 @pytest.fixture
 def lstm_cell_list(lstm_cell):
     stack_number = 3
-    return jnp.array([lstm_cell for _ in range(stack_number)])
+    return [lstm_cell for _ in range(stack_number)]
 
 
 @pytest.fixture
 def gru_cell_list(gru_cell):
     stack_number = 3
-    return jnp.array([gru_cell for _ in range(stack_number)])
+    return [gru_cell for _ in range(stack_number)]
 
 
 # ----------------------------
@@ -46,7 +46,7 @@ def gru_cell_list(gru_cell):
 @pytest.fixture
 def hippo_legs_lstm_cell_list(hippo_legs_lstm_cell):
     stack_number = 3
-    return jnp.array([hippo_legs_lstm_cell for _ in range(stack_number)])
+    return [hippo_legs_lstm_cell for _ in range(stack_number)]
 
 
 # ----------
@@ -55,7 +55,7 @@ def hippo_legs_lstm_cell_list(hippo_legs_lstm_cell):
 @pytest.fixture
 def hippo_legt_lstm_cell_list(hippo_legt_lstm_cell):
     stack_number = 3
-    return jnp.array([hippo_legt_lstm_cell for _ in range(stack_number)])
+    return [hippo_legt_lstm_cell for _ in range(stack_number)]
 
 
 # ----------
@@ -64,7 +64,7 @@ def hippo_legt_lstm_cell_list(hippo_legt_lstm_cell):
 @pytest.fixture
 def hippo_lmu_lstm_cell_list(hippo_lmu_lstm_cell):
     stack_number = 3
-    return jnp.array([hippo_lmu_lstm_cell for _ in range(stack_number)])
+    return [hippo_lmu_lstm_cell for _ in range(stack_number)]
 
 
 # ----------
@@ -73,7 +73,7 @@ def hippo_lmu_lstm_cell_list(hippo_lmu_lstm_cell):
 @pytest.fixture
 def hippo_lagt_lstm_cell_list(hippo_lagt_lstm_cell):
     stack_number = 3
-    return jnp.array([hippo_lagt_lstm_cell for _ in range(stack_number)])
+    return [hippo_lagt_lstm_cell for _ in range(stack_number)]
 
 
 # ----------
@@ -82,7 +82,7 @@ def hippo_lagt_lstm_cell_list(hippo_lagt_lstm_cell):
 @pytest.fixture
 def hippo_fru_lstm_cell_list(hippo_fru_lstm_cell):
     stack_number = 3
-    return jnp.array([hippo_fru_lstm_cell for _ in range(stack_number)])
+    return [hippo_fru_lstm_cell for _ in range(stack_number)]
 
 
 # ------------
@@ -91,7 +91,7 @@ def hippo_fru_lstm_cell_list(hippo_fru_lstm_cell):
 @pytest.fixture
 def hippo_fout_lstm_cell_list(hippo_fout_lstm_cell):
     stack_number = 3
-    return jnp.array([hippo_fout_lstm_cell for _ in range(stack_number)])
+    return [hippo_fout_lstm_cell for _ in range(stack_number)]
 
 
 # ------------
@@ -100,7 +100,7 @@ def hippo_fout_lstm_cell_list(hippo_fout_lstm_cell):
 @pytest.fixture
 def hippo_foud_lstm_cell_list(hippo_foud_lstm_cell):
     stack_number = 3
-    return jnp.array([hippo_foud_lstm_cell for _ in range(stack_number)])
+    return [hippo_foud_lstm_cell for _ in range(stack_number)]
 
 
 # ---------------------------
@@ -113,7 +113,7 @@ def hippo_foud_lstm_cell_list(hippo_foud_lstm_cell):
 @pytest.fixture
 def hippo_legs_gru_cell_list(hippo_legs_gru_cell):
     stack_number = 3
-    return jnp.array([hippo_legs_gru_cell for _ in range(stack_number)])
+    return [hippo_legs_gru_cell for _ in range(stack_number)]
 
 
 # ----------
@@ -131,7 +131,7 @@ def hippo_legt_gru_cell_list(hippo_legt_gru_cell):
 @pytest.fixture
 def hippo_lmu_gru_cell_list(hippo_lmu_gru_cell):
     stack_number = 3
-    return jnp.array([hippo_lmu_gru_cell for _ in range(stack_number)])
+    return [hippo_lmu_gru_cell for _ in range(stack_number)]
 
 
 # ----------
@@ -140,7 +140,7 @@ def hippo_lmu_gru_cell_list(hippo_lmu_gru_cell):
 @pytest.fixture
 def hippo_lagt_gru_cell_list(hippo_lagt_gru_cell):
     stack_number = 3
-    return jnp.array([hippo_lagt_gru_cell for _ in range(stack_number)])
+    return [hippo_lagt_gru_cell for _ in range(stack_number)]
 
 
 # ----------
@@ -149,7 +149,7 @@ def hippo_lagt_gru_cell_list(hippo_lagt_gru_cell):
 @pytest.fixture
 def hippo_fru_gru_cell_list(hippo_fru_gru_cell):
     stack_number = 3
-    return jnp.array([hippo_fru_gru_cell for _ in range(stack_number)])
+    return [hippo_fru_gru_cell for _ in range(stack_number)]
 
 
 # ------------
@@ -158,7 +158,7 @@ def hippo_fru_gru_cell_list(hippo_fru_gru_cell):
 @pytest.fixture
 def hippo_fout_gru_cell_list(hippo_fout_gru_cell):
     stack_number = 3
-    return jnp.array([hippo_fout_gru_cell for _ in range(stack_number)])
+    return [hippo_fout_gru_cell for _ in range(stack_number)]
 
 
 # ------------
@@ -167,4 +167,4 @@ def hippo_fout_gru_cell_list(hippo_fout_gru_cell):
 @pytest.fixture
 def hippo_foud_gru_cell_list(hippo_foud_gru_cell):
     stack_number = 3
-    return jnp.array([hippo_foud_gru_cell for _ in range(stack_number)])
+    return [hippo_foud_gru_cell for _ in range(stack_number)]

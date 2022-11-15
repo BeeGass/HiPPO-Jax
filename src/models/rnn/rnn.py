@@ -1,8 +1,11 @@
 from dataclasses import field
 from typing import Any, Callable, Optional, Sequence
+from functools import partial
 
 import jax
 import jax.numpy as jnp
+from jax import jit, vmap
+
 from flax import linen as nn
 from flax.linen.initializers import zeros
 
@@ -34,14 +37,11 @@ class DeepRNN(nn.Module):
         c_t_list = []
         states = []
 
-        print("DeepRNN: input.shape: {}".format(input.shape))
-        for t in range(1, input.shape[-1] + 1):
-            print("t: ", t)
+        for t in range(input.shape[1]):
             for idx, layer in enumerate(self.layers):
-                print(f"layer({idx+1})")
                 if isinstance(layer, nn.Module):
                     if idx == 0:
-                        out_carry, output = layer(carry, input)
+                        out_carry, output = layer(carry, input[:, t, :])
                         h_t, c_t = out_carry
 
                     else:
@@ -51,8 +51,6 @@ class DeepRNN(nn.Module):
                         if self.skip_connections:
                             h_t = jnp.concatenate([h_t, h_t_1], axis=1)
                             c_t = jnp.concatenate([c_t, c_t_1], axis=1)
-                            print("h_t: ", h_t.shape)
-                            print("c_t: ", c_t.shape)
                             out_carry = tuple([h_t, c_t])
                 else:
                     out_carry, output = layer(out_carry)
@@ -78,14 +76,25 @@ class DeepRNN(nn.Module):
     def initialize_carry(
         rng,
         batch_size: tuple,
-        input_size: int,
         hidden_size: int,
         init_fn=nn.initializers.zeros,
     ):
         key1, key2 = jax.random.split(rng)
-        mem_shape = batch_size + (input_size, hidden_size)
-        print("mem_shape: ", mem_shape)
+        # mem_shape = batch_size + (input_size, hidden_size)
+        mem_shape = batch_size + (hidden_size,)
+        print(f"mem_shape: {mem_shape}")
         return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
+
+
+@partial(jit, static_argnums=(1,))
+def moving_window(a, size: int):
+    starts = jnp.arange(len(a) - size + 1)
+    return vmap(lambda start: jax.lax.dynamic_slice(a, (start,), (size,)))(starts)
+
+
+def rolling_window(a: jnp.ndarray, window: int):
+    idx = jnp.arange(len(a) - window + 1)[:, None] + jnp.arange(window)[None, :]
+    return a[idx]
 
 
 def test():
@@ -99,18 +108,14 @@ def test():
 
     # batch size, sequence length, input size
     batch_size = 32
-    seq_L = 1
-    input_size = 28 * 28
+    data_size = 28 * 28
+    input_size = 5
 
     # fake data
-    x = jax.random.randint(rng, (batch_size, input_size), 1, 100)
-    # print(f"x:\n{x}\n")
+    x = jax.random.randint(rng, (batch_size, data_size), 0, 244)
     print(f"x shape:\n{x.shape}\n")
-    x = jnp.expand_dims(x, axis=-1)
-    vals = jnp.ones((batch_size, input_size, batch_size - 1)) * input_size
-    # print(f"vals:\n{vals}\n")
-    print(f"vals shape:\n{vals.shape}\n")
-    x = jnp.concatenate([x, vals], axis=-1)
+    x = vmap(moving_window, in_axes=(0, None))(x, input_size)
+    print(f"x shape:\n{x.shape}\n")
 
     layer_list = []
     num_of_rnns = 3
@@ -155,20 +160,17 @@ def test():
         model.initialize_carry(
             rng=subkey,
             batch_size=(batch_size,),
-            input_size=input_size,
             hidden_size=hidden_size,
             init_fn=nn.initializers.zeros,
         ),
-        input=x,
+        x,
     )
 
-    print(f"applying model:\n")
     carry, out = model.apply(
         params,
         model.initialize_carry(
             rng=subsubkey,
             batch_size=(batch_size,),
-            input_size=input_size,
             hidden_size=hidden_size,
             init_fn=nn.initializers.zeros,
         ),
@@ -179,12 +181,12 @@ def test():
 
 
 def tester():
-    for i in range(1, 100):
+    for i in range(2):
         test_carry, testx = test()
         xdims = testx.shape
         carrydims = test_carry[0].shape
         if i % 10 == 0 or i == 1 or i == 100:
             print(f"output array shape:\n{xdims}\n")
             print(f"h_t array shape:\n{carrydims}\n")
-        assert xdims == (32, 784, 10)
+        assert xdims == (32, 10)
     print("Size test: passed.")
