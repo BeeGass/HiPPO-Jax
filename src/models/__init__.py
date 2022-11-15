@@ -7,7 +7,7 @@ from src.models.hippo.unroll import *
 
 # RNN
 from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
-from src.models.rnn.rnn import DeepRNN, tester
+from src.models.rnn.rnn import DeepRNN
 
 # Data Preprocessing
 from src.data.process import moving_window, rolling_window
