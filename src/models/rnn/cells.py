@@ -51,7 +51,6 @@ class RNNCell(nn.Module):
         h_t = self.activation_fn(
             (w_hh + w_xh)
         )  # H_{t} = tanh(H_{t-1} @ W_{hh}) + (x_{t} @ W_{xh})
-        print(f"h_t {h_t.shape}")
 
         return (h_t, h_t), h_t
 

@@ -12,6 +12,7 @@ from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
 from src.models.rnn.rnn import DeepRNN
 from src.models.hippo.hippo import HiPPO
 from src.models.hippo.transition import TransMatrix
+from src.data.process import moving_window, rolling_window
 
 import time
 from typing import Any, Callable, Sequence, Optional, Tuple, Union
@@ -156,13 +157,8 @@ def preprocess_data(cfg, data):
     # preprocess data
     x = None
     if cfg["models"]["model_type"] == "rnn":
-        batch_size = cfg["training"]["input_length"]
-        seq_l = x.shape[-1]
-        input_size = cfg["training"]["input_length"]
-        array_shape = (batch_size, seq_l, input_size)
-        x = jnp.expand_dims(data, -1)
-        _x = jnp.ones(array_shape) * (input_size)
-        x = jnp.concatenate([x, _x], axis=-1)
+        x = vmap(jnp.ravel, in_axes=0)(x)
+        x = vmap(moving_window, in_axes=(0, None))(x, cfg["training"]["input_length"])
 
     elif cfg["models"]["model_type"] == "hippo":
         raise NotImplementedError
@@ -180,13 +176,8 @@ def preprocess_labels(cfg, labels):
     # preprocess data
     x = None
     if cfg["models"]["model_type"] == "rnn":
-        batch_size = cfg["training"]["input_length"]
-        seq_l = x.shape[-1]
-        input_size = cfg["training"]["input_length"]
-        array_shape = (batch_size, seq_l, input_size)
-        x = jnp.expand_dims(labels, -1)
-        _x = jnp.ones(array_shape) * (input_size)
-        x = jnp.concatenate([x, _x], axis=-1)
+
+        x = vmap(moving_window, in_axes=(0, None))(x, cfg["training"]["input_length"])
 
     elif cfg["models"]["model_type"] == "hippo":
         raise NotImplementedError
@@ -242,7 +233,7 @@ def update_model(state, grads):
 
 
 @hydra.main(config_path="config", config_name="train")
-def _main(
+def recurrent_train(
     cfg: DictConfig,
 ) -> None:  # num_epochs, opt_state, net_type="RNN", train_key=None):
     """
@@ -301,7 +292,7 @@ def _main(
             for perm in perms:
                 train_data = train_set["image"][perm, ...]
                 train_labels = train_set["label"][perm, ...]
-                # x = preprocess_data(cfg, train_data)
+                x = preprocess_data(cfg, train_data)
                 # y = preprocess_labels(cfg, train_labels)
                 grads, loss, accuracy = apply_model(
                     state=state, data=train_data, labels=train_labels
@@ -324,11 +315,3 @@ def _main(
             # TODO: add logging of metrics
 
         return state
-
-
-def main():
-    _main()
-
-
-if __name__ == "__main__":
-    main()

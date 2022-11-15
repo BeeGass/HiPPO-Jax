@@ -46,7 +46,6 @@ class DeepRNN(nn.Module):
 
                     else:
                         h_t_1, c_t_1 = out_carry
-                        print("h_t_1 shape: {}".format(h_t_1.shape))
                         out_carry, output = layer(carry, h_t_1)
                         h_t, c_t = out_carry
                         if self.skip_connections:
