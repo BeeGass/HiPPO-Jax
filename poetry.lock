@@ -379,7 +379,7 @@ lazy-imports = ["etils[ecolab]"]
 
 [[package]]
 name = "exceptiongroup"
-version = "1.0.2"
+version = "1.0.4"
 description = "Backport of PEP 654 (exception groups)"
 category = "dev"
 optional = false
@@ -661,7 +661,7 @@ test = ["jsonschema", "pytest (>=3.6.0)", "pytest-cov", "pytz"]
 
 [[package]]
 name = "jax"
-version = "0.3.24"
+version = "0.3.25"
 description = "Differentiate, compile, and transform Numpy code."
 category = "dev"
 optional = false
@@ -669,8 +669,8 @@ python-versions = ">=3.7"
 
 [package.dependencies]
 jaxlib = [
-    {version = "0.3.24", optional = true, markers = "extra == \"cpu\""},
-    {version = "0.3.24+cuda11.cudnn82", optional = true, markers = "extra == \"cuda\""},
+    {version = "0.3.25", optional = true, markers = "extra == \"cpu\""},
+    {version = "0.3.25+cuda11.cudnn82", optional = true, markers = "extra == \"cuda\""},
 ]
 numpy = ">=1.20"
 opt_einsum = "*"
@@ -679,17 +679,17 @@ typing_extensions = "*"
 
 [package.extras]
 australis = ["protobuf (>=3.13,<4)"]
-ci = ["jaxlib (==0.3.22)"]
-cpu = ["jaxlib (==0.3.24)"]
-cuda = ["jaxlib (==0.3.24+cuda11.cudnn82)"]
-cuda11_cudnn805 = ["jaxlib (==0.3.24+cuda11.cudnn805)"]
-cuda11_cudnn82 = ["jaxlib (==0.3.24+cuda11.cudnn82)"]
+ci = ["jaxlib (==0.3.24)"]
+cpu = ["jaxlib (==0.3.25)"]
+cuda = ["jaxlib (==0.3.25+cuda11.cudnn82)"]
+cuda11_cudnn805 = ["jaxlib (==0.3.25+cuda11.cudnn805)"]
+cuda11_cudnn82 = ["jaxlib (==0.3.25+cuda11.cudnn82)"]
 minimum-jaxlib = ["jaxlib (==0.3.22)"]
-tpu = ["jaxlib (==0.3.24)", "libtpu-nightly (==0.1.dev20221103)", "requests"]
+tpu = ["jaxlib (==0.3.25)", "libtpu-nightly (==0.1.dev20221109)", "requests"]
 
 [[package]]
 name = "jaxlib"
-version = "0.3.24+cuda11.cudnn82"
+version = "0.3.25+cuda11.cudnn82"
 description = "XLA library for JAX"
 category = "dev"
 optional = false
@@ -769,7 +769,7 @@ qtconsole = "*"
 
 [[package]]
 name = "jupyter-client"
-version = "7.4.5"
+version = "7.4.6"
 description = "Jupyter protocol implementation and client libraries"
 category = "dev"
 optional = false
@@ -2374,8 +2374,8 @@ etils = [
     {file = "etils-0.9.0.tar.gz", hash = "sha256:489103e9e499a566765c60458ee15d185cf0065f2060a4d16a68f8f46962ed0d"},
 ]
 exceptiongroup = [
-    {file = "exceptiongroup-1.0.2-py3-none-any.whl", hash = "sha256:c22f11ec6a10d2b453871c5c5fe887436c4d1961324ce9090f2ca6ddc4180c27"},
-    {file = "exceptiongroup-1.0.2.tar.gz", hash = "sha256:a31cd183c3dea02e617aab5153588d5f7258a77b51f0ef41b3815ae8a0d0f695"},
+    {file = "exceptiongroup-1.0.4-py3-none-any.whl", hash = "sha256:542adf9dea4055530d6e1279602fa5cb11dab2395fa650b8674eaec35fc4a828"},
+    {file = "exceptiongroup-1.0.4.tar.gz", hash = "sha256:bd14967b79cd9bdb54d97323216f8fdf533e278df937aa2a90089e7d6e06e5ec"},
 ]
 executing = [
     {file = "executing-1.2.0-py2.py3-none-any.whl", hash = "sha256:0314a69e37426e3608aada02473b4161d4caf5a4b244d1d0c48072b8fee7bacc"},
@@ -2450,14 +2450,14 @@ ipywidgets = [
     {file = "ipywidgets-8.0.2.tar.gz", hash = "sha256:08cb75c6e0a96836147cbfdc55580ae04d13e05d26ffbc377b4e1c68baa28b1f"},
 ]
 jax = [
-    {file = "jax-0.3.24.tar.gz", hash = "sha256:54c0002926a1898e7c7afdc2a14fbdcac04188bcaa359bc3389a30ea464a513a"},
+    {file = "jax-0.3.25.tar.gz", hash = "sha256:18bea69321cb95ea5ea913adfe5e2c1d453cade9d4cfd0dc814ecba9fc0cb6e3"},
 ]
 jaxlib = [
-    {file = "jaxlib-0.3.24+cuda11.cudnn82-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:e085ba12bed53602af7cd5134de69d04bb9a0b27637658451c4c13d12912d489"},
-    {file = "jaxlib-0.3.24+cuda11.cudnn82-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:596bc17da95c8e0b4334a9837d9484da08a95348222ae9cbd186271a697bc2cf"},
-    {file = "jaxlib-0.3.24+cuda11.cudnn82-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:3ec8be6a7b10667d8f983a0dfc520e0b604b8da1bcf7687d9eb253b0d9916061"},
-    {file = "jaxlib-0.3.24+cuda11.cudnn82-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:27e618f55d9fcd7a43f6c9a6c62a26c8d0d1764c62b05503db67fe4526551d00"},
-    {file = "jaxlib-0.3.24+cuda11.cudnn82-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:31f8d835048aa309ec1fcae0f3823a82039108962a7eea013b81c18decaa16a3"},
+    {file = "jaxlib-0.3.25+cuda11.cudnn82-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:66c85b9abbde95dff992a255b4c21e981b7c5964be7edcdaa353fd4e3847357c"},
+    {file = "jaxlib-0.3.25+cuda11.cudnn82-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:ca36ffee01190258ddb05aab274449606a71999d6231f6e1d4b59fa266bc0ef4"},
+    {file = "jaxlib-0.3.25+cuda11.cudnn82-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:ab24bde60bae7b5d355526eece35a58ec50d6708c6d42cc2884978cdf2fdba7d"},
+    {file = "jaxlib-0.3.25+cuda11.cudnn82-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:d61401aa577ec38d8dcb0e80b58264654d82cb8db8272390c6f671acc903be2c"},
+    {file = "jaxlib-0.3.25+cuda11.cudnn82-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:e6ec3202ae161a62d50ad7da6c2173f772b69daef126d07ae547a08ba2157348"},
 ]
 jedi = [
     {file = "jedi-0.18.1-py2.py3-none-any.whl", hash = "sha256:637c9635fcf47945ceb91cd7f320234a7be540ded6f3e99a50cb6febdfd1ba8d"},
@@ -2477,8 +2477,8 @@ jupyter = [
     {file = "jupyter-1.0.0.zip", hash = "sha256:3e1f86076bbb7c8c207829390305a2b1fe836d471ed54be66a3b8c41e7f46cc7"},
 ]
 jupyter-client = [
-    {file = "jupyter_client-7.4.5-py3-none-any.whl", hash = "sha256:feaad9c04871254067d3b8c41192b7aba8e9bbbf9df9830ecf2673939510c5b7"},
-    {file = "jupyter_client-7.4.5.tar.gz", hash = "sha256:63eae06c40e1f2d9afa14447511fddc065c95dea3f2491fda2acccf91221954a"},
+    {file = "jupyter_client-7.4.6-py3-none-any.whl", hash = "sha256:540b6a5c9c2dc481c5dd54fd5acb260f03dfaaa7c5325b2ffb1f676710f8c7c4"},
+    {file = "jupyter_client-7.4.6.tar.gz", hash = "sha256:f7f9a9dc3a0ecd223ed6a5a00cf4140a5c252ec72e52d6de370748ed0aa083dd"},
 ]
 jupyter-console = [
     {file = "jupyter_console-6.4.4-py3-none-any.whl", hash = "sha256:756df7f4f60c986e7bc0172e4493d3830a7e6e75c08750bbe59c0a5403ad6dee"},

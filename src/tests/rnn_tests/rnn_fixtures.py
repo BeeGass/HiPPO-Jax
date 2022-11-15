@@ -12,6 +12,8 @@ from src.tests.rnn_tests.cell_fixtures import hippo_fout_gru_cell, hippo_fout_ls
 from src.tests.rnn_tests.cell_fixtures import hippo_foud_gru_cell, hippo_foud_lstm_cell
 from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
 import jax.numpy as jnp
+from flax.linen.activation import tanh
+from flax.linen.activation import sigmoid
 
 # -----------------------
 # -------- cells --------
@@ -19,21 +21,56 @@ import jax.numpy as jnp
 
 
 @pytest.fixture
-def rnn_cell_list(rnn_cell):
+def rnn_cell_list():
     stack_number = 3
-    return [rnn_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        RNNCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 @pytest.fixture
-def lstm_cell_list(lstm_cell):
+def lstm_cell_list():
     stack_number = 3
-    return [lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        LSTMCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            gate_fn=sigmoid,
+            activation_fn=tanh,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 @pytest.fixture
-def gru_cell_list(gru_cell):
+def gru_cell_list():
     stack_number = 3
-    return [gru_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        GRUCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            gate_fn=sigmoid,
+            activation_fn=tanh,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------------------------
@@ -44,63 +81,161 @@ def gru_cell_list(gru_cell):
 # -- legs --
 # ----------
 @pytest.fixture
-def hippo_legs_lstm_cell_list(hippo_legs_lstm_cell):
+def hippo_legs_lstm_cell_list():
     stack_number = 3
-    return [hippo_legs_lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="legs",
+            rnn_cell=LSTMCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------
 # -- legt --
 # ----------
 @pytest.fixture
-def hippo_legt_lstm_cell_list(hippo_legt_lstm_cell):
+def hippo_legt_lstm_cell_list():
     stack_number = 3
-    return [hippo_legt_lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="legt",
+            lambda_n=1.0,
+            rnn_cell=LSTMCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------
 # -- lmu --
 # ----------
 @pytest.fixture
-def hippo_lmu_lstm_cell_list(hippo_lmu_lstm_cell):
+def hippo_lmu_lstm_cell_list():
     stack_number = 3
-    return [hippo_lmu_lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="legt",
+            lambda_n=2.0,
+            rnn_cell=LSTMCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------
 # -- lagt --
 # ----------
 @pytest.fixture
-def hippo_lagt_lstm_cell_list(hippo_lagt_lstm_cell):
+def hippo_lagt_lstm_cell_list():
     stack_number = 3
-    return [hippo_lagt_lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="lagt",
+            alpha=0.0,
+            beta=1.0,
+            rnn_cell=LSTMCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------
 # --- fru --
 # ----------
 @pytest.fixture
-def hippo_fru_lstm_cell_list(hippo_fru_lstm_cell):
+def hippo_fru_lstm_cell_list():
     stack_number = 3
-    return [hippo_fru_lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="fourier",
+            fourier_type="fru",
+            rnn_cell=LSTMCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ------------
 # --- fout ---
 # ------------
 @pytest.fixture
-def hippo_fout_lstm_cell_list(hippo_fout_lstm_cell):
+def hippo_fout_lstm_cell_list():
     stack_number = 3
-    return [hippo_fout_lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="fourier",
+            fourier_type="fout",
+            rnn_cell=LSTMCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ------------
 # --- foud ---
 # ------------
 @pytest.fixture
-def hippo_foud_lstm_cell_list(hippo_foud_lstm_cell):
+def hippo_foud_lstm_cell_list():
     stack_number = 3
-    return [hippo_foud_lstm_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="fourier",
+            fourier_type="foud",
+            rnn_cell=LSTMCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ---------------------------
@@ -111,60 +246,160 @@ def hippo_foud_lstm_cell_list(hippo_foud_lstm_cell):
 # -- legs --
 # ----------
 @pytest.fixture
-def hippo_legs_gru_cell_list(hippo_legs_gru_cell):
+def hippo_legs_gru_cell_list():
     stack_number = 3
-    return [hippo_legs_gru_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="legs",
+            rnn_cell=GRUCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------
 # -- legt --
 # ----------
 @pytest.fixture
-def hippo_legt_gru_cell_list(hippo_legt_gru_cell):
+def hippo_legt_gru_cell_list():
     stack_number = 3
-    return jnp.array([hippo_legt_gru_cell for _ in range(stack_number)])
+    input_size = 28 * 28
+    hidden_size = 256
+    return jnp.array(
+        [
+            HiPPOCell(
+                input_size=input_size,
+                hidden_size=hidden_size,
+                bias=True,
+                param_dtype=jnp.float32,
+                activation_fn=tanh,
+                measure="legt",
+                lambda_n=1.0,
+                rnn_cell=GRUCell,
+            )
+            for _ in range(stack_number)
+        ]
+    )
 
 
 # ----------
 # -- lmu --
 # ----------
 @pytest.fixture
-def hippo_lmu_gru_cell_list(hippo_lmu_gru_cell):
+def hippo_lmu_gru_cell_list():
     stack_number = 3
-    return [hippo_lmu_gru_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="legt",
+            lambda_n=2.0,
+            rnn_cell=GRUCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------
 # -- lagt --
 # ----------
 @pytest.fixture
-def hippo_lagt_gru_cell_list(hippo_lagt_gru_cell):
+def hippo_lagt_gru_cell_list():
     stack_number = 3
-    return [hippo_lagt_gru_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="lagt",
+            alpha=0.0,
+            beta=1.0,
+            rnn_cell=GRUCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ----------
 # --- fru --
 # ----------
 @pytest.fixture
-def hippo_fru_gru_cell_list(hippo_fru_gru_cell):
+def hippo_fru_gru_cell_list():
     stack_number = 3
-    return [hippo_fru_gru_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="fourier",
+            fourier_type="fru",
+            rnn_cell=GRUCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ------------
 # --- fout ---
 # ------------
 @pytest.fixture
-def hippo_fout_gru_cell_list(hippo_fout_gru_cell):
+def hippo_fout_gru_cell_list():
     stack_number = 3
-    return [hippo_fout_gru_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="fourier",
+            fourier_type="fout",
+            rnn_cell=GRUCell,
+        )
+        for _ in range(stack_number)
+    ]
 
 
 # ------------
 # --- foud ---
 # ------------
 @pytest.fixture
-def hippo_foud_gru_cell_list(hippo_foud_gru_cell):
+def hippo_foud_gru_cell_list():
     stack_number = 3
-    return [hippo_foud_gru_cell for _ in range(stack_number)]
+    input_size = 28 * 28
+    hidden_size = 256
+    return [
+        HiPPOCell(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            bias=True,
+            param_dtype=jnp.float32,
+            activation_fn=tanh,
+            measure="fourier",
+            fourier_type="foud",
+            rnn_cell=GRUCell,
+        )
+        for _ in range(stack_number)
+    ]

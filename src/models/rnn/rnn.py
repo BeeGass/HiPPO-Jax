@@ -46,6 +46,7 @@ class DeepRNN(nn.Module):
 
                     else:
                         h_t_1, c_t_1 = out_carry
+                        print("h_t_1 shape: {}".format(h_t_1.shape))
                         out_carry, output = layer(carry, h_t_1)
                         h_t, c_t = out_carry
                         if self.skip_connections:
@@ -82,111 +83,4 @@ class DeepRNN(nn.Module):
         key1, key2 = jax.random.split(rng)
         # mem_shape = batch_size + (input_size, hidden_size)
         mem_shape = batch_size + (hidden_size,)
-        print(f"mem_shape: {mem_shape}")
         return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
-
-
-@partial(jit, static_argnums=(1,))
-def moving_window(a, size: int):
-    starts = jnp.arange(len(a) - size + 1)
-    return vmap(lambda start: jax.lax.dynamic_slice(a, (start,), (size,)))(starts)
-
-
-def rolling_window(a: jnp.ndarray, window: int):
-    idx = jnp.arange(len(a) - window + 1)[:, None] + jnp.arange(window)[None, :]
-    return a[idx]
-
-
-def test():
-    seed = 1701
-    key = jax.random.PRNGKey(seed)
-
-    num_copies = 4
-    rng, key, subkey, subsubkey = jax.random.split(key, num=num_copies)
-
-    hidden_size = 256
-
-    # batch size, sequence length, input size
-    batch_size = 32
-    data_size = 28 * 28
-    input_size = 5
-
-    # fake data
-    x = jax.random.randint(rng, (batch_size, data_size), 0, 244)
-    print(f"x shape:\n{x.shape}\n")
-    x = vmap(moving_window, in_axes=(0, None))(x, input_size)
-    print(f"x shape:\n{x.shape}\n")
-
-    layer_list = []
-    num_of_rnns = 3
-    rnn_type = "rnn"
-    if rnn_type == "rnn":
-        layer_list = [
-            RNNCell(input_size=input_size, hidden_size=hidden_size)
-            for _ in range(num_of_rnns)
-        ]
-
-    elif rnn_type == "lstm":
-        layer_list = [
-            LSTMCell(input_size=input_size, hidden_size=hidden_size)
-            for _ in range(num_of_rnns)
-        ]
-
-    elif rnn_type == "gru":
-        layer_list = [
-            GRUCell(input_size=input_size, hidden_size=hidden_size)
-            for _ in range(num_of_rnns)
-        ]
-
-    elif rnn_type == "hippo":
-        layer_list = [
-            HiPPOCell(input_size=input_size, hidden_size=hidden_size)
-            for _ in range(num_of_rnns)
-        ]
-
-    else:
-        raise ValueError("rnn_type must be one of: rnn, lstm, gru, hippo")
-
-    # model
-    model = DeepRNN(
-        output_size=10,
-        layers=layer_list,
-        skip_connections=False,
-    )
-
-    # get model params
-    params = model.init(
-        key,
-        model.initialize_carry(
-            rng=subkey,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
-        x,
-    )
-
-    carry, out = model.apply(
-        params,
-        model.initialize_carry(
-            rng=subsubkey,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
-        x,
-    )
-
-    return carry, out
-
-
-def tester():
-    for i in range(2):
-        test_carry, testx = test()
-        xdims = testx.shape
-        carrydims = test_carry[0].shape
-        if i % 10 == 0 or i == 1 or i == 100:
-            print(f"output array shape:\n{xdims}\n")
-            print(f"h_t array shape:\n{carrydims}\n")
-        assert xdims == (32, 10)
-    print("Size test: passed.")

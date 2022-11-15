@@ -51,19 +51,20 @@ class RNNCell(nn.Module):
         h_t = self.activation_fn(
             (w_hh + w_xh)
         )  # H_{t} = tanh(H_{t-1} @ W_{hh}) + (x_{t} @ W_{xh})
+        print(f"h_t {h_t.shape}")
 
         return (h_t, h_t), h_t
 
     @staticmethod
     def initialize_carry(
-        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+        rng,
+        batch_size: tuple,
+        hidden_size: int,
+        init_fn=nn.initializers.zeros,
     ):
-        print(f"batch_size: {batch_size}")
-        print(f"hidden_size: {(hidden_size,)}")
-        mem_shape = batch_size + (1, hidden_size)
-        print(f"carry mem_shape: {mem_shape}")
-
-        return init_fn(rng, mem_shape), init_fn(rng, mem_shape)
+        key1, key2 = jax.random.split(rng)
+        mem_shape = batch_size + (hidden_size,)
+        return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
 
 
 class LSTMCell(nn.Module):
@@ -147,14 +148,14 @@ class LSTMCell(nn.Module):
 
     @staticmethod
     def initialize_carry(
-        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+        rng,
+        batch_size: tuple,
+        hidden_size: int,
+        init_fn=nn.initializers.zeros,
     ):
-        print(f"batch_size: {batch_size}")
-        print(f"hidden_size: {(hidden_size,)}")
-        mem_shape = batch_size + (1, hidden_size)
-        print(f"carry mem_shape: {mem_shape}")
-
-        return init_fn(rng, mem_shape), init_fn(rng, mem_shape)
+        key1, key2 = jax.random.split(rng)
+        mem_shape = batch_size + (hidden_size,)
+        return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
 
 
 class GRUCell(nn.Module):
@@ -224,14 +225,14 @@ class GRUCell(nn.Module):
 
     @staticmethod
     def initialize_carry(
-        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+        rng,
+        batch_size: tuple,
+        hidden_size: int,
+        init_fn=nn.initializers.zeros,
     ):
-        print(f"batch_size: {batch_size}")
-        print(f"hidden_size: {(hidden_size,)}")
-        mem_shape = batch_size + (1, hidden_size)
-        print(f"carry mem_shape: {mem_shape}")
-
-        return init_fn(rng, mem_shape), init_fn(rng, mem_shape)
+        key1, key2 = jax.random.split(rng)
+        mem_shape = batch_size + (hidden_size,)
+        return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
 
 
 class HiPPOCell(nn.Module):
@@ -315,14 +316,14 @@ class HiPPOCell(nn.Module):
 
     @staticmethod
     def initialize_carry(
-        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+        rng,
+        batch_size: tuple,
+        hidden_size: int,
+        init_fn=nn.initializers.zeros,
     ):
-        print(f"batch_size: {batch_size}")
-        print(f"hidden_size: {(hidden_size,)}")
-        mem_shape = batch_size + (1, hidden_size)
-        print(f"carry mem_shape: {mem_shape}")
-
-        return init_fn(rng, mem_shape), init_fn(rng, mem_shape)
+        key1, key2 = jax.random.split(rng)
+        mem_shape = batch_size + (hidden_size,)
+        return init_fn(key1, mem_shape), init_fn(key2, mem_shape)
 
 
 # this version takes in flax's built-in recurrent cells
@@ -398,11 +399,11 @@ class HIPPOCell(nn.Module):
 
     @staticmethod
     def initialize_carry(
-        rng, batch_size: tuple, hidden_size: int, init_fn=nn.initializers.zeros
+        rng,
+        batch_size: tuple,
+        hidden_size: int,
+        init_fn=nn.initializers.zeros,
     ):
-        print(f"batch_size: {batch_size}")
-        print(f"hidden_size: {(hidden_size,)}")
-        mem_shape = batch_size + (1, hidden_size)
-        print(f"carry mem_shape: {mem_shape}")
-
-        return init_fn(rng, mem_shape), init_fn(rng, mem_shape)
+        key1, key2 = jax.random.split(rng)
+        mem_shape = batch_size + (hidden_size,)
+        return init_fn(key1, mem_shape), init_fn(key2, mem_shape)

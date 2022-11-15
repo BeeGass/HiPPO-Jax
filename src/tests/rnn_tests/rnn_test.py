@@ -50,32 +50,29 @@ from flax import linen as nn
 # ------------------------------------------------ #
 
 
-def test_deep_rnn(deep_rnn, random_32_input, rnn_key):
+def test_deep_rnn_shaping(deep_rnn, random_32_input, rnn_key):
     print("Testing Deep RNN")
-    num_copies = 3
-    rng, key, subkey = jax.random.split(rnn_key, num=num_copies)
-    print(f"input shape: {random_32_input.shape}")
+    key1, key2, = (
+        rnn_key[0],
+        rnn_key[1],
+    )
     batch_size = 32
     hidden_size = 256
+    init_carry = deep_rnn.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
     params = deep_rnn.init(
-        rng,
-        deep_rnn.initialize_carry(
-            rng=key,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
+        key2,
+        init_carry,
         random_32_input,
     )
 
     carry, y = deep_rnn.apply(
         params,
-        deep_rnn.initialize_carry(
-            rng=subkey,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
+        init_carry,
         random_32_input,
     )
 
@@ -88,32 +85,29 @@ def test_deep_rnn(deep_rnn, random_32_input, rnn_key):
     assert (y.shape) == (32, 10)
 
 
-def test_deep_lstm(deep_lstm, random_32_input, lstm_key):
+def test_deep_lstm_shaping(deep_lstm, random_32_input, lstm_key):
     print("Testing Deep LSTM")
-    num_copies = 3
-    rng, key, subkey = jax.random.split(lstm_key, num=num_copies)
-    print(f"input shape: {random_32_input.shape}")
+    key1, key2, = (
+        lstm_key[0],
+        lstm_key[1],
+    )
     batch_size = 32
     hidden_size = 256
+    init_carry = deep_lstm.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
     params = deep_lstm.init(
-        rng,
-        deep_lstm.initialize_carry(
-            rng=key,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
+        key2,
+        init_carry,
         random_32_input,
     )
 
     carry, y = deep_lstm.apply(
         params,
-        deep_lstm.initialize_carry(
-            rng=subkey,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
+        init_carry,
         random_32_input,
     )
 
@@ -126,32 +120,29 @@ def test_deep_lstm(deep_lstm, random_32_input, lstm_key):
     assert (y.shape) == (32, 10)
 
 
-def test_deep_gru(deep_gru, random_32_input, gru_key):
+def test_deep_gru_shaping(deep_gru, random_32_input, gru_key):
     print("Testing Deep GRU")
-    num_copies = 3
-    rng, key, subkey = jax.random.split(gru_key, num=num_copies)
-    print(f"input shape: {random_32_input.shape}")
+    key1, key2, = (
+        gru_key[0],
+        gru_key[1],
+    )
     batch_size = 32
     hidden_size = 256
+    init_carry = deep_gru.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
     params = deep_gru.init(
-        rng,
-        deep_gru.initialize_carry(
-            rng=key,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
+        key2,
+        init_carry,
         random_32_input,
     )
 
     carry, y = deep_gru.apply(
         params,
-        deep_gru.initialize_carry(
-            rng=subkey,
-            batch_size=(batch_size,),
-            hidden_size=hidden_size,
-            init_fn=nn.initializers.zeros,
-        ),
+        init_carry,
         random_32_input,
     )
 
