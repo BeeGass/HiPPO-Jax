@@ -17,6 +17,9 @@ This repo implements and benchmarks a number of drop-in replacements for attenti
 - [GSS](https://arxiv.org/pdf/2206.13947.pdf)
 - [S4](https://arxiv.org/pdf/2111.00396.pdf)
 - [S4D](https://arxiv.org/pdf/2206.11893.pdf)
+- [S5](https://arxiv.org/abs/2208.04933)
+- [Mega](https://arxiv.org/abs/2209.10655)
+- [H3 Block](https://openreview.net/pdf?id=COZDy0WYGg)
 
 The data we used to benchmark this is:
 
@@ -48,7 +51,7 @@ $ python --version
 Install lock file dependencies:
 
 ```bash
-poetry install --with jax,torch,mltools
+poetry install --with jax,torch,mltools,dataset
 ```
 
 if you plan to use a jupyter notebook also install:
@@ -79,7 +82,7 @@ $ python --version
 Install lock file dependencies:
 
 ```bash
-poetry install --with torch,jax,mltools,additional
+poetry install --with torch,jax,mltools,additional,dataset
 ```
 
 if you plan to use a jupyter notebook:
