@@ -53,10 +53,9 @@ models:
 
 training:
   seed: 1701
-  key_num: 2
+  key_num: 10
   num_epochs: 25
   weight_decay: 0.0005
   lr: 0.00003
   batch_size: 64
-  input_length: #
-
+  input_length: 5#

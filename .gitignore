@@ -6,3 +6,5 @@ examples/notebooks/notebooks-py/data/MNIST/raw/train-images-idx3-ubyte
 examples/notebooks/notebooks-py/data/MNIST/raw/train-images-idx3-ubyte.gz
 examples/notebooks/notebooks-py/data/MNIST/raw/train-labels-idx1-ubyte
 examples/notebooks/notebooks-py/data/MNIST/raw/train-labels-idx1-ubyte.gz
+outputs/
+.pytest_cache/

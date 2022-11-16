@@ -75,7 +75,7 @@ def pick_rnn_cell(cfg):
             for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
         ]
 
-    elif cfg["models"]["cells"]["cell_type"] == "legs_lstm":
+    elif cfg["models"]["cells"]["cell_type"] == "hippo":
         rnn_list = [
             HiPPOCell(
                 input_size=cfg["models"]["cells"]["hippo"]["input_size"],
@@ -174,10 +174,9 @@ def preprocess_data(cfg, data):
 
 def preprocess_labels(cfg, labels):
     # preprocess data
-    x = None
+    y = None
     if cfg["models"]["model_type"] == "rnn":
-
-        x = vmap(moving_window, in_axes=(0, None))(x, cfg["training"]["input_length"])
+        y = jax.nn.one_hot(labels, 10)
 
     elif cfg["models"]["model_type"] == "hippo":
         raise NotImplementedError
@@ -188,7 +187,7 @@ def preprocess_labels(cfg, labels):
     else:
         raise ValueError("Unknown model type to preprocess for")
 
-    return x
+    return y
 
 
 def pick_optim(cfg, model, params):
@@ -232,7 +231,7 @@ def update_model(state, grads):
     return state.apply_gradients(grads=grads)
 
 
-@hydra.main(config_path="config", config_name="train")
+@hydra.main(config_path="../../config", config_name="config")
 def recurrent_train(
     cfg: DictConfig,
 ) -> None:  # num_epochs, opt_state, net_type="RNN", train_key=None):
@@ -247,7 +246,7 @@ def recurrent_train(
 
     """
     with wandb.init(
-        project="BeeGass-Sequential", entity="beegass", config=cfg
+        project="BeeGass-HiPPOs", entity="beegass", config=cfg
     ):  # initialize wandb project for logging
 
         # get keys for parameters
@@ -292,8 +291,8 @@ def recurrent_train(
             for perm in perms:
                 train_data = train_set["image"][perm, ...]
                 train_labels = train_set["label"][perm, ...]
-                x = preprocess_data(cfg, train_data)
-                # y = preprocess_labels(cfg, train_labels)
+                train_data = preprocess_data(cfg, train_data)
+                # train_labels = preprocess_labels(cfg, train_labels)
                 grads, loss, accuracy = apply_model(
                     state=state, data=train_data, labels=train_labels
                 )
@@ -304,8 +303,8 @@ def recurrent_train(
             # epoch_time = time.time() - start_time
 
             # train loss for current epoch
-            train_loss = np.mean(epoch_loss)
-            train_accuracy = np.mean(epoch_accuracy)
+            train_loss = jnp.mean(epoch_loss)
+            train_accuracy = jnp.mean(epoch_accuracy)
 
             # test loss for current epoch
             _, test_loss, test_accuracy = apply_model(
