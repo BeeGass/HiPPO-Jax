@@ -26,7 +26,9 @@ The data we used to benchmark this is:
 - [Cifar10](https://www.cs.toronto.edu/~kriz/cifar.html)
 - [Camelyon17](https://camelyon17.grand-challenge.org/)
 - [TIGER](https://tiger.grand-challenge.org/)
+- [PanNuke](https://jgamper.github.io/PanNukeDataset/)
 - [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/)
+- [PanNuke](https://jgamper.github.io/PanNukeDataset/)
 
 **View [documentation](https://pathml.readthedocs.io/en/latest/)**
 
