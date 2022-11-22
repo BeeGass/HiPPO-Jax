@@ -1,11 +1,15 @@
 import jax
+from jax import jit, vmap
 import jax.numpy as jnp
+
 import numpy as np
-import flax
 import optax
 
+import flax
 from flax import linen as nn
 from flax.training import train_state
+from flax.linen.activation import tanh
+from flax.linen.activation import sigmoid
 
 # from flax.linen.recurrent import RNNCellBase
 from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
@@ -14,24 +18,50 @@ from src.models.hippo.hippo import HiPPO
 from src.models.hippo.transition import TransMatrix
 from src.data.process import moving_window, rolling_window
 
+import torch
+from torchvision import datasets, transforms
+
 import time
 from typing import Any, Callable, Sequence, Optional, Tuple, Union
 from collections import defaultdict
 from omegaconf import DictConfig, OmegaConf
 import wandb
 import hydra
-import tensorflow_datasets as tfds
 
 
-def get_datasets():
-    """Load MNIST train and test datasets into memory."""
-    ds_builder = tfds.builder("mnist")
-    ds_builder.download_and_prepare()
-    train_ds = tfds.as_numpy(ds_builder.as_dataset(split="train", batch_size=-1))
-    test_ds = tfds.as_numpy(ds_builder.as_dataset(split="test", batch_size=-1))
-    train_ds["image"] = jnp.float32(train_ds["image"]) / 255.0
-    test_ds["image"] = jnp.float32(test_ds["image"]) / 255.0
-    return train_ds, test_ds
+def get_datasets(cfg):
+    # download and transform train dataset
+    train_loader = torch.utils.data.DataLoader(
+        datasets.MNIST(
+            "../../datasets/mnist_data",
+            download=True,
+            train=True,
+            transform=transforms.Compose(
+                [
+                    transforms.ToTensor(),  # first, convert image to PyTorch tensor
+                ]
+            ),
+        ),
+        batch_size=cfg["training"]["batch_size"],
+        shuffle=True,
+    )
+
+    # download and transform test dataset
+    test_loader = torch.utils.data.DataLoader(
+        datasets.MNIST(
+            "../../datasets/mnist_data",
+            download=True,
+            train=False,
+            transform=transforms.Compose(
+                [
+                    transforms.ToTensor(),  # first, convert image to PyTorch tensor
+                ]
+            ),
+        ),
+        batch_size=cfg["training"]["batch_size"],
+        shuffle=True,
+    )
+    return train_loader, test_loader
 
 
 def pick_rnn_cell(cfg):
@@ -43,8 +73,8 @@ def pick_rnn_cell(cfg):
                 input_size=cfg["models"]["cells"]["rnn"]["input_size"],
                 hidden_size=cfg["models"]["cells"]["rnn"]["hidden_size"],
                 bias=cfg["models"]["cells"]["rnn"]["bias"],
-                param_dtype=cfg["models"]["cells"]["rnn"]["param_dtype"],
-                activation_fn=cfg["models"]["cells"]["rnn"]["activation_fn"],
+                param_dtype=jnp.float32,
+                activation_fn=tanh,
             )
             for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
         ]
@@ -55,9 +85,9 @@ def pick_rnn_cell(cfg):
                 input_size=cfg["models"]["cells"]["gated_rnn"]["input_size"],
                 hidden_size=cfg["models"]["cells"]["gated_rnn"]["hidden_size"],
                 bias=cfg["models"]["cells"]["gated_rnn"]["bias"],
-                param_dtype=cfg["models"]["cells"]["gated_rnn"]["param_dtype"],
-                gate_fn=cfg["models"]["cells"]["gated_rnn"]["gate_fn"],
-                activation_fn=cfg["models"]["cells"]["gated_rnn"]["activation_fn"],
+                param_dtype=jnp.float32,
+                gate_fn=sigmoid,
+                activation_fn=tanh,
             )
             for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
         ]
@@ -68,9 +98,9 @@ def pick_rnn_cell(cfg):
                 input_size=cfg["models"]["cells"]["gated_rnn"]["input_size"],
                 hidden_size=cfg["models"]["cells"]["gated_rnn"]["hidden_size"],
                 bias=cfg["models"]["cells"]["gated_rnn"]["bias"],
-                param_dtype=cfg["models"]["cells"]["gated_rnn"]["param_dtype"],
-                gate_fn=cfg["models"]["cells"]["gated_rnn"]["gate_fn"],
-                activation_fn=cfg["models"]["cells"]["gated_rnn"]["activation_fn"],
+                param_dtype=jnp.float32,
+                gate_fn=sigmoid,
+                activation_fn=tanh,
             )
             for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
         ]
@@ -81,15 +111,15 @@ def pick_rnn_cell(cfg):
                 input_size=cfg["models"]["cells"]["hippo"]["input_size"],
                 hidden_size=cfg["models"]["cells"]["hippo"]["hidden_size"],
                 bias=cfg["models"]["cells"]["hippo"]["bias"],
-                param_dtype=cfg["models"]["cells"]["hippo"]["param_dtype"],
-                gate_fn=cfg["models"]["cells"]["hippo"]["gate_fn"],
-                activation_fn=cfg["models"]["cells"]["hippo"]["activation_fn"],
+                param_dtype=jnp.float32,
+                gate_fn=sigmoid,
+                activation_fn=tanh,
                 measure=cfg["models"]["cells"]["hippo"]["measure"],
                 lambda_n=cfg["models"]["cells"]["hippo"]["lambda_n"],
                 fourier_type=cfg["models"]["cells"]["hippo"]["fourier_type"],
                 alpha=cfg["models"]["cells"]["hippo"]["alpha"],
                 beta=cfg["models"]["cells"]["hippo"]["beta"],
-                rnn_cell=cfg["models"]["cells"]["hippo"]["rnn_cell"],
+                rnn_cell=GRUCell,
             )
             for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
         ]
@@ -102,6 +132,7 @@ def pick_rnn_cell(cfg):
 
 def pick_model(key, cfg):
     # set model from net_type
+    the_key, subkey = jax.random.split(key)
     model = None
     params = None
 
@@ -113,12 +144,17 @@ def pick_model(key, cfg):
             skip_connections=cfg["models"]["deep_rnn"]["skip_connections"],
         )
         init_carry = model.initialize_carry(
-            rng=key,
+            rng=the_key,
             batch_size=(cfg["training"]["batch_size"],),
             hidden_size=cfg["models"]["deep_rnn"]["hidden_size"],
             init_fn=nn.initializers.zeros,
         )
-        params = model.init(input, init_carry)
+        x = jnp.zeros((cfg["training"]["batch_size"], cfg["training"]["input_size"]))
+        input = vmap(moving_window, in_axes=(0, None))(
+            x, cfg["training"]["input_length"]
+        )
+        params = model.init(subkey, init_carry, input)["params"]
+        print(f"finished initializing")
 
     elif cfg["models"]["model_type"] == "hippo":
         L = cfg["training"]["input_length"]
@@ -157,6 +193,9 @@ def preprocess_data(cfg, data):
     # preprocess data
     x = None
     if cfg["models"]["model_type"] == "rnn":
+        x = data.cpu().detach().numpy()
+        x = jnp.asarray(data, dtype=jnp.float32)
+        x = jnp.squeeze(x, axis=1)
         x = vmap(jnp.ravel, in_axes=0)(x)
         x = vmap(moving_window, in_axes=(0, None))(x, cfg["training"]["input_length"])
 
@@ -176,7 +215,9 @@ def preprocess_labels(cfg, labels):
     # preprocess data
     y = None
     if cfg["models"]["model_type"] == "rnn":
-        y = jax.nn.one_hot(labels, 10)
+        y = labels.cpu().detach().numpy()
+        y = jnp.asarray(y, dtype=jnp.float32)
+        # y = jax.nn.one_hot(y, 10, dtype=jnp.float32)
 
     elif cfg["models"]["model_type"] == "hippo":
         raise NotImplementedError
@@ -194,35 +235,48 @@ def pick_optim(cfg, model, params):
 
     tx = None
     if cfg["training"]["optimizer"] == "adam":
-        tx = optax.adam(
-            learning_rate=cfg["training"]["learning_rate"],
+        tx = optax.adamw(
+            learning_rate=cfg["training"]["lr"],
             weight_decay=cfg["training"]["weight_decay"],
         )
     elif cfg["training"]["optimizer"] == "sgd":
-        tx = optax.sgd(learning_rate=cfg["training"]["learning_rate"])
+        tx = optax.sgd(learning_rate=cfg["training"]["lr"])
     else:
         raise ValueError("Unknown optimizer")
 
-    tx_state = tx.init(params)
+    # tx_state = tx.init(params)
+    # print(f"tx_state: {tx_state}")
 
-    return train_state.TrainState.create(
-        apply_fn=model.apply, params=params, tx=tx, opt_state=tx_state
-    )
+    return train_state.TrainState.create(apply_fn=model.apply, params=params, tx=tx)
+    # , opt_state=tx_state
 
 
 @jax.jit
-def apply_model(state, data, labels):
+def apply_model(state, carry, data, labels):
     """Computes gradients, loss and accuracy for a single batch."""
 
     def loss_fn(params):
-        logits = state.apply_fn({"params": params}, data)
-        one_hot = jax.nn.one_hot(labels, 10)
+        # vmap(state.apply_fn, in_axes=(None, 0, 0))
+        the_carry, logits = state.apply_fn({"params": params}, carry=carry, input=data)
+        # print(f"logits: {logits}")
+        # print(f"logits shape: {logits.shape}")
+        # h_t, c_t = the_carry
+        # print(f"h_t shape: {h_t.shape}")
+        # print(f"c_t shape: {c_t.shape}")
+        one_hot = jax.nn.one_hot(labels, 10, dtype=jnp.float32)
         loss = jnp.mean(optax.softmax_cross_entropy(logits=logits, labels=one_hot))
+
         return loss, logits
 
+    # state_params = state.params
+    # print(f"state params: {state_params}")
+    # the_params = state_params["params"]
+    # print(f"params: {the_params}")
     grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
     (loss, logits), grads = grad_fn(state.params)
+    # (loss, logits), grads = grad_fn(state.params)
     accuracy = jnp.mean(jnp.argmax(logits, -1) == labels)
+
     return grads, loss, accuracy
 
 
@@ -254,16 +308,19 @@ def recurrent_train(
         key = jax.random.PRNGKey(seed)
 
         num_copies = cfg["training"]["key_num"]
-        keys = jax.random.split(key, num=num_copies)
+        key, subkey = jax.random.split(key, num=num_copies)
 
         # get train and test datasets
-        train_set, test_set = get_datasets()
+        train_loader, test_loader = get_datasets(cfg)
+        print(f"got dataset")
 
         # pick a model
-        model, params = pick_model(keys[1], cfg)
+        model, params = pick_model(key, cfg)
+        print(f"got model and params")
 
         # pick an optimizer
         state = pick_optim(cfg, model, params)
+        print(f"got optimizer state")
 
         # pick a scheduler
         # TODO: implement choice of scheduler
@@ -271,46 +328,51 @@ def recurrent_train(
         # pick a loss function
         # TODO: implement choice of loss function
 
-        # get dataset info for training loop (number of steps per epoch)
-        train_set_size = len(train_set["image"])
-        steps_per_epoch = train_set_size // cfg["training"]["batch_size"]
-
-        perms = jax.random.permutation(keys[0], train_set_size)
-        perms = perms[
-            : steps_per_epoch * cfg["training"]["batch_size"]
-        ]  # skip incomplete batch
-        perms = perms.reshape((steps_per_epoch, cfg["training"]["batch_size"]))
-
         epoch_loss = []
         epoch_accuracy = []
 
+        print(f"starting training loop")
         # Loop over the training epochs
         for epoch in range(cfg["training"]["num_epochs"]):
-            # start_time = time.time()
-
-            for perm in perms:
-                train_data = train_set["image"][perm, ...]
-                train_labels = train_set["label"][perm, ...]
-                train_data = preprocess_data(cfg, train_data)
-                # train_labels = preprocess_labels(cfg, train_labels)
+            start_time = time.time()
+            for batch_id, (train_data, train_labels) in enumerate(train_loader):
+                data = preprocess_data(cfg, train_data)
+                labels = preprocess_labels(cfg, train_labels)
+                carry = model.initialize_carry(
+                    rng=subkey,
+                    batch_size=(cfg["training"]["batch_size"],),
+                    hidden_size=cfg["models"]["deep_rnn"]["hidden_size"],
+                )
                 grads, loss, accuracy = apply_model(
-                    state=state, data=train_data, labels=train_labels
+                    state=state, carry=carry, data=data, labels=labels
                 )
                 state = update_model(state, grads)
                 epoch_loss.append(loss)
                 epoch_accuracy.append(accuracy)
 
-            # epoch_time = time.time() - start_time
-
-            # train loss for current epoch
-            train_loss = jnp.mean(epoch_loss)
-            train_accuracy = jnp.mean(epoch_accuracy)
-
-            # test loss for current epoch
-            _, test_loss, test_accuracy = apply_model(
-                state=state, data=test_set["image"], labels=test_set["label"]
+            epoch_time = time.time() - start_time
+            wandb.log(
+                {
+                    "epoch": epoch,
+                    "epoch time": epoch_time,
+                }
             )
 
-            # TODO: add logging of metrics
+            # train loss for current epoch
+            train_loss = jnp.mean(jnp.array(epoch_loss))
+            train_accuracy = jnp.mean(jnp.array(epoch_accuracy))
+            wandb.log({"train_loss": train_loss, "train_accuracy": train_accuracy})
+
+            for data, target in test_loader:
+                data = preprocess_data(cfg, train_data)
+                target = preprocess_labels(cfg, target)
+
+                # test loss for current epoch
+                _, test_loss, test_accuracy = apply_model(
+                    state=state, carry=carry, data=data, labels=target
+                )
+
+                # TODO: add logging of metrics
+                wandb.log({"test_loss": test_loss, "test_accuracy": test_accuracy})
 
         return state

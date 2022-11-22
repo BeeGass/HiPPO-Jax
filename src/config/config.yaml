@@ -16,20 +16,20 @@ models:
   cells:
     cell_type: "rnn" # rnn, lstm, gru, legs_lstm, legt_lstm, lmu_lstm, lagt_lstm, fru_lstm, fout_lstm, foud_lstm, legs_gru, legt_gru, lmu_gru, lagt_gru, fru_gru, fout_gru, foud_gru
     rnn:
-      input_size: 28 * 28
+      input_size: 784
       hidden_size: 256
       bias: True
       param_dtype: jnp.float32
       activation_fn: tanh
     gated_rnn:
-      input_size: 28 * 28
+      input_size: 784
       hidden_size: 256
       bias: True
       param_dtype: jnp.float32
       gate_fn: sigmoid
       activation_fn: tanh
     hippo:
-      input_size: 28 * 28
+      input_size: 784
       hidden_size: 256
       bias: True
       param_dtype: jnp.float32
@@ -53,9 +53,11 @@ models:
 
 training:
   seed: 1701
-  key_num: 10
-  num_epochs: 25
-  weight_decay: 0.0005
-  lr: 0.00003
+  key_num: 2
+  num_epochs: 20
+  weight_decay: 0.001
+  lr: 0.00001
   batch_size: 64
-  input_length: 5#
+  input_size: 784
+  optimizer: "adam"
+  input_length: 7

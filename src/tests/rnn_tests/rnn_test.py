@@ -77,6 +77,7 @@ def test_deep_rnn_shaping(deep_rnn, random_32_input, rnn_key):
     )
 
     h_t, c_t = carry
+    print(f"input shape: {random_32_input.shape}")
     print(f"h_t shape: {h_t.shape}")
     print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
@@ -112,6 +113,7 @@ def test_deep_lstm_shaping(deep_lstm, random_32_input, lstm_key):
     )
 
     h_t, c_t = carry
+    print(f"input shape: {random_32_input.shape}")
     print(f"h_t shape: {h_t.shape}")
     print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
@@ -147,6 +149,7 @@ def test_deep_gru_shaping(deep_gru, random_32_input, gru_key):
     )
 
     h_t, c_t = carry
+    print(f"input shape: {random_32_input.shape}")
     print(f"h_t shape: {h_t.shape}")
     print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")

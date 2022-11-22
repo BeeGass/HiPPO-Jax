@@ -49,8 +49,8 @@ wandb = {version = "^0.13.5", platform = "linux"}
 optional = true
 
 [tool.poetry.group.dataset.dependencies]
-tensorflow = {version = "^2.10.0", platform = "linux"}
-tensorflow-datasets = {version = "^4.7.0", platform = "linux"}
+# tensorflow = {version = "^2.10.0", platform = "linux"}
+# tensorflow-datasets = {version = "^4.7.0", platform = "linux"}
 
 
 [tool.poetry.group.torch]
