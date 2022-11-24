@@ -265,6 +265,7 @@ def apply_model(state, carry, data, labels):
         # print(f"c_t shape: {c_t.shape}")
         one_hot = jax.nn.one_hot(labels, 10, dtype=jnp.float32)
         loss = jnp.mean(optax.softmax_cross_entropy(logits=logits, labels=one_hot))
+        print(f"loss: {loss}")
 
         return loss, logits
 
@@ -350,18 +351,15 @@ def recurrent_train(
                 epoch_loss.append(loss)
                 epoch_accuracy.append(accuracy)
 
-            epoch_time = time.time() - start_time
-            wandb.log(
-                {
-                    "epoch": epoch,
-                    "epoch time": epoch_time,
-                }
-            )
-
-            # train loss for current epoch
+            # train loss and accuracy for current epoch
+            print(f"epoch loss: {jnp.array(epoch_loss)}")
             train_loss = jnp.mean(jnp.array(epoch_loss))
             train_accuracy = jnp.mean(jnp.array(epoch_accuracy))
-            wandb.log({"train_loss": train_loss, "train_accuracy": train_accuracy})
+            wandb.log({"epoch": epoch, "train_loss": train_loss})
+            wandb.log({"epoch": epoch, "train_accuracy": train_accuracy})
+
+            epoch_test_loss = []
+            epoch_test_accuracy = []
 
             for data, target in test_loader:
                 data = preprocess_data(cfg, train_data)
@@ -371,8 +369,20 @@ def recurrent_train(
                 _, test_loss, test_accuracy = apply_model(
                     state=state, carry=carry, data=data, labels=target
                 )
+                epoch_test_loss.append(test_loss)
+                epoch_test_accuracy.append(test_accuracy)
 
-                # TODO: add logging of metrics
-                wandb.log({"test_loss": test_loss, "test_accuracy": test_accuracy})
+            test_epoch_loss = jnp.mean(jnp.array(epoch_test_loss))
+            test_epoch_accuracy = jnp.mean(jnp.array(epoch_accuracy))
+            wandb.log(
+                {"test_loss": test_epoch_loss, "test_accuracy": test_epoch_accuracy}
+            )
+
+            epoch_time = time.time() - start_time
+            print(f"Epoch {epoch + 1} in {epoch_time:.2f} sec")
+            print(f"Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
+            print(
+                f"Test Loss: {test_epoch_loss:.4f}, Test Accuracy: {test_epoch_accuracy:.4f}"
+            )
 
         return state
