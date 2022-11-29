@@ -1,5 +1,8 @@
 [tool.poetry]
 name = "s4mer-pkg"
+packages = [
+    { include = "src", from="." },
+]
 version = "0.1.0"
 description = "Repo for the testing and developing of state space models, transformers and the hybrid between the two; trained on whole slide digital pathology image data."
 authors = ["Bryan Gass <bryank123@live.com>"]
