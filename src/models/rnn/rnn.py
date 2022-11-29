@@ -29,7 +29,20 @@ class DeepRNN(nn.Module):
 
         self.dense_out = nn.Dense(features=self.output_size)
 
+    # @nn.compact
     def __call__(self, carry, input):
+        # if carry is None:
+        #     # Learnable initial carry
+        #     hidden_size = self.layers[0].hidden_size
+        #     batch_size = (input.shape[0],)
+        #     h_t = self.param(
+        #         "h_t_init", nn.initializers.zeros, batch_size + (hidden_size,)
+        #     )
+        #     c_t = self.param(
+        #         "c_t_init", nn.initializers.zeros, batch_size + (hidden_size,)
+        #     )
+        #     carry = tuple([h_t, c_t])
+
         out_carry = None
         output = None
         h_t, c_t = carry

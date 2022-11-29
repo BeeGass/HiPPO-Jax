@@ -135,6 +135,7 @@ def pick_model(key, cfg):
     the_key, subkey = jax.random.split(key)
     model = None
     params = None
+    init_carry = None
 
     if cfg["models"]["model_type"] == "rnn":
         rnn_list = pick_rnn_cell(cfg)
@@ -153,7 +154,8 @@ def pick_model(key, cfg):
         input = vmap(moving_window, in_axes=(0, None))(
             x, cfg["training"]["input_length"]
         )
-        params = model.init(subkey, init_carry, input)["params"]
+        # params = model.init(subkey, carry=None, input=input)["params"]
+        params = model.init(subkey, carry=init_carry, input=input)["params"]
         print(f"finished initializing")
 
     elif cfg["models"]["model_type"] == "hippo":
@@ -186,7 +188,8 @@ def pick_model(key, cfg):
     else:
         raise ValueError("Unknown model type")
 
-    return model, params
+    return model, params, init_carry
+    # return model, params
 
 
 def preprocess_data(cfg, data):
@@ -256,26 +259,20 @@ def apply_model(state, carry, data, labels):
     """Computes gradients, loss and accuracy for a single batch."""
 
     def loss_fn(params):
-        # vmap(state.apply_fn, in_axes=(None, 0, 0))
-        the_carry, logits = state.apply_fn({"params": params}, carry=carry, input=data)
-        # print(f"logits: {logits}")
-        # print(f"logits shape: {logits.shape}")
-        # h_t, c_t = the_carry
-        # print(f"h_t shape: {h_t.shape}")
-        # print(f"c_t shape: {c_t.shape}")
+        # jax.debug.print("params:\n{params}", params=params)
+
+        _, logits = state.apply_fn({"params": params}, carry=carry, input=data)
+
         one_hot = jax.nn.one_hot(labels, 10, dtype=jnp.float32)
         loss = jnp.mean(optax.softmax_cross_entropy(logits=logits, labels=one_hot))
-        print(f"loss: {loss}")
+
+        # jax.debug.print("logits:\n{logits}", logits=logits)
+        # jax.debug.print("loss:\n{loss}", loss=loss)
 
         return loss, logits
 
-    # state_params = state.params
-    # print(f"state params: {state_params}")
-    # the_params = state_params["params"]
-    # print(f"params: {the_params}")
     grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
     (loss, logits), grads = grad_fn(state.params)
-    # (loss, logits), grads = grad_fn(state.params)
     accuracy = jnp.mean(jnp.argmax(logits, -1) == labels)
 
     return grads, loss, accuracy
@@ -309,14 +306,14 @@ def recurrent_train(
         key = jax.random.PRNGKey(seed)
 
         num_copies = cfg["training"]["key_num"]
-        key, subkey = jax.random.split(key, num=num_copies)
+        a_key, subkey = jax.random.split(key, num=num_copies)
 
         # get train and test datasets
         train_loader, test_loader = get_datasets(cfg)
         print(f"got dataset")
 
         # pick a model
-        model, params = pick_model(key, cfg)
+        model, params, carry = pick_model(a_key, cfg)
         print(f"got model and params")
 
         # pick an optimizer
@@ -339,11 +336,14 @@ def recurrent_train(
             for batch_id, (train_data, train_labels) in enumerate(train_loader):
                 data = preprocess_data(cfg, train_data)
                 labels = preprocess_labels(cfg, train_labels)
-                carry = model.initialize_carry(
-                    rng=subkey,
-                    batch_size=(cfg["training"]["batch_size"],),
-                    hidden_size=cfg["models"]["deep_rnn"]["hidden_size"],
-                )
+                # carry = model.initialize_carry(
+                #     rng=subkey,
+                #     batch_size=(cfg["training"]["batch_size"],),
+                #     hidden_size=cfg["models"]["deep_rnn"]["hidden_size"],
+                # )
+                # grads, loss, accuracy = apply_model(
+                #     state=state, carry=None, data=data, labels=labels
+                # )
                 grads, loss, accuracy = apply_model(
                     state=state, carry=carry, data=data, labels=labels
                 )
@@ -352,11 +352,11 @@ def recurrent_train(
                 epoch_accuracy.append(accuracy)
 
             # train loss and accuracy for current epoch
-            print(f"epoch loss: {jnp.array(epoch_loss)}")
             train_loss = jnp.mean(jnp.array(epoch_loss))
             train_accuracy = jnp.mean(jnp.array(epoch_accuracy))
-            wandb.log({"epoch": epoch, "train_loss": train_loss})
-            wandb.log({"epoch": epoch, "train_accuracy": train_accuracy})
+            wandb.log(
+                {"train_loss": train_loss, "train_accuracy": train_accuracy}, step=epoch
+            )
 
             epoch_test_loss = []
             epoch_test_accuracy = []
@@ -366,6 +366,9 @@ def recurrent_train(
                 target = preprocess_labels(cfg, target)
 
                 # test loss for current epoch
+                # _, test_loss, test_accuracy = apply_model(
+                #     state=state, carry=None, data=data, labels=target
+                # )
                 _, test_loss, test_accuracy = apply_model(
                     state=state, carry=carry, data=data, labels=target
                 )
@@ -375,7 +378,8 @@ def recurrent_train(
             test_epoch_loss = jnp.mean(jnp.array(epoch_test_loss))
             test_epoch_accuracy = jnp.mean(jnp.array(epoch_accuracy))
             wandb.log(
-                {"test_loss": test_epoch_loss, "test_accuracy": test_epoch_accuracy}
+                {"test_loss": test_epoch_loss, "test_accuracy": test_epoch_accuracy},
+                step=epoch,
             )
 
             epoch_time = time.time() - start_time
