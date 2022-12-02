@@ -13,7 +13,13 @@ from flax.linen.activation import sigmoid
 
 # from flax.linen.recurrent import RNNCellBase
 from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
-from src.models.rnn.rnn import DeepRNN
+from src.models.rnn.rnn import (
+    OneToManyRNN,
+    ManyToOneRNN,
+    ManyToManyRNN,
+    DeepRNN,
+    BidirectionalRNN,
+)
 from src.models.hippo.hippo import HiPPO
 from src.models.hippo.transition import TransMatrix
 from src.data.process import moving_window, rolling_window
@@ -42,7 +48,7 @@ def get_datasets(cfg):
                 ]
             ),
         ),
-        batch_size=cfg["training"]["batch_size"],
+        batch_size=cfg.training.params.batch_size,
         shuffle=True,
     )
 
@@ -58,70 +64,70 @@ def get_datasets(cfg):
                 ]
             ),
         ),
-        batch_size=cfg["training"]["batch_size"],
+        batch_size=cfg.training.params.batch_size,
         shuffle=True,
     )
     return train_loader, test_loader
 
 
-def pick_rnn_cell(cfg):
+def pick_rnn_cell(cfg, stack_number):
     # set rnn cell from rnn_type
     rnn_list = []
-    if cfg["models"]["cells"]["cell_type"] == "rnn":
+    if cfg.models.recurrent.cell_type == "rnn":
         rnn_list = [
             RNNCell(
-                input_size=cfg["models"]["cells"]["rnn"]["input_size"],
-                hidden_size=cfg["models"]["cells"]["rnn"]["hidden_size"],
-                bias=cfg["models"]["cells"]["rnn"]["bias"],
+                input_size=cfg.models.recurrent.cell.rnn.input_size,
+                hidden_size=cfg.models.recurrent.cell.rnn.hidden_size,
+                bias=cfg.models.recurrent.cell.rnn.bias,
                 param_dtype=jnp.float32,
                 activation_fn=tanh,
             )
-            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+            for _ in range(stack_number)
         ]
 
-    elif cfg["models"]["cells"]["cell_type"] == "lstm":
+    elif cfg.models.recurrent.cell_type == "lstm":
         rnn_list = [
             LSTMCell(
-                input_size=cfg["models"]["cells"]["gated_rnn"]["input_size"],
-                hidden_size=cfg["models"]["cells"]["gated_rnn"]["hidden_size"],
-                bias=cfg["models"]["cells"]["gated_rnn"]["bias"],
+                input_size=cfg.models.recurrent.cell.lstm.input_size,
+                hidden_size=cfg.models.recurrent.cell.lstm.hidden_size,
+                bias=cfg.models.recurrent.cell.lstm.bias,
                 param_dtype=jnp.float32,
                 gate_fn=sigmoid,
                 activation_fn=tanh,
             )
-            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+            for _ in range(stack_number)
         ]
 
-    elif cfg["models"]["cells"]["cell_type"] == "gru":
+    elif cfg.models.recurrent.cell_type == "gru":
         rnn_list = [
             GRUCell(
-                input_size=cfg["models"]["cells"]["gated_rnn"]["input_size"],
-                hidden_size=cfg["models"]["cells"]["gated_rnn"]["hidden_size"],
-                bias=cfg["models"]["cells"]["gated_rnn"]["bias"],
+                input_size=cfg.models.recurrent.cell.gru.input_size,
+                hidden_size=cfg.models.recurrent.cell.gru.hidden_size,
+                bias=cfg.models.recurrent.cell.gru.bias,
                 param_dtype=jnp.float32,
                 gate_fn=sigmoid,
                 activation_fn=tanh,
             )
-            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+            for _ in range(stack_number)
         ]
 
-    elif cfg["models"]["cells"]["cell_type"] == "hippo":
+    elif cfg.models.recurrent.cell_type == "hippo":
         rnn_list = [
             HiPPOCell(
-                input_size=cfg["models"]["cells"]["hippo"]["input_size"],
-                hidden_size=cfg["models"]["cells"]["hippo"]["hidden_size"],
-                bias=cfg["models"]["cells"]["hippo"]["bias"],
+                input_size=cfg.models.recurrent.cell.hippo.input_size,
+                hidden_size=cfg.models.recurrent.cell.hippo.hidden_size,
+                bias=cfg.models.recurrent.cell.hippo.bias,
                 param_dtype=jnp.float32,
                 gate_fn=sigmoid,
                 activation_fn=tanh,
-                measure=cfg["models"]["cells"]["hippo"]["measure"],
-                lambda_n=cfg["models"]["cells"]["hippo"]["lambda_n"],
-                fourier_type=cfg["models"]["cells"]["hippo"]["fourier_type"],
-                alpha=cfg["models"]["cells"]["hippo"]["alpha"],
-                beta=cfg["models"]["cells"]["hippo"]["beta"],
+                measure=cfg.models.recurrent.cell.hippo.measure,
+                lambda_n=cfg.models.recurrent.cell.hippo.lambda_n,
+                fourier_type=cfg.models.recurrent.cell.hippo.fourier_type,
+                alpha=cfg.models.recurrent.cell.hippo.alpha,
+                beta=cfg.models.recurrent.cell.hippo.beta,
                 rnn_cell=GRUCell,
             )
-            for _ in range(cfg["models"]["deep_rnn"]["stack_number"])
+            for _ in range(stack_number)
         ]
 
     else:
@@ -137,50 +143,103 @@ def pick_model(key, cfg):
     params = None
     init_carry = None
 
-    if cfg["models"]["model_type"] == "rnn":
-        rnn_list = pick_rnn_cell(cfg)
+    if cfg.models.recurrent.architecture == "deep rnn":
+        stack_number = cfg.models.recurrent.architectures.deep_rnn.stack_number
+        rnn_list = pick_rnn_cell(cfg, stack_number)
         model = DeepRNN(
-            output_size=cfg["models"]["deep_rnn"]["output_size"],
+            output_size=cfg.models.recurrent.architectures.deep_rnn.output_size,
             layers=rnn_list,
-            skip_connections=cfg["models"]["deep_rnn"]["skip_connections"],
+            skip_connections=cfg.models.recurrent.architectures.deep_rnn.skip_connections,
         )
         init_carry = model.initialize_carry(
             rng=the_key,
-            batch_size=(cfg["training"]["batch_size"],),
-            hidden_size=cfg["models"]["deep_rnn"]["hidden_size"],
+            batch_size=(cfg.training.params.batch_size,),
+            hidden_size=cfg.models.recurrent.architectures.deep_rnn.hidden_size,
             init_fn=nn.initializers.zeros,
         )
-        x = jnp.zeros((cfg["training"]["batch_size"], cfg["training"]["input_size"]))
-        input = vmap(moving_window, in_axes=(0, None))(
-            x, cfg["training"]["input_length"]
-        )
-        # params = model.init(subkey, carry=None, input=input)["params"]
+        x = jnp.zeros((cfg.training.params.batch_size, cfg.training.input_size))
+        input = vmap(moving_window, in_axes=(0, None))(x, cfg.training.input_length)
         params = model.init(subkey, carry=init_carry, input=input)["params"]
-        print(f"finished initializing")
 
-    elif cfg["models"]["model_type"] == "hippo":
-        L = cfg["training"]["input_length"]
+    elif cfg.models.recurrent.architecture == "bidirectional rnn":
+        stack_number = cfg.models.recurrent.architectures.bidirectional.stack_number
+        rnn_list = pick_rnn_cell(cfg, stack_number)
+        raise NotImplementedError("Bidirectional RNN not implemented yet")
+
+    elif cfg.models.recurrent.architecture == "one to many rnn":
+        stack_number = cfg.models.recurrent.architectures.onetomany.stack_number
+        rnn_list = pick_rnn_cell(cfg, stack_number)
+        model = OneToManyRNN(
+            output_size=cfg.models.recurrent.architectures.onetomany.output_size,
+            layer=rnn_list,
+        )
+        init_carry = model.initialize_carry(
+            rng=the_key,
+            batch_size=(cfg.training.params.batch_size,),
+            hidden_size=cfg.models.recurrent.architectures.onetomany.hidden_size,
+            init_fn=nn.initializers.zeros,
+        )
+        x = jnp.zeros((cfg.training.params.batch_size, cfg.training.input_size))
+        input = vmap(moving_window, in_axes=(0, None))(x, cfg.training.input_length)
+        params = model.init(subkey, carry=init_carry, input=input)["params"]
+
+    elif cfg.models.recurrent.architecture == "many to one rnn":
+        stack_number = cfg.models.recurrent.architectures.manytoone.stack_number
+        rnn_list = pick_rnn_cell(cfg, stack_number)
+        model = ManyToOneRNN(
+            output_size=cfg.models.recurrent.architectures.manytoone.output_size,
+            layer=rnn_list,
+        )
+        init_carry = model.initialize_carry(
+            rng=the_key,
+            batch_size=(cfg.training.params.batch_size,),
+            hidden_size=cfg.models.recurrent.architectures.manytoone.hidden_size,
+            init_fn=nn.initializers.zeros,
+        )
+        x = jnp.zeros((cfg.training.params.batch_size, cfg.training.input_size))
+        input = vmap(moving_window, in_axes=(0, None))(x, cfg.training.input_length)
+        params = model.init(subkey, carry=init_carry, input=input)["params"]
+
+    elif cfg.models.recurrent.architecture == "many to many rnn":
+        stack_number = cfg.models.recurrent.architectures.manytomany.stack_number
+        rnn_list = pick_rnn_cell(cfg, stack_number)
+        model = ManyToManyRNN(
+            output_size=cfg.models.recurrent.architectures.manytomany.output_size,
+            layer=rnn_list,
+        )
+        init_carry = model.initialize_carry(
+            rng=the_key,
+            batch_size=(cfg.training.params.batch_size,),
+            hidden_size=cfg.models.recurrent.architectures.manytomany.hidden_size,
+            init_fn=nn.initializers.zeros,
+        )
+        x = jnp.zeros((cfg.training.params.batch_size, cfg.training.input_size))
+        input = vmap(moving_window, in_axes=(0, None))(x, cfg.training.input_length)
+        params = model.init(subkey, carry=init_carry, input=input)["params"]
+
+    elif cfg.models.recurrent.architecture == "hippo":
+        L = cfg.training.input_length
         hippo_matrices = TransMatrix(
-            N=cfg["models"]["hippo"]["n"],
-            measure=cfg["models"]["hippo"]["measure"],
-            lambda_n=cfg["models"]["hippo"]["lambda_n"],
-            fourier_type=cfg["models"]["hippo"]["fourier_type"],
-            alpha=cfg["models"]["hippo"]["alpha"],
-            beta=cfg["models"]["hippo"]["beta"],
+            N=cfg.models.state_spaces.transition_matrix.n,
+            measure=cfg.models.state_spaces.transition_matrix.measure,
+            lambda_n=cfg.models.state_spaces.transition_matrix.lambda_n,
+            fourier_type=cfg.models.state_spaces.transition_matrix.fourier_type,
+            alpha=cfg.models.state_spaces.transition_matrix.alpha,
+            beta=cfg.models.state_spaces.transition_matrix.beta,
         )
         model = HiPPO(
-            N=cfg["models"]["hippo"]["n"],
+            N=cfg.models.state_spaces.HiPPO.n,
             max_length=L,
             step=1.0 / L,
-            GBT_alpha=cfg["models"]["hippo"]["GBT_alpha"],
+            GBT_alpha=cfg.models.state_spaces.HiPPO.GBT_alpha,
             seq_L=L,
             A=hippo_matrices.A_matrix,
             B=hippo_matrices.B_matrix,
-            measure=cfg["models"]["hippo"]["measure"],
+            measure=cfg.models.state_spaces.HiPPO.measure,
         )
         params = model.init(f, init_state=None, t_step=0, kernel=False)
 
-    elif cfg["models"]["model_type"] == "s4":
+    elif cfg.models.recurrent.architecture == "s4":
         raise NotImplementedError
         # model = S4()
         # params = model.init()
@@ -195,21 +254,12 @@ def pick_model(key, cfg):
 def preprocess_data(cfg, data):
     # preprocess data
     x = None
-    if cfg["models"]["model_type"] == "rnn":
+    if cfg.data.dataset.preprocess_data == "flatten":
         x = data.cpu().detach().numpy()
         x = jnp.asarray(data, dtype=jnp.float32)
         x = jnp.squeeze(x, axis=1)
         x = vmap(jnp.ravel, in_axes=0)(x)
         x = vmap(moving_window, in_axes=(0, None))(x, cfg["training"]["input_length"])
-
-    elif cfg["models"]["model_type"] == "hippo":
-        raise NotImplementedError
-
-    elif cfg["models"]["model_type"] == "s4":
-        raise NotImplementedError
-
-    else:
-        raise ValueError("Unknown model type to preprocess for")
 
     return x
 
@@ -217,19 +267,10 @@ def preprocess_data(cfg, data):
 def preprocess_labels(cfg, labels):
     # preprocess data
     y = None
-    if cfg["models"]["model_type"] == "rnn":
+    if cfg.data.dataset.preprocess_labels == "one hot":
         y = labels.cpu().detach().numpy()
         y = jnp.asarray(y, dtype=jnp.float32)
         # y = jax.nn.one_hot(y, 10, dtype=jnp.float32)
-
-    elif cfg["models"]["model_type"] == "hippo":
-        raise NotImplementedError
-
-    elif cfg["models"]["model_type"] == "s4":
-        raise NotImplementedError
-
-    else:
-        raise ValueError("Unknown model type to preprocess for")
 
     return y
 
@@ -237,13 +278,13 @@ def preprocess_labels(cfg, labels):
 def pick_optim(cfg, model, params):
 
     tx = None
-    if cfg["training"]["optimizer"] == "adam":
+    if cfg.training.params.optim == "adam":
         tx = optax.adamw(
-            learning_rate=cfg["training"]["lr"],
-            weight_decay=cfg["training"]["weight_decay"],
+            learning_rate=cfg.training.params.lr,
+            weight_decay=cfg.training.params.weight_decay,
         )
-    elif cfg["training"]["optimizer"] == "sgd":
-        tx = optax.sgd(learning_rate=cfg["training"]["lr"])
+    elif cfg.training.params.optim == "sgd":
+        tx = optax.sgd(learning_rate=cfg.training.params.lr)
     else:
         raise ValueError("Unknown optimizer")
 
@@ -261,12 +302,14 @@ def apply_model(state, carry, data, labels):
     def loss_fn(params):
         # jax.debug.print("params:\n{params}", params=params)
 
-        _, logits = state.apply_fn({"params": params}, carry=carry, input=data)
+        logits = state.apply_fn({"params": params}, carry=carry, input=data)
 
         one_hot = jax.nn.one_hot(labels, 10, dtype=jnp.float32)
         loss = jnp.mean(optax.softmax_cross_entropy(logits=logits, labels=one_hot))
 
         # jax.debug.print("logits:\n{logits}", logits=logits)
+        # jax.debug.print("labels:\n{labels}", labels=labels)
+        # jax.debug.print("one_hot:\n{one_hot}", one_hot=one_hot)
         # jax.debug.print("loss:\n{loss}", loss=loss)
 
         return loss, logits
@@ -302,10 +345,10 @@ def recurrent_train(
     ):  # initialize wandb project for logging
 
         # get keys for parameters
-        seed = cfg["training"]["seed"]
+        seed = cfg.training.seed
         key = jax.random.PRNGKey(seed)
 
-        num_copies = cfg["training"]["key_num"]
+        num_copies = cfg.training.key_num
         a_key, subkey = jax.random.split(key, num=num_copies)
 
         # get train and test datasets
@@ -331,7 +374,7 @@ def recurrent_train(
 
         print(f"starting training loop")
         # Loop over the training epochs
-        for epoch in range(cfg["training"]["num_epochs"]):
+        for epoch in range(cfg.training.params.num_epochs):
             start_time = time.time()
             for batch_id, (train_data, train_labels) in enumerate(train_loader):
                 data = preprocess_data(cfg, train_data)

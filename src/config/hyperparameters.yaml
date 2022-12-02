@@ -1,0 +1,12 @@
+training:
+  model: "rnn"
+  seed: 1701
+  key_num: 2
+  input_size: 784
+  input_length: 28
+  params:
+    optim: "adam"
+    num_epochs: 5
+    weight_decay: 0.0001
+    lr: 0.0001
+    batch_size: 16
