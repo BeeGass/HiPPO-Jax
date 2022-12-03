@@ -181,7 +181,12 @@ def pick_model(key, cfg):
         )
         x = jnp.zeros((cfg.training.params.batch_size, cfg.training.input_size))
         input = vmap(moving_window, in_axes=(0, None))(x, cfg.training.input_length)
-        params = model.init(subkey, carry=init_carry, input=input)["params"]
+        params = model.init(
+            subkey,
+            carry=init_carry,
+            input=input,
+            teacher_forcing=cfg.models.recurrent.architectures.train_tf,
+        )["params"]
 
     elif cfg.models.recurrent.architecture == "many to one rnn":
         stack_number = cfg.models.recurrent.architectures.manytoone.stack_number
@@ -388,7 +393,10 @@ def recurrent_train(
                 #     state=state, carry=None, data=data, labels=labels
                 # )
                 grads, loss, accuracy = apply_model(
-                    state=state, carry=carry, data=data, labels=labels
+                    state=state,
+                    carry=carry,
+                    data=data,
+                    labels=labels,
                 )
                 state = update_model(state, grads)
                 epoch_loss.append(loss)
@@ -413,13 +421,16 @@ def recurrent_train(
                 #     state=state, carry=None, data=data, labels=target
                 # )
                 _, test_loss, test_accuracy = apply_model(
-                    state=state, carry=carry, data=data, labels=target
+                    state=state,
+                    carry=carry,
+                    data=data,
+                    labels=target,
                 )
                 epoch_test_loss.append(test_loss)
                 epoch_test_accuracy.append(test_accuracy)
 
             test_epoch_loss = jnp.mean(jnp.array(epoch_test_loss))
-            test_epoch_accuracy = jnp.mean(jnp.array(epoch_accuracy))
+            test_epoch_accuracy = jnp.mean(jnp.array(epoch_test_accuracy))
             wandb.log(
                 {"test_loss": test_epoch_loss, "test_accuracy": test_epoch_accuracy},
                 step=epoch,
