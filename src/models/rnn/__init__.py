@@ -3,6 +3,9 @@ from src.models.rnn.rnn import (
     OneToManyRNN,
     ManyToOneRNN,
     ManyToManyRNN,
-    DeepRNN,
-    BidirectionalRNN,
+    OneToManyDeepRNN,
+    ManyToOneDeepRNN,
+    ManyToManyDeepRNN,
+    BiRNN,
+    DeepBiRNN,
 )

@@ -1,158 +1,6752 @@
-import pytest
-from src.tests.rnn_tests.deep_rnn_fixtures import (
-    deep_rnn,
-    deep_lstm,
-    deep_gru,
+# Single Cell RNNs
+from src.tests.rnn_tests.architecture_fixtures import (
+    one_to_many_single_cell_rnn,
+    one_to_many_single_cell_lstm,
+    one_to_many_single_cell_gru,
 )
-from src.tests.rnn_tests.deep_rnn_fixtures import (
-    deep_hippo_legs_lstm,
-    deep_hippo_legt_lstm,
-    deep_hippo_lmu_lstm,
-    deep_hippo_lagt_lstm,
-    deep_hippo_fru_lstm,
-    deep_hippo_fout_lstm,
-    deep_hippo_foud_lstm,
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_one_single_cell_rnn,
+    many_to_one_single_cell_lstm,
+    many_to_one_single_cell_gru,
 )
-from src.tests.rnn_tests.deep_rnn_fixtures import (
-    deep_hippo_legs_gru,
-    deep_hippo_legt_gru,
-    deep_hippo_lmu_gru,
-    deep_hippo_lagt_gru,
-    deep_hippo_fru_gru,
-    deep_hippo_fout_gru,
-    deep_hippo_foud_gru,
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_many_single_cell_rnn,
+    many_to_many_single_cell_lstm,
+    many_to_many_single_cell_gru,
 )
-from src.tests.rnn_tests.rnn_utils import rnn_key, gru_key, lstm_key
+
+# Single Cell Bidirectional RNNs
+from src.tests.rnn_tests.architecture_fixtures import (
+    single_cell_birnn,
+    single_cell_bilstm,
+    single_cell_bigru,
+)
+
+# Deep RNNs
+from src.tests.rnn_tests.architecture_fixtures import (
+    one_to_many_deep_rnn,
+    one_to_many_deep_lstm,
+    one_to_many_deep_gru,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_one_deep_rnn,
+    many_to_one_deep_lstm,
+    many_to_one_deep_gru,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_many_deep_rnn,
+    many_to_many_deep_lstm,
+    many_to_many_deep_gru,
+)
+
+# Deep Bidirectional RNNs
+from src.tests.rnn_tests.architecture_fixtures import (
+    deep_birnn,
+    deep_bilstm,
+    deep_bigru,
+)
+
+# Single Cell HiPPO RNNs
+from src.tests.rnn_tests.architecture_fixtures import (
+    one_to_many_single_hippo_legs_lstm,
+    one_to_many_single_hippo_legt_lstm,
+    one_to_many_single_hippo_lmu_lstm,
+    one_to_many_single_hippo_lagt_lstm,
+    one_to_many_single_hippo_fru_lstm,
+    one_to_many_single_hippo_fout_lstm,
+    one_to_many_single_hippo_foud_lstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_one_single_hippo_legs_lstm,
+    many_to_one_single_hippo_legt_lstm,
+    many_to_one_single_hippo_lmu_lstm,
+    many_to_one_single_hippo_lagt_lstm,
+    many_to_one_single_hippo_fru_lstm,
+    many_to_one_single_hippo_fout_lstm,
+    many_to_one_single_hippo_foud_lstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_many_single_hippo_legs_lstm,
+    many_to_many_single_hippo_legt_lstm,
+    many_to_many_single_hippo_lmu_lstm,
+    many_to_many_single_hippo_lagt_lstm,
+    many_to_many_single_hippo_fru_lstm,
+    many_to_many_single_hippo_fout_lstm,
+    many_to_many_single_hippo_foud_lstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    one_to_many_single_hippo_legs_gru,
+    one_to_many_single_hippo_legt_gru,
+    one_to_many_single_hippo_lmu_gru,
+    one_to_many_single_hippo_lagt_gru,
+    one_to_many_single_hippo_fru_gru,
+    one_to_many_single_hippo_fout_gru,
+    one_to_many_single_hippo_foud_gru,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_one_single_hippo_legs_gru,
+    many_to_one_single_hippo_legt_gru,
+    many_to_one_single_hippo_lmu_gru,
+    many_to_one_single_hippo_lagt_gru,
+    many_to_one_single_hippo_fru_gru,
+    many_to_one_single_hippo_fout_gru,
+    many_to_one_single_hippo_foud_gru,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_many_single_hippo_legs_gru,
+    many_to_many_single_hippo_legt_gru,
+    many_to_many_single_hippo_lmu_gru,
+    many_to_many_single_hippo_lagt_gru,
+    many_to_many_single_hippo_fru_gru,
+    many_to_many_single_hippo_fout_gru,
+    many_to_many_single_hippo_foud_gru,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    single_cell_hippo_legs_bilstm,
+    single_cell_hippo_legt_bilstm,
+    single_cell_hippo_lmu_bilstm,
+    single_cell_hippo_lagt_bilstm,
+    single_cell_hippo_fru_bilstm,
+    single_cell_hippo_fout_bilstm,
+    single_cell_hippo_foud_bilstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    single_cell_hippo_legs_bigru,
+    single_cell_hippo_legt_bigru,
+    single_cell_hippo_lmu_bigru,
+    single_cell_hippo_lagt_bigru,
+    single_cell_hippo_fru_bigru,
+    single_cell_hippo_fout_bigru,
+    single_cell_hippo_foud_bigru,
+)
+
+# Deep HiPPO RNNs
+from src.tests.rnn_tests.architecture_fixtures import (
+    one_to_many_deep_hippo_legs_lstm,
+    one_to_many_deep_hippo_legt_lstm,
+    one_to_many_deep_hippo_lmu_lstm,
+    one_to_many_deep_hippo_lagt_lstm,
+    one_to_many_deep_hippo_fru_lstm,
+    one_to_many_deep_hippo_fout_lstm,
+    one_to_many_deep_hippo_foud_lstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_one_deep_hippo_legs_lstm,
+    many_to_one_deep_hippo_legt_lstm,
+    many_to_one_deep_hippo_lmu_lstm,
+    many_to_one_deep_hippo_lagt_lstm,
+    many_to_one_deep_hippo_fru_lstm,
+    many_to_one_deep_hippo_fout_lstm,
+    many_to_one_deep_hippo_foud_lstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_many_deep_hippo_legs_lstm,
+    many_to_many_deep_hippo_legt_lstm,
+    many_to_many_deep_hippo_lmu_lstm,
+    many_to_many_deep_hippo_lagt_lstm,
+    many_to_many_deep_hippo_fru_lstm,
+    many_to_many_deep_hippo_fout_lstm,
+    many_to_many_deep_hippo_foud_lstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    one_to_many_deep_hippo_legs_gru,
+    one_to_many_deep_hippo_legt_gru,
+    one_to_many_deep_hippo_lmu_gru,
+    one_to_many_deep_hippo_lagt_gru,
+    one_to_many_deep_hippo_fru_gru,
+    one_to_many_deep_hippo_fout_gru,
+    one_to_many_deep_hippo_foud_gru,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_one_deep_hippo_legs_gru,
+    many_to_one_deep_hippo_legt_gru,
+    many_to_one_deep_hippo_lmu_gru,
+    many_to_one_deep_hippo_lagt_gru,
+    many_to_one_deep_hippo_fru_gru,
+    many_to_one_deep_hippo_fout_gru,
+    many_to_one_deep_hippo_foud_gru,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    many_to_many_deep_hippo_legs_gru,
+    many_to_many_deep_hippo_legt_gru,
+    many_to_many_deep_hippo_lmu_gru,
+    many_to_many_deep_hippo_lagt_gru,
+    many_to_many_deep_hippo_fru_gru,
+    many_to_many_deep_hippo_fout_gru,
+    many_to_many_deep_hippo_foud_gru,
+)
+
+# Deep Bidirectional RNNs
+from src.tests.rnn_tests.architecture_fixtures import (
+    deep_hippo_legs_bilstm,
+    deep_hippo_legt_bilstm,
+    deep_hippo_lmu_bilstm,
+    deep_hippo_lagt_bilstm,
+    deep_hippo_fru_bilstm,
+    deep_hippo_fout_bilstm,
+    deep_hippo_foud_bilstm,
+)
+from src.tests.rnn_tests.architecture_fixtures import (
+    deep_hippo_legs_bigru,
+    deep_hippo_legt_bigru,
+    deep_hippo_lmu_bigru,
+    deep_hippo_lagt_bigru,
+    deep_hippo_fru_bigru,
+    deep_hippo_fout_bigru,
+    deep_hippo_foud_bigru,
+)
+
+# Psuedo-Random Number Generator Keys for Single Cell RNNs
 from src.tests.rnn_tests.rnn_utils import (
-    lstm_legt_key,
-    lstm_lmu_key,
-    lstm_lagt_key,
-    lstm_legs_key,
-    lstm_fru_key,
-    lstm_fout_key,
-    lstm_foud_key,
+    one_to_many_single_cell_rnn_key,
+    one_to_many_single_cell_lstm_key,
+    one_to_many_single_cell_gru_key,
 )
 from src.tests.rnn_tests.rnn_utils import (
-    gru_legt_key,
-    gru_lmu_key,
-    gru_lagt_key,
-    gru_legs_key,
-    gru_fru_key,
-    gru_fout_key,
-    gru_foud_key,
+    many_to_one_single_cell_rnn_key,
+    many_to_one_single_cell_lstm_key,
+    many_to_one_single_cell_gru_key,
 )
-from src.tests.rnn_tests.rnn_utils import random_32_input, random_64_input
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_many_single_cell_rnn_key,
+    many_to_many_single_cell_lstm_key,
+    many_to_many_single_cell_gru_key,
+)
+
+# Psuedo-Random Number Generator Keys for Single Cell Bidirectional RNNs
+from src.tests.rnn_tests.rnn_utils import (
+    single_cell_birnn_key,
+    single_cell_bilstm_key,
+    single_cell_bigru_key,
+)
+
+# Psuedo-Random Number Generator Keys for Deep RNNs
+from src.tests.rnn_tests.rnn_utils import (
+    one_to_many_deep_rnn_key,
+    one_to_many_deep_lstm_key,
+    one_to_many_deep_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_one_deep_rnn_key,
+    many_to_one_deep_lstm_key,
+    many_to_one_deep_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_many_deep_rnn_key,
+    many_to_many_deep_lstm_key,
+    many_to_many_deep_gru_key,
+)
+
+# Psuedo-Random Number Generator Keys for Deep Bidirectional RNNs
+from src.tests.rnn_tests.rnn_utils import (
+    deep_birnn_key,
+    deep_bilstm_key,
+    deep_bigru_key,
+)
+
+# Psuedo-Random Number Generator Keys for Single Cell HiPPO RNNs
+from src.tests.rnn_tests.rnn_utils import (
+    one_to_many_single_hippo_legs_lstm_key,
+    one_to_many_single_hippo_legt_lstm_key,
+    one_to_many_single_hippo_lmu_lstm_key,
+    one_to_many_single_hippo_lagt_lstm_key,
+    one_to_many_single_hippo_fru_lstm_key,
+    one_to_many_single_hippo_fout_lstm_key,
+    one_to_many_single_hippo_foud_lstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_one_single_hippo_legs_lstm_key,
+    many_to_one_single_hippo_legt_lstm_key,
+    many_to_one_single_hippo_lmu_lstm_key,
+    many_to_one_single_hippo_lagt_lstm_key,
+    many_to_one_single_hippo_fru_lstm_key,
+    many_to_one_single_hippo_fout_lstm_key,
+    many_to_one_single_hippo_foud_lstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_many_single_hippo_legs_lstm_key,
+    many_to_many_single_hippo_legt_lstm_key,
+    many_to_many_single_hippo_lmu_lstm_key,
+    many_to_many_single_hippo_lagt_lstm_key,
+    many_to_many_single_hippo_fru_lstm_key,
+    many_to_many_single_hippo_fout_lstm_key,
+    many_to_many_single_hippo_foud_lstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    one_to_many_single_hippo_legs_gru_key,
+    one_to_many_single_hippo_legt_gru_key,
+    one_to_many_single_hippo_lmu_gru_key,
+    one_to_many_single_hippo_lagt_gru_key,
+    one_to_many_single_hippo_fru_gru_key,
+    one_to_many_single_hippo_fout_gru_key,
+    one_to_many_single_hippo_foud_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_one_single_hippo_legs_gru_key,
+    many_to_one_single_hippo_legt_gru_key,
+    many_to_one_single_hippo_lmu_gru_key,
+    many_to_one_single_hippo_lagt_gru_key,
+    many_to_one_single_hippo_fru_gru_key,
+    many_to_one_single_hippo_fout_gru_key,
+    many_to_one_single_hippo_foud_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_many_single_hippo_legs_gru_key,
+    many_to_many_single_hippo_legt_gru_key,
+    many_to_many_single_hippo_lmu_gru_key,
+    many_to_many_single_hippo_lagt_gru_key,
+    many_to_many_single_hippo_fru_gru_key,
+    many_to_many_single_hippo_fout_gru_key,
+    many_to_many_single_hippo_foud_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    single_cell_hippo_legs_bilstm_key,
+    single_cell_hippo_legt_bilstm_key,
+    single_cell_hippo_lmu_bilstm_key,
+    single_cell_hippo_lagt_bilstm_key,
+    single_cell_hippo_fru_bilstm_key,
+    single_cell_hippo_fout_bilstm_key,
+    single_cell_hippo_foud_bilstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    single_cell_hippo_legs_bigru_key,
+    single_cell_hippo_legt_bigru_key,
+    single_cell_hippo_lmu_bigru_key,
+    single_cell_hippo_lagt_bigru_key,
+    single_cell_hippo_fru_bigru_key,
+    single_cell_hippo_fout_bigru_key,
+    single_cell_hippo_foud_bigru_key,
+)
+
+# Psuedo-Random Number Generator Keys for Deep HiPPO RNNs
+from src.tests.rnn_tests.rnn_utils import (
+    one_to_many_deep_hippo_legs_lstm_key,
+    one_to_many_deep_hippo_legt_lstm_key,
+    one_to_many_deep_hippo_lmu_lstm_key,
+    one_to_many_deep_hippo_lagt_lstm_key,
+    one_to_many_deep_hippo_fru_lstm_key,
+    one_to_many_deep_hippo_fout_lstm_key,
+    one_to_many_deep_hippo_foud_lstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_one_deep_hippo_legs_lstm_key,
+    many_to_one_deep_hippo_legt_lstm_key,
+    many_to_one_deep_hippo_lmu_lstm_key,
+    many_to_one_deep_hippo_lagt_lstm_key,
+    many_to_one_deep_hippo_fru_lstm_key,
+    many_to_one_deep_hippo_fout_lstm_key,
+    many_to_one_deep_hippo_foud_lstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_many_deep_hippo_legs_lstm_key,
+    many_to_many_deep_hippo_legt_lstm_key,
+    many_to_many_deep_hippo_lmu_lstm_key,
+    many_to_many_deep_hippo_lagt_lstm_key,
+    many_to_many_deep_hippo_fru_lstm_key,
+    many_to_many_deep_hippo_fout_lstm_key,
+    many_to_many_deep_hippo_foud_lstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    one_to_many_deep_hippo_legs_gru_key,
+    one_to_many_deep_hippo_legt_gru_key,
+    one_to_many_deep_hippo_lmu_gru_key,
+    one_to_many_deep_hippo_lagt_gru_key,
+    one_to_many_deep_hippo_fru_gru_key,
+    one_to_many_deep_hippo_fout_gru_key,
+    one_to_many_deep_hippo_foud_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_one_deep_hippo_legs_gru_key,
+    many_to_one_deep_hippo_legt_gru_key,
+    many_to_one_deep_hippo_lmu_gru_key,
+    many_to_one_deep_hippo_lagt_gru_key,
+    many_to_one_deep_hippo_fru_gru_key,
+    many_to_one_deep_hippo_fout_gru_key,
+    many_to_one_deep_hippo_foud_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_many_deep_hippo_legs_gru_key,
+    many_to_many_deep_hippo_legt_gru_key,
+    many_to_many_deep_hippo_lmu_gru_key,
+    many_to_many_deep_hippo_lagt_gru_key,
+    many_to_many_deep_hippo_fru_gru_key,
+    many_to_many_deep_hippo_fout_gru_key,
+    many_to_many_deep_hippo_foud_gru_key,
+)
+
+# Psuedo-Random Number Generator Keys for Deep Bidirectional RNNs
+from src.tests.rnn_tests.rnn_utils import (
+    deep_hippo_legs_bilstm_key,
+    deep_hippo_legt_bilstm_key,
+    deep_hippo_lmu_bilstm_key,
+    deep_hippo_lagt_bilstm_key,
+    deep_hippo_fru_bilstm_key,
+    deep_hippo_fout_bilstm_key,
+    deep_hippo_foud_bilstm_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    deep_hippo_legs_bigru_key,
+    deep_hippo_legt_bigru_key,
+    deep_hippo_lmu_bigru_key,
+    deep_hippo_lagt_bigru_key,
+    deep_hippo_fru_bigru_key,
+    deep_hippo_fout_bigru_key,
+    deep_hippo_foud_bigru_key,
+)
+
+# Inputs for the models
+from src.tests.rnn_tests.rnn_utils import (
+    random_16_input,
+    random_16_input,
+    random_64_input,
+)
+
 import jax
 from flax import linen as nn
-
-# ------------------------------------------------ #
-# -------------------- Test RNNs ----------------- #
-# ------------------------------------------------ #
+import pytest
 
 
-def test_deep_rnn_shaping(deep_rnn, random_32_input, rnn_key):
+# ----------------------------------------------------------------
+# ------------------ Single Cell Architectures Tests -------------
+# ----------------------------------------------------------------
+
+# -------------------------
+# ------ one to many ------
+# -------------------------
+
+
+@jax.jit
+def test_one_to_many_single_cell_rnn_shaping(
+    one_to_many_single_cell_rnn, random_16_input, one_to_many_single_cell_rnn_key
+):
     print("Testing Deep RNN")
     key1, key2, = (
-        rnn_key[0],
-        rnn_key[1],
+        one_to_many_single_cell_rnn_key[0],
+        one_to_many_single_cell_rnn_key[1],
     )
-    batch_size = 32
+    batch_size = 16
     hidden_size = 256
-    init_carry = deep_rnn.initialize_carry(
+    model = one_to_many_single_cell_rnn
+    init_carry = model.initialize_carry(
         rng=key1,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
     )
-    params = deep_rnn.init(
+    params = model.init(
         key2,
         init_carry,
-        random_32_input,
+        random_16_input,
     )
 
-    carry, y = deep_rnn.apply(
+    carry, y = model.apply(
         params,
         init_carry,
-        random_32_input,
+        random_16_input,
     )
 
     h_t, c_t = carry
-    print(f"input shape: {random_32_input.shape}")
+    print(f"input shape: {random_16_input.shape}")
     print(f"h_t shape: {h_t.shape}")
     print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (32, 256)
-    assert (c_t.shape) == (32, 256)
-    assert (y.shape) == (32, 10)
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
 
 
-def test_deep_lstm_shaping(deep_lstm, random_32_input, lstm_key):
+@jax.jit
+def test_one_to_many_single_cell_lstm_shaping(
+    one_to_many_single_cell_lstm, random_16_input, one_to_many_single_cell_lstm_key
+):
     print("Testing Deep LSTM")
     key1, key2, = (
-        lstm_key[0],
-        lstm_key[1],
+        one_to_many_single_cell_lstm_key[0],
+        one_to_many_single_cell_lstm_key[1],
     )
-    batch_size = 32
+    batch_size = 16
     hidden_size = 256
-    init_carry = deep_lstm.initialize_carry(
+    model = one_to_many_single_cell_lstm
+    init_carry = model.initialize_carry(
         rng=key1,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
     )
-    params = deep_lstm.init(
+    params = model.init(
         key2,
         init_carry,
-        random_32_input,
+        random_16_input,
     )
 
-    carry, y = deep_lstm.apply(
+    carry, y = model.apply(
         params,
         init_carry,
-        random_32_input,
+        random_16_input,
     )
 
     h_t, c_t = carry
-    print(f"input shape: {random_32_input.shape}")
+    print(f"input shape: {random_16_input.shape}")
     print(f"h_t shape: {h_t.shape}")
     print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (32, 256)
-    assert (c_t.shape) == (32, 256)
-    assert (y.shape) == (32, 10)
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
 
 
-def test_deep_gru_shaping(deep_gru, random_32_input, gru_key):
+@jax.jit
+def test_one_to_many_single_cell_gru_shaping(
+    one_to_many_single_cell_gru, random_16_input, one_to_many_single_cell_gru_key
+):
     print("Testing Deep GRU")
     key1, key2, = (
-        gru_key[0],
-        gru_key[1],
+        one_to_many_single_cell_gru_key[0],
+        one_to_many_single_cell_gru_key[1],
     )
-    batch_size = 32
+    batch_size = 16
     hidden_size = 256
-    init_carry = deep_gru.initialize_carry(
+    model = one_to_many_single_cell_gru
+    init_carry = model.initialize_carry(
         rng=key1,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
     )
-    params = deep_gru.init(
+    params = model.init(
         key2,
         init_carry,
-        random_32_input,
+        random_16_input,
     )
 
-    carry, y = deep_gru.apply(
+    carry, y = model.apply(
         params,
         init_carry,
-        random_32_input,
+        random_16_input,
     )
 
     h_t, c_t = carry
-    print(f"input shape: {random_32_input.shape}")
+    print(f"input shape: {random_16_input.shape}")
     print(f"h_t shape: {h_t.shape}")
     print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (32, 256)
-    assert (c_t.shape) == (32, 256)
-    assert (y.shape) == (32, 10)
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to one ------
+# -------------------------
+
+
+@jax.jit
+def test_many_to_one_single_cell_rnn_shaping(
+    many_to_one_single_cell_rnn, random_16_input, many_to_one_single_cell_rnn_key
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_cell_rnn_key[0],
+        many_to_one_single_cell_rnn_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_cell_rnn
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_one_single_cell_lstm_shaping(
+    many_to_one_single_cell_lstm, random_16_input, many_to_one_single_cell_lstm_key
+):
+    print("Testing Deep LSTM")
+    key1, key2, = (
+        many_to_one_single_cell_lstm_key[0],
+        many_to_one_single_cell_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_cell_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_one_single_cell_gru_shaping(
+    many_to_one_single_cell_gru, random_16_input, many_to_one_single_cell_gru_key
+):
+    print("Testing Deep GRU")
+    key1, key2, = (
+        many_to_one_single_cell_gru_key[0],
+        many_to_one_single_cell_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_cell_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to many -----
+# -------------------------
+
+
+@jax.jit
+def test_many_to_many_single_cell_rnn_shaping(
+    many_to_many_single_cell_rnn, random_16_input, many_to_many_single_cell_rnn_key
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_cell_rnn_key[0],
+        many_to_many_single_cell_rnn_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_cell_rnn
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_many_single_cell_lstm_shaping(
+    many_to_many_single_cell_lstm, random_16_input, many_to_many_single_cell_lstm_key
+):
+    print("Testing Deep LSTM")
+    key1, key2, = (
+        many_to_many_single_cell_lstm_key[0],
+        many_to_many_single_cell_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_cell_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_many_single_cell_gru_shaping(
+    many_to_many_single_cell_gru, random_16_input, many_to_many_single_cell_gru_key
+):
+    print("Testing Deep GRU")
+    key1, key2, = (
+        many_to_many_single_cell_gru_key[0],
+        many_to_many_single_cell_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_cell_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ------------------ Single Cell Bidirectional Tests -------------
+# ----------------------------------------------------------------
+
+
+@jax.jit
+def test_single_cell_birnn_shaping(
+    single_cell_birnn, random_16_input, single_cell_birnn_key
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_birnn_key[0],
+        single_cell_birnn_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_birnn
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_single_cell_bilstm_shaping(
+    single_cell_bilstm, random_16_input, single_cell_bilstm_key
+):
+    print("Testing Deep LSTM")
+    key1, key2, = (
+        single_cell_bilstm_key[0],
+        single_cell_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_single_cell_bigru_shaping(
+    single_cell_bigru, random_16_input, single_cell_bigru_key
+):
+    print("Testing Deep GRU")
+    key1, key2, = (
+        single_cell_bigru_key[0],
+        single_cell_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------------------------------------------------------------
+# --------------------------- Deep RNN Tests ---------------------
+# ----------------------------------------------------------------
+
+# -------------------------
+# ------ one to many ------
+# -------------------------
+
+
+@jax.jit
+def test_one_to_many_deep_rnn_shaping(
+    one_to_many_deep_rnn, random_16_input, one_to_many_deep_rnn_key
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_rnn_key[0],
+        one_to_many_deep_rnn_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_rnn
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_one_to_many_deep_lstm_shaping(
+    one_to_many_deep_lstm, random_16_input, one_to_many_deep_lstm_key
+):
+    print("Testing Deep LSTM")
+    key1, key2, = (
+        one_to_many_deep_lstm_key[0],
+        one_to_many_deep_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_one_to_many_deep_gru_shaping(
+    one_to_many_deep_gru, random_16_input, one_to_many_deep_gru_key
+):
+    print("Testing Deep GRU")
+    key1, key2, = (
+        one_to_many_deep_gru_key[0],
+        one_to_many_deep_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to one ------
+# -------------------------
+
+
+@jax.jit
+def test_many_to_one_deep_rnn_shaping(
+    many_to_one_deep_rnn, random_16_input, many_to_one_deep_rnn_key
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_rnn_key[0],
+        many_to_one_deep_rnn_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_rnn
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_one_deep_lstm_shaping(
+    many_to_one_deep_lstm, random_16_input, many_to_one_deep_lstm_key
+):
+    print("Testing Deep LSTM")
+    key1, key2, = (
+        many_to_one_deep_lstm_key[0],
+        many_to_one_deep_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_one_deep_gru_shaping(
+    many_to_one_deep_gru, random_16_input, many_to_one_deep_gru_key
+):
+    print("Testing Deep GRU")
+    key1, key2, = (
+        many_to_one_deep_gru_key[0],
+        many_to_one_deep_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to many -----
+# -------------------------
+
+
+@jax.jit
+def test_many_to_many_deep_rnn_shaping(
+    many_to_many_deep_rnn, random_16_input, many_to_many_deep_rnn_key
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_rnn_key[0],
+        many_to_many_deep_rnn_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_rnn
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_many_deep_lstm_shaping(
+    many_to_many_deep_lstm, random_16_input, many_to_many_deep_lstm_key
+):
+    print("Testing Deep LSTM")
+    key1, key2, = (
+        many_to_many_deep_lstm_key[0],
+        many_to_many_deep_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_many_to_many_deep_gru_shaping(
+    many_to_many_deep_gru, random_16_input, many_to_many_deep_gru_key
+):
+    print("Testing Deep GRU")
+    key1, key2, = (
+        many_to_many_deep_gru_key[0],
+        many_to_many_deep_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ------------------------- Deep Bidirectional -------------------
+# ----------------------------------------------------------------
+
+
+@jax.jit
+def test_deep_birnn_shaping(deep_birnn, random_16_input, deep_birnn_key):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_birnn_key[0],
+        deep_birnn_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_birnn
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_bilstm_key[0],
+        deep_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+@jax.jit
+def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_bigru_key[0],
+        deep_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------------------------------------------------------------
+# -------------------- Single Cell HiPPO LSTM --------------------
+# ----------------------------------------------------------------
+
+# -------------------------
+# ------ one to many ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_legs_lstm_shaping(
+    one_to_many_single_hippo_legs_lstm,
+    random_16_input,
+    one_to_many_single_hippo_legs_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_legs_lstm_key[0],
+        one_to_many_single_hippo_legs_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_legs_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_legt_lstm_shaping(
+    one_to_many_single_hippo_legt_lstm,
+    random_16_input,
+    one_to_many_single_hippo_legt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_legt_lstm_key[0],
+        one_to_many_single_hippo_legt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_legt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_lmu_lstm_shaping(
+    one_to_many_single_hippo_lmu_lstm,
+    random_16_input,
+    one_to_many_single_hippo_lmu_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_lmu_lstm_key[0],
+        one_to_many_single_hippo_lmu_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_lmu_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_lagt_lstm_shaping(
+    one_to_many_single_hippo_lagt_lstm,
+    random_16_input,
+    one_to_many_single_hippo_lagt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_lagt_lstm_key[0],
+        one_to_many_single_hippo_lagt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_lagt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_fru_lstm_shaping(
+    one_to_many_single_hippo_fru_lstm,
+    random_16_input,
+    one_to_many_single_hippo_fru_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_fru_lstm_key[0],
+        one_to_many_single_hippo_fru_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_fru_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_fout_lstm_shaping(
+    one_to_many_single_hippo_fout_lstm,
+    random_16_input,
+    one_to_many_single_hippo_fout_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_fout_lstm_key[0],
+        one_to_many_single_hippo_fout_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_fout_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_foud_lstm_shaping(
+    one_to_many_single_hippo_foud_lstm,
+    random_16_input,
+    one_to_many_single_hippo_foud_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_foud_lstm_key[0],
+        one_to_many_single_hippo_foud_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_foud_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to one ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_legs_lstm_shaping(
+    many_to_one_single_hippo_legs_lstm,
+    random_16_input,
+    many_to_one_single_hippo_legs_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_legs_lstm_key[0],
+        many_to_one_single_hippo_legs_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_legs_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_legt_lstm_shaping(
+    many_to_one_single_hippo_legt_lstm,
+    random_16_input,
+    many_to_one_single_hippo_legt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_legt_lstm_key[0],
+        many_to_one_single_hippo_legt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_legt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_lmu_lstm_shaping(
+    many_to_one_single_hippo_lmu_lstm,
+    random_16_input,
+    many_to_one_single_hippo_lmu_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_lmu_lstm_key[0],
+        many_to_one_single_hippo_lmu_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_lmu_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_lagt_lstm_shaping(
+    many_to_one_single_hippo_lagt_lstm,
+    random_16_input,
+    many_to_one_single_hippo_lagt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_lagt_lstm_key[0],
+        many_to_one_single_hippo_lagt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_lagt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_fru_lstm_shaping(
+    many_to_one_single_hippo_fru_lstm,
+    random_16_input,
+    many_to_one_single_hippo_fru_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_fru_lstm_key[0],
+        many_to_one_single_hippo_fru_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_fru_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_fout_lstm_shaping(
+    many_to_one_single_hippo_fout_lstm,
+    random_16_input,
+    many_to_one_single_hippo_fout_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_fout_lstm_key[0],
+        many_to_one_single_hippo_fout_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_fout_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_foud_lstm_shaping(
+    many_to_one_single_hippo_foud_lstm,
+    random_16_input,
+    many_to_one_single_hippo_foud_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_foud_lstm_key[0],
+        many_to_one_single_hippo_foud_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_foud_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape
+
+
+# -------------------------
+# ------ many to many -----
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_legs_lstm_shaping(
+    many_to_many_single_hippo_legs_lstm,
+    random_16_input,
+    many_to_many_single_hippo_legs_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_legs_lstm_key[0],
+        many_to_many_single_hippo_legs_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_legs_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_legt_lstm_shaping(
+    many_to_many_single_hippo_legt_lstm,
+    random_16_input,
+    many_to_many_single_hippo_legt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_legt_lstm_key[0],
+        many_to_many_single_hippo_legt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_legt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_lmu_lstm_shaping(
+    many_to_many_single_hippo_lmu_lstm,
+    random_16_input,
+    many_to_many_single_hippo_lmu_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_lmu_lstm_key[0],
+        many_to_many_single_hippo_lmu_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_lmu_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_lagt_lstm_shaping(
+    many_to_many_single_hippo_lagt_lstm,
+    random_16_input,
+    many_to_many_single_hippo_lagt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_lagt_lstm_key[0],
+        many_to_many_single_hippo_lagt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_lagt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_fru_lstm_shaping(
+    many_to_many_single_hippo_fru_lstm,
+    random_16_input,
+    many_to_many_single_hippo_fru_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_fru_lstm_key[0],
+        many_to_many_single_hippo_fru_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_fru_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_fout_lstm_shaping(
+    many_to_many_single_hippo_fout_lstm,
+    random_16_input,
+    many_to_many_single_hippo_fout_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_fout_lstm_key[0],
+        many_to_many_single_hippo_fout_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_fout_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_foud_lstm_shaping(
+    many_to_many_single_hippo_foud_lstm,
+    random_16_input,
+    many_to_many_single_hippo_foud_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_foud_lstm_key[0],
+        many_to_many_single_hippo_foud_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_foud_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
+
+
+# ----------------------------------------------------------------
+# -------------------- Single Cell HiPPO GRU ---------------------
+# ----------------------------------------------------------------
+
+# -------------------------
+# ------ one to many ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_legs_gru_shaping(
+    one_to_many_single_hippo_legs_gru,
+    random_16_input,
+    one_to_many_single_hippo_legs_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_legs_gru_key[0],
+        one_to_many_single_hippo_legs_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_legs_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_legt_gru_shaping(
+    one_to_many_single_hippo_legt_gru,
+    random_16_input,
+    one_to_many_single_hippo_legt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_legt_gru_key[0],
+        one_to_many_single_hippo_legt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_legt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_lmu_gru_shaping(
+    one_to_many_single_hippo_lmu_gru,
+    random_16_input,
+    one_to_many_single_hippo_lmu_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_lmu_gru_key[0],
+        one_to_many_single_hippo_lmu_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_lmu_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_lagt_gru_shaping(
+    one_to_many_single_hippo_lagt_gru,
+    random_16_input,
+    one_to_many_single_hippo_lagt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_lagt_gru_key[0],
+        one_to_many_single_hippo_lagt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_lagt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_fru_gru_shaping(
+    one_to_many_single_hippo_fru_gru,
+    random_16_input,
+    one_to_many_single_hippo_fru_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_fru_gru_key[0],
+        one_to_many_single_hippo_fru_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_fru_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_fout_gru_shaping(
+    one_to_many_single_hippo_fout_gru,
+    random_16_input,
+    one_to_many_single_hippo_fout_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_fout_gru_key[0],
+        one_to_many_single_hippo_fout_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_fout_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_single_hippo_foud_gru_shaping(
+    one_to_many_single_hippo_foud_gru,
+    random_16_input,
+    one_to_many_single_hippo_foud_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_single_hippo_foud_gru_key[0],
+        one_to_many_single_hippo_foud_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_single_hippo_foud_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to one ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_legs_gru_shaping(
+    many_to_one_single_hippo_legs_gru,
+    random_16_input,
+    many_to_one_single_hippo_legs_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_legs_gru_key[0],
+        many_to_one_single_hippo_legs_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_legs_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_legt_gru_shaping(
+    many_to_one_single_hippo_legt_gru,
+    random_16_input,
+    many_to_one_single_hippo_legt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_legt_gru_key[0],
+        many_to_one_single_hippo_legt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_legt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_lmu_gru_shaping(
+    many_to_one_single_hippo_lmu_gru,
+    random_16_input,
+    many_to_one_single_hippo_lmu_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_lmu_gru_key[0],
+        many_to_one_single_hippo_lmu_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_lmu_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_lagt_gru_shaping(
+    many_to_one_single_hippo_lagt_gru,
+    random_16_input,
+    many_to_one_single_hippo_lagt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_lagt_gru_key[0],
+        many_to_one_single_hippo_lagt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_lagt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_fru_gru_shaping(
+    many_to_one_single_hippo_fru_gru,
+    random_16_input,
+    many_to_one_single_hippo_fru_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_fru_gru_key[0],
+        many_to_one_single_hippo_fru_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_fru_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_fout_gru_shaping(
+    many_to_one_single_hippo_fout_gru,
+    random_16_input,
+    many_to_one_single_hippo_fout_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_fout_gru_key[0],
+        many_to_one_single_hippo_fout_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_fout_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_single_hippo_foud_gru_shaping(
+    many_to_one_single_hippo_foud_gru,
+    random_16_input,
+    many_to_one_single_hippo_foud_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_single_hippo_foud_gru_key[0],
+        many_to_one_single_hippo_foud_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_single_hippo_foud_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape
+
+
+# -------------------------
+# ------ many to many -----
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_legs_gru_shaping(
+    many_to_many_single_hippo_legs_gru,
+    random_16_input,
+    many_to_many_single_hippo_legs_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_legs_gru_key[0],
+        many_to_many_single_hippo_legs_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_legs_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_legt_gru_shaping(
+    many_to_many_single_hippo_legt_gru,
+    random_16_input,
+    many_to_many_single_hippo_legt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_legt_gru_key[0],
+        many_to_many_single_hippo_legt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_legt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_lmu_gru_shaping(
+    many_to_many_single_hippo_lmu_gru,
+    random_16_input,
+    many_to_many_single_hippo_lmu_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_lmu_gru_key[0],
+        many_to_many_single_hippo_lmu_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_lmu_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_lagt_gru_shaping(
+    many_to_many_single_hippo_lagt_gru,
+    random_16_input,
+    many_to_many_single_hippo_lagt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_lagt_gru_key[0],
+        many_to_many_single_hippo_lagt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_lagt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_fru_gru_shaping(
+    many_to_many_single_hippo_fru_gru,
+    random_16_input,
+    many_to_many_single_hippo_fru_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_fru_gru_key[0],
+        many_to_many_single_hippo_fru_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_fru_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_fout_gru_shaping(
+    many_to_many_single_hippo_fout_gru,
+    random_16_input,
+    many_to_many_single_hippo_fout_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_fout_gru_key[0],
+        many_to_many_single_hippo_fout_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_fout_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_single_hippo_foud_gru_shaping(
+    many_to_many_single_hippo_foud_gru,
+    random_16_input,
+    many_to_many_single_hippo_foud_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_single_hippo_foud_gru_key[0],
+        many_to_many_single_hippo_foud_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_single_hippo_foud_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ------------ Single Cell Bidirectional HiPPO LSTM --------------
+# ----------------------------------------------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_legs_bilstm_shaping(
+    single_cell_hippo_legs_bilstm,
+    random_16_input,
+    single_cell_hippo_legs_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_legs_bilstm_key[0],
+        single_cell_hippo_legs_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_legs_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_legt_bilstm_shaping(
+    single_cell_hippo_legt_bilstm,
+    random_16_input,
+    single_cell_hippo_legt_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_legt_bilstm_key[0],
+        single_cell_hippo_legt_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_legt_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_lmu_bilstm_shaping(
+    single_cell_hippo_lmu_bilstm,
+    random_16_input,
+    single_cell_hippo_lmu_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_lmu_bilstm_key[0],
+        single_cell_hippo_lmu_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_lmu_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_lagt_bilstm_shaping(
+    single_cell_hippo_lagt_bilstm,
+    random_16_input,
+    single_cell_hippo_lagt_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_lagt_bilstm_key[0],
+        single_cell_hippo_lagt_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_lagt_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_fru_bilstm_shaping(
+    single_cell_hippo_fru_bilstm,
+    random_16_input,
+    single_cell_hippo_fru_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_fru_bilstm_key[0],
+        single_cell_hippo_fru_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_fru_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_single_cell_hippo_fout_bilstm_shaping(
+    single_cell_hippo_fout_bilstm,
+    random_16_input,
+    single_cell_hippo_fout_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_fout_bilstm_key[0],
+        single_cell_hippo_fout_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_fout_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_single_cell_hippo_foud_bilstm_shaping(
+    single_cell_hippo_foud_bilstm,
+    random_16_input,
+    single_cell_hippo_foud_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_foud_bilstm_key[0],
+        single_cell_hippo_foud_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_foud_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ------------ Single Cell Bidirectional HiPPO GRU ---------------
+# ----------------------------------------------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_legs_bigru_shaping(
+    single_cell_hippo_legs_bigru,
+    random_16_input,
+    single_cell_hippo_legs_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_legs_bigru_key[0],
+        single_cell_hippo_legs_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_legs_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_legt_bigru_shaping(
+    single_cell_hippo_legt_bigru,
+    random_16_input,
+    single_cell_hippo_legt_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_legt_bigru_key[0],
+        single_cell_hippo_legt_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_legt_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_lmu_bigru_shaping(
+    single_cell_hippo_lmu_bigru,
+    random_16_input,
+    single_cell_hippo_lmu_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_lmu_bigru_key[0],
+        single_cell_hippo_lmu_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_lmu_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_lagt_bigru_key_shaping(
+    single_cell_hippo_lagt_bigru,
+    random_16_input,
+    single_cell_hippo_lagt_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_lagt_bigru_key[0],
+        single_cell_hippo_lagt_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_lagt_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_single_cell_hippo_fru_bigru_shaping(
+    single_cell_hippo_fru_bigru,
+    random_16_input,
+    single_cell_hippo_fru_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_fru_bigru_key[0],
+        single_cell_hippo_fru_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_fru_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_single_cell_hippo_fout_bigru_shaping(
+    single_cell_hippo_fout_bigru,
+    random_16_input,
+    single_cell_hippo_fout_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_fout_bigru_key[0],
+        single_cell_hippo_fout_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_fout_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_single_cell_hippo_foud_bigru_shaping(
+    single_cell_hippo_foud_bigru,
+    random_16_input,
+    single_cell_hippo_foud_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        single_cell_hippo_foud_bigru_key[0],
+        single_cell_hippo_foud_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = single_cell_hippo_foud_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ------------------------ Deep HiPPO LSTM -----------------------
+# ----------------------------------------------------------------
+
+# -------------------------
+# ------ one to many ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_legs_lstm_shaping(
+    one_to_many_deep_hippo_legs_lstm,
+    random_16_input,
+    one_to_many_deep_hippo_legs_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_legs_lstm_key[0],
+        one_to_many_deep_hippo_legs_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_legs_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_legt_lstm_shaping(
+    one_to_many_deep_hippo_legt_lstm,
+    random_16_input,
+    one_to_many_deep_hippo_legt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_legt_lstm_key[0],
+        one_to_many_deep_hippo_legt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_legt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_lmu_lstm_shaping(
+    one_to_many_deep_hippo_lmu_lstm,
+    random_16_input,
+    one_to_many_deep_hippo_lmu_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_lmu_lstm_key[0],
+        one_to_many_deep_hippo_lmu_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_lmu_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_lagt_lstm_shaping(
+    one_to_many_deep_hippo_lagt_lstm,
+    random_16_input,
+    one_to_many_deep_hippo_lagt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_lagt_lstm_key[0],
+        one_to_many_deep_hippo_lagt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_lagt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_fru_lstm_shaping(
+    one_to_many_deep_hippo_fru_lstm,
+    random_16_input,
+    one_to_many_deep_hippo_fru_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_fru_lstm_key[0],
+        one_to_many_deep_hippo_fru_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_fru_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_fout_lstm_shaping(
+    one_to_many_deep_hippo_fout_lstm,
+    random_16_input,
+    one_to_many_deep_hippo_fout_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_fout_lstm_key[0],
+        one_to_many_deep_hippo_fout_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_fout_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_foud_lstm_shaping(
+    one_to_many_deep_hippo_foud_lstm,
+    random_16_input,
+    one_to_many_deep_hippo_foud_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_foud_lstm_key[0],
+        one_to_many_deep_hippo_foud_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_foud_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to one ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_legs_lstm_shaping(
+    many_to_one_deep_hippo_legs_lstm,
+    random_16_input,
+    many_to_one_deep_hippo_legs_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_legs_lstm_key[0],
+        many_to_one_deep_hippo_legs_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_legs_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_legt_lstm_shaping(
+    many_to_one_deep_hippo_legt_lstm,
+    random_16_input,
+    many_to_one_deep_hippo_legt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_legt_lstm_key[0],
+        many_to_one_deep_hippo_legt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_legt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_lmu_lstm_shaping(
+    many_to_one_deep_hippo_lmu_lstm,
+    random_16_input,
+    many_to_one_deep_hippo_lmu_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_lmu_lstm_key[0],
+        many_to_one_deep_hippo_lmu_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_lmu_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_lagt_lstm_shaping(
+    many_to_one_deep_hippo_lagt_lstm,
+    random_16_input,
+    many_to_one_deep_hippo_lagt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_lagt_lstm_key[0],
+        many_to_one_deep_hippo_lagt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_lagt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_fru_lstm_shaping(
+    many_to_one_deep_hippo_fru_lstm,
+    random_16_input,
+    many_to_one_deep_hippo_fru_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_fru_lstm_key[0],
+        many_to_one_deep_hippo_fru_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_fru_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_fout_lstm_shaping(
+    many_to_one_deep_hippo_fout_lstm,
+    random_16_input,
+    many_to_one_deep_hippo_fout_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_fout_lstm_key[0],
+        many_to_one_deep_hippo_fout_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_fout_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_foud_lstm_shaping(
+    many_to_one_deep_hippo_foud_lstm,
+    random_16_input,
+    many_to_one_deep_hippo_foud_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_foud_lstm_key[0],
+        many_to_one_deep_hippo_foud_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_foud_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape
+
+
+# -------------------------
+# ------ many to many -----
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_legs_lstm_shaping(
+    many_to_many_deep_hippo_legs_lstm,
+    random_16_input,
+    many_to_many_deep_hippo_legs_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_legs_lstm_key[0],
+        many_to_many_deep_hippo_legs_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_legs_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_legt_lstm_shaping(
+    many_to_many_deep_hippo_legt_lstm,
+    random_16_input,
+    many_to_many_deep_hippo_legt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_legt_lstm_key[0],
+        many_to_many_deep_hippo_legt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_legt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_lmu_lstm_shaping(
+    many_to_many_deep_hippo_lmu_lstm,
+    random_16_input,
+    many_to_many_deep_hippo_lmu_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_lmu_lstm_key[0],
+        many_to_many_deep_hippo_lmu_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_lmu_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_lagt_lstm_shaping(
+    many_to_many_deep_hippo_lagt_lstm,
+    random_16_input,
+    many_to_many_deep_hippo_lagt_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_lagt_lstm_key[0],
+        many_to_many_deep_hippo_lagt_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_lagt_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_fru_lstm_shaping(
+    many_to_many_deep_hippo_fru_lstm,
+    random_16_input,
+    many_to_many_deep_hippo_fru_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_fru_lstm_key[0],
+        many_to_many_deep_hippo_fru_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_fru_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_fout_lstm_shaping(
+    many_to_many_deep_hippo_fout_lstm,
+    random_16_input,
+    many_to_many_deep_hippo_fout_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_fout_lstm_key[0],
+        many_to_many_deep_hippo_fout_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_fout_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_foud_lstm_shaping(
+    many_to_many_deep_hippo_foud_lstm,
+    random_16_input,
+    many_to_many_deep_hippo_foud_lstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_foud_lstm_key[0],
+        many_to_many_deep_hippo_foud_lstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_foud_lstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ------------------------ Deep HiPPO GRU ------------------------
+# ----------------------------------------------------------------
+
+# -------------------------
+# ------ one to many ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_legs_gru_shaping(
+    one_to_many_deep_hippo_legs_gru,
+    random_16_input,
+    one_to_many_deep_hippo_legs_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_legs_gru_key[0],
+        one_to_many_deep_hippo_legs_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_legs_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_legt_gru_shaping(
+    one_to_many_deep_hippo_legt_gru,
+    random_16_input,
+    one_to_many_deep_hippo_legt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_legt_gru_key[0],
+        one_to_many_deep_hippo_legt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_legt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_lmu_gru_shaping(
+    one_to_many_deep_hippo_lmu_gru,
+    random_16_input,
+    one_to_many_deep_hippo_lmu_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_lmu_gru_key[0],
+        one_to_many_deep_hippo_lmu_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_lmu_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_lagt_gru_shaping(
+    one_to_many_deep_hippo_lagt_gru,
+    random_16_input,
+    one_to_many_deep_hippo_lagt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_lagt_gru_key[0],
+        one_to_many_deep_hippo_lagt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_lagt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_fru_gru_shaping(
+    one_to_many_deep_hippo_fru_gru,
+    random_16_input,
+    one_to_many_deep_hippo_fru_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_fru_gru_key[0],
+        one_to_many_deep_hippo_fru_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_fru_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_fout_gru_shaping(
+    one_to_many_deep_hippo_fout_gru,
+    random_16_input,
+    one_to_many_deep_hippo_fout_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_fout_gru_key[0],
+        one_to_many_deep_hippo_fout_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_fout_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_one_to_many_deep_hippo_foud_gru_shaping(
+    one_to_many_deep_hippo_foud_gru,
+    random_16_input,
+    one_to_many_deep_hippo_foud_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        one_to_many_deep_hippo_foud_gru_key[0],
+        one_to_many_deep_hippo_foud_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = one_to_many_deep_hippo_foud_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# -------------------------
+# ------ many to one ------
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_legs_gru_shaping(
+    many_to_one_deep_hippo_legs_gru,
+    random_16_input,
+    many_to_one_deep_hippo_legs_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_legs_gru_key[0],
+        many_to_one_deep_hippo_legs_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_legs_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_legt_gru_shaping(
+    many_to_one_deep_hippo_legt_gru,
+    random_16_input,
+    many_to_one_deep_hippo_legt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_legt_gru_key[0],
+        many_to_one_deep_hippo_legt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_legt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_lmu_gru_shaping(
+    many_to_one_deep_hippo_lmu_gru,
+    random_16_input,
+    many_to_one_deep_hippo_lmu_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_lmu_gru_key[0],
+        many_to_one_deep_hippo_lmu_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_lmu_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_lagt_gru_shaping(
+    many_to_one_deep_hippo_lagt_gru,
+    random_16_input,
+    many_to_one_deep_hippo_lagt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_lagt_gru_key[0],
+        many_to_one_deep_hippo_lagt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_lagt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_fru_gru_shaping(
+    many_to_one_deep_hippo_fru_gru,
+    random_16_input,
+    many_to_one_deep_hippo_fru_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_fru_gru_key[0],
+        many_to_one_deep_hippo_fru_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_fru_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_fout_gru_shaping(
+    many_to_one_deep_hippo_fout_gru,
+    random_16_input,
+    many_to_one_deep_hippo_fout_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_fout_gru_key[0],
+        many_to_one_deep_hippo_fout_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_fout_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_one_deep_hippo_foud_gru_shaping(
+    many_to_one_deep_hippo_foud_gru,
+    random_16_input,
+    many_to_one_deep_hippo_foud_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_one_deep_hippo_foud_gru_key[0],
+        many_to_one_deep_hippo_foud_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_one_deep_hippo_foud_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape
+
+
+# -------------------------
+# ------ many to many -----
+# -------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_legs_gru_shaping(
+    many_to_many_deep_hippo_legs_gru,
+    random_16_input,
+    many_to_many_deep_hippo_legs_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_legs_gru_key[0],
+        many_to_many_deep_hippo_legs_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_legs_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_legt_gru_shaping(
+    many_to_many_deep_hippo_legt_gru,
+    random_16_input,
+    many_to_many_deep_hippo_legt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_legt_gru_key[0],
+        many_to_many_deep_hippo_legt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_legt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_lmu_gru_shaping(
+    many_to_many_deep_hippo_lmu_gru,
+    random_16_input,
+    many_to_many_deep_hippo_lmu_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_lmu_gru_key[0],
+        many_to_many_deep_hippo_lmu_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_lmu_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_lagt_gru_shaping(
+    many_to_many_deep_hippo_lagt_gru,
+    random_16_input,
+    many_to_many_deep_hippo_lagt_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_lagt_gru_key[0],
+        many_to_many_deep_hippo_lagt_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_lagt_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_fru_gru_shaping(
+    many_to_many_deep_hippo_fru_gru,
+    random_16_input,
+    many_to_many_deep_hippo_fru_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_fru_gru_key[0],
+        many_to_many_deep_hippo_fru_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_fru_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_fout_gru_shaping(
+    many_to_many_deep_hippo_fout_gru,
+    random_16_input,
+    many_to_many_deep_hippo_fout_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_fout_gru_key[0],
+        many_to_many_deep_hippo_fout_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_fout_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_many_to_many_deep_hippo_foud_gru_shaping(
+    many_to_many_deep_hippo_foud_gru,
+    random_16_input,
+    many_to_many_deep_hippo_foud_gru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        many_to_many_deep_hippo_foud_gru_key[0],
+        many_to_many_deep_hippo_foud_gru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = many_to_many_deep_hippo_foud_gru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ---------------- Deep Bidirectional HiPPO LSTM -----------------
+# ----------------------------------------------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_legs_bilstm_shaping(
+    deep_hippo_legs_bilstm,
+    random_16_input,
+    deep_hippo_legs_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_legs_bilstm_key[0],
+        deep_hippo_legs_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_legs_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_legt_bilstm_shaping(
+    deep_hippo_legt_bilstm,
+    random_16_input,
+    deep_hippo_legt_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_legt_bilstm_key[0],
+        deep_hippo_legt_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_legt_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_lmu_bilstm_shaping(
+    deep_hippo_lmu_bilstm,
+    random_16_input,
+    deep_hippo_lmu_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_lmu_bilstm_key[0],
+        deep_hippo_lmu_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_lmu_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_lagt_bilstm_shaping(
+    deep_hippo_lagt_bilstm,
+    random_16_input,
+    deep_hippo_lagt_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_lagt_bilstm_key[0],
+        deep_hippo_lagt_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_lagt_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_fru_bilstm_shaping(
+    deep_hippo_fru_bilstm,
+    random_16_input,
+    deep_hippo_fru_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_fru_bilstm_key[0],
+        deep_hippo_fru_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_fru_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_deep_hippo_fout_bilstm_shaping(
+    deep_hippo_fout_bilstm,
+    random_16_input,
+    deep_hippo_fout_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_fout_bilstm_key[0],
+        deep_hippo_fout_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_fout_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_deep_hippo_foud_bilstm_shaping(
+    deep_hippo_foud_bilstm,
+    random_16_input,
+    deep_hippo_foud_bilstm_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_foud_bilstm_key[0],
+        deep_hippo_foud_bilstm_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_foud_bilstm
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
+
+
+# ----------------------------------------------------------------
+# ----------------- Deep Bidirectional HiPPO GRU -----------------
+# ----------------------------------------------------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_legs_bigru_shaping(
+    deep_hippo_legs_bigru,
+    random_16_input,
+    deep_hippo_legs_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_legs_bigru_key[0],
+        deep_hippo_legs_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_legs_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_legt_bigru_shaping(
+    deep_hippo_legt_bigru,
+    random_16_input,
+    deep_hippo_legt_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_legt_bigru_key[0],
+        deep_hippo_legt_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_legt_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_lmu_bigru_shaping(
+    deep_hippo_lmu_bigru,
+    random_16_input,
+    deep_hippo_lmu_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_lmu_bigru_key[0],
+        deep_hippo_lmu_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_lmu_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_lagt_bigru_shaping(
+    deep_hippo_lagt_bigru,
+    random_16_input,
+    deep_hippo_lagt_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_lagt_bigru_key[0],
+        deep_hippo_lagt_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_lagt_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+@jax.jit
+def test_deep_hippo_fru_bigru_shaping(
+    deep_hippo_fru_bigru,
+    random_16_input,
+    deep_hippo_fru_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_fru_bigru_key[0],
+        deep_hippo_fru_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_fru_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+@jax.jit
+def test_deep_hippo_fout_bigru_shaping(
+    deep_hippo_fout_bigru,
+    random_16_input,
+    deep_hippo_fout_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_fout_bigru_key[0],
+        deep_hippo_fout_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_fout_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert (y.shape) == (16, 10)
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+@jax.jit
+def test_deep_hippo_foud_bigru_shaping(
+    deep_hippo_foud_bigru,
+    random_16_input,
+    deep_hippo_foud_bigru_key,
+):
+    print("Testing Deep RNN")
+    key1, key2, = (
+        deep_hippo_foud_bigru_key[0],
+        deep_hippo_foud_bigru_key[1],
+    )
+    batch_size = 16
+    hidden_size = 256
+    model = deep_hippo_foud_bigru
+    init_carry = model.initialize_carry(
+        rng=key1,
+        batch_size=(batch_size,),
+        hidden_size=hidden_size,
+        init_fn=nn.initializers.zeros,
+    )
+    params = model.init(
+        key2,
+        init_carry,
+        random_16_input,
+    )
+
+    carry, y = model.apply(
+        params,
+        init_carry,
+        random_16_input,
+    )
+
+    h_t, c_t = carry
+    print(f"input shape: {random_16_input.shape}")
+    print(f"h_t shape: {h_t.shape}")
+    print(f"c_t shape: {c_t.shape}")
+    print(f"y shape: {y.shape}")
+    assert (h_t.shape) == (16, 256)
+    assert (c_t.shape) == (16, 256)
+    assert y.shape == (16, 10)
