@@ -419,7 +419,7 @@ import pytest
 def test_one_to_many_single_cell_rnn_shaping(
     one_to_many_single_cell_rnn, random_16_input, one_to_many_single_cell_rnn_key
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many RNN")
     key1, key2, = (
         one_to_many_single_cell_rnn_key[0],
         one_to_many_single_cell_rnn_key[1],
@@ -459,7 +459,7 @@ def test_one_to_many_single_cell_rnn_shaping(
 def test_one_to_many_single_cell_lstm_shaping(
     one_to_many_single_cell_lstm, random_16_input, one_to_many_single_cell_lstm_key
 ):
-    print("Testing Deep LSTM")
+    print("Testing One To Many LSTM")
     key1, key2, = (
         one_to_many_single_cell_lstm_key[0],
         one_to_many_single_cell_lstm_key[1],
@@ -499,7 +499,7 @@ def test_one_to_many_single_cell_lstm_shaping(
 def test_one_to_many_single_cell_gru_shaping(
     one_to_many_single_cell_gru, random_16_input, one_to_many_single_cell_gru_key
 ):
-    print("Testing Deep GRU")
+    print("Testing One To Many GRU")
     key1, key2, = (
         one_to_many_single_cell_gru_key[0],
         one_to_many_single_cell_gru_key[1],
@@ -544,7 +544,7 @@ def test_one_to_many_single_cell_gru_shaping(
 def test_many_to_one_single_cell_rnn_shaping(
     many_to_one_single_cell_rnn, random_16_input, many_to_one_single_cell_rnn_key
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One RNN")
     key1, key2, = (
         many_to_one_single_cell_rnn_key[0],
         many_to_one_single_cell_rnn_key[1],
@@ -584,7 +584,7 @@ def test_many_to_one_single_cell_rnn_shaping(
 def test_many_to_one_single_cell_lstm_shaping(
     many_to_one_single_cell_lstm, random_16_input, many_to_one_single_cell_lstm_key
 ):
-    print("Testing Deep LSTM")
+    print("Testing Many To One LSTM")
     key1, key2, = (
         many_to_one_single_cell_lstm_key[0],
         many_to_one_single_cell_lstm_key[1],
@@ -624,7 +624,7 @@ def test_many_to_one_single_cell_lstm_shaping(
 def test_many_to_one_single_cell_gru_shaping(
     many_to_one_single_cell_gru, random_16_input, many_to_one_single_cell_gru_key
 ):
-    print("Testing Deep GRU")
+    print("Testing Many To One GRU")
     key1, key2, = (
         many_to_one_single_cell_gru_key[0],
         many_to_one_single_cell_gru_key[1],
@@ -669,7 +669,7 @@ def test_many_to_one_single_cell_gru_shaping(
 def test_many_to_many_single_cell_rnn_shaping(
     many_to_many_single_cell_rnn, random_16_input, many_to_many_single_cell_rnn_key
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many RNN")
     key1, key2, = (
         many_to_many_single_cell_rnn_key[0],
         many_to_many_single_cell_rnn_key[1],
@@ -709,7 +709,7 @@ def test_many_to_many_single_cell_rnn_shaping(
 def test_many_to_many_single_cell_lstm_shaping(
     many_to_many_single_cell_lstm, random_16_input, many_to_many_single_cell_lstm_key
 ):
-    print("Testing Deep LSTM")
+    print("Testing Many To Many LSTM")
     key1, key2, = (
         many_to_many_single_cell_lstm_key[0],
         many_to_many_single_cell_lstm_key[1],
@@ -749,7 +749,7 @@ def test_many_to_many_single_cell_lstm_shaping(
 def test_many_to_many_single_cell_gru_shaping(
     many_to_many_single_cell_gru, random_16_input, many_to_many_single_cell_gru_key
 ):
-    print("Testing Deep GRU")
+    print("Testing Many To Many GRU")
     key1, key2, = (
         many_to_many_single_cell_gru_key[0],
         many_to_many_single_cell_gru_key[1],
@@ -794,7 +794,7 @@ def test_many_to_many_single_cell_gru_shaping(
 def test_single_cell_birnn_shaping(
     single_cell_birnn, random_16_input, single_cell_birnn_key
 ):
-    print("Testing Deep RNN")
+    print("Testing Bidirectional RNN")
     key1, key2, = (
         single_cell_birnn_key[0],
         single_cell_birnn_key[1],
@@ -834,7 +834,7 @@ def test_single_cell_birnn_shaping(
 def test_single_cell_bilstm_shaping(
     single_cell_bilstm, random_16_input, single_cell_bilstm_key
 ):
-    print("Testing Deep LSTM")
+    print("Testing Bidirectional LSTM")
     key1, key2, = (
         single_cell_bilstm_key[0],
         single_cell_bilstm_key[1],
@@ -874,7 +874,7 @@ def test_single_cell_bilstm_shaping(
 def test_single_cell_bigru_shaping(
     single_cell_bigru, random_16_input, single_cell_bigru_key
 ):
-    print("Testing Deep GRU")
+    print("Testing Bidirectional GRU")
     key1, key2, = (
         single_cell_bigru_key[0],
         single_cell_bigru_key[1],
@@ -923,7 +923,7 @@ def test_single_cell_bigru_shaping(
 def test_one_to_many_deep_rnn_shaping(
     one_to_many_deep_rnn, random_16_input, one_to_many_deep_rnn_key
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep RNN")
     key1, key2, = (
         one_to_many_deep_rnn_key[0],
         one_to_many_deep_rnn_key[1],
@@ -963,7 +963,7 @@ def test_one_to_many_deep_rnn_shaping(
 def test_one_to_many_deep_lstm_shaping(
     one_to_many_deep_lstm, random_16_input, one_to_many_deep_lstm_key
 ):
-    print("Testing Deep LSTM")
+    print("Testing One To Many Deep LSTM")
     key1, key2, = (
         one_to_many_deep_lstm_key[0],
         one_to_many_deep_lstm_key[1],
@@ -1003,7 +1003,7 @@ def test_one_to_many_deep_lstm_shaping(
 def test_one_to_many_deep_gru_shaping(
     one_to_many_deep_gru, random_16_input, one_to_many_deep_gru_key
 ):
-    print("Testing Deep GRU")
+    print("Testing One To Many Deep GRU")
     key1, key2, = (
         one_to_many_deep_gru_key[0],
         one_to_many_deep_gru_key[1],
@@ -1048,7 +1048,7 @@ def test_one_to_many_deep_gru_shaping(
 def test_many_to_one_deep_rnn_shaping(
     many_to_one_deep_rnn, random_16_input, many_to_one_deep_rnn_key
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep RNN")
     key1, key2, = (
         many_to_one_deep_rnn_key[0],
         many_to_one_deep_rnn_key[1],
@@ -1088,7 +1088,7 @@ def test_many_to_one_deep_rnn_shaping(
 def test_many_to_one_deep_lstm_shaping(
     many_to_one_deep_lstm, random_16_input, many_to_one_deep_lstm_key
 ):
-    print("Testing Deep LSTM")
+    print("Testing Many To One Deep LSTM")
     key1, key2, = (
         many_to_one_deep_lstm_key[0],
         many_to_one_deep_lstm_key[1],
@@ -1128,7 +1128,7 @@ def test_many_to_one_deep_lstm_shaping(
 def test_many_to_one_deep_gru_shaping(
     many_to_one_deep_gru, random_16_input, many_to_one_deep_gru_key
 ):
-    print("Testing Deep GRU")
+    print("Testing Many To One Deep GRU")
     key1, key2, = (
         many_to_one_deep_gru_key[0],
         many_to_one_deep_gru_key[1],
@@ -1173,7 +1173,7 @@ def test_many_to_one_deep_gru_shaping(
 def test_many_to_many_deep_rnn_shaping(
     many_to_many_deep_rnn, random_16_input, many_to_many_deep_rnn_key
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep RNN")
     key1, key2, = (
         many_to_many_deep_rnn_key[0],
         many_to_many_deep_rnn_key[1],
@@ -1213,7 +1213,7 @@ def test_many_to_many_deep_rnn_shaping(
 def test_many_to_many_deep_lstm_shaping(
     many_to_many_deep_lstm, random_16_input, many_to_many_deep_lstm_key
 ):
-    print("Testing Deep LSTM")
+    print("Testing Many To Many Deep LSTM")
     key1, key2, = (
         many_to_many_deep_lstm_key[0],
         many_to_many_deep_lstm_key[1],
@@ -1253,7 +1253,7 @@ def test_many_to_many_deep_lstm_shaping(
 def test_many_to_many_deep_gru_shaping(
     many_to_many_deep_gru, random_16_input, many_to_many_deep_gru_key
 ):
-    print("Testing Deep GRU")
+    print("Testing Many To Many Deep GRU")
     key1, key2, = (
         many_to_many_deep_gru_key[0],
         many_to_many_deep_gru_key[1],
@@ -1296,7 +1296,8 @@ def test_many_to_many_deep_gru_shaping(
 
 @jax.jit
 def test_deep_birnn_shaping(deep_birnn, random_16_input, deep_birnn_key):
-    print("Testing Deep RNN")
+
+    print("Testing Deep Bidirectional RNN")
     key1, key2, = (
         deep_birnn_key[0],
         deep_birnn_key[1],
@@ -1334,7 +1335,8 @@ def test_deep_birnn_shaping(deep_birnn, random_16_input, deep_birnn_key):
 
 @jax.jit
 def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
-    print("Testing Deep RNN")
+
+    print("Testing Deep Bidirectional LSTM")
     key1, key2, = (
         deep_bilstm_key[0],
         deep_bilstm_key[1],
@@ -1372,7 +1374,8 @@ def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
 
 @jax.jit
 def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
-    print("Testing Deep RNN")
+
+    print("Testing Deep Bidirectional GRU")
     key1, key2, = (
         deep_bigru_key[0],
         deep_bigru_key[1],
@@ -1427,7 +1430,7 @@ def test_one_to_many_single_hippo_legs_lstm_shaping(
     random_16_input,
     one_to_many_single_hippo_legs_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-LSTM (legs)")
     key1, key2, = (
         one_to_many_single_hippo_legs_lstm_key[0],
         one_to_many_single_hippo_legs_lstm_key[1],
@@ -1474,7 +1477,7 @@ def test_one_to_many_single_hippo_legt_lstm_shaping(
     random_16_input,
     one_to_many_single_hippo_legt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-LSTM (legt)")
     key1, key2, = (
         one_to_many_single_hippo_legt_lstm_key[0],
         one_to_many_single_hippo_legt_lstm_key[1],
@@ -1521,7 +1524,7 @@ def test_one_to_many_single_hippo_lmu_lstm_shaping(
     random_16_input,
     one_to_many_single_hippo_lmu_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-LSTM (lmu)")
     key1, key2, = (
         one_to_many_single_hippo_lmu_lstm_key[0],
         one_to_many_single_hippo_lmu_lstm_key[1],
@@ -1568,7 +1571,7 @@ def test_one_to_many_single_hippo_lagt_lstm_shaping(
     random_16_input,
     one_to_many_single_hippo_lagt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-LSTM (lagt)")
     key1, key2, = (
         one_to_many_single_hippo_lagt_lstm_key[0],
         one_to_many_single_hippo_lagt_lstm_key[1],
@@ -1615,7 +1618,7 @@ def test_one_to_many_single_hippo_fru_lstm_shaping(
     random_16_input,
     one_to_many_single_hippo_fru_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-LSTM (FRU)")
     key1, key2, = (
         one_to_many_single_hippo_fru_lstm_key[0],
         one_to_many_single_hippo_fru_lstm_key[1],
@@ -1662,7 +1665,7 @@ def test_one_to_many_single_hippo_fout_lstm_shaping(
     random_16_input,
     one_to_many_single_hippo_fout_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-LSTM (fout)")
     key1, key2, = (
         one_to_many_single_hippo_fout_lstm_key[0],
         one_to_many_single_hippo_fout_lstm_key[1],
@@ -1709,7 +1712,7 @@ def test_one_to_many_single_hippo_foud_lstm_shaping(
     random_16_input,
     one_to_many_single_hippo_foud_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-LSTM (foud)")
     key1, key2, = (
         one_to_many_single_hippo_foud_lstm_key[0],
         one_to_many_single_hippo_foud_lstm_key[1],
@@ -1760,7 +1763,7 @@ def test_many_to_one_single_hippo_legs_lstm_shaping(
     random_16_input,
     many_to_one_single_hippo_legs_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-LSTM (legs)")
     key1, key2, = (
         many_to_one_single_hippo_legs_lstm_key[0],
         many_to_one_single_hippo_legs_lstm_key[1],
@@ -1807,7 +1810,7 @@ def test_many_to_one_single_hippo_legt_lstm_shaping(
     random_16_input,
     many_to_one_single_hippo_legt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-LSTM (legt)")
     key1, key2, = (
         many_to_one_single_hippo_legt_lstm_key[0],
         many_to_one_single_hippo_legt_lstm_key[1],
@@ -1854,7 +1857,7 @@ def test_many_to_one_single_hippo_lmu_lstm_shaping(
     random_16_input,
     many_to_one_single_hippo_lmu_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-LSTM (lmu)")
     key1, key2, = (
         many_to_one_single_hippo_lmu_lstm_key[0],
         many_to_one_single_hippo_lmu_lstm_key[1],
@@ -1901,7 +1904,7 @@ def test_many_to_one_single_hippo_lagt_lstm_shaping(
     random_16_input,
     many_to_one_single_hippo_lagt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-LSTM (lagt)")
     key1, key2, = (
         many_to_one_single_hippo_lagt_lstm_key[0],
         many_to_one_single_hippo_lagt_lstm_key[1],
@@ -1948,7 +1951,7 @@ def test_many_to_one_single_hippo_fru_lstm_shaping(
     random_16_input,
     many_to_one_single_hippo_fru_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-LSTM (fru)")
     key1, key2, = (
         many_to_one_single_hippo_fru_lstm_key[0],
         many_to_one_single_hippo_fru_lstm_key[1],
@@ -1995,7 +1998,7 @@ def test_many_to_one_single_hippo_fout_lstm_shaping(
     random_16_input,
     many_to_one_single_hippo_fout_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-LSTM (fout)")
     key1, key2, = (
         many_to_one_single_hippo_fout_lstm_key[0],
         many_to_one_single_hippo_fout_lstm_key[1],
@@ -2042,7 +2045,7 @@ def test_many_to_one_single_hippo_foud_lstm_shaping(
     random_16_input,
     many_to_one_single_hippo_foud_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-LSTM (foud)")
     key1, key2, = (
         many_to_one_single_hippo_foud_lstm_key[0],
         many_to_one_single_hippo_foud_lstm_key[1],
@@ -2093,7 +2096,7 @@ def test_many_to_many_single_hippo_legs_lstm_shaping(
     random_16_input,
     many_to_many_single_hippo_legs_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-LSTM (legs)")
     key1, key2, = (
         many_to_many_single_hippo_legs_lstm_key[0],
         many_to_many_single_hippo_legs_lstm_key[1],
@@ -2140,7 +2143,7 @@ def test_many_to_many_single_hippo_legt_lstm_shaping(
     random_16_input,
     many_to_many_single_hippo_legt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-LSTM (legt)")
     key1, key2, = (
         many_to_many_single_hippo_legt_lstm_key[0],
         many_to_many_single_hippo_legt_lstm_key[1],
@@ -2187,7 +2190,7 @@ def test_many_to_many_single_hippo_lmu_lstm_shaping(
     random_16_input,
     many_to_many_single_hippo_lmu_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-LSTM (lmu)")
     key1, key2, = (
         many_to_many_single_hippo_lmu_lstm_key[0],
         many_to_many_single_hippo_lmu_lstm_key[1],
@@ -2234,7 +2237,7 @@ def test_many_to_many_single_hippo_lagt_lstm_shaping(
     random_16_input,
     many_to_many_single_hippo_lagt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-LSTM (lagt)")
     key1, key2, = (
         many_to_many_single_hippo_lagt_lstm_key[0],
         many_to_many_single_hippo_lagt_lstm_key[1],
@@ -2281,7 +2284,7 @@ def test_many_to_many_single_hippo_fru_lstm_shaping(
     random_16_input,
     many_to_many_single_hippo_fru_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-LSTM (fru)")
     key1, key2, = (
         many_to_many_single_hippo_fru_lstm_key[0],
         many_to_many_single_hippo_fru_lstm_key[1],
@@ -2328,7 +2331,7 @@ def test_many_to_many_single_hippo_fout_lstm_shaping(
     random_16_input,
     many_to_many_single_hippo_fout_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-LSTM (fout)")
     key1, key2, = (
         many_to_many_single_hippo_fout_lstm_key[0],
         many_to_many_single_hippo_fout_lstm_key[1],
@@ -2375,7 +2378,7 @@ def test_many_to_many_single_hippo_foud_lstm_shaping(
     random_16_input,
     many_to_many_single_hippo_foud_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-LSTM (foud)")
     key1, key2, = (
         many_to_many_single_hippo_foud_lstm_key[0],
         many_to_many_single_hippo_foud_lstm_key[1],
@@ -2430,7 +2433,7 @@ def test_one_to_many_single_hippo_legs_gru_shaping(
     random_16_input,
     one_to_many_single_hippo_legs_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-GRU (legs)")
     key1, key2, = (
         one_to_many_single_hippo_legs_gru_key[0],
         one_to_many_single_hippo_legs_gru_key[1],
@@ -2477,7 +2480,7 @@ def test_one_to_many_single_hippo_legt_gru_shaping(
     random_16_input,
     one_to_many_single_hippo_legt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-GRU (legt)")
     key1, key2, = (
         one_to_many_single_hippo_legt_gru_key[0],
         one_to_many_single_hippo_legt_gru_key[1],
@@ -2524,7 +2527,7 @@ def test_one_to_many_single_hippo_lmu_gru_shaping(
     random_16_input,
     one_to_many_single_hippo_lmu_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-GRU (lmu)")
     key1, key2, = (
         one_to_many_single_hippo_lmu_gru_key[0],
         one_to_many_single_hippo_lmu_gru_key[1],
@@ -2571,7 +2574,7 @@ def test_one_to_many_single_hippo_lagt_gru_shaping(
     random_16_input,
     one_to_many_single_hippo_lagt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-GRU (lagt)")
     key1, key2, = (
         one_to_many_single_hippo_lagt_gru_key[0],
         one_to_many_single_hippo_lagt_gru_key[1],
@@ -2618,7 +2621,7 @@ def test_one_to_many_single_hippo_fru_gru_shaping(
     random_16_input,
     one_to_many_single_hippo_fru_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-GRU (fru)")
     key1, key2, = (
         one_to_many_single_hippo_fru_gru_key[0],
         one_to_many_single_hippo_fru_gru_key[1],
@@ -2665,7 +2668,7 @@ def test_one_to_many_single_hippo_fout_gru_shaping(
     random_16_input,
     one_to_many_single_hippo_fout_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-GRU (fout)")
     key1, key2, = (
         one_to_many_single_hippo_fout_gru_key[0],
         one_to_many_single_hippo_fout_gru_key[1],
@@ -2712,7 +2715,7 @@ def test_one_to_many_single_hippo_foud_gru_shaping(
     random_16_input,
     one_to_many_single_hippo_foud_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many HiPPO-GRU (foud)")
     key1, key2, = (
         one_to_many_single_hippo_foud_gru_key[0],
         one_to_many_single_hippo_foud_gru_key[1],
@@ -2763,7 +2766,7 @@ def test_many_to_one_single_hippo_legs_gru_shaping(
     random_16_input,
     many_to_one_single_hippo_legs_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-GRU (legs)")
     key1, key2, = (
         many_to_one_single_hippo_legs_gru_key[0],
         many_to_one_single_hippo_legs_gru_key[1],
@@ -2810,7 +2813,7 @@ def test_many_to_one_single_hippo_legt_gru_shaping(
     random_16_input,
     many_to_one_single_hippo_legt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-GRU (legt)")
     key1, key2, = (
         many_to_one_single_hippo_legt_gru_key[0],
         many_to_one_single_hippo_legt_gru_key[1],
@@ -2857,7 +2860,7 @@ def test_many_to_one_single_hippo_lmu_gru_shaping(
     random_16_input,
     many_to_one_single_hippo_lmu_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-GRU (lmu)")
     key1, key2, = (
         many_to_one_single_hippo_lmu_gru_key[0],
         many_to_one_single_hippo_lmu_gru_key[1],
@@ -2904,7 +2907,7 @@ def test_many_to_one_single_hippo_lagt_gru_shaping(
     random_16_input,
     many_to_one_single_hippo_lagt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-GRU (lagt)")
     key1, key2, = (
         many_to_one_single_hippo_lagt_gru_key[0],
         many_to_one_single_hippo_lagt_gru_key[1],
@@ -2951,7 +2954,7 @@ def test_many_to_one_single_hippo_fru_gru_shaping(
     random_16_input,
     many_to_one_single_hippo_fru_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-GRU (fru)")
     key1, key2, = (
         many_to_one_single_hippo_fru_gru_key[0],
         many_to_one_single_hippo_fru_gru_key[1],
@@ -2998,7 +3001,7 @@ def test_many_to_one_single_hippo_fout_gru_shaping(
     random_16_input,
     many_to_one_single_hippo_fout_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-GRU (fout)")
     key1, key2, = (
         many_to_one_single_hippo_fout_gru_key[0],
         many_to_one_single_hippo_fout_gru_key[1],
@@ -3045,7 +3048,7 @@ def test_many_to_one_single_hippo_foud_gru_shaping(
     random_16_input,
     many_to_one_single_hippo_foud_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One HiPPO-GRU (foud)")
     key1, key2, = (
         many_to_one_single_hippo_foud_gru_key[0],
         many_to_one_single_hippo_foud_gru_key[1],
@@ -3096,7 +3099,7 @@ def test_many_to_many_single_hippo_legs_gru_shaping(
     random_16_input,
     many_to_many_single_hippo_legs_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-GRU (legs)")
     key1, key2, = (
         many_to_many_single_hippo_legs_gru_key[0],
         many_to_many_single_hippo_legs_gru_key[1],
@@ -3143,7 +3146,7 @@ def test_many_to_many_single_hippo_legt_gru_shaping(
     random_16_input,
     many_to_many_single_hippo_legt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-GRU (legt)")
     key1, key2, = (
         many_to_many_single_hippo_legt_gru_key[0],
         many_to_many_single_hippo_legt_gru_key[1],
@@ -3190,7 +3193,7 @@ def test_many_to_many_single_hippo_lmu_gru_shaping(
     random_16_input,
     many_to_many_single_hippo_lmu_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-GRU (lmu)")
     key1, key2, = (
         many_to_many_single_hippo_lmu_gru_key[0],
         many_to_many_single_hippo_lmu_gru_key[1],
@@ -3237,7 +3240,7 @@ def test_many_to_many_single_hippo_lagt_gru_shaping(
     random_16_input,
     many_to_many_single_hippo_lagt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-GRU (lagt)")
     key1, key2, = (
         many_to_many_single_hippo_lagt_gru_key[0],
         many_to_many_single_hippo_lagt_gru_key[1],
@@ -3284,7 +3287,7 @@ def test_many_to_many_single_hippo_fru_gru_shaping(
     random_16_input,
     many_to_many_single_hippo_fru_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-GRU (fru)")
     key1, key2, = (
         many_to_many_single_hippo_fru_gru_key[0],
         many_to_many_single_hippo_fru_gru_key[1],
@@ -3331,7 +3334,7 @@ def test_many_to_many_single_hippo_fout_gru_shaping(
     random_16_input,
     many_to_many_single_hippo_fout_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-GRU (fout)")
     key1, key2, = (
         many_to_many_single_hippo_fout_gru_key[0],
         many_to_many_single_hippo_fout_gru_key[1],
@@ -3378,7 +3381,7 @@ def test_many_to_many_single_hippo_foud_gru_shaping(
     random_16_input,
     many_to_many_single_hippo_foud_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many HiPPO-GRU (foud)")
     key1, key2, = (
         many_to_many_single_hippo_foud_gru_key[0],
         many_to_many_single_hippo_foud_gru_key[1],
@@ -3429,7 +3432,7 @@ def test_single_cell_hippo_legs_bilstm_shaping(
     random_16_input,
     single_cell_hippo_legs_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-LSTM (legs)")
     key1, key2, = (
         single_cell_hippo_legs_bilstm_key[0],
         single_cell_hippo_legs_bilstm_key[1],
@@ -3476,7 +3479,7 @@ def test_single_cell_hippo_legt_bilstm_shaping(
     random_16_input,
     single_cell_hippo_legt_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-LSTM (legt)")
     key1, key2, = (
         single_cell_hippo_legt_bilstm_key[0],
         single_cell_hippo_legt_bilstm_key[1],
@@ -3523,7 +3526,7 @@ def test_single_cell_hippo_lmu_bilstm_shaping(
     random_16_input,
     single_cell_hippo_lmu_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-LSTM (lmu)")
     key1, key2, = (
         single_cell_hippo_lmu_bilstm_key[0],
         single_cell_hippo_lmu_bilstm_key[1],
@@ -3570,7 +3573,7 @@ def test_single_cell_hippo_lagt_bilstm_shaping(
     random_16_input,
     single_cell_hippo_lagt_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-LSTM (lagt)")
     key1, key2, = (
         single_cell_hippo_lagt_bilstm_key[0],
         single_cell_hippo_lagt_bilstm_key[1],
@@ -3617,7 +3620,7 @@ def test_single_cell_hippo_fru_bilstm_shaping(
     random_16_input,
     single_cell_hippo_fru_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-LSTM (fru)")
     key1, key2, = (
         single_cell_hippo_fru_bilstm_key[0],
         single_cell_hippo_fru_bilstm_key[1],
@@ -3664,7 +3667,7 @@ def test_single_cell_hippo_fout_bilstm_shaping(
     random_16_input,
     single_cell_hippo_fout_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-LSTM (fout)")
     key1, key2, = (
         single_cell_hippo_fout_bilstm_key[0],
         single_cell_hippo_fout_bilstm_key[1],
@@ -3711,7 +3714,7 @@ def test_single_cell_hippo_foud_bilstm_shaping(
     random_16_input,
     single_cell_hippo_foud_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-LSTM (foud)")
     key1, key2, = (
         single_cell_hippo_foud_bilstm_key[0],
         single_cell_hippo_foud_bilstm_key[1],
@@ -3762,7 +3765,7 @@ def test_single_cell_hippo_legs_bigru_shaping(
     random_16_input,
     single_cell_hippo_legs_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-GRU (legs)")
     key1, key2, = (
         single_cell_hippo_legs_bigru_key[0],
         single_cell_hippo_legs_bigru_key[1],
@@ -3809,7 +3812,7 @@ def test_single_cell_hippo_legt_bigru_shaping(
     random_16_input,
     single_cell_hippo_legt_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-GRU (legt)")
     key1, key2, = (
         single_cell_hippo_legt_bigru_key[0],
         single_cell_hippo_legt_bigru_key[1],
@@ -3856,7 +3859,7 @@ def test_single_cell_hippo_lmu_bigru_shaping(
     random_16_input,
     single_cell_hippo_lmu_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-GRU (lmu)")
     key1, key2, = (
         single_cell_hippo_lmu_bigru_key[0],
         single_cell_hippo_lmu_bigru_key[1],
@@ -3903,7 +3906,7 @@ def test_single_cell_hippo_lagt_bigru_key_shaping(
     random_16_input,
     single_cell_hippo_lagt_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-GRU (lagt)")
     key1, key2, = (
         single_cell_hippo_lagt_bigru_key[0],
         single_cell_hippo_lagt_bigru_key[1],
@@ -3950,7 +3953,7 @@ def test_single_cell_hippo_fru_bigru_shaping(
     random_16_input,
     single_cell_hippo_fru_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-GRU (fru)")
     key1, key2, = (
         single_cell_hippo_fru_bigru_key[0],
         single_cell_hippo_fru_bigru_key[1],
@@ -3997,7 +4000,7 @@ def test_single_cell_hippo_fout_bigru_shaping(
     random_16_input,
     single_cell_hippo_fout_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-GRU (fout)")
     key1, key2, = (
         single_cell_hippo_fout_bigru_key[0],
         single_cell_hippo_fout_bigru_key[1],
@@ -4044,7 +4047,7 @@ def test_single_cell_hippo_foud_bigru_shaping(
     random_16_input,
     single_cell_hippo_foud_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Single Cell Bidirectional HiPPO-GRU (foud)")
     key1, key2, = (
         single_cell_hippo_foud_bigru_key[0],
         single_cell_hippo_foud_bigru_key[1],
@@ -4099,7 +4102,7 @@ def test_one_to_many_deep_hippo_legs_lstm_shaping(
     random_16_input,
     one_to_many_deep_hippo_legs_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-LSTM (legs)")
     key1, key2, = (
         one_to_many_deep_hippo_legs_lstm_key[0],
         one_to_many_deep_hippo_legs_lstm_key[1],
@@ -4146,7 +4149,7 @@ def test_one_to_many_deep_hippo_legt_lstm_shaping(
     random_16_input,
     one_to_many_deep_hippo_legt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-LSTM (legt)")
     key1, key2, = (
         one_to_many_deep_hippo_legt_lstm_key[0],
         one_to_many_deep_hippo_legt_lstm_key[1],
@@ -4193,7 +4196,7 @@ def test_one_to_many_deep_hippo_lmu_lstm_shaping(
     random_16_input,
     one_to_many_deep_hippo_lmu_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-LSTM (lmu)")
     key1, key2, = (
         one_to_many_deep_hippo_lmu_lstm_key[0],
         one_to_many_deep_hippo_lmu_lstm_key[1],
@@ -4240,7 +4243,7 @@ def test_one_to_many_deep_hippo_lagt_lstm_shaping(
     random_16_input,
     one_to_many_deep_hippo_lagt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-LSTM (lagt)")
     key1, key2, = (
         one_to_many_deep_hippo_lagt_lstm_key[0],
         one_to_many_deep_hippo_lagt_lstm_key[1],
@@ -4287,7 +4290,7 @@ def test_one_to_many_deep_hippo_fru_lstm_shaping(
     random_16_input,
     one_to_many_deep_hippo_fru_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-LSTM (fru)")
     key1, key2, = (
         one_to_many_deep_hippo_fru_lstm_key[0],
         one_to_many_deep_hippo_fru_lstm_key[1],
@@ -4334,7 +4337,7 @@ def test_one_to_many_deep_hippo_fout_lstm_shaping(
     random_16_input,
     one_to_many_deep_hippo_fout_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-LSTM (fout)")
     key1, key2, = (
         one_to_many_deep_hippo_fout_lstm_key[0],
         one_to_many_deep_hippo_fout_lstm_key[1],
@@ -4381,7 +4384,7 @@ def test_one_to_many_deep_hippo_foud_lstm_shaping(
     random_16_input,
     one_to_many_deep_hippo_foud_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-LSTM (foud)")
     key1, key2, = (
         one_to_many_deep_hippo_foud_lstm_key[0],
         one_to_many_deep_hippo_foud_lstm_key[1],
@@ -4432,7 +4435,7 @@ def test_many_to_one_deep_hippo_legs_lstm_shaping(
     random_16_input,
     many_to_one_deep_hippo_legs_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-LSTM (legs)")
     key1, key2, = (
         many_to_one_deep_hippo_legs_lstm_key[0],
         many_to_one_deep_hippo_legs_lstm_key[1],
@@ -4479,7 +4482,7 @@ def test_many_to_one_deep_hippo_legt_lstm_shaping(
     random_16_input,
     many_to_one_deep_hippo_legt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-LSTM (legt)")
     key1, key2, = (
         many_to_one_deep_hippo_legt_lstm_key[0],
         many_to_one_deep_hippo_legt_lstm_key[1],
@@ -4526,7 +4529,7 @@ def test_many_to_one_deep_hippo_lmu_lstm_shaping(
     random_16_input,
     many_to_one_deep_hippo_lmu_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-LSTM (lmu)")
     key1, key2, = (
         many_to_one_deep_hippo_lmu_lstm_key[0],
         many_to_one_deep_hippo_lmu_lstm_key[1],
@@ -4573,7 +4576,7 @@ def test_many_to_one_deep_hippo_lagt_lstm_shaping(
     random_16_input,
     many_to_one_deep_hippo_lagt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-LSTM (lagt)")
     key1, key2, = (
         many_to_one_deep_hippo_lagt_lstm_key[0],
         many_to_one_deep_hippo_lagt_lstm_key[1],
@@ -4620,7 +4623,7 @@ def test_many_to_one_deep_hippo_fru_lstm_shaping(
     random_16_input,
     many_to_one_deep_hippo_fru_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-LSTM (fru)")
     key1, key2, = (
         many_to_one_deep_hippo_fru_lstm_key[0],
         many_to_one_deep_hippo_fru_lstm_key[1],
@@ -4667,7 +4670,7 @@ def test_many_to_one_deep_hippo_fout_lstm_shaping(
     random_16_input,
     many_to_one_deep_hippo_fout_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-LSTM (fout)")
     key1, key2, = (
         many_to_one_deep_hippo_fout_lstm_key[0],
         many_to_one_deep_hippo_fout_lstm_key[1],
@@ -4714,7 +4717,7 @@ def test_many_to_one_deep_hippo_foud_lstm_shaping(
     random_16_input,
     many_to_one_deep_hippo_foud_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-LSTM (foud)")
     key1, key2, = (
         many_to_one_deep_hippo_foud_lstm_key[0],
         many_to_one_deep_hippo_foud_lstm_key[1],
@@ -4765,7 +4768,7 @@ def test_many_to_many_deep_hippo_legs_lstm_shaping(
     random_16_input,
     many_to_many_deep_hippo_legs_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-LSTM (legs)")
     key1, key2, = (
         many_to_many_deep_hippo_legs_lstm_key[0],
         many_to_many_deep_hippo_legs_lstm_key[1],
@@ -4812,7 +4815,7 @@ def test_many_to_many_deep_hippo_legt_lstm_shaping(
     random_16_input,
     many_to_many_deep_hippo_legt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-LSTM (legt)")
     key1, key2, = (
         many_to_many_deep_hippo_legt_lstm_key[0],
         many_to_many_deep_hippo_legt_lstm_key[1],
@@ -4859,7 +4862,7 @@ def test_many_to_many_deep_hippo_lmu_lstm_shaping(
     random_16_input,
     many_to_many_deep_hippo_lmu_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-LSTM (lmu)")
     key1, key2, = (
         many_to_many_deep_hippo_lmu_lstm_key[0],
         many_to_many_deep_hippo_lmu_lstm_key[1],
@@ -4906,7 +4909,7 @@ def test_many_to_many_deep_hippo_lagt_lstm_shaping(
     random_16_input,
     many_to_many_deep_hippo_lagt_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-LSTM (lagt)")
     key1, key2, = (
         many_to_many_deep_hippo_lagt_lstm_key[0],
         many_to_many_deep_hippo_lagt_lstm_key[1],
@@ -4953,7 +4956,7 @@ def test_many_to_many_deep_hippo_fru_lstm_shaping(
     random_16_input,
     many_to_many_deep_hippo_fru_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-LSTM (fru)")
     key1, key2, = (
         many_to_many_deep_hippo_fru_lstm_key[0],
         many_to_many_deep_hippo_fru_lstm_key[1],
@@ -5000,7 +5003,7 @@ def test_many_to_many_deep_hippo_fout_lstm_shaping(
     random_16_input,
     many_to_many_deep_hippo_fout_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-LSTM (fout)")
     key1, key2, = (
         many_to_many_deep_hippo_fout_lstm_key[0],
         many_to_many_deep_hippo_fout_lstm_key[1],
@@ -5047,7 +5050,7 @@ def test_many_to_many_deep_hippo_foud_lstm_shaping(
     random_16_input,
     many_to_many_deep_hippo_foud_lstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-LSTM (foud)")
     key1, key2, = (
         many_to_many_deep_hippo_foud_lstm_key[0],
         many_to_many_deep_hippo_foud_lstm_key[1],
@@ -5102,7 +5105,7 @@ def test_one_to_many_deep_hippo_legs_gru_shaping(
     random_16_input,
     one_to_many_deep_hippo_legs_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-GRU (legs)")
     key1, key2, = (
         one_to_many_deep_hippo_legs_gru_key[0],
         one_to_many_deep_hippo_legs_gru_key[1],
@@ -5149,7 +5152,7 @@ def test_one_to_many_deep_hippo_legt_gru_shaping(
     random_16_input,
     one_to_many_deep_hippo_legt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-GRU (legt)")
     key1, key2, = (
         one_to_many_deep_hippo_legt_gru_key[0],
         one_to_many_deep_hippo_legt_gru_key[1],
@@ -5196,7 +5199,7 @@ def test_one_to_many_deep_hippo_lmu_gru_shaping(
     random_16_input,
     one_to_many_deep_hippo_lmu_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-GRU (lmu)")
     key1, key2, = (
         one_to_many_deep_hippo_lmu_gru_key[0],
         one_to_many_deep_hippo_lmu_gru_key[1],
@@ -5243,7 +5246,7 @@ def test_one_to_many_deep_hippo_lagt_gru_shaping(
     random_16_input,
     one_to_many_deep_hippo_lagt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-GRU (lagt)")
     key1, key2, = (
         one_to_many_deep_hippo_lagt_gru_key[0],
         one_to_many_deep_hippo_lagt_gru_key[1],
@@ -5290,7 +5293,7 @@ def test_one_to_many_deep_hippo_fru_gru_shaping(
     random_16_input,
     one_to_many_deep_hippo_fru_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-GRU (fru)")
     key1, key2, = (
         one_to_many_deep_hippo_fru_gru_key[0],
         one_to_many_deep_hippo_fru_gru_key[1],
@@ -5337,7 +5340,7 @@ def test_one_to_many_deep_hippo_fout_gru_shaping(
     random_16_input,
     one_to_many_deep_hippo_fout_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-GRU (fout)")
     key1, key2, = (
         one_to_many_deep_hippo_fout_gru_key[0],
         one_to_many_deep_hippo_fout_gru_key[1],
@@ -5384,7 +5387,7 @@ def test_one_to_many_deep_hippo_foud_gru_shaping(
     random_16_input,
     one_to_many_deep_hippo_foud_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing One To Many Deep HiPPO-GRU (foud)")
     key1, key2, = (
         one_to_many_deep_hippo_foud_gru_key[0],
         one_to_many_deep_hippo_foud_gru_key[1],
@@ -5435,7 +5438,7 @@ def test_many_to_one_deep_hippo_legs_gru_shaping(
     random_16_input,
     many_to_one_deep_hippo_legs_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-GRU (legs)")
     key1, key2, = (
         many_to_one_deep_hippo_legs_gru_key[0],
         many_to_one_deep_hippo_legs_gru_key[1],
@@ -5482,7 +5485,7 @@ def test_many_to_one_deep_hippo_legt_gru_shaping(
     random_16_input,
     many_to_one_deep_hippo_legt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-GRU (legt)")
     key1, key2, = (
         many_to_one_deep_hippo_legt_gru_key[0],
         many_to_one_deep_hippo_legt_gru_key[1],
@@ -5529,7 +5532,7 @@ def test_many_to_one_deep_hippo_lmu_gru_shaping(
     random_16_input,
     many_to_one_deep_hippo_lmu_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-GRU (lmu)")
     key1, key2, = (
         many_to_one_deep_hippo_lmu_gru_key[0],
         many_to_one_deep_hippo_lmu_gru_key[1],
@@ -5576,7 +5579,7 @@ def test_many_to_one_deep_hippo_lagt_gru_shaping(
     random_16_input,
     many_to_one_deep_hippo_lagt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-GRU (lagt)")
     key1, key2, = (
         many_to_one_deep_hippo_lagt_gru_key[0],
         many_to_one_deep_hippo_lagt_gru_key[1],
@@ -5623,7 +5626,7 @@ def test_many_to_one_deep_hippo_fru_gru_shaping(
     random_16_input,
     many_to_one_deep_hippo_fru_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-GRU (fru)")
     key1, key2, = (
         many_to_one_deep_hippo_fru_gru_key[0],
         many_to_one_deep_hippo_fru_gru_key[1],
@@ -5670,7 +5673,7 @@ def test_many_to_one_deep_hippo_fout_gru_shaping(
     random_16_input,
     many_to_one_deep_hippo_fout_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-GRU (fout)")
     key1, key2, = (
         many_to_one_deep_hippo_fout_gru_key[0],
         many_to_one_deep_hippo_fout_gru_key[1],
@@ -5717,7 +5720,7 @@ def test_many_to_one_deep_hippo_foud_gru_shaping(
     random_16_input,
     many_to_one_deep_hippo_foud_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To One Deep HiPPO-GRU (foud)")
     key1, key2, = (
         many_to_one_deep_hippo_foud_gru_key[0],
         many_to_one_deep_hippo_foud_gru_key[1],
@@ -5768,7 +5771,7 @@ def test_many_to_many_deep_hippo_legs_gru_shaping(
     random_16_input,
     many_to_many_deep_hippo_legs_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-GRU (legs)")
     key1, key2, = (
         many_to_many_deep_hippo_legs_gru_key[0],
         many_to_many_deep_hippo_legs_gru_key[1],
@@ -5815,7 +5818,7 @@ def test_many_to_many_deep_hippo_legt_gru_shaping(
     random_16_input,
     many_to_many_deep_hippo_legt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-GRU (legt)")
     key1, key2, = (
         many_to_many_deep_hippo_legt_gru_key[0],
         many_to_many_deep_hippo_legt_gru_key[1],
@@ -5862,7 +5865,7 @@ def test_many_to_many_deep_hippo_lmu_gru_shaping(
     random_16_input,
     many_to_many_deep_hippo_lmu_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-GRU (lmu)")
     key1, key2, = (
         many_to_many_deep_hippo_lmu_gru_key[0],
         many_to_many_deep_hippo_lmu_gru_key[1],
@@ -5909,7 +5912,7 @@ def test_many_to_many_deep_hippo_lagt_gru_shaping(
     random_16_input,
     many_to_many_deep_hippo_lagt_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-GRU (lagt)")
     key1, key2, = (
         many_to_many_deep_hippo_lagt_gru_key[0],
         many_to_many_deep_hippo_lagt_gru_key[1],
@@ -5956,7 +5959,7 @@ def test_many_to_many_deep_hippo_fru_gru_shaping(
     random_16_input,
     many_to_many_deep_hippo_fru_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-GRU (fru)")
     key1, key2, = (
         many_to_many_deep_hippo_fru_gru_key[0],
         many_to_many_deep_hippo_fru_gru_key[1],
@@ -6003,7 +6006,7 @@ def test_many_to_many_deep_hippo_fout_gru_shaping(
     random_16_input,
     many_to_many_deep_hippo_fout_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-GRU (fout)")
     key1, key2, = (
         many_to_many_deep_hippo_fout_gru_key[0],
         many_to_many_deep_hippo_fout_gru_key[1],
@@ -6050,7 +6053,7 @@ def test_many_to_many_deep_hippo_foud_gru_shaping(
     random_16_input,
     many_to_many_deep_hippo_foud_gru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Many To Many Deep HiPPO-GRU (foud)")
     key1, key2, = (
         many_to_many_deep_hippo_foud_gru_key[0],
         many_to_many_deep_hippo_foud_gru_key[1],
@@ -6101,7 +6104,7 @@ def test_deep_hippo_legs_bilstm_shaping(
     random_16_input,
     deep_hippo_legs_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-LSTM (legs)")
     key1, key2, = (
         deep_hippo_legs_bilstm_key[0],
         deep_hippo_legs_bilstm_key[1],
@@ -6148,7 +6151,7 @@ def test_deep_hippo_legt_bilstm_shaping(
     random_16_input,
     deep_hippo_legt_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-LSTM (legt)")
     key1, key2, = (
         deep_hippo_legt_bilstm_key[0],
         deep_hippo_legt_bilstm_key[1],
@@ -6195,7 +6198,7 @@ def test_deep_hippo_lmu_bilstm_shaping(
     random_16_input,
     deep_hippo_lmu_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-LSTM (lmu)")
     key1, key2, = (
         deep_hippo_lmu_bilstm_key[0],
         deep_hippo_lmu_bilstm_key[1],
@@ -6242,7 +6245,7 @@ def test_deep_hippo_lagt_bilstm_shaping(
     random_16_input,
     deep_hippo_lagt_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-LSTM (lagt)")
     key1, key2, = (
         deep_hippo_lagt_bilstm_key[0],
         deep_hippo_lagt_bilstm_key[1],
@@ -6289,7 +6292,7 @@ def test_deep_hippo_fru_bilstm_shaping(
     random_16_input,
     deep_hippo_fru_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-LSTM (fru)")
     key1, key2, = (
         deep_hippo_fru_bilstm_key[0],
         deep_hippo_fru_bilstm_key[1],
@@ -6336,7 +6339,7 @@ def test_deep_hippo_fout_bilstm_shaping(
     random_16_input,
     deep_hippo_fout_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-LSTM (fout)")
     key1, key2, = (
         deep_hippo_fout_bilstm_key[0],
         deep_hippo_fout_bilstm_key[1],
@@ -6383,7 +6386,7 @@ def test_deep_hippo_foud_bilstm_shaping(
     random_16_input,
     deep_hippo_foud_bilstm_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-LSTM (foud)")
     key1, key2, = (
         deep_hippo_foud_bilstm_key[0],
         deep_hippo_foud_bilstm_key[1],
@@ -6434,7 +6437,7 @@ def test_deep_hippo_legs_bigru_shaping(
     random_16_input,
     deep_hippo_legs_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-GRU (legs)")
     key1, key2, = (
         deep_hippo_legs_bigru_key[0],
         deep_hippo_legs_bigru_key[1],
@@ -6481,7 +6484,7 @@ def test_deep_hippo_legt_bigru_shaping(
     random_16_input,
     deep_hippo_legt_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-GRU (legt)")
     key1, key2, = (
         deep_hippo_legt_bigru_key[0],
         deep_hippo_legt_bigru_key[1],
@@ -6528,7 +6531,7 @@ def test_deep_hippo_lmu_bigru_shaping(
     random_16_input,
     deep_hippo_lmu_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-GRU (lmu)")
     key1, key2, = (
         deep_hippo_lmu_bigru_key[0],
         deep_hippo_lmu_bigru_key[1],
@@ -6575,7 +6578,7 @@ def test_deep_hippo_lagt_bigru_shaping(
     random_16_input,
     deep_hippo_lagt_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-GRU (lagt)")
     key1, key2, = (
         deep_hippo_lagt_bigru_key[0],
         deep_hippo_lagt_bigru_key[1],
@@ -6622,7 +6625,7 @@ def test_deep_hippo_fru_bigru_shaping(
     random_16_input,
     deep_hippo_fru_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-GRU (fru)")
     key1, key2, = (
         deep_hippo_fru_bigru_key[0],
         deep_hippo_fru_bigru_key[1],
@@ -6669,7 +6672,7 @@ def test_deep_hippo_fout_bigru_shaping(
     random_16_input,
     deep_hippo_fout_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-GRU (fout)")
     key1, key2, = (
         deep_hippo_fout_bigru_key[0],
         deep_hippo_fout_bigru_key[1],
@@ -6716,7 +6719,7 @@ def test_deep_hippo_foud_bigru_shaping(
     random_16_input,
     deep_hippo_foud_bigru_key,
 ):
-    print("Testing Deep RNN")
+    print("Testing Deep Bidirectional HiPPO-GRU (foud)")
     key1, key2, = (
         deep_hippo_foud_bigru_key[0],
         deep_hippo_foud_bigru_key[1],

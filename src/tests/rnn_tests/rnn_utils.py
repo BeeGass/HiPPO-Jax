@@ -1277,9 +1277,9 @@ def deep_hippo_foud_bigru_key(key_generator):
 
 @pytest.fixture
 def random_16_input(key_generator):
-    batch_size = 32
+    batch_size = 16
     data_size = 28 * 28
-    input_size = 5
+    input_size = 28
     x = jax.random.randint(key_generator[273], (batch_size, data_size), 0, 255)
     return vmap(moving_window, in_axes=(0, None))(x, input_size)
 
@@ -1288,7 +1288,7 @@ def random_16_input(key_generator):
 def random_32_input(key_generator):
     batch_size = 32
     data_size = 28 * 28
-    input_size = 5
+    input_size = 28
     x = jax.random.randint(key_generator[274], (batch_size, data_size), 0, 255)
     return vmap(moving_window, in_axes=(0, None))(x, input_size)
 
@@ -1297,6 +1297,6 @@ def random_32_input(key_generator):
 def random_64_input(key_generator):
     batch_size = 64
     data_size = 28 * 28
-    input_size = 5
+    input_size = 28
     x = jax.random.randint(key_generator[275], (batch_size, data_size), 0, 255)
     return vmap(moving_window, in_axes=(0, None))(x, input_size)
