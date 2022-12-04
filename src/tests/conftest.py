@@ -117,7 +117,6 @@ from src.tests.hippo_tests.hippo_utils import (
 # --------------------------- RNN Imports ---------------------------
 # -------------------------------------------------------------------
 
-
 # Single Cell RNNs
 from src.tests.rnn_tests.architecture_fixtures import (
     one_to_many_single_cell_rnn,
@@ -387,6 +386,24 @@ from src.tests.rnn_tests.rnn_fixtures import (
     hippo_fru_gru_cell_single,
     hippo_fout_gru_cell_single,
     hippo_foud_gru_cell_single,
+)
+
+
+# Psuedo-Random Number Generator Keys for Single Cell RNNs
+from src.tests.rnn_tests.rnn_utils import (
+    one_to_many_single_cell_rnn_key,
+    one_to_many_single_cell_lstm_key,
+    one_to_many_single_cell_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_one_single_cell_rnn_key,
+    many_to_one_single_cell_lstm_key,
+    many_to_one_single_cell_gru_key,
+)
+from src.tests.rnn_tests.rnn_utils import (
+    many_to_many_single_cell_rnn_key,
+    many_to_many_single_cell_lstm_key,
+    many_to_many_single_cell_gru_key,
 )
 
 # Psuedo-Random Number Generator Keys for Single Cell Bidirectional RNNs

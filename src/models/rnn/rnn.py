@@ -16,6 +16,7 @@ class OneToManyRNN(nn.Module):
     output_size: int
     layer: Sequence[Any]
     layer_name: Optional[str] = None
+    skip_connections: bool = False
 
     def setup(self):
         if not isinstance(self.layer[0], nn.Module):
@@ -61,6 +62,7 @@ class ManyToOneRNN(nn.Module):
     output_size: int
     layer: Sequence[Any]
     layer_name: Optional[str] = None
+    skip_connections: bool = False
 
     def setup(self):
         if not isinstance(self.layer[0], nn.Module):
@@ -97,6 +99,7 @@ class ManyToManyRNN(nn.Module):
     output_size: int
     layer: Sequence[Any]
     layer_name: Optional[str] = None
+    skip_connections: bool = False
 
     def setup(self):
         if not isinstance(self.layer[0], nn.Module):
@@ -136,7 +139,7 @@ class ManyToManyRNN(nn.Module):
 class OneToManyDeepRNN(nn.Module):
     output_size: int
     layers: Sequence[Any]
-    skip_connections: bool
+    skip_connections: bool = False
     layer_name: Optional[str] = None
 
     def setup(self):
@@ -197,7 +200,7 @@ class OneToManyDeepRNN(nn.Module):
 class ManyToOneDeepRNN(nn.Module):
     output_size: int
     layers: Sequence[Any]
-    skip_connections: bool
+    skip_connections: bool = False
     layer_name: Optional[str] = None
 
     def setup(self):
@@ -254,7 +257,7 @@ class ManyToOneDeepRNN(nn.Module):
 class ManyToManyDeepRNN(nn.Module):
     output_size: int
     layers: Sequence[Any]
-    skip_connections: bool
+    skip_connections: bool = False
     layer_name: Optional[str] = None
 
     def setup(self):
@@ -312,12 +315,13 @@ class ManyToManyDeepRNN(nn.Module):
 
 class BiRNN(nn.Module):
     output_size: int
-    layer: Sequence[Any]
-    skip_connections: bool
+    forward_layer: Sequence[Any]
+    backward_layer: Sequence[Any]
+    skip_connections: bool = False
     layer_name: Optional[str] = None
 
     def setup(self):
-        if not isinstance(self.layer[0], nn.Module):
+        if not isinstance(self.forward_layer[0], nn.Module):
             raise ValueError(
                 "skip_connections requires for all layers to be "
                 "`nn.Module. Layers is: {}".format(self.layers[0])
@@ -334,12 +338,12 @@ class BiRNN(nn.Module):
         outputs = []
 
         for t in range(input.shape[1]):
-            out_carry, output = self.layer[0](carry, input[:, t, :])
+            out_carry, output = self.forward_layer[0](carry, input[:, t, :])
             forward_outputs.append(output)
             carry = out_carry
 
         for t in range(input.shape[1], 0, -1):
-            out_carry, output = self.layer[0](carry, input[:, t, :])
+            out_carry, output = self.backward_layer[0](carry, input[:, t, :])
             carry = out_carry
             output = jnp.concatenate(forward_outputs[t], output)
             output = nn.relu(output)
@@ -363,9 +367,9 @@ class BiRNN(nn.Module):
 
 class DeepBiRNN(nn.Module):
     output_size: int
-    foward_layers: Sequence[Any]
+    forward_layers: Sequence[Any]
     backward_layers: Sequence[Any]
-    skip_connections: bool
+    skip_connections: bool = False
     layer_name: Optional[str] = None
 
     def setup(self):

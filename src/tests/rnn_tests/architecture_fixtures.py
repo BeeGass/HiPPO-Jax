@@ -186,7 +186,8 @@ def single_cell_birnn(rnn_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=rnn_cell_single,
+        forward_layer=rnn_cell_single,
+        backward_layer=rnn_cell_single,
         skip_connections=False,
     )
 
@@ -196,7 +197,8 @@ def single_cell_bilstm(lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=lstm_cell_single,
+        forward_layer=lstm_cell_single,
+        backward_layer=lstm_cell_single,
         skip_connections=False,
     )
 
@@ -206,7 +208,8 @@ def single_cell_bigru(gru_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=gru_cell_single,
+        forward_layer=gru_cell_single,
+        backward_layer=gru_cell_single,
         skip_connections=False,
     )
 
@@ -331,7 +334,8 @@ def deep_birnn(rnn_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=rnn_cell_list,
+        forward_layers=rnn_cell_list,
+        backward_layers=rnn_cell_list,
         skip_connections=False,
     )
 
@@ -341,7 +345,8 @@ def deep_bilstm(lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=lstm_cell_list,
+        forward_layers=lstm_cell_list,
+        backward_layers=lstm_cell_list,
         skip_connections=False,
     )
 
@@ -351,7 +356,8 @@ def deep_bigru(gru_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=gru_cell_list,
+        forward_layers=gru_cell_list,
+        backward_layers=gru_cell_list,
         skip_connections=False,
     )
 
@@ -374,7 +380,7 @@ def one_to_many_single_hippo_legs_lstm(hippo_legs_lstm_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_legs_lstm_cell_single,
+        layer=hippo_legs_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -387,7 +393,7 @@ def one_to_many_single_hippo_legt_lstm(hippo_legt_lstm_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_legt_lstm_cell_single,
+        layer=hippo_legt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -400,7 +406,7 @@ def one_to_many_single_hippo_lmu_lstm(hippo_lmu_lstm_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_lmu_lstm_cell_single,
+        layer=hippo_lmu_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -413,7 +419,7 @@ def one_to_many_single_hippo_lagt_lstm(hippo_lagt_lstm_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_lagt_lstm_cell_single,
+        layer=hippo_lagt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -426,7 +432,7 @@ def one_to_many_single_hippo_fru_lstm(hippo_fru_lstm_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_fru_lstm_cell_single,
+        layer=hippo_fru_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -439,7 +445,7 @@ def one_to_many_single_hippo_fout_lstm(hippo_fout_lstm_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_fout_lstm_cell_single,
+        layer=hippo_fout_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -452,7 +458,7 @@ def one_to_many_single_hippo_foud_lstm(hippo_foud_lstm_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_foud_lstm_cell_single,
+        layer=hippo_foud_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -469,7 +475,7 @@ def many_to_one_single_hippo_legs_lstm(hippo_legs_lstm_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_legs_lstm_cell_single,
+        layer=hippo_legs_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -482,7 +488,7 @@ def many_to_one_single_hippo_legt_lstm(hippo_legt_lstm_cell_single):
     output_size = 10
     return ManyToOneDeepRNN(
         output_size=output_size,
-        layers=hippo_legt_lstm_cell_single,
+        layer=hippo_legt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -495,7 +501,7 @@ def many_to_one_single_hippo_lmu_lstm(hippo_lmu_lstm_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_lmu_lstm_cell_single,
+        layer=hippo_lmu_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -508,7 +514,7 @@ def many_to_one_single_hippo_lagt_lstm(hippo_lagt_lstm_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_lagt_lstm_cell_single,
+        layer=hippo_lagt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -521,7 +527,7 @@ def many_to_one_single_hippo_fru_lstm(hippo_fru_lstm_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_fru_lstm_cell_single,
+        layer=hippo_fru_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -534,7 +540,7 @@ def many_to_one_single_hippo_fout_lstm(hippo_fout_lstm_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_fout_lstm_cell_single,
+        layer=hippo_fout_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -547,7 +553,7 @@ def many_to_one_single_hippo_foud_lstm(hippo_foud_lstm_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_foud_lstm_cell_single,
+        layer=hippo_foud_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -564,7 +570,7 @@ def many_to_many_single_hippo_legs_lstm(hippo_legs_lstm_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_legs_lstm_cell_single,
+        layer=hippo_legs_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -577,7 +583,7 @@ def many_to_many_single_hippo_legt_lstm(hippo_legt_lstm_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_legt_lstm_cell_single,
+        layer=hippo_legt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -590,7 +596,7 @@ def many_to_many_single_hippo_lmu_lstm(hippo_lmu_lstm_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_lmu_lstm_cell_single,
+        layer=hippo_lmu_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -603,7 +609,7 @@ def many_to_many_single_hippo_lagt_lstm(hippo_lagt_lstm_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_lagt_lstm_cell_single,
+        layer=hippo_lagt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -616,7 +622,7 @@ def many_to_many_single_hippo_fru_lstm(hippo_fru_lstm_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_fru_lstm_cell_single,
+        layer=hippo_fru_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -629,7 +635,7 @@ def many_to_many_single_hippo_fout_lstm(hippo_fout_lstm_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_fout_lstm_cell_single,
+        layer=hippo_fout_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -642,7 +648,7 @@ def many_to_many_single_hippo_foud_lstm(hippo_foud_lstm_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_foud_lstm_cell_single,
+        layer=hippo_foud_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -663,7 +669,7 @@ def one_to_many_single_hippo_legs_gru(hippo_legs_gru_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_legs_gru_cell_single,
+        layer=hippo_legs_gru_cell_single,
         skip_connections=False,
     )
 
@@ -676,7 +682,7 @@ def one_to_many_single_hippo_legt_gru(hippo_legt_gru_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_legt_gru_cell_single,
+        layer=hippo_legt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -689,7 +695,7 @@ def one_to_many_single_hippo_lmu_gru(hippo_lmu_gru_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_lmu_gru_cell_single,
+        layer=hippo_lmu_gru_cell_single,
         skip_connections=False,
     )
 
@@ -702,7 +708,7 @@ def one_to_many_single_hippo_lagt_gru(hippo_lagt_gru_cell_single):
     output_size = 10
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_lagt_gru_cell_single,
+        layer=hippo_lagt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -715,7 +721,7 @@ def one_to_many_single_hippo_fru_gru(hippo_fru_gru_cell_single):
     output_size = 28 * 28
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_fru_gru_cell_single,
+        layer=hippo_fru_gru_cell_single,
         skip_connections=False,
     )
 
@@ -728,7 +734,7 @@ def one_to_many_single_hippo_fout_gru(hippo_fout_gru_cell_single):
     output_size = 28 * 28
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_fout_gru_cell_single,
+        layer=hippo_fout_gru_cell_single,
         skip_connections=False,
     )
 
@@ -741,7 +747,7 @@ def one_to_many_single_hippo_foud_gru(hippo_foud_gru_cell_single):
     output_size = 28 * 28
     return OneToManyRNN(
         output_size=output_size,
-        layers=hippo_foud_gru_cell_single,
+        layer=hippo_foud_gru_cell_single,
         skip_connections=False,
     )
 
@@ -758,7 +764,7 @@ def many_to_one_single_hippo_legs_gru(hippo_legs_gru_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_legs_gru_cell_single,
+        layer=hippo_legs_gru_cell_single,
         skip_connections=False,
     )
 
@@ -771,7 +777,7 @@ def many_to_one_single_hippo_legt_gru(hippo_legt_gru_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_legt_gru_cell_single,
+        layer=hippo_legt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -784,7 +790,7 @@ def many_to_one_single_hippo_lmu_gru(hippo_lmu_gru_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_lmu_gru_cell_single,
+        layer=hippo_lmu_gru_cell_single,
         skip_connections=False,
     )
 
@@ -797,7 +803,7 @@ def many_to_one_single_hippo_lagt_gru(hippo_lagt_gru_cell_single):
     output_size = 10
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_lagt_gru_cell_single,
+        layer=hippo_lagt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -810,7 +816,7 @@ def many_to_one_single_hippo_fru_gru(hippo_fru_gru_cell_single):
     output_size = 28 * 28
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_fru_gru_cell_single,
+        layer=hippo_fru_gru_cell_single,
         skip_connections=False,
     )
 
@@ -823,7 +829,7 @@ def many_to_one_single_hippo_fout_gru(hippo_fout_gru_cell_single):
     output_size = 28 * 28
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_fout_gru_cell_single,
+        layer=hippo_fout_gru_cell_single,
         skip_connections=False,
     )
 
@@ -836,7 +842,7 @@ def many_to_one_single_hippo_foud_gru(hippo_foud_gru_cell_single):
     output_size = 28 * 28
     return ManyToOneRNN(
         output_size=output_size,
-        layers=hippo_foud_gru_cell_single,
+        layer=hippo_foud_gru_cell_single,
         skip_connections=False,
     )
 
@@ -853,7 +859,7 @@ def many_to_many_single_hippo_legs_gru(hippo_legs_gru_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_legs_gru_cell_single,
+        layer=hippo_legs_gru_cell_single,
         skip_connections=False,
     )
 
@@ -866,7 +872,7 @@ def many_to_many_single_hippo_legt_gru(hippo_legt_gru_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_legt_gru_cell_single,
+        layer=hippo_legt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -879,7 +885,7 @@ def many_to_many_single_hippo_lmu_gru(hippo_lmu_gru_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_lmu_gru_cell_single,
+        layer=hippo_lmu_gru_cell_single,
         skip_connections=False,
     )
 
@@ -892,7 +898,7 @@ def many_to_many_single_hippo_lagt_gru(hippo_lagt_gru_cell_single):
     output_size = 10
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_lagt_gru_cell_single,
+        layer=hippo_lagt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -905,7 +911,7 @@ def many_to_many_single_hippo_fru_gru(hippo_fru_gru_cell_single):
     output_size = 28 * 28
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_fru_gru_cell_single,
+        layer=hippo_fru_gru_cell_single,
         skip_connections=False,
     )
 
@@ -918,7 +924,7 @@ def many_to_many_single_hippo_fout_gru(hippo_fout_gru_cell_single):
     output_size = 28 * 28
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_fout_gru_cell_single,
+        layer=hippo_fout_gru_cell_single,
         skip_connections=False,
     )
 
@@ -931,7 +937,7 @@ def many_to_many_single_hippo_foud_gru(hippo_foud_gru_cell_single):
     output_size = 28 * 28
     return ManyToManyRNN(
         output_size=output_size,
-        layers=hippo_foud_gru_cell_single,
+        layer=hippo_foud_gru_cell_single,
         skip_connections=False,
     )
 
@@ -948,7 +954,8 @@ def single_cell_hippo_legs_bilstm(hippo_legs_lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_legs_lstm_cell_single,
+        forward_layer=hippo_legs_lstm_cell_single,
+        backward_layer=hippo_legs_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -961,7 +968,8 @@ def single_cell_hippo_legt_bilstm(hippo_legt_lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_legt_lstm_cell_single,
+        forward_layer=hippo_legt_lstm_cell_single,
+        backward_layer=hippo_legt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -974,7 +982,8 @@ def single_cell_hippo_lmu_bilstm(hippo_lmu_lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_lmu_lstm_cell_single,
+        forward_layer=hippo_lmu_lstm_cell_single,
+        backward_layer=hippo_lmu_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -987,7 +996,8 @@ def single_cell_hippo_lagt_bilstm(hippo_lagt_lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_lagt_lstm_cell_single,
+        forward_layer=hippo_lagt_lstm_cell_single,
+        backward_layer=hippo_lagt_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -1000,7 +1010,8 @@ def single_cell_hippo_fru_bilstm(hippo_fru_lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_fru_lstm_cell_single,
+        forward_layer=hippo_fru_lstm_cell_single,
+        backward_layer=hippo_fru_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -1013,7 +1024,8 @@ def single_cell_hippo_fout_bilstm(hippo_fout_lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_fout_lstm_cell_single,
+        forward_layer=hippo_fout_lstm_cell_single,
+        backward_layer=hippo_fout_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -1026,7 +1038,8 @@ def single_cell_hippo_foud_bilstm(hippo_foud_lstm_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_foud_lstm_cell_single,
+        forward_layer=hippo_foud_lstm_cell_single,
+        backward_layer=hippo_foud_lstm_cell_single,
         skip_connections=False,
     )
 
@@ -1044,7 +1057,8 @@ def single_cell_hippo_legs_bigru(hippo_legs_gru_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_legs_gru_cell_single,
+        forward_layer=hippo_legs_gru_cell_single,
+        backward_layer=hippo_legs_gru_cell_single,
         skip_connections=False,
     )
 
@@ -1057,7 +1071,8 @@ def single_cell_hippo_legt_bigru(hippo_legt_gru_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_legt_gru_cell_single,
+        forward_layer=hippo_legt_gru_cell_single,
+        backward_layer=hippo_legt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -1070,7 +1085,8 @@ def single_cell_hippo_lmu_bigru(hippo_lmu_gru_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_lmu_gru_cell_single,
+        forward_layer=hippo_lmu_gru_cell_single,
+        backward_layer=hippo_lmu_gru_cell_single,
         skip_connections=False,
     )
 
@@ -1083,7 +1099,8 @@ def single_cell_hippo_lagt_bigru(hippo_lagt_gru_cell_single):
     output_size = 10
     return BiRNN(
         output_size=output_size,
-        layer=hippo_lagt_gru_cell_single,
+        forward_layer=hippo_lagt_gru_cell_single,
+        backward_layer=hippo_lagt_gru_cell_single,
         skip_connections=False,
     )
 
@@ -1096,7 +1113,8 @@ def single_cell_hippo_fru_bigru(hippo_fru_gru_cell_single):
     output_size = 28 * 28
     return BiRNN(
         output_size=output_size,
-        layer=hippo_fru_gru_cell_single,
+        forward_layer=hippo_fru_gru_cell_single,
+        backward_layer=hippo_fru_gru_cell_single,
         skip_connections=False,
     )
 
@@ -1109,7 +1127,8 @@ def single_cell_hippo_fout_bigru(hippo_fout_gru_cell_single):
     output_size = 28 * 28
     return BiRNN(
         output_size=output_size,
-        layer=hippo_fout_gru_cell_single,
+        forward_layer=hippo_fout_gru_cell_single,
+        backward_layer=hippo_fout_gru_cell_single,
         skip_connections=False,
     )
 
@@ -1122,7 +1141,8 @@ def single_cell_hippo_foud_bigru(hippo_foud_gru_cell_single):
     output_size = 28 * 28
     return BiRNN(
         output_size=output_size,
-        layer=hippo_foud_gru_cell_single,
+        forward_layer=hippo_foud_gru_cell_single,
+        backward_layer=hippo_foud_gru_cell_single,
         skip_connections=False,
     )
 
@@ -1718,7 +1738,8 @@ def deep_hippo_legs_bilstm(hippo_legs_lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_legs_lstm_cell_list,
+        forward_layers=hippo_legs_lstm_cell_list,
+        backward_layers=hippo_legs_lstm_cell_list,
         skip_connections=False,
     )
 
@@ -1731,7 +1752,8 @@ def deep_hippo_legt_bilstm(hippo_legt_lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_legt_lstm_cell_list,
+        forward_layers=hippo_legt_lstm_cell_list,
+        backward_layers=hippo_legt_lstm_cell_list,
         skip_connections=False,
     )
 
@@ -1744,7 +1766,8 @@ def deep_hippo_lmu_bilstm(hippo_lmu_lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_lmu_lstm_cell_list,
+        forward_layers=hippo_lmu_lstm_cell_list,
+        backward_layers=hippo_lmu_lstm_cell_list,
         skip_connections=False,
     )
 
@@ -1757,7 +1780,8 @@ def deep_hippo_lagt_bilstm(hippo_lagt_lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_lagt_lstm_cell_list,
+        forward_layers=hippo_lagt_lstm_cell_list,
+        backward_layers=hippo_lagt_lstm_cell_list,
         skip_connections=False,
     )
 
@@ -1770,7 +1794,8 @@ def deep_hippo_fru_bilstm(hippo_fru_lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_fru_lstm_cell_list,
+        forward_layers=hippo_fru_lstm_cell_list,
+        backward_layers=hippo_fru_lstm_cell_list,
         skip_connections=False,
     )
 
@@ -1783,7 +1808,8 @@ def deep_hippo_fout_bilstm(hippo_fout_lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_fout_lstm_cell_list,
+        forward_layers=hippo_fout_lstm_cell_list,
+        backward_layers=hippo_fout_lstm_cell_list,
         skip_connections=False,
     )
 
@@ -1796,7 +1822,8 @@ def deep_hippo_foud_bilstm(hippo_foud_lstm_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_foud_lstm_cell_list,
+        forward_layers=hippo_foud_lstm_cell_list,
+        backward_layers=hippo_foud_lstm_cell_list,
         skip_connections=False,
     )
 
@@ -1813,7 +1840,8 @@ def deep_hippo_legs_bigru(hippo_legs_gru_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_legs_gru_cell_list,
+        forward_layers=hippo_legs_gru_cell_list,
+        backward_layers=hippo_legs_gru_cell_list,
         skip_connections=False,
     )
 
@@ -1826,7 +1854,8 @@ def deep_hippo_legt_bigru(hippo_legt_gru_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_legt_gru_cell_list,
+        forward_layers=hippo_legt_gru_cell_list,
+        backward_layers=hippo_legt_gru_cell_list,
         skip_connections=False,
     )
 
@@ -1839,7 +1868,8 @@ def deep_hippo_lmu_bigru(hippo_lmu_gru_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_lmu_gru_cell_list,
+        forward_layers=hippo_lmu_gru_cell_list,
+        backward_layers=hippo_lmu_gru_cell_list,
         skip_connections=False,
     )
 
@@ -1852,7 +1882,8 @@ def deep_hippo_lagt_bigru(hippo_lagt_gru_cell_list):
     output_size = 10
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_lagt_gru_cell_list,
+        forward_layers=hippo_lagt_gru_cell_list,
+        backward_layers=hippo_lagt_gru_cell_list,
         skip_connections=False,
     )
 
@@ -1865,7 +1896,8 @@ def deep_hippo_fru_bigru(hippo_fru_gru_cell_list):
     output_size = 28 * 28
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_fru_gru_cell_list,
+        forward_layers=hippo_fru_gru_cell_list,
+        backward_layers=hippo_fru_gru_cell_list,
         skip_connections=False,
     )
 
@@ -1878,7 +1910,8 @@ def deep_hippo_fout_bigru(hippo_fout_gru_cell_list):
     output_size = 28 * 28
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_fout_gru_cell_list,
+        forward_layers=hippo_fout_gru_cell_list,
+        backward_layers=hippo_fout_gru_cell_list,
         skip_connections=False,
     )
 
@@ -1891,6 +1924,7 @@ def deep_hippo_foud_bigru(hippo_foud_gru_cell_list):
     output_size = 28 * 28
     return DeepBiRNN(
         output_size=output_size,
-        layers=hippo_foud_gru_cell_list,
+        forward_layers=hippo_foud_gru_cell_list,
+        backward_layers=hippo_foud_gru_cell_list,
         skip_connections=False,
     )

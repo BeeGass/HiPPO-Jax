@@ -397,7 +397,7 @@ from src.tests.rnn_tests.rnn_utils import (
 # Inputs for the models
 from src.tests.rnn_tests.rnn_utils import (
     random_16_input,
-    random_16_input,
+    random_32_input,
     random_64_input,
 )
 
@@ -415,7 +415,6 @@ import pytest
 # -------------------------
 
 
-@jax.jit
 def test_one_to_many_single_cell_rnn_shaping(
     one_to_many_single_cell_rnn, random_16_input, one_to_many_single_cell_rnn_key
 ):
@@ -439,23 +438,17 @@ def test_one_to_many_single_cell_rnn_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_one_to_many_single_cell_lstm_shaping(
     one_to_many_single_cell_lstm, random_16_input, one_to_many_single_cell_lstm_key
 ):
@@ -479,23 +472,17 @@ def test_one_to_many_single_cell_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_one_to_many_single_cell_gru_shaping(
     one_to_many_single_cell_gru, random_16_input, one_to_many_single_cell_gru_key
 ):
@@ -519,19 +506,14 @@ def test_one_to_many_single_cell_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -540,7 +522,6 @@ def test_one_to_many_single_cell_gru_shaping(
 # -------------------------
 
 
-@jax.jit
 def test_many_to_one_single_cell_rnn_shaping(
     many_to_one_single_cell_rnn, random_16_input, many_to_one_single_cell_rnn_key
 ):
@@ -564,23 +545,17 @@ def test_many_to_one_single_cell_rnn_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_one_single_cell_lstm_shaping(
     many_to_one_single_cell_lstm, random_16_input, many_to_one_single_cell_lstm_key
 ):
@@ -604,23 +579,17 @@ def test_many_to_one_single_cell_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_one_single_cell_gru_shaping(
     many_to_one_single_cell_gru, random_16_input, many_to_one_single_cell_gru_key
 ):
@@ -644,19 +613,14 @@ def test_many_to_one_single_cell_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -665,7 +629,6 @@ def test_many_to_one_single_cell_gru_shaping(
 # -------------------------
 
 
-@jax.jit
 def test_many_to_many_single_cell_rnn_shaping(
     many_to_many_single_cell_rnn, random_16_input, many_to_many_single_cell_rnn_key
 ):
@@ -689,23 +652,17 @@ def test_many_to_many_single_cell_rnn_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_many_single_cell_lstm_shaping(
     many_to_many_single_cell_lstm, random_16_input, many_to_many_single_cell_lstm_key
 ):
@@ -729,23 +686,17 @@ def test_many_to_many_single_cell_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_many_single_cell_gru_shaping(
     many_to_many_single_cell_gru, random_16_input, many_to_many_single_cell_gru_key
 ):
@@ -769,19 +720,14 @@ def test_many_to_many_single_cell_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -790,7 +736,6 @@ def test_many_to_many_single_cell_gru_shaping(
 # ----------------------------------------------------------------
 
 
-@jax.jit
 def test_single_cell_birnn_shaping(
     single_cell_birnn, random_16_input, single_cell_birnn_key
 ):
@@ -814,23 +759,17 @@ def test_single_cell_birnn_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_single_cell_bilstm_shaping(
     single_cell_bilstm, random_16_input, single_cell_bilstm_key
 ):
@@ -854,23 +793,17 @@ def test_single_cell_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_single_cell_bigru_shaping(
     single_cell_bigru, random_16_input, single_cell_bigru_key
 ):
@@ -894,19 +827,14 @@ def test_single_cell_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -919,7 +847,6 @@ def test_single_cell_bigru_shaping(
 # -------------------------
 
 
-@jax.jit
 def test_one_to_many_deep_rnn_shaping(
     one_to_many_deep_rnn, random_16_input, one_to_many_deep_rnn_key
 ):
@@ -943,23 +870,17 @@ def test_one_to_many_deep_rnn_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_one_to_many_deep_lstm_shaping(
     one_to_many_deep_lstm, random_16_input, one_to_many_deep_lstm_key
 ):
@@ -983,23 +904,17 @@ def test_one_to_many_deep_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_one_to_many_deep_gru_shaping(
     one_to_many_deep_gru, random_16_input, one_to_many_deep_gru_key
 ):
@@ -1023,19 +938,14 @@ def test_one_to_many_deep_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1044,7 +954,6 @@ def test_one_to_many_deep_gru_shaping(
 # -------------------------
 
 
-@jax.jit
 def test_many_to_one_deep_rnn_shaping(
     many_to_one_deep_rnn, random_16_input, many_to_one_deep_rnn_key
 ):
@@ -1068,23 +977,17 @@ def test_many_to_one_deep_rnn_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_one_deep_lstm_shaping(
     many_to_one_deep_lstm, random_16_input, many_to_one_deep_lstm_key
 ):
@@ -1108,23 +1011,17 @@ def test_many_to_one_deep_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_one_deep_gru_shaping(
     many_to_one_deep_gru, random_16_input, many_to_one_deep_gru_key
 ):
@@ -1148,19 +1045,14 @@ def test_many_to_one_deep_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1169,7 +1061,6 @@ def test_many_to_one_deep_gru_shaping(
 # -------------------------
 
 
-@jax.jit
 def test_many_to_many_deep_rnn_shaping(
     many_to_many_deep_rnn, random_16_input, many_to_many_deep_rnn_key
 ):
@@ -1193,23 +1084,17 @@ def test_many_to_many_deep_rnn_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_many_deep_lstm_shaping(
     many_to_many_deep_lstm, random_16_input, many_to_many_deep_lstm_key
 ):
@@ -1233,23 +1118,17 @@ def test_many_to_many_deep_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_many_to_many_deep_gru_shaping(
     many_to_many_deep_gru, random_16_input, many_to_many_deep_gru_key
 ):
@@ -1273,19 +1152,14 @@ def test_many_to_many_deep_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1294,7 +1168,6 @@ def test_many_to_many_deep_gru_shaping(
 # ----------------------------------------------------------------
 
 
-@jax.jit
 def test_deep_birnn_shaping(deep_birnn, random_16_input, deep_birnn_key):
 
     print("Testing Deep Bidirectional RNN")
@@ -1317,23 +1190,17 @@ def test_deep_birnn_shaping(deep_birnn, random_16_input, deep_birnn_key):
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
 
     print("Testing Deep Bidirectional LSTM")
@@ -1356,23 +1223,17 @@ def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
-@jax.jit
 def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
 
     print("Testing Deep Bidirectional GRU")
@@ -1395,19 +1256,14 @@ def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1424,7 +1280,6 @@ def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_legs_lstm_shaping(
     one_to_many_single_hippo_legs_lstm,
     random_16_input,
@@ -1450,19 +1305,14 @@ def test_one_to_many_single_hippo_legs_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1471,7 +1321,6 @@ def test_one_to_many_single_hippo_legs_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_legt_lstm_shaping(
     one_to_many_single_hippo_legt_lstm,
     random_16_input,
@@ -1497,19 +1346,14 @@ def test_one_to_many_single_hippo_legt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1518,7 +1362,6 @@ def test_one_to_many_single_hippo_legt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_lmu_lstm_shaping(
     one_to_many_single_hippo_lmu_lstm,
     random_16_input,
@@ -1544,19 +1387,14 @@ def test_one_to_many_single_hippo_lmu_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1565,7 +1403,6 @@ def test_one_to_many_single_hippo_lmu_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_lagt_lstm_shaping(
     one_to_many_single_hippo_lagt_lstm,
     random_16_input,
@@ -1591,19 +1428,14 @@ def test_one_to_many_single_hippo_lagt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1612,7 +1444,6 @@ def test_one_to_many_single_hippo_lagt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_fru_lstm_shaping(
     one_to_many_single_hippo_fru_lstm,
     random_16_input,
@@ -1638,19 +1469,14 @@ def test_one_to_many_single_hippo_fru_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1659,7 +1485,6 @@ def test_one_to_many_single_hippo_fru_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_fout_lstm_shaping(
     one_to_many_single_hippo_fout_lstm,
     random_16_input,
@@ -1685,19 +1510,14 @@ def test_one_to_many_single_hippo_fout_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1706,7 +1526,6 @@ def test_one_to_many_single_hippo_fout_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_foud_lstm_shaping(
     one_to_many_single_hippo_foud_lstm,
     random_16_input,
@@ -1732,19 +1551,14 @@ def test_one_to_many_single_hippo_foud_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1757,7 +1571,6 @@ def test_one_to_many_single_hippo_foud_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_legs_lstm_shaping(
     many_to_one_single_hippo_legs_lstm,
     random_16_input,
@@ -1783,19 +1596,14 @@ def test_many_to_one_single_hippo_legs_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1804,7 +1612,6 @@ def test_many_to_one_single_hippo_legs_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_legt_lstm_shaping(
     many_to_one_single_hippo_legt_lstm,
     random_16_input,
@@ -1830,19 +1637,14 @@ def test_many_to_one_single_hippo_legt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1851,7 +1653,6 @@ def test_many_to_one_single_hippo_legt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_lmu_lstm_shaping(
     many_to_one_single_hippo_lmu_lstm,
     random_16_input,
@@ -1877,19 +1678,14 @@ def test_many_to_one_single_hippo_lmu_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1898,7 +1694,6 @@ def test_many_to_one_single_hippo_lmu_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_lagt_lstm_shaping(
     many_to_one_single_hippo_lagt_lstm,
     random_16_input,
@@ -1924,19 +1719,14 @@ def test_many_to_one_single_hippo_lagt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1945,7 +1735,6 @@ def test_many_to_one_single_hippo_lagt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_fru_lstm_shaping(
     many_to_one_single_hippo_fru_lstm,
     random_16_input,
@@ -1971,19 +1760,14 @@ def test_many_to_one_single_hippo_fru_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -1992,7 +1776,6 @@ def test_many_to_one_single_hippo_fru_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_fout_lstm_shaping(
     many_to_one_single_hippo_fout_lstm,
     random_16_input,
@@ -2018,19 +1801,14 @@ def test_many_to_one_single_hippo_fout_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2039,7 +1817,6 @@ def test_many_to_one_single_hippo_fout_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_foud_lstm_shaping(
     many_to_one_single_hippo_foud_lstm,
     random_16_input,
@@ -2065,19 +1842,14 @@ def test_many_to_one_single_hippo_foud_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape
 
 
@@ -2090,7 +1862,6 @@ def test_many_to_one_single_hippo_foud_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_legs_lstm_shaping(
     many_to_many_single_hippo_legs_lstm,
     random_16_input,
@@ -2116,19 +1887,14 @@ def test_many_to_many_single_hippo_legs_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2137,7 +1903,6 @@ def test_many_to_many_single_hippo_legs_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_legt_lstm_shaping(
     many_to_many_single_hippo_legt_lstm,
     random_16_input,
@@ -2163,19 +1928,14 @@ def test_many_to_many_single_hippo_legt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2184,7 +1944,6 @@ def test_many_to_many_single_hippo_legt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_lmu_lstm_shaping(
     many_to_many_single_hippo_lmu_lstm,
     random_16_input,
@@ -2210,19 +1969,14 @@ def test_many_to_many_single_hippo_lmu_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2231,7 +1985,6 @@ def test_many_to_many_single_hippo_lmu_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_lagt_lstm_shaping(
     many_to_many_single_hippo_lagt_lstm,
     random_16_input,
@@ -2257,19 +2010,14 @@ def test_many_to_many_single_hippo_lagt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2278,7 +2026,6 @@ def test_many_to_many_single_hippo_lagt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_fru_lstm_shaping(
     many_to_many_single_hippo_fru_lstm,
     random_16_input,
@@ -2304,19 +2051,14 @@ def test_many_to_many_single_hippo_fru_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2325,7 +2067,6 @@ def test_many_to_many_single_hippo_fru_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_fout_lstm_shaping(
     many_to_many_single_hippo_fout_lstm,
     random_16_input,
@@ -2351,19 +2092,14 @@ def test_many_to_many_single_hippo_fout_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2372,7 +2108,6 @@ def test_many_to_many_single_hippo_fout_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_foud_lstm_shaping(
     many_to_many_single_hippo_foud_lstm,
     random_16_input,
@@ -2398,19 +2133,14 @@ def test_many_to_many_single_hippo_foud_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
 
 
@@ -2427,7 +2157,6 @@ def test_many_to_many_single_hippo_foud_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_legs_gru_shaping(
     one_to_many_single_hippo_legs_gru,
     random_16_input,
@@ -2453,19 +2182,14 @@ def test_one_to_many_single_hippo_legs_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2474,7 +2198,6 @@ def test_one_to_many_single_hippo_legs_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_legt_gru_shaping(
     one_to_many_single_hippo_legt_gru,
     random_16_input,
@@ -2500,19 +2223,14 @@ def test_one_to_many_single_hippo_legt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2521,7 +2239,6 @@ def test_one_to_many_single_hippo_legt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_lmu_gru_shaping(
     one_to_many_single_hippo_lmu_gru,
     random_16_input,
@@ -2547,19 +2264,14 @@ def test_one_to_many_single_hippo_lmu_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2568,7 +2280,6 @@ def test_one_to_many_single_hippo_lmu_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_lagt_gru_shaping(
     one_to_many_single_hippo_lagt_gru,
     random_16_input,
@@ -2594,19 +2305,14 @@ def test_one_to_many_single_hippo_lagt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2615,7 +2321,6 @@ def test_one_to_many_single_hippo_lagt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_fru_gru_shaping(
     one_to_many_single_hippo_fru_gru,
     random_16_input,
@@ -2641,19 +2346,14 @@ def test_one_to_many_single_hippo_fru_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2662,7 +2362,6 @@ def test_one_to_many_single_hippo_fru_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_fout_gru_shaping(
     one_to_many_single_hippo_fout_gru,
     random_16_input,
@@ -2688,19 +2387,14 @@ def test_one_to_many_single_hippo_fout_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2709,7 +2403,6 @@ def test_one_to_many_single_hippo_fout_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_single_hippo_foud_gru_shaping(
     one_to_many_single_hippo_foud_gru,
     random_16_input,
@@ -2735,19 +2428,14 @@ def test_one_to_many_single_hippo_foud_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2760,7 +2448,6 @@ def test_one_to_many_single_hippo_foud_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_legs_gru_shaping(
     many_to_one_single_hippo_legs_gru,
     random_16_input,
@@ -2786,19 +2473,14 @@ def test_many_to_one_single_hippo_legs_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2807,7 +2489,6 @@ def test_many_to_one_single_hippo_legs_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_legt_gru_shaping(
     many_to_one_single_hippo_legt_gru,
     random_16_input,
@@ -2833,19 +2514,14 @@ def test_many_to_one_single_hippo_legt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2854,7 +2530,6 @@ def test_many_to_one_single_hippo_legt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_lmu_gru_shaping(
     many_to_one_single_hippo_lmu_gru,
     random_16_input,
@@ -2880,19 +2555,14 @@ def test_many_to_one_single_hippo_lmu_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2901,7 +2571,6 @@ def test_many_to_one_single_hippo_lmu_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_lagt_gru_shaping(
     many_to_one_single_hippo_lagt_gru,
     random_16_input,
@@ -2927,19 +2596,14 @@ def test_many_to_one_single_hippo_lagt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2948,7 +2612,6 @@ def test_many_to_one_single_hippo_lagt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_fru_gru_shaping(
     many_to_one_single_hippo_fru_gru,
     random_16_input,
@@ -2974,19 +2637,14 @@ def test_many_to_one_single_hippo_fru_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -2995,7 +2653,6 @@ def test_many_to_one_single_hippo_fru_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_fout_gru_shaping(
     many_to_one_single_hippo_fout_gru,
     random_16_input,
@@ -3021,19 +2678,14 @@ def test_many_to_one_single_hippo_fout_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3042,7 +2694,6 @@ def test_many_to_one_single_hippo_fout_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_single_hippo_foud_gru_shaping(
     many_to_one_single_hippo_foud_gru,
     random_16_input,
@@ -3068,19 +2719,14 @@ def test_many_to_one_single_hippo_foud_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape
 
 
@@ -3093,7 +2739,6 @@ def test_many_to_one_single_hippo_foud_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_legs_gru_shaping(
     many_to_many_single_hippo_legs_gru,
     random_16_input,
@@ -3119,19 +2764,14 @@ def test_many_to_many_single_hippo_legs_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3140,7 +2780,6 @@ def test_many_to_many_single_hippo_legs_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_legt_gru_shaping(
     many_to_many_single_hippo_legt_gru,
     random_16_input,
@@ -3166,19 +2805,14 @@ def test_many_to_many_single_hippo_legt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3187,7 +2821,6 @@ def test_many_to_many_single_hippo_legt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_lmu_gru_shaping(
     many_to_many_single_hippo_lmu_gru,
     random_16_input,
@@ -3213,19 +2846,14 @@ def test_many_to_many_single_hippo_lmu_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3234,7 +2862,6 @@ def test_many_to_many_single_hippo_lmu_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_lagt_gru_shaping(
     many_to_many_single_hippo_lagt_gru,
     random_16_input,
@@ -3260,19 +2887,14 @@ def test_many_to_many_single_hippo_lagt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3281,7 +2903,6 @@ def test_many_to_many_single_hippo_lagt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_fru_gru_shaping(
     many_to_many_single_hippo_fru_gru,
     random_16_input,
@@ -3307,19 +2928,14 @@ def test_many_to_many_single_hippo_fru_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3328,7 +2944,6 @@ def test_many_to_many_single_hippo_fru_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_fout_gru_shaping(
     many_to_many_single_hippo_fout_gru,
     random_16_input,
@@ -3354,19 +2969,14 @@ def test_many_to_many_single_hippo_fout_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3375,7 +2985,6 @@ def test_many_to_many_single_hippo_fout_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_single_hippo_foud_gru_shaping(
     many_to_many_single_hippo_foud_gru,
     random_16_input,
@@ -3401,19 +3010,14 @@ def test_many_to_many_single_hippo_foud_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
 
 
@@ -3426,7 +3030,6 @@ def test_many_to_many_single_hippo_foud_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_legs_bilstm_shaping(
     single_cell_hippo_legs_bilstm,
     random_16_input,
@@ -3452,19 +3055,14 @@ def test_single_cell_hippo_legs_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3473,7 +3071,6 @@ def test_single_cell_hippo_legs_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_legt_bilstm_shaping(
     single_cell_hippo_legt_bilstm,
     random_16_input,
@@ -3499,19 +3096,14 @@ def test_single_cell_hippo_legt_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3520,7 +3112,6 @@ def test_single_cell_hippo_legt_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_lmu_bilstm_shaping(
     single_cell_hippo_lmu_bilstm,
     random_16_input,
@@ -3546,19 +3137,14 @@ def test_single_cell_hippo_lmu_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3567,7 +3153,6 @@ def test_single_cell_hippo_lmu_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_lagt_bilstm_shaping(
     single_cell_hippo_lagt_bilstm,
     random_16_input,
@@ -3593,19 +3178,14 @@ def test_single_cell_hippo_lagt_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3614,7 +3194,6 @@ def test_single_cell_hippo_lagt_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_fru_bilstm_shaping(
     single_cell_hippo_fru_bilstm,
     random_16_input,
@@ -3640,19 +3219,14 @@ def test_single_cell_hippo_fru_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3661,7 +3235,6 @@ def test_single_cell_hippo_fru_bilstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_single_cell_hippo_fout_bilstm_shaping(
     single_cell_hippo_fout_bilstm,
     random_16_input,
@@ -3687,19 +3260,14 @@ def test_single_cell_hippo_fout_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3708,7 +3276,6 @@ def test_single_cell_hippo_fout_bilstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_single_cell_hippo_foud_bilstm_shaping(
     single_cell_hippo_foud_bilstm,
     random_16_input,
@@ -3734,19 +3301,14 @@ def test_single_cell_hippo_foud_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
 
 
@@ -3759,7 +3321,6 @@ def test_single_cell_hippo_foud_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_legs_bigru_shaping(
     single_cell_hippo_legs_bigru,
     random_16_input,
@@ -3785,19 +3346,14 @@ def test_single_cell_hippo_legs_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3806,7 +3362,6 @@ def test_single_cell_hippo_legs_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_legt_bigru_shaping(
     single_cell_hippo_legt_bigru,
     random_16_input,
@@ -3832,19 +3387,14 @@ def test_single_cell_hippo_legt_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3853,7 +3403,6 @@ def test_single_cell_hippo_legt_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_lmu_bigru_shaping(
     single_cell_hippo_lmu_bigru,
     random_16_input,
@@ -3879,19 +3428,14 @@ def test_single_cell_hippo_lmu_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3900,7 +3444,6 @@ def test_single_cell_hippo_lmu_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_lagt_bigru_key_shaping(
     single_cell_hippo_lagt_bigru,
     random_16_input,
@@ -3926,19 +3469,14 @@ def test_single_cell_hippo_lagt_bigru_key_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3947,7 +3485,6 @@ def test_single_cell_hippo_lagt_bigru_key_shaping(
 # ----------
 
 
-@jax.jit
 def test_single_cell_hippo_fru_bigru_shaping(
     single_cell_hippo_fru_bigru,
     random_16_input,
@@ -3973,19 +3510,14 @@ def test_single_cell_hippo_fru_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -3994,7 +3526,6 @@ def test_single_cell_hippo_fru_bigru_shaping(
 # ------------
 
 
-@jax.jit
 def test_single_cell_hippo_fout_bigru_shaping(
     single_cell_hippo_fout_bigru,
     random_16_input,
@@ -4020,19 +3551,14 @@ def test_single_cell_hippo_fout_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4041,7 +3567,6 @@ def test_single_cell_hippo_fout_bigru_shaping(
 # ------------
 
 
-@jax.jit
 def test_single_cell_hippo_foud_bigru_shaping(
     single_cell_hippo_foud_bigru,
     random_16_input,
@@ -4067,19 +3592,14 @@ def test_single_cell_hippo_foud_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
 
 
@@ -4096,7 +3616,6 @@ def test_single_cell_hippo_foud_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_legs_lstm_shaping(
     one_to_many_deep_hippo_legs_lstm,
     random_16_input,
@@ -4122,19 +3641,14 @@ def test_one_to_many_deep_hippo_legs_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4143,7 +3657,6 @@ def test_one_to_many_deep_hippo_legs_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_legt_lstm_shaping(
     one_to_many_deep_hippo_legt_lstm,
     random_16_input,
@@ -4169,19 +3682,14 @@ def test_one_to_many_deep_hippo_legt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4190,7 +3698,6 @@ def test_one_to_many_deep_hippo_legt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_lmu_lstm_shaping(
     one_to_many_deep_hippo_lmu_lstm,
     random_16_input,
@@ -4216,19 +3723,14 @@ def test_one_to_many_deep_hippo_lmu_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4237,7 +3739,6 @@ def test_one_to_many_deep_hippo_lmu_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_lagt_lstm_shaping(
     one_to_many_deep_hippo_lagt_lstm,
     random_16_input,
@@ -4263,19 +3764,14 @@ def test_one_to_many_deep_hippo_lagt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4284,7 +3780,6 @@ def test_one_to_many_deep_hippo_lagt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_fru_lstm_shaping(
     one_to_many_deep_hippo_fru_lstm,
     random_16_input,
@@ -4310,19 +3805,14 @@ def test_one_to_many_deep_hippo_fru_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4331,7 +3821,6 @@ def test_one_to_many_deep_hippo_fru_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_fout_lstm_shaping(
     one_to_many_deep_hippo_fout_lstm,
     random_16_input,
@@ -4357,19 +3846,14 @@ def test_one_to_many_deep_hippo_fout_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4378,7 +3862,6 @@ def test_one_to_many_deep_hippo_fout_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_foud_lstm_shaping(
     one_to_many_deep_hippo_foud_lstm,
     random_16_input,
@@ -4404,19 +3887,14 @@ def test_one_to_many_deep_hippo_foud_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4429,7 +3907,6 @@ def test_one_to_many_deep_hippo_foud_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_legs_lstm_shaping(
     many_to_one_deep_hippo_legs_lstm,
     random_16_input,
@@ -4455,19 +3932,14 @@ def test_many_to_one_deep_hippo_legs_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4476,7 +3948,6 @@ def test_many_to_one_deep_hippo_legs_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_legt_lstm_shaping(
     many_to_one_deep_hippo_legt_lstm,
     random_16_input,
@@ -4502,19 +3973,14 @@ def test_many_to_one_deep_hippo_legt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4523,7 +3989,6 @@ def test_many_to_one_deep_hippo_legt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_lmu_lstm_shaping(
     many_to_one_deep_hippo_lmu_lstm,
     random_16_input,
@@ -4549,19 +4014,14 @@ def test_many_to_one_deep_hippo_lmu_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4570,7 +4030,6 @@ def test_many_to_one_deep_hippo_lmu_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_lagt_lstm_shaping(
     many_to_one_deep_hippo_lagt_lstm,
     random_16_input,
@@ -4596,19 +4055,14 @@ def test_many_to_one_deep_hippo_lagt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4617,7 +4071,6 @@ def test_many_to_one_deep_hippo_lagt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_fru_lstm_shaping(
     many_to_one_deep_hippo_fru_lstm,
     random_16_input,
@@ -4643,19 +4096,14 @@ def test_many_to_one_deep_hippo_fru_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4664,7 +4112,6 @@ def test_many_to_one_deep_hippo_fru_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_fout_lstm_shaping(
     many_to_one_deep_hippo_fout_lstm,
     random_16_input,
@@ -4690,19 +4137,14 @@ def test_many_to_one_deep_hippo_fout_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4711,7 +4153,6 @@ def test_many_to_one_deep_hippo_fout_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_foud_lstm_shaping(
     many_to_one_deep_hippo_foud_lstm,
     random_16_input,
@@ -4737,19 +4178,14 @@ def test_many_to_one_deep_hippo_foud_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape
 
 
@@ -4762,7 +4198,6 @@ def test_many_to_one_deep_hippo_foud_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_legs_lstm_shaping(
     many_to_many_deep_hippo_legs_lstm,
     random_16_input,
@@ -4788,19 +4223,14 @@ def test_many_to_many_deep_hippo_legs_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4809,7 +4239,6 @@ def test_many_to_many_deep_hippo_legs_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_legt_lstm_shaping(
     many_to_many_deep_hippo_legt_lstm,
     random_16_input,
@@ -4835,19 +4264,14 @@ def test_many_to_many_deep_hippo_legt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4856,7 +4280,6 @@ def test_many_to_many_deep_hippo_legt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_lmu_lstm_shaping(
     many_to_many_deep_hippo_lmu_lstm,
     random_16_input,
@@ -4882,19 +4305,14 @@ def test_many_to_many_deep_hippo_lmu_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4903,7 +4321,6 @@ def test_many_to_many_deep_hippo_lmu_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_lagt_lstm_shaping(
     many_to_many_deep_hippo_lagt_lstm,
     random_16_input,
@@ -4929,19 +4346,14 @@ def test_many_to_many_deep_hippo_lagt_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4950,7 +4362,6 @@ def test_many_to_many_deep_hippo_lagt_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_fru_lstm_shaping(
     many_to_many_deep_hippo_fru_lstm,
     random_16_input,
@@ -4976,19 +4387,14 @@ def test_many_to_many_deep_hippo_fru_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -4997,7 +4403,6 @@ def test_many_to_many_deep_hippo_fru_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_fout_lstm_shaping(
     many_to_many_deep_hippo_fout_lstm,
     random_16_input,
@@ -5023,19 +4428,14 @@ def test_many_to_many_deep_hippo_fout_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5044,7 +4444,6 @@ def test_many_to_many_deep_hippo_fout_lstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_foud_lstm_shaping(
     many_to_many_deep_hippo_foud_lstm,
     random_16_input,
@@ -5070,19 +4469,14 @@ def test_many_to_many_deep_hippo_foud_lstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
 
 
@@ -5099,7 +4493,6 @@ def test_many_to_many_deep_hippo_foud_lstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_legs_gru_shaping(
     one_to_many_deep_hippo_legs_gru,
     random_16_input,
@@ -5125,19 +4518,14 @@ def test_one_to_many_deep_hippo_legs_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5146,7 +4534,6 @@ def test_one_to_many_deep_hippo_legs_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_legt_gru_shaping(
     one_to_many_deep_hippo_legt_gru,
     random_16_input,
@@ -5172,19 +4559,14 @@ def test_one_to_many_deep_hippo_legt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5193,7 +4575,6 @@ def test_one_to_many_deep_hippo_legt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_lmu_gru_shaping(
     one_to_many_deep_hippo_lmu_gru,
     random_16_input,
@@ -5219,19 +4600,14 @@ def test_one_to_many_deep_hippo_lmu_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5240,7 +4616,6 @@ def test_one_to_many_deep_hippo_lmu_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_lagt_gru_shaping(
     one_to_many_deep_hippo_lagt_gru,
     random_16_input,
@@ -5266,19 +4641,14 @@ def test_one_to_many_deep_hippo_lagt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5287,7 +4657,6 @@ def test_one_to_many_deep_hippo_lagt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_fru_gru_shaping(
     one_to_many_deep_hippo_fru_gru,
     random_16_input,
@@ -5313,19 +4682,14 @@ def test_one_to_many_deep_hippo_fru_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5334,7 +4698,6 @@ def test_one_to_many_deep_hippo_fru_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_fout_gru_shaping(
     one_to_many_deep_hippo_fout_gru,
     random_16_input,
@@ -5360,19 +4723,14 @@ def test_one_to_many_deep_hippo_fout_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5381,7 +4739,6 @@ def test_one_to_many_deep_hippo_fout_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_one_to_many_deep_hippo_foud_gru_shaping(
     one_to_many_deep_hippo_foud_gru,
     random_16_input,
@@ -5407,19 +4764,14 @@ def test_one_to_many_deep_hippo_foud_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5432,7 +4784,6 @@ def test_one_to_many_deep_hippo_foud_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_legs_gru_shaping(
     many_to_one_deep_hippo_legs_gru,
     random_16_input,
@@ -5458,19 +4809,14 @@ def test_many_to_one_deep_hippo_legs_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5479,7 +4825,6 @@ def test_many_to_one_deep_hippo_legs_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_legt_gru_shaping(
     many_to_one_deep_hippo_legt_gru,
     random_16_input,
@@ -5505,19 +4850,14 @@ def test_many_to_one_deep_hippo_legt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5526,7 +4866,6 @@ def test_many_to_one_deep_hippo_legt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_lmu_gru_shaping(
     many_to_one_deep_hippo_lmu_gru,
     random_16_input,
@@ -5552,19 +4891,14 @@ def test_many_to_one_deep_hippo_lmu_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5573,7 +4907,6 @@ def test_many_to_one_deep_hippo_lmu_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_lagt_gru_shaping(
     many_to_one_deep_hippo_lagt_gru,
     random_16_input,
@@ -5599,19 +4932,14 @@ def test_many_to_one_deep_hippo_lagt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5620,7 +4948,6 @@ def test_many_to_one_deep_hippo_lagt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_fru_gru_shaping(
     many_to_one_deep_hippo_fru_gru,
     random_16_input,
@@ -5646,19 +4973,14 @@ def test_many_to_one_deep_hippo_fru_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5667,7 +4989,6 @@ def test_many_to_one_deep_hippo_fru_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_fout_gru_shaping(
     many_to_one_deep_hippo_fout_gru,
     random_16_input,
@@ -5693,19 +5014,14 @@ def test_many_to_one_deep_hippo_fout_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5714,7 +5030,6 @@ def test_many_to_one_deep_hippo_fout_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_one_deep_hippo_foud_gru_shaping(
     many_to_one_deep_hippo_foud_gru,
     random_16_input,
@@ -5740,19 +5055,14 @@ def test_many_to_one_deep_hippo_foud_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape
 
 
@@ -5765,7 +5075,6 @@ def test_many_to_one_deep_hippo_foud_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_legs_gru_shaping(
     many_to_many_deep_hippo_legs_gru,
     random_16_input,
@@ -5791,19 +5100,14 @@ def test_many_to_many_deep_hippo_legs_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5812,7 +5116,6 @@ def test_many_to_many_deep_hippo_legs_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_legt_gru_shaping(
     many_to_many_deep_hippo_legt_gru,
     random_16_input,
@@ -5838,19 +5141,14 @@ def test_many_to_many_deep_hippo_legt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5859,7 +5157,6 @@ def test_many_to_many_deep_hippo_legt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_lmu_gru_shaping(
     many_to_many_deep_hippo_lmu_gru,
     random_16_input,
@@ -5885,19 +5182,14 @@ def test_many_to_many_deep_hippo_lmu_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5906,7 +5198,6 @@ def test_many_to_many_deep_hippo_lmu_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_lagt_gru_shaping(
     many_to_many_deep_hippo_lagt_gru,
     random_16_input,
@@ -5932,19 +5223,14 @@ def test_many_to_many_deep_hippo_lagt_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -5953,7 +5239,6 @@ def test_many_to_many_deep_hippo_lagt_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_fru_gru_shaping(
     many_to_many_deep_hippo_fru_gru,
     random_16_input,
@@ -5979,19 +5264,14 @@ def test_many_to_many_deep_hippo_fru_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6000,7 +5280,6 @@ def test_many_to_many_deep_hippo_fru_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_fout_gru_shaping(
     many_to_many_deep_hippo_fout_gru,
     random_16_input,
@@ -6026,19 +5305,14 @@ def test_many_to_many_deep_hippo_fout_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6047,7 +5321,6 @@ def test_many_to_many_deep_hippo_fout_gru_shaping(
 # ------------
 
 
-@jax.jit
 def test_many_to_many_deep_hippo_foud_gru_shaping(
     many_to_many_deep_hippo_foud_gru,
     random_16_input,
@@ -6073,19 +5346,14 @@ def test_many_to_many_deep_hippo_foud_gru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
 
 
@@ -6098,7 +5366,6 @@ def test_many_to_many_deep_hippo_foud_gru_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_legs_bilstm_shaping(
     deep_hippo_legs_bilstm,
     random_16_input,
@@ -6124,19 +5391,14 @@ def test_deep_hippo_legs_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6145,7 +5407,6 @@ def test_deep_hippo_legs_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_legt_bilstm_shaping(
     deep_hippo_legt_bilstm,
     random_16_input,
@@ -6171,19 +5432,14 @@ def test_deep_hippo_legt_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6192,7 +5448,6 @@ def test_deep_hippo_legt_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_lmu_bilstm_shaping(
     deep_hippo_lmu_bilstm,
     random_16_input,
@@ -6218,19 +5473,14 @@ def test_deep_hippo_lmu_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6239,7 +5489,6 @@ def test_deep_hippo_lmu_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_lagt_bilstm_shaping(
     deep_hippo_lagt_bilstm,
     random_16_input,
@@ -6265,19 +5514,14 @@ def test_deep_hippo_lagt_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6286,7 +5530,6 @@ def test_deep_hippo_lagt_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_fru_bilstm_shaping(
     deep_hippo_fru_bilstm,
     random_16_input,
@@ -6312,19 +5555,14 @@ def test_deep_hippo_fru_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6333,7 +5571,6 @@ def test_deep_hippo_fru_bilstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_deep_hippo_fout_bilstm_shaping(
     deep_hippo_fout_bilstm,
     random_16_input,
@@ -6359,19 +5596,14 @@ def test_deep_hippo_fout_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6380,7 +5612,6 @@ def test_deep_hippo_fout_bilstm_shaping(
 # ------------
 
 
-@jax.jit
 def test_deep_hippo_foud_bilstm_shaping(
     deep_hippo_foud_bilstm,
     random_16_input,
@@ -6406,19 +5637,14 @@ def test_deep_hippo_foud_bilstm_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
 
 
@@ -6431,7 +5657,6 @@ def test_deep_hippo_foud_bilstm_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_legs_bigru_shaping(
     deep_hippo_legs_bigru,
     random_16_input,
@@ -6457,19 +5682,14 @@ def test_deep_hippo_legs_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6478,7 +5698,6 @@ def test_deep_hippo_legs_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_legt_bigru_shaping(
     deep_hippo_legt_bigru,
     random_16_input,
@@ -6504,19 +5723,14 @@ def test_deep_hippo_legt_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6525,7 +5739,6 @@ def test_deep_hippo_legt_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_lmu_bigru_shaping(
     deep_hippo_lmu_bigru,
     random_16_input,
@@ -6551,19 +5764,14 @@ def test_deep_hippo_lmu_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6572,7 +5780,6 @@ def test_deep_hippo_lmu_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_lagt_bigru_shaping(
     deep_hippo_lagt_bigru,
     random_16_input,
@@ -6598,19 +5805,14 @@ def test_deep_hippo_lagt_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6619,7 +5821,6 @@ def test_deep_hippo_lagt_bigru_shaping(
 # ----------
 
 
-@jax.jit
 def test_deep_hippo_fru_bigru_shaping(
     deep_hippo_fru_bigru,
     random_16_input,
@@ -6645,19 +5846,14 @@ def test_deep_hippo_fru_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6666,7 +5862,6 @@ def test_deep_hippo_fru_bigru_shaping(
 # ------------
 
 
-@jax.jit
 def test_deep_hippo_fout_bigru_shaping(
     deep_hippo_fout_bigru,
     random_16_input,
@@ -6692,19 +5887,14 @@ def test_deep_hippo_fout_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert (y.shape) == (16, 10)
 
 
@@ -6713,7 +5903,6 @@ def test_deep_hippo_fout_bigru_shaping(
 # ------------
 
 
-@jax.jit
 def test_deep_hippo_foud_bigru_shaping(
     deep_hippo_foud_bigru,
     random_16_input,
@@ -6739,17 +5928,12 @@ def test_deep_hippo_foud_bigru_shaping(
         random_16_input,
     )
 
-    carry, y = model.apply(
+    y = model.apply(
         params,
         init_carry,
         random_16_input,
     )
 
-    h_t, c_t = carry
     print(f"input shape: {random_16_input.shape}")
-    print(f"h_t shape: {h_t.shape}")
-    print(f"c_t shape: {c_t.shape}")
     print(f"y shape: {y.shape}")
-    assert (h_t.shape) == (16, 256)
-    assert (c_t.shape) == (16, 256)
     assert y.shape == (16, 10)
