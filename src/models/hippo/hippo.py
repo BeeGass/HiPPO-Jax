@@ -329,6 +329,23 @@ class HiPPO(nn.Module):
         return c_k.astype(jnp.float32), y_k.astype(jnp.float32)
 
 
+# def init_fn(input_shape, seed=1701):
+#     rng = jax.random.PRNGKey(seed)                                     # jr = jax.random
+#     dummy_input = jnp.ones(*input_shape)
+#     L = self.input_size
+
+#     return HiPPO(
+#             N=self.hidden_size,
+#             max_length=L,
+#             step=1.0 / L,
+#             GBT_alpha=self.GBT_alpha,
+#             seq_L=L,
+#             A=A,
+#             B=B,
+#             measure=self.measure,
+#         )
+
+
 class DLPR_HiPPO:
     def __init__(self) -> None:
         pass

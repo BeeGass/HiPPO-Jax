@@ -282,7 +282,7 @@ class HiPPOCell(nn.Module):
         B = hippo_matrices.B_matrix
         L = self.input_size
 
-        self.hippo = HiPPO(
+        hippo = HiPPO(
             N=self.hidden_size,
             max_length=L,
             step=1.0 / L,
@@ -292,6 +292,18 @@ class HiPPOCell(nn.Module):
             B=B,
             measure=self.measure,
         )
+
+        # self.hippo = nn.vmap(
+        #     hippo,
+        #     in_axes=(0, None, None, None),
+        #     variable_axes={"params": None},
+        #     split_rngs={"params": False},
+        # )
+
+        # self.hippo = jax.vmap(
+        #     hippo,
+        #     in_axes=(0, None, None, None),
+        # )
 
         self.rnn = self.rnn_cell(
             input_size=self.input_size,
@@ -306,13 +318,18 @@ class HiPPOCell(nn.Module):
             features=self.hidden_size, use_bias=self.bias, param_dtype=self.param_dtype
         )
 
+    @nn.compact
     def __call__(self, carry, input):
+
         _, c_t_1 = carry
 
         carry, _ = self.rnn(carry, input)
         h_t, _ = carry
 
         f_t = self.dense_f_th(h_t)
+        # c_t = nn.vmap(self.hippo, in_axes=(0, None, None, None))(
+        #     f_t, c_t_1, f_t.shape[0], False
+        # )
         c_t = self.hippo(f=f_t, init_state=c_t_1, t_step=f_t.shape[0], kernel=False)
 
         return (h_t, c_t), h_t

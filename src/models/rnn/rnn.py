@@ -191,7 +191,7 @@ class OneToManyDeepRNN(nn.Module):
         carries = []
         for _, layer in enumerate(layers):
             carries.append(
-                layer.initialize_carry(rng, (batch_size,), hidden_size, init_fn)
+                layer.initialize_carry(rng, batch_size, hidden_size, init_fn)
             )
 
         return carries
@@ -248,7 +248,7 @@ class ManyToOneDeepRNN(nn.Module):
         carries = []
         for _, layer in enumerate(layers):
             carries.append(
-                layer.initialize_carry(rng, (batch_size,), hidden_size, init_fn)
+                layer.initialize_carry(rng, batch_size, hidden_size, init_fn)
             )
 
         return carries
@@ -307,7 +307,7 @@ class ManyToManyDeepRNN(nn.Module):
         carries = []
         for _, layer in enumerate(layers):
             carries.append(
-                layer.initialize_carry(rng, (batch_size,), hidden_size, init_fn)
+                layer.initialize_carry(rng, batch_size, hidden_size, init_fn)
             )
 
         return carries
@@ -327,8 +327,8 @@ class BiRNN(nn.Module):
                 "`nn.Module. Layers is: {}".format(self.layers[0])
             )
 
-        self.output_size *= 2
-        self.dense_out = nn.Dense(features=self.output_size)
+        self.dub_output_size = self.output_size * 2
+        self.dense_out = nn.Dense(features=self.dub_output_size)
 
     def __call__(self, carry, input):
 
@@ -373,12 +373,12 @@ class DeepBiRNN(nn.Module):
     layer_name: Optional[str] = None
 
     def setup(self):
-        self.output_size *= 2
-        self.dense_out = nn.Dense(features=self.output_size)
+        self.dub_output_size = self.output_size * 2
+        self.dense_out = nn.Dense(features=self.dub_output_size)
 
     def __call__(self, carry, input):
 
-        foward_carries = carry
+        forward_carries = carry
         backward_carries = carry
         out_carry = None
         output = None
@@ -387,12 +387,12 @@ class DeepBiRNN(nn.Module):
         carries = []
 
         for t in range(input.shape[1]):
-            for idx, layer in enumerate(self.foward_layers):
+            for idx, layer in enumerate(self.forward_layers):
                 if idx == 0:
-                    out_carry, output = layer(foward_carries[idx], input[:, t, :])
+                    out_carry, output = layer(forward_carries[idx], input[:, t, :])
                 else:
                     h_t_1, c_t_1 = out_carry
-                    out_carry, output = layer(foward_carries[idx], h_t_1)
+                    out_carry, output = layer(forward_carries[idx], h_t_1)
 
                 carries.append(out_carry)
 
@@ -433,7 +433,7 @@ class DeepBiRNN(nn.Module):
         carries = []
         for _, layer in enumerate(layers):
             carries.append(
-                layer.initialize_carry(rng, (batch_size,), hidden_size, init_fn)
+                layer.initialize_carry(rng, batch_size, hidden_size, init_fn)
             )
 
         return carries

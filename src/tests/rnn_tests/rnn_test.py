@@ -1,200 +1,61 @@
-# Single Cell RNNs
-from src.tests.rnn_tests.architecture_fixtures import (
-    one_to_many_single_cell_rnn,
-    one_to_many_single_cell_lstm,
-    one_to_many_single_cell_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_one_single_cell_rnn,
-    many_to_one_single_cell_lstm,
-    many_to_one_single_cell_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_many_single_cell_rnn,
-    many_to_many_single_cell_lstm,
-    many_to_many_single_cell_gru,
+# List Of RNN Cells
+from src.tests.rnn_tests.rnn_fixtures import (
+    rnn_cell_list,
+    lstm_cell_list,
+    gru_cell_list,
 )
 
-# Single Cell Bidirectional RNNs
-from src.tests.rnn_tests.architecture_fixtures import (
-    single_cell_birnn,
-    single_cell_bilstm,
-    single_cell_bigru,
+# List Of HiPPO-LSTM Cells
+from src.tests.rnn_tests.rnn_fixtures import (
+    hippo_legs_lstm_cell_list,
+    hippo_legt_lstm_cell_list,
+    hippo_lmu_lstm_cell_list,
+    hippo_lagt_lstm_cell_list,
+    hippo_fru_lstm_cell_list,
+    hippo_fout_lstm_cell_list,
+    hippo_foud_lstm_cell_list,
 )
 
-# Deep RNNs
-from src.tests.rnn_tests.architecture_fixtures import (
-    one_to_many_deep_rnn,
-    one_to_many_deep_lstm,
-    one_to_many_deep_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_one_deep_rnn,
-    many_to_one_deep_lstm,
-    many_to_one_deep_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_many_deep_rnn,
-    many_to_many_deep_lstm,
-    many_to_many_deep_gru,
+# List Of HiPPO-GRU Cells
+from src.tests.rnn_tests.rnn_fixtures import (
+    hippo_legs_gru_cell_list,
+    hippo_legt_gru_cell_list,
+    hippo_lmu_gru_cell_list,
+    hippo_lagt_gru_cell_list,
+    hippo_fru_gru_cell_list,
+    hippo_fout_gru_cell_list,
+    hippo_foud_gru_cell_list,
 )
 
-# Deep Bidirectional RNNs
-from src.tests.rnn_tests.architecture_fixtures import (
-    deep_birnn,
-    deep_bilstm,
-    deep_bigru,
+# List Only Containing One RNN Cell
+from src.tests.rnn_tests.rnn_fixtures import (
+    rnn_cell_single,
+    lstm_cell_single,
+    gru_cell_single,
 )
 
-# Single Cell HiPPO RNNs
-from src.tests.rnn_tests.architecture_fixtures import (
-    one_to_many_single_hippo_legs_lstm,
-    one_to_many_single_hippo_legt_lstm,
-    one_to_many_single_hippo_lmu_lstm,
-    one_to_many_single_hippo_lagt_lstm,
-    one_to_many_single_hippo_fru_lstm,
-    one_to_many_single_hippo_fout_lstm,
-    one_to_many_single_hippo_foud_lstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_one_single_hippo_legs_lstm,
-    many_to_one_single_hippo_legt_lstm,
-    many_to_one_single_hippo_lmu_lstm,
-    many_to_one_single_hippo_lagt_lstm,
-    many_to_one_single_hippo_fru_lstm,
-    many_to_one_single_hippo_fout_lstm,
-    many_to_one_single_hippo_foud_lstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_many_single_hippo_legs_lstm,
-    many_to_many_single_hippo_legt_lstm,
-    many_to_many_single_hippo_lmu_lstm,
-    many_to_many_single_hippo_lagt_lstm,
-    many_to_many_single_hippo_fru_lstm,
-    many_to_many_single_hippo_fout_lstm,
-    many_to_many_single_hippo_foud_lstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    one_to_many_single_hippo_legs_gru,
-    one_to_many_single_hippo_legt_gru,
-    one_to_many_single_hippo_lmu_gru,
-    one_to_many_single_hippo_lagt_gru,
-    one_to_many_single_hippo_fru_gru,
-    one_to_many_single_hippo_fout_gru,
-    one_to_many_single_hippo_foud_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_one_single_hippo_legs_gru,
-    many_to_one_single_hippo_legt_gru,
-    many_to_one_single_hippo_lmu_gru,
-    many_to_one_single_hippo_lagt_gru,
-    many_to_one_single_hippo_fru_gru,
-    many_to_one_single_hippo_fout_gru,
-    many_to_one_single_hippo_foud_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_many_single_hippo_legs_gru,
-    many_to_many_single_hippo_legt_gru,
-    many_to_many_single_hippo_lmu_gru,
-    many_to_many_single_hippo_lagt_gru,
-    many_to_many_single_hippo_fru_gru,
-    many_to_many_single_hippo_fout_gru,
-    many_to_many_single_hippo_foud_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    single_cell_hippo_legs_bilstm,
-    single_cell_hippo_legt_bilstm,
-    single_cell_hippo_lmu_bilstm,
-    single_cell_hippo_lagt_bilstm,
-    single_cell_hippo_fru_bilstm,
-    single_cell_hippo_fout_bilstm,
-    single_cell_hippo_foud_bilstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    single_cell_hippo_legs_bigru,
-    single_cell_hippo_legt_bigru,
-    single_cell_hippo_lmu_bigru,
-    single_cell_hippo_lagt_bigru,
-    single_cell_hippo_fru_bigru,
-    single_cell_hippo_fout_bigru,
-    single_cell_hippo_foud_bigru,
+# List Only Containing One HiPPO-LSTM Cell
+from src.tests.rnn_tests.rnn_fixtures import (
+    hippo_legs_lstm_cell_single,
+    hippo_legt_lstm_cell_single,
+    hippo_lmu_lstm_cell_single,
+    hippo_lagt_lstm_cell_single,
+    hippo_fru_lstm_cell_single,
+    hippo_fout_lstm_cell_single,
+    hippo_foud_lstm_cell_single,
 )
 
-# Deep HiPPO RNNs
-from src.tests.rnn_tests.architecture_fixtures import (
-    one_to_many_deep_hippo_legs_lstm,
-    one_to_many_deep_hippo_legt_lstm,
-    one_to_many_deep_hippo_lmu_lstm,
-    one_to_many_deep_hippo_lagt_lstm,
-    one_to_many_deep_hippo_fru_lstm,
-    one_to_many_deep_hippo_fout_lstm,
-    one_to_many_deep_hippo_foud_lstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_one_deep_hippo_legs_lstm,
-    many_to_one_deep_hippo_legt_lstm,
-    many_to_one_deep_hippo_lmu_lstm,
-    many_to_one_deep_hippo_lagt_lstm,
-    many_to_one_deep_hippo_fru_lstm,
-    many_to_one_deep_hippo_fout_lstm,
-    many_to_one_deep_hippo_foud_lstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_many_deep_hippo_legs_lstm,
-    many_to_many_deep_hippo_legt_lstm,
-    many_to_many_deep_hippo_lmu_lstm,
-    many_to_many_deep_hippo_lagt_lstm,
-    many_to_many_deep_hippo_fru_lstm,
-    many_to_many_deep_hippo_fout_lstm,
-    many_to_many_deep_hippo_foud_lstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    one_to_many_deep_hippo_legs_gru,
-    one_to_many_deep_hippo_legt_gru,
-    one_to_many_deep_hippo_lmu_gru,
-    one_to_many_deep_hippo_lagt_gru,
-    one_to_many_deep_hippo_fru_gru,
-    one_to_many_deep_hippo_fout_gru,
-    one_to_many_deep_hippo_foud_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_one_deep_hippo_legs_gru,
-    many_to_one_deep_hippo_legt_gru,
-    many_to_one_deep_hippo_lmu_gru,
-    many_to_one_deep_hippo_lagt_gru,
-    many_to_one_deep_hippo_fru_gru,
-    many_to_one_deep_hippo_fout_gru,
-    many_to_one_deep_hippo_foud_gru,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    many_to_many_deep_hippo_legs_gru,
-    many_to_many_deep_hippo_legt_gru,
-    many_to_many_deep_hippo_lmu_gru,
-    many_to_many_deep_hippo_lagt_gru,
-    many_to_many_deep_hippo_fru_gru,
-    many_to_many_deep_hippo_fout_gru,
-    many_to_many_deep_hippo_foud_gru,
+# List Only Containing One HiPPO-GRU Cell
+from src.tests.rnn_tests.rnn_fixtures import (
+    hippo_legs_gru_cell_single,
+    hippo_legt_gru_cell_single,
+    hippo_lmu_gru_cell_single,
+    hippo_lagt_gru_cell_single,
+    hippo_fru_gru_cell_single,
+    hippo_fout_gru_cell_single,
+    hippo_foud_gru_cell_single,
 )
 
-# Deep Bidirectional RNNs
-from src.tests.rnn_tests.architecture_fixtures import (
-    deep_hippo_legs_bilstm,
-    deep_hippo_legt_bilstm,
-    deep_hippo_lmu_bilstm,
-    deep_hippo_lagt_bilstm,
-    deep_hippo_fru_bilstm,
-    deep_hippo_fout_bilstm,
-    deep_hippo_foud_bilstm,
-)
-from src.tests.rnn_tests.architecture_fixtures import (
-    deep_hippo_legs_bigru,
-    deep_hippo_legt_bigru,
-    deep_hippo_lmu_bigru,
-    deep_hippo_lagt_bigru,
-    deep_hippo_fru_bigru,
-    deep_hippo_fout_bigru,
-    deep_hippo_foud_bigru,
-)
 
 # Psuedo-Random Number Generator Keys for Single Cell RNNs
 from src.tests.rnn_tests.rnn_utils import (
@@ -401,6 +262,7 @@ from src.tests.rnn_tests.rnn_utils import (
     random_64_input,
 )
 
+
 import jax
 from flax import linen as nn
 import pytest
@@ -445,8 +307,10 @@ def test_one_to_many_single_cell_rnn_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_one_to_many_single_cell_lstm_shaping(
@@ -479,8 +343,10 @@ def test_one_to_many_single_cell_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_one_to_many_single_cell_gru_shaping(
@@ -513,8 +379,10 @@ def test_one_to_many_single_cell_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # -------------------------
@@ -553,7 +421,7 @@ def test_many_to_one_single_cell_rnn_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 def test_many_to_one_single_cell_lstm_shaping(
@@ -587,7 +455,7 @@ def test_many_to_one_single_cell_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 def test_many_to_one_single_cell_gru_shaping(
@@ -621,7 +489,7 @@ def test_many_to_one_single_cell_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # -------------------------
@@ -659,8 +527,10 @@ def test_many_to_many_single_cell_rnn_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_many_to_many_single_cell_lstm_shaping(
@@ -693,8 +563,10 @@ def test_many_to_many_single_cell_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_many_to_many_single_cell_gru_shaping(
@@ -727,8 +599,10 @@ def test_many_to_many_single_cell_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -766,8 +640,10 @@ def test_single_cell_birnn_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_single_cell_bilstm_shaping(
@@ -800,8 +676,10 @@ def test_single_cell_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_single_cell_bigru_shaping(
@@ -834,8 +712,10 @@ def test_single_cell_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -860,6 +740,7 @@ def test_one_to_many_deep_rnn_shaping(
     model = one_to_many_deep_rnn
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_rnn.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -877,8 +758,10 @@ def test_one_to_many_deep_rnn_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_one_to_many_deep_lstm_shaping(
@@ -894,6 +777,7 @@ def test_one_to_many_deep_lstm_shaping(
     model = one_to_many_deep_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -911,8 +795,10 @@ def test_one_to_many_deep_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_one_to_many_deep_gru_shaping(
@@ -928,6 +814,7 @@ def test_one_to_many_deep_gru_shaping(
     model = one_to_many_deep_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -945,8 +832,10 @@ def test_one_to_many_deep_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # -------------------------
@@ -967,6 +856,7 @@ def test_many_to_one_deep_rnn_shaping(
     model = many_to_one_deep_rnn
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_rnn.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -985,7 +875,7 @@ def test_many_to_one_deep_rnn_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 def test_many_to_one_deep_lstm_shaping(
@@ -1001,6 +891,7 @@ def test_many_to_one_deep_lstm_shaping(
     model = many_to_one_deep_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1019,7 +910,7 @@ def test_many_to_one_deep_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 def test_many_to_one_deep_gru_shaping(
@@ -1035,6 +926,7 @@ def test_many_to_one_deep_gru_shaping(
     model = many_to_one_deep_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1053,7 +945,7 @@ def test_many_to_one_deep_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # -------------------------
@@ -1074,6 +966,7 @@ def test_many_to_many_deep_rnn_shaping(
     model = many_to_many_deep_rnn
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_rnn.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1091,8 +984,10 @@ def test_many_to_many_deep_rnn_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_many_to_many_deep_lstm_shaping(
@@ -1108,6 +1003,7 @@ def test_many_to_many_deep_lstm_shaping(
     model = many_to_many_deep_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1125,8 +1021,10 @@ def test_many_to_many_deep_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_many_to_many_deep_gru_shaping(
@@ -1142,6 +1040,7 @@ def test_many_to_many_deep_gru_shaping(
     model = many_to_many_deep_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1159,8 +1058,10 @@ def test_many_to_many_deep_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -1180,6 +1081,7 @@ def test_deep_birnn_shaping(deep_birnn, random_16_input, deep_birnn_key):
     model = deep_birnn
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_birnn.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1197,8 +1099,10 @@ def test_deep_birnn_shaping(deep_birnn, random_16_input, deep_birnn_key):
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
@@ -1213,6 +1117,7 @@ def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
     model = deep_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1230,8 +1135,10 @@ def test_deep_bilstm_shaping(deep_bilstm, random_16_input, deep_bilstm_key):
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
@@ -1246,6 +1153,7 @@ def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
     model = deep_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -1263,8 +1171,10 @@ def test_deep_bigru_shaping(deep_bigru, random_16_input, deep_bigru_key):
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -1312,8 +1222,10 @@ def test_one_to_many_single_hippo_legs_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -1353,8 +1265,10 @@ def test_one_to_many_single_hippo_legt_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -1394,8 +1308,10 @@ def test_one_to_many_single_hippo_lmu_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -1435,8 +1351,10 @@ def test_one_to_many_single_hippo_lagt_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -1476,8 +1394,10 @@ def test_one_to_many_single_hippo_fru_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -1517,8 +1437,10 @@ def test_one_to_many_single_hippo_fout_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -1558,8 +1480,10 @@ def test_one_to_many_single_hippo_foud_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # -------------------------
@@ -1604,7 +1528,7 @@ def test_many_to_one_single_hippo_legs_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -1645,7 +1569,7 @@ def test_many_to_one_single_hippo_legt_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -1686,7 +1610,7 @@ def test_many_to_one_single_hippo_lmu_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -1727,7 +1651,7 @@ def test_many_to_one_single_hippo_lagt_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -1768,7 +1692,7 @@ def test_many_to_one_single_hippo_fru_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -1809,7 +1733,7 @@ def test_many_to_one_single_hippo_fout_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -1895,7 +1819,7 @@ def test_many_to_many_single_hippo_legs_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -1936,7 +1860,7 @@ def test_many_to_many_single_hippo_legt_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -1977,7 +1901,7 @@ def test_many_to_many_single_hippo_lmu_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2018,7 +1942,7 @@ def test_many_to_many_single_hippo_lagt_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2059,7 +1983,7 @@ def test_many_to_many_single_hippo_fru_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -2100,7 +2024,7 @@ def test_many_to_many_single_hippo_fout_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -2189,8 +2113,10 @@ def test_one_to_many_single_hippo_legs_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -2230,8 +2156,10 @@ def test_one_to_many_single_hippo_legt_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -2271,8 +2199,10 @@ def test_one_to_many_single_hippo_lmu_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -2312,8 +2242,10 @@ def test_one_to_many_single_hippo_lagt_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -2353,8 +2285,10 @@ def test_one_to_many_single_hippo_fru_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -2394,8 +2328,10 @@ def test_one_to_many_single_hippo_fout_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -2435,8 +2371,10 @@ def test_one_to_many_single_hippo_foud_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # -------------------------
@@ -2481,7 +2419,7 @@ def test_many_to_one_single_hippo_legs_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2522,7 +2460,7 @@ def test_many_to_one_single_hippo_legt_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2563,7 +2501,7 @@ def test_many_to_one_single_hippo_lmu_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2604,7 +2542,7 @@ def test_many_to_one_single_hippo_lagt_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2645,7 +2583,7 @@ def test_many_to_one_single_hippo_fru_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -2686,7 +2624,7 @@ def test_many_to_one_single_hippo_fout_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -2772,7 +2710,7 @@ def test_many_to_many_single_hippo_legs_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2813,7 +2751,7 @@ def test_many_to_many_single_hippo_legt_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2854,7 +2792,7 @@ def test_many_to_many_single_hippo_lmu_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2895,7 +2833,7 @@ def test_many_to_many_single_hippo_lagt_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -2936,7 +2874,7 @@ def test_many_to_many_single_hippo_fru_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -2977,7 +2915,7 @@ def test_many_to_many_single_hippo_fout_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -3062,8 +3000,10 @@ def test_single_cell_hippo_legs_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3103,8 +3043,10 @@ def test_single_cell_hippo_legt_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3144,8 +3086,10 @@ def test_single_cell_hippo_lmu_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3185,8 +3129,10 @@ def test_single_cell_hippo_lagt_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3226,8 +3172,10 @@ def test_single_cell_hippo_fru_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -3267,8 +3215,10 @@ def test_single_cell_hippo_fout_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -3308,8 +3258,10 @@ def test_single_cell_hippo_foud_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert y.shape == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -3353,8 +3305,10 @@ def test_single_cell_hippo_legs_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3394,8 +3348,10 @@ def test_single_cell_hippo_legt_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3435,8 +3391,10 @@ def test_single_cell_hippo_lmu_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3476,8 +3434,10 @@ def test_single_cell_hippo_lagt_bigru_key_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3517,8 +3477,10 @@ def test_single_cell_hippo_fru_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -3558,8 +3520,10 @@ def test_single_cell_hippo_fout_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -3599,8 +3563,10 @@ def test_single_cell_hippo_foud_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert y.shape == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -3631,6 +3597,7 @@ def test_one_to_many_deep_hippo_legs_lstm_shaping(
     model = one_to_many_deep_hippo_legs_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_legs_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3648,8 +3615,10 @@ def test_one_to_many_deep_hippo_legs_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3672,6 +3641,7 @@ def test_one_to_many_deep_hippo_legt_lstm_shaping(
     model = one_to_many_deep_hippo_legt_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_legt_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3689,8 +3659,10 @@ def test_one_to_many_deep_hippo_legt_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3713,6 +3685,7 @@ def test_one_to_many_deep_hippo_lmu_lstm_shaping(
     model = one_to_many_deep_hippo_lmu_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_lmu_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3730,8 +3703,10 @@ def test_one_to_many_deep_hippo_lmu_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3754,6 +3729,7 @@ def test_one_to_many_deep_hippo_lagt_lstm_shaping(
     model = one_to_many_deep_hippo_lagt_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_lagt_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3771,8 +3747,10 @@ def test_one_to_many_deep_hippo_lagt_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -3795,6 +3773,7 @@ def test_one_to_many_deep_hippo_fru_lstm_shaping(
     model = one_to_many_deep_hippo_fru_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_fru_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3812,8 +3791,10 @@ def test_one_to_many_deep_hippo_fru_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -3836,6 +3817,7 @@ def test_one_to_many_deep_hippo_fout_lstm_shaping(
     model = one_to_many_deep_hippo_fout_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_fout_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3853,8 +3835,10 @@ def test_one_to_many_deep_hippo_fout_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -3877,6 +3861,7 @@ def test_one_to_many_deep_hippo_foud_lstm_shaping(
     model = one_to_many_deep_hippo_foud_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_foud_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3894,8 +3879,10 @@ def test_one_to_many_deep_hippo_foud_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # -------------------------
@@ -3922,6 +3909,7 @@ def test_many_to_one_deep_hippo_legs_lstm_shaping(
     model = many_to_one_deep_hippo_legs_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_legs_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3940,7 +3928,7 @@ def test_many_to_one_deep_hippo_legs_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -3963,6 +3951,7 @@ def test_many_to_one_deep_hippo_legt_lstm_shaping(
     model = many_to_one_deep_hippo_legt_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_legt_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -3981,7 +3970,7 @@ def test_many_to_one_deep_hippo_legt_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -4004,6 +3993,7 @@ def test_many_to_one_deep_hippo_lmu_lstm_shaping(
     model = many_to_one_deep_hippo_lmu_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_lmu_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4022,7 +4012,7 @@ def test_many_to_one_deep_hippo_lmu_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -4045,6 +4035,7 @@ def test_many_to_one_deep_hippo_lagt_lstm_shaping(
     model = many_to_one_deep_hippo_lagt_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_lagt_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4063,7 +4054,7 @@ def test_many_to_one_deep_hippo_lagt_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -4086,6 +4077,7 @@ def test_many_to_one_deep_hippo_fru_lstm_shaping(
     model = many_to_one_deep_hippo_fru_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_fru_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4104,7 +4096,7 @@ def test_many_to_one_deep_hippo_fru_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -4127,6 +4119,7 @@ def test_many_to_one_deep_hippo_fout_lstm_shaping(
     model = many_to_one_deep_hippo_fout_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_fout_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4145,7 +4138,7 @@ def test_many_to_one_deep_hippo_fout_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -4168,6 +4161,7 @@ def test_many_to_one_deep_hippo_foud_lstm_shaping(
     model = many_to_one_deep_hippo_foud_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_foud_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4186,7 +4180,7 @@ def test_many_to_one_deep_hippo_foud_lstm_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert y.shape
+    assert (y.shape) == (batch_size, 10)
 
 
 # -------------------------
@@ -4213,6 +4207,7 @@ def test_many_to_many_deep_hippo_legs_lstm_shaping(
     model = many_to_many_deep_hippo_legs_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_legs_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4230,8 +4225,10 @@ def test_many_to_many_deep_hippo_legs_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4254,6 +4251,7 @@ def test_many_to_many_deep_hippo_legt_lstm_shaping(
     model = many_to_many_deep_hippo_legt_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_legt_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4271,8 +4269,10 @@ def test_many_to_many_deep_hippo_legt_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4295,6 +4295,7 @@ def test_many_to_many_deep_hippo_lmu_lstm_shaping(
     model = many_to_many_deep_hippo_lmu_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_lmu_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4312,8 +4313,10 @@ def test_many_to_many_deep_hippo_lmu_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4336,6 +4339,7 @@ def test_many_to_many_deep_hippo_lagt_lstm_shaping(
     model = many_to_many_deep_hippo_lagt_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_lagt_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4353,8 +4357,10 @@ def test_many_to_many_deep_hippo_lagt_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4377,6 +4383,7 @@ def test_many_to_many_deep_hippo_fru_lstm_shaping(
     model = many_to_many_deep_hippo_fru_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_fru_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4394,8 +4401,10 @@ def test_many_to_many_deep_hippo_fru_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -4418,6 +4427,7 @@ def test_many_to_many_deep_hippo_fout_lstm_shaping(
     model = many_to_many_deep_hippo_fout_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_fout_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4435,8 +4445,10 @@ def test_many_to_many_deep_hippo_fout_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -4459,6 +4471,7 @@ def test_many_to_many_deep_hippo_foud_lstm_shaping(
     model = many_to_many_deep_hippo_foud_lstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_foud_lstm.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4476,8 +4489,10 @@ def test_many_to_many_deep_hippo_foud_lstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert y.shape == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -4508,6 +4523,7 @@ def test_one_to_many_deep_hippo_legs_gru_shaping(
     model = one_to_many_deep_hippo_legs_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_legs_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4525,8 +4541,10 @@ def test_one_to_many_deep_hippo_legs_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4549,6 +4567,7 @@ def test_one_to_many_deep_hippo_legt_gru_shaping(
     model = one_to_many_deep_hippo_legt_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_legt_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4566,8 +4585,10 @@ def test_one_to_many_deep_hippo_legt_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4590,6 +4611,7 @@ def test_one_to_many_deep_hippo_lmu_gru_shaping(
     model = one_to_many_deep_hippo_lmu_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_lmu_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4607,8 +4629,10 @@ def test_one_to_many_deep_hippo_lmu_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4631,6 +4655,7 @@ def test_one_to_many_deep_hippo_lagt_gru_shaping(
     model = one_to_many_deep_hippo_lagt_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_lagt_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4648,8 +4673,10 @@ def test_one_to_many_deep_hippo_lagt_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -4672,6 +4699,7 @@ def test_one_to_many_deep_hippo_fru_gru_shaping(
     model = one_to_many_deep_hippo_fru_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_fru_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4689,8 +4717,10 @@ def test_one_to_many_deep_hippo_fru_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -4713,6 +4743,7 @@ def test_one_to_many_deep_hippo_fout_gru_shaping(
     model = one_to_many_deep_hippo_fout_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_fout_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4730,8 +4761,10 @@ def test_one_to_many_deep_hippo_fout_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -4754,6 +4787,7 @@ def test_one_to_many_deep_hippo_foud_gru_shaping(
     model = one_to_many_deep_hippo_foud_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=one_to_many_deep_hippo_foud_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4771,8 +4805,10 @@ def test_one_to_many_deep_hippo_foud_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # -------------------------
@@ -4799,6 +4835,7 @@ def test_many_to_one_deep_hippo_legs_gru_shaping(
     model = many_to_one_deep_hippo_legs_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_legs_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4817,7 +4854,7 @@ def test_many_to_one_deep_hippo_legs_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -4840,6 +4877,7 @@ def test_many_to_one_deep_hippo_legt_gru_shaping(
     model = many_to_one_deep_hippo_legt_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_legt_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4858,7 +4896,7 @@ def test_many_to_one_deep_hippo_legt_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -4881,6 +4919,7 @@ def test_many_to_one_deep_hippo_lmu_gru_shaping(
     model = many_to_one_deep_hippo_lmu_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_lmu_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4899,7 +4938,7 @@ def test_many_to_one_deep_hippo_lmu_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -4922,6 +4961,7 @@ def test_many_to_one_deep_hippo_lagt_gru_shaping(
     model = many_to_one_deep_hippo_lagt_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_lagt_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4940,7 +4980,7 @@ def test_many_to_one_deep_hippo_lagt_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ----------
@@ -4963,6 +5003,7 @@ def test_many_to_one_deep_hippo_fru_gru_shaping(
     model = many_to_one_deep_hippo_fru_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_fru_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -4981,7 +5022,7 @@ def test_many_to_one_deep_hippo_fru_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -5004,6 +5045,7 @@ def test_many_to_one_deep_hippo_fout_gru_shaping(
     model = many_to_one_deep_hippo_fout_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_fout_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5022,7 +5064,7 @@ def test_many_to_one_deep_hippo_fout_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    assert (y.shape) == (batch_size, 10)
 
 
 # ------------
@@ -5045,6 +5087,7 @@ def test_many_to_one_deep_hippo_foud_gru_shaping(
     model = many_to_one_deep_hippo_foud_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_one_deep_hippo_foud_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5063,7 +5106,7 @@ def test_many_to_one_deep_hippo_foud_gru_shaping(
 
     print(f"input shape: {random_16_input.shape}")
     print(f"y shape: {y.shape}")
-    assert y.shape
+    assert (y.shape) == (batch_size, 10)
 
 
 # -------------------------
@@ -5090,6 +5133,7 @@ def test_many_to_many_deep_hippo_legs_gru_shaping(
     model = many_to_many_deep_hippo_legs_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_legs_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5107,8 +5151,10 @@ def test_many_to_many_deep_hippo_legs_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5131,6 +5177,7 @@ def test_many_to_many_deep_hippo_legt_gru_shaping(
     model = many_to_many_deep_hippo_legt_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_legt_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5148,8 +5195,10 @@ def test_many_to_many_deep_hippo_legt_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5172,6 +5221,7 @@ def test_many_to_many_deep_hippo_lmu_gru_shaping(
     model = many_to_many_deep_hippo_lmu_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_lmu_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5189,8 +5239,10 @@ def test_many_to_many_deep_hippo_lmu_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5213,6 +5265,7 @@ def test_many_to_many_deep_hippo_lagt_gru_shaping(
     model = many_to_many_deep_hippo_lagt_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_lagt_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5230,8 +5283,10 @@ def test_many_to_many_deep_hippo_lagt_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5254,6 +5309,7 @@ def test_many_to_many_deep_hippo_fru_gru_shaping(
     model = many_to_many_deep_hippo_fru_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_fru_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5271,8 +5327,10 @@ def test_many_to_many_deep_hippo_fru_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -5295,6 +5353,7 @@ def test_many_to_many_deep_hippo_fout_gru_shaping(
     model = many_to_many_deep_hippo_fout_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_fout_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5312,8 +5371,10 @@ def test_many_to_many_deep_hippo_fout_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -5336,6 +5397,7 @@ def test_many_to_many_deep_hippo_foud_gru_shaping(
     model = many_to_many_deep_hippo_foud_gru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=many_to_many_deep_hippo_foud_gru.layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5353,8 +5415,10 @@ def test_many_to_many_deep_hippo_foud_gru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert y.shape == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -5381,6 +5445,7 @@ def test_deep_hippo_legs_bilstm_shaping(
     model = deep_hippo_legs_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_legs_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5398,8 +5463,10 @@ def test_deep_hippo_legs_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5422,6 +5489,7 @@ def test_deep_hippo_legt_bilstm_shaping(
     model = deep_hippo_legt_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_legt_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5439,8 +5507,10 @@ def test_deep_hippo_legt_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5463,6 +5533,7 @@ def test_deep_hippo_lmu_bilstm_shaping(
     model = deep_hippo_lmu_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_lmu_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5480,8 +5551,10 @@ def test_deep_hippo_lmu_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5504,6 +5577,7 @@ def test_deep_hippo_lagt_bilstm_shaping(
     model = deep_hippo_lagt_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_lagt_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5521,8 +5595,10 @@ def test_deep_hippo_lagt_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5545,6 +5621,7 @@ def test_deep_hippo_fru_bilstm_shaping(
     model = deep_hippo_fru_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_fru_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5562,8 +5639,10 @@ def test_deep_hippo_fru_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -5586,6 +5665,7 @@ def test_deep_hippo_fout_bilstm_shaping(
     model = deep_hippo_fout_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_fout_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5603,8 +5683,10 @@ def test_deep_hippo_fout_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -5627,6 +5709,7 @@ def test_deep_hippo_foud_bilstm_shaping(
     model = deep_hippo_foud_bilstm
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_foud_bilstm.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5644,8 +5727,10 @@ def test_deep_hippo_foud_bilstm_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert y.shape == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------------------------------------------------------------
@@ -5672,6 +5757,7 @@ def test_deep_hippo_legs_bigru_shaping(
     model = deep_hippo_legs_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_legs_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5689,8 +5775,10 @@ def test_deep_hippo_legs_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5713,6 +5801,7 @@ def test_deep_hippo_legt_bigru_shaping(
     model = deep_hippo_legt_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_legt_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5730,8 +5819,10 @@ def test_deep_hippo_legt_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5754,6 +5845,7 @@ def test_deep_hippo_lmu_bigru_shaping(
     model = deep_hippo_lmu_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_lmu_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5771,8 +5863,10 @@ def test_deep_hippo_lmu_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5795,6 +5889,7 @@ def test_deep_hippo_lagt_bigru_shaping(
     model = deep_hippo_lagt_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_lagt_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5812,8 +5907,10 @@ def test_deep_hippo_lagt_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ----------
@@ -5836,6 +5933,7 @@ def test_deep_hippo_fru_bigru_shaping(
     model = deep_hippo_fru_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_fru_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5853,8 +5951,10 @@ def test_deep_hippo_fru_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -5877,6 +5977,7 @@ def test_deep_hippo_fout_bigru_shaping(
     model = deep_hippo_fout_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_fout_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5894,8 +5995,10 @@ def test_deep_hippo_fout_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert (y.shape) == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
 
 
 # ------------
@@ -5918,6 +6021,7 @@ def test_deep_hippo_foud_bigru_shaping(
     model = deep_hippo_foud_bigru
     init_carry = model.initialize_carry(
         rng=key1,
+        layers=deep_hippo_foud_bigru.forward_layers,
         batch_size=(batch_size,),
         hidden_size=hidden_size,
         init_fn=nn.initializers.zeros,
@@ -5935,5 +6039,7 @@ def test_deep_hippo_foud_bigru_shaping(
     )
 
     print(f"input shape: {random_16_input.shape}")
-    print(f"y shape: {y.shape}")
-    assert y.shape == (16, 10)
+    print(f"y:\n{y}")
+    for i in range(len(y)):
+        print(f"y shape: {y[i].shape}")
+        assert y[i].shape == (batch_size, 10)
