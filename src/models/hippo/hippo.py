@@ -48,6 +48,40 @@ class HiPPO(nn.Module):
 
         self.basis(c=0.0, truncate_measure=True)
 
+    # def __call__(self, f, init_state=None, t_step=0, kernel=False):
+    #     # print(f"u shape:\n{f.shape}")
+    #     # print(f"u:\n{f}")
+    #     def vmap_call(f):
+    #         if not kernel:
+    #             if init_state is None:
+    #                 init_state = jnp.zeros((self.N, 1))
+
+    #             # Ab, Bb, Cb, Db = self.collect_SSM_vars(
+    #             #     self.A, self.B, self.C, self.D, f, t_step=t_step, alpha=self.GBT_alpha
+    #             # )
+    #             c_k, y_k, GBT_A, GBT_B = self.loop_SSM(
+    #                 A=self.A,
+    #                 B=self.B,
+    #                 C=self.C,
+    #                 D=self.D,
+    #                 c_0=init_state,
+    #                 f=f,
+    #                 alpha=self.GBT_alpha,
+    #             )
+    #             # c_k, y_k = self.scan_SSM(Ab=Ab, Bb=Bb, Cb=Cb, Db=Db, c_0=init_state, f=f)
+
+    #         else:
+    #             Ab, Bb, Cb, Db = self.discretize(
+    #                 self.A, self.B, self.C, self.D, step=self.step, alpha=self.GBT_alpha
+    #             )
+    #             c_k, y_k = self.causal_convolution(
+    #                 f, self.K_conv(Ab, Bb, Cb, Db, L=self.max_length)
+    #             )
+
+    #         return c_k, y_k, GBT_A, GBT_B
+
+    #     return nn.vmap(vmap_call, in_axes=(0))(f=f)
+
     def __call__(self, f, init_state=None, t_step=0, kernel=False):
         # print(f"u shape:\n{f.shape}")
         # print(f"u:\n{f}")
@@ -327,23 +361,6 @@ class HiPPO(nn.Module):
         y_k = Cd @ c_k  # + (Db.T @ f_k)
 
         return c_k.astype(jnp.float32), y_k.astype(jnp.float32)
-
-
-# def init_fn(input_shape, seed=1701):
-#     rng = jax.random.PRNGKey(seed)                                     # jr = jax.random
-#     dummy_input = jnp.ones(*input_shape)
-#     L = self.input_size
-
-#     return HiPPO(
-#             N=self.hidden_size,
-#             max_length=L,
-#             step=1.0 / L,
-#             GBT_alpha=self.GBT_alpha,
-#             seq_L=L,
-#             A=A,
-#             B=B,
-#             measure=self.measure,
-#         )
 
 
 class DLPR_HiPPO:

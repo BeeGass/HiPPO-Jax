@@ -282,7 +282,25 @@ class HiPPOCell(nn.Module):
         B = hippo_matrices.B_matrix
         L = self.input_size
 
-        hippo = HiPPO(
+        # self.hippo = HiPPO(
+        #     N=self.hidden_size,
+        #     max_length=L,
+        #     step=1.0 / L,
+        #     GBT_alpha=self.GBT_alpha,
+        #     seq_L=L,
+        #     A=A,
+        #     B=B,
+        #     measure=self.measure,
+        # )
+
+        hippo = nn.vmap(
+            HiPPO,
+            in_axes=(0, None, None, None),
+            variable_axes={"params": None},
+            split_rngs={"params": False},
+        )
+
+        self.hippo = hippo(
             N=self.hidden_size,
             max_length=L,
             step=1.0 / L,
@@ -292,18 +310,6 @@ class HiPPOCell(nn.Module):
             B=B,
             measure=self.measure,
         )
-
-        # self.hippo = nn.vmap(
-        #     hippo,
-        #     in_axes=(0, None, None, None),
-        #     variable_axes={"params": None},
-        #     split_rngs={"params": False},
-        # )
-
-        # self.hippo = jax.vmap(
-        #     hippo,
-        #     in_axes=(0, None, None, None),
-        # )
 
         self.rnn = self.rnn_cell(
             input_size=self.input_size,
@@ -320,6 +326,18 @@ class HiPPOCell(nn.Module):
 
     @nn.compact
     def __call__(self, carry, input):
+        # def hippo_init_fn(input_shape, seed=1701):
+        #     rng = jax.random.PRNGKey(seed)
+        #     dummy_input = jnp.ones(*input_shape)
+        #     dummy_c_t_1 = jnp.ones((self.hippo.N, 1))
+
+        #     return self.hippo.init(
+        #         rng,
+        #         f=dummy_input,
+        #         init_state=dummy_c_t_1,
+        #         t_step=dummy_input.shape[0],
+        #         kernel=False,
+        #     )
 
         _, c_t_1 = carry
 
@@ -413,7 +431,9 @@ class HIPPOCell(nn.Module):
         h_t, _ = carry
 
         f_t = self.dense_f_th(h_t)
-        c_t = self.hippo(f=f_t, init_state=c_t_1, t_step=f_t.shape[0], kernel=False)
+        c_t = nn.vmap(self.hippo, in_axes=(0, None, None, None))(
+            f=f_t, init_state=c_t_1, t_step=f_t.shape[0], kernel=False
+        )
 
         return (h_t, c_t)
 
