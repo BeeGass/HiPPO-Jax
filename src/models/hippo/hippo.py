@@ -46,48 +46,55 @@ class HiPPO(nn.Module):
         self.C = jnp.ones((self.N,))
         self.D = jnp.zeros((1,))
 
-        self.basis(c=0.0, truncate_measure=True)
+        GBT_a_list = []
+        GBT_b_list = []
+        for i in range(self.seq_L):
+            # TODO: make this scale invariant optional
+            GBT_A, GBT_B, _, _ = self.discretize(
+                self, A, B, self.C, self.D, step=i, alpha=self.GBT_alpha
+            )
+            GBT_a_list.append(GBT_A)
+            GBT_b_list.append(GBT_B)
 
-    # def __call__(self, f, init_state=None, t_step=0, kernel=False):
-    #     # print(f"u shape:\n{f.shape}")
-    #     # print(f"u:\n{f}")
-    #     def vmap_call(f):
-    #         if not kernel:
-    #             if init_state is None:
-    #                 init_state = jnp.zeros((self.N, 1))
+        self.GBT_A_list = GBT_a_list
+        self.GBT_B_list = GBT_b_list
 
-    #             # Ab, Bb, Cb, Db = self.collect_SSM_vars(
-    #             #     self.A, self.B, self.C, self.D, f, t_step=t_step, alpha=self.GBT_alpha
-    #             # )
-    #             c_k, y_k, GBT_A, GBT_B = self.loop_SSM(
-    #                 A=self.A,
-    #                 B=self.B,
-    #                 C=self.C,
-    #                 D=self.D,
-    #                 c_0=init_state,
-    #                 f=f,
-    #                 alpha=self.GBT_alpha,
-    #             )
-    #             # c_k, y_k = self.scan_SSM(Ab=Ab, Bb=Bb, Cb=Cb, Db=Db, c_0=init_state, f=f)
+        if self.measure == "legt":
+            L = self.seq_L
+            vals = jnp.arange(0.0, 1.0, L)
+            # n = jnp.arange(self.N)[:, None]
+            zero_N = self.N - 1
+            x = 1 - 2 * vals
+            self.eval_matrix = jax.scipy.special.lpmn_values(
+                m=zero_N, n=zero_N, z=x, is_normalized=False
+            ).T  # ss.eval_legendre(n, x).T
 
-    #         else:
-    #             Ab, Bb, Cb, Db = self.discretize(
-    #                 self.A, self.B, self.C, self.D, step=self.step, alpha=self.GBT_alpha
-    #             )
-    #             c_k, y_k = self.causal_convolution(
-    #                 f, self.K_conv(Ab, Bb, Cb, Db, L=self.max_length)
-    #             )
+        elif self.measure == "legs":
+            L = self.max_length
+            vals = jnp.linspace(0.0, 1.0, L)
+            # n = jnp.arange(self.N)[:, None]
+            zero_N = self.N - 1
+            x = 2 * vals - 1
+            self.eval_matrix = (
+                B[:, None]
+                * jax.scipy.special.lpmn_values(
+                    m=zero_N, n=zero_N, z=x, is_normalized=False
+                )
+            ).T  # ss.eval_legendre(n, x)).T
 
-    #         return c_k, y_k, GBT_A, GBT_B
+        elif self.measure == "lagt":
+            raise NotImplementedError("Translated Laguerre measure not implemented yet")
 
-    #     return nn.vmap(vmap_call, in_axes=(0))(f=f)
+        elif self.measure == "fourier":
+            raise NotImplementedError("Fourier measures are not implemented yet")
+
+        else:
+            raise ValueError("invalid measure")
 
     def __call__(self, f, init_state=None, t_step=0, kernel=False):
-        # print(f"u shape:\n{f.shape}")
-        # print(f"u:\n{f}")
         if not kernel:
             if init_state is None:
-                init_state = jnp.zeros((self.N, 1))
+                init_state = jnp.zeros((f.shape[0], self.N, 1))
 
             # Ab, Bb, Cb, Db = self.collect_SSM_vars(
             #     self.A, self.B, self.C, self.D, f, t_step=t_step, alpha=self.GBT_alpha
@@ -112,80 +119,6 @@ class HiPPO(nn.Module):
             )
 
         return c_k, y_k, GBT_A, GBT_B
-
-    def measure_fn(self, c=0.0):
-
-        if self.measure == "legt":
-            fn = lambda x: jnp.heaviside(x, 0.0) * jnp.heaviside(1.0 - x, 0.0)
-
-        elif self.measure == "legs":
-            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
-
-        elif self.measure == "lagt":
-            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
-
-        elif self.measure in ["fourier"]:
-            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.heaviside(1.0 - x, 1.0)
-
-        else:
-            raise NotImplementedError
-
-        fn_tilted = lambda x: jnp.exp(c * x) * fn(x)
-
-        return fn_tilted
-
-    def basis(self, c=0.0, truncate_measure=True):
-        """
-        vals: list of times (forward in time)
-        returns: shape (T, N) where T is length of vals
-        """
-        L = self.max_length
-        vals = jnp.linspace(0.0, 1.0, L)
-        eval_matrix = None
-        if self.measure == "legt":
-            eval_matrix = jax.scipy.special.lpmn_values(
-                m=(self.N - 1), n=(self.N - 1), z=(2 * _vals - 1), is_normalized=False
-            ).T
-            eval_matrix *= (2 * jnp.arange(self.N) + 1) ** 0.5 * (-1) ** jnp.arange(
-                self.N
-            )
-
-        elif self.measure == "legs":
-            _vals = jnp.exp(-vals)
-            eval_matrix = jax.scipy.special.lpmn_values(
-                m=(self.N - 1), n=(self.N - 1), z=(2 * _vals - 1), is_normalized=False
-            ).T
-            eval_matrix *= (2 * jnp.arange(self.N) + 1) ** 0.5 * (-1) ** jnp.arange(
-                self.N
-            )
-
-        elif self.measure == "lagt":
-            vals = vals[::-1]
-            eval_matrix = ss.eval_genlaguerre(jnp.arange(self.N)[:, None], 0, vals)
-            eval_matrix = eval_matrix * jnp.exp(-vals / 2)
-            eval_matrix = eval_matrix.T
-
-        elif self.measure == "fourier":
-            cos = 2**0.5 * jnp.cos(
-                2 * jnp.pi * jnp.arange(self.N // 2)[:, None] * (vals)
-            )  # (N/2, T/dt)
-            sin = 2**0.5 * jnp.sin(
-                2 * jnp.pi * jnp.arange(self.N // 2)[:, None] * (vals)
-            )  # (N/2, T/dt)
-            cos[0] /= 2**0.5
-            eval_matrix = jnp.stack([cos.T, sin.T], axis=-1).reshape(
-                -1, self.N
-            )  # (T/dt, N)
-        #     print("eval_matrix shape", eval_matrix.shape)
-
-        if truncate_measure:
-            eval_matrix.at[self.measure_fn()(vals) == 0.0].set(0.0)  # TODO: fix this
-
-        self.eval_matrix = eval_matrix
-
-        p = eval_matrix
-
-        self.p = p * jnp.exp(-c * vals)[:, None]  # [::-1, None]
 
     def reconstruct(self, c):
         """
@@ -257,7 +190,7 @@ class HiPPO(nn.Module):
         N = A.shape[0]
 
         if t_step == 0:
-            L = f.shape[0]  # seq_L, 1
+            L = f.shape[1]  # seq_L, 1
             assert (
                 L == self.seq_L
             ), f"sequence length must match, currently {L} != {self.seq_L}"
@@ -329,12 +262,12 @@ class HiPPO(nn.Module):
         y_k_list = []
 
         c_k = c_0.copy()
-        for i in range(1, f.shape[0] + 1):
+        for i in range(1, f.shape[1] + 1):
             Ad_i, Bd_i, Cd_i, Dd_i = self.collect_SSM_vars(
                 A=A, B=B, C=C, D=D, f=f, t_step=i, alpha=alpha
             )
-            c_k, y_k = self.loop_step(
-                Ad=Ad_i, Bd=Bd_i, Cd=Cd_i, Dd=Dd_i, c_k_i=c_k, f_k=f[i - 1][0]
+            c_k, y_k = jax.vmap(self.loop_step, in_axes=(None, None, None, None, 0, 0))(
+                Ad_i, Bd_i, Cd_i, Dd_i, c_k, f[:, i - 1, :]
             )
             c_k_list.append(c_k.copy())
             y_k_list.append(y_k.copy())

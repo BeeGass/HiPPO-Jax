@@ -1,7 +1,10 @@
 import pytest
 import jax
+from jax import vmap
 import jax.numpy as jnp
 import numpy as np
+from src.data.process import moving_window, rolling_window
+
 
 # --- Random Keys
 
@@ -10,7 +13,7 @@ import numpy as np
 def key_generator():
     seed = 1701
     key = jax.random.PRNGKey(seed)
-    num_copies = 8
+    num_copies = 12
     return jax.random.split(key, num=num_copies)
 
 
@@ -78,72 +81,36 @@ def big_N():
 
 # --- Sequence Inputs ---
 @pytest.fixture
-def random_input():
-    np.random.seed(1701)
-    return np.array(
-        [
-            [0.3527],
-            [0.6617],
-            [0.2434],
-            [0.6674],
-            [1.2293],
-            [0.0964],
-            [-2.2756],
-            [0.5618],
-        ],
-        dtype=np.float32,
-    )
+def random_1_input(key_generator):
+    batch_size = 1
+    data_size = 512
+    input_size = 1
+    x = jax.random.randint(key_generator[8], (batch_size, data_size), 0, 255)
+    return vmap(moving_window, in_axes=(0, None))(x, input_size)
 
 
 @pytest.fixture
-def ones_input():
-    np.random.seed(1701)
-    return np.array(
-        [
-            [1.0000],
-            [1.0000],
-            [1.0000],
-            [1.0000],
-            [1.0000],
-            [1.0000],
-            [1.0000],
-            [1.0000],
-        ],
-        dtype=np.float32,
-    )
+def random_16_input(key_generator):
+    batch_size = 16
+    data_size = 512
+    input_size = 1
+    x = jax.random.randint(key_generator[8], (batch_size, data_size), 0, 255)
+    return vmap(moving_window, in_axes=(0, None))(x, input_size)
 
 
 @pytest.fixture
-def zeros_input():
-    np.random.seed(1701)
-    return np.array(
-        [
-            [0.0000],
-            [0.0000],
-            [0.0000],
-            [0.0000],
-            [0.0000],
-            [0.0000],
-            [0.0000],
-            [0.0000],
-        ],
-        dtype=np.float32,
-    )
+def random_32_input(key_generator):
+    batch_size = 32
+    data_size = 512
+    input_size = 1
+    x = jax.random.randint(key_generator[9], (batch_size, data_size), 0, 255)
+    return vmap(moving_window, in_axes=(0, None))(x, input_size)
 
 
 @pytest.fixture
-def desc_input():
-    np.random.seed(1701)
-    return np.array(
-        [
-            [7.0000],
-            [6.0000],
-            [5.0000],
-            [4.0000],
-            [3.0000],
-            [2.0000],
-            [1.0000],
-            [0.0000],
-        ],
-        dtype=np.float32,
-    )
+def random_64_input(key_generator):
+    batch_size = 64
+    data_size = 512
+    input_size = 1
+    x = jax.random.randint(key_generator[10], (batch_size, data_size), 0, 255)
+    return vmap(moving_window, in_axes=(0, None))(x, input_size)

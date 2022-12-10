@@ -86,11 +86,12 @@ from src.tests.hippo_tests.hippo_utils import (
     foud_key,
 )
 from src.tests.hippo_tests.hippo_utils import (
-    random_input,
-    ones_input,
-    zeros_input,
-    desc_input,
+    random_1_input,
+    random_16_input,
+    random_32_input,
+    random_64_input,
 )
+import jax
 
 # ------------------------------------------------ #
 # --------------- Test HiPPO Matrices ------------ #
@@ -564,31 +565,71 @@ def test_dplr_foud(dplr_foud, gu_dplr_foud):
 # ------------------------------------------------ #
 
 
-def test_hippo_legs_operator(hippo_legs, gu_hippo_legs, random_input, legs_key):
+def test_hippo_legs_GBT(hippo_legs, gu_hippo_legs):
     print("HiPPO OPERATOR LEGS")
     i = 0
-    x_tensor = torch.tensor(random_input, dtype=torch.float32)
-    x_jnp = jnp.asarray(x_tensor, dtype=jnp.float32)  # convert torch array to jax array
-    params = hippo_legs.init(legs_key, f=x_jnp, t_step=(x_jnp.shape[0]))
-    c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_legs.apply(
-        params, f=x_jnp, t_step=(x_jnp.shape[0])
+    for i, (GBT_A, GBT_B) in enumerate(
+        zip(hippo_legs.GBT_A_list, hippo_legs.GBT_B_list)
+    ):
+        gu_GBT_A, gu_GBT_B = (
+            jnp.asarray(gu_hippo_legs.A_stacked[i], dtype=jnp.float32),
+            jnp.asarray(gu_hippo_legs.B_stacked[i], dtype=jnp.float32),
+        )
+        print(f"GBT_A:\n{GBT_A}\n")
+        print(f"gu_GBT_A:\n{gu_GBT_A}\n")
+
+        print(f"GBT_B:\n{GBT_B}\n")
+        print(f"gu_GBT_B:\n{gu_GBT_B}\n")
+        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-06)
+        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-06)
+
+
+def test_hippo_legs_operator(hippo_legs, gu_hippo_legs, random_16_input, legs_key):
+    print("HiPPO OPERATOR LEGS")
+    i = 0
+    x_np = np.asarray(random_16_input, dtype=np.float32)
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    params = hippo_legs.init(
+        legs_key, f=random_16_input, t_step=random_16_input.shape[1]
     )
+    c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_legs.apply(
+        params, f=random_16_input, t_step=random_16_input.shape[1]
+    )
+    c_k = jnp.stack(c_k_list, axis=0)
+    c_k = jnp.moveaxis(c_k, 0, 1)
+
     GU_c_k = gu_hippo_legs(x_tensor)
-    for i, c_k in enumerate(c_k_list):
-        g_c_k = GU_c_k[i][0]
-        gu = torch.unsqueeze(g_c_k, -1)
-        gu_c = jnp.asarray(gu, dtype=jnp.float32)  # convert torch array to jax array
-        assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
+    gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, -1, -2)
+
+    assert gu_c.shape == c_k.shape
+    assert c_k.shape[0] == 16
+    assert c_k.shape[1] == 512
+    assert c_k.shape[2] == 8
+    assert c_k.shape[3] == 1
+
+    for i in range(c_k.shape[0]):
+        for j in range(c_k.shape[1]):
+            # print(
+            #     f"batch {i} on trajectory {j} compare : {jnp.allclose(c_k[i,j,:,:], gu_c[i,j,:,:], rtol=1e-04, atol=1e-04)}"
+            # )
+            assert jnp.allclose(
+                c_k[i, j, :, :], gu_c[i, j, :, :], rtol=1e-04, atol=1e-04
+            ), f"batch {i} on trajectory {j} compare: {jnp.allclose(c_k[i,j,:,:], gu_c[i,j,:,:], rtol=1e-04, atol=1e-04)}"
 
 
-def test_hippo_legt_operator(hippo_legt, gu_hippo_legt, random_input, legt_key):
+def test_hippo_legt_operator(hippo_legt, gu_hippo_legt, random_16_input, legt_key):
     print("HiPPO OPERATOR LEGT")
     i = 0
-    x_tensor = torch.tensor(random_input, dtype=torch.float32)
-    x_jnp = jnp.asarray(x_tensor, dtype=jnp.float32)  # convert torch array to jax array
-    params = hippo_legt.init(legt_key, f=x_jnp, t_step=(x_jnp.shape[0]))
+    x_np = np.asarray(random_16_input, dtype=np.float32)
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    params = hippo_legt.init(
+        legt_key, f=random_16_input, t_step=random_16_input.shape[1]
+    )
     c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_legt.apply(
-        params, f=x_jnp, t_step=(x_jnp.shape[0])
+        params, f=random_16_input, t_step=random_16_input.shape[1]
     )
     GU_c_k = gu_hippo_legt(x_tensor)
     for i, c_k in enumerate(c_k_list):
@@ -598,14 +639,15 @@ def test_hippo_legt_operator(hippo_legt, gu_hippo_legt, random_input, legt_key):
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
 
 
-def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu, random_input, lmu_key):
+def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu, random_16_input, lmu_key):
     print("HiPPO OPERATOR LMU")
     i = 0
-    x_tensor = torch.tensor(random_input, dtype=torch.float32)
-    x_jnp = jnp.asarray(x_tensor, dtype=jnp.float32)  # convert torch array to jax array
-    params = hippo_lmu.init(lmu_key, f=x_jnp, t_step=(x_jnp.shape[0]))
+    x_np = np.asarray(random_16_input, dtype=np.float32)
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    params = hippo_lmu.init(lmu_key, f=random_16_input, t_step=random_16_input.shape[1])
     c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_lmu.apply(
-        params, f=x_jnp, t_step=(x_jnp.shape[0])
+        params, f=random_16_input, t_step=random_16_input.shape[1]
     )
     GU_c_k = gu_hippo_lmu(x_tensor)
     for i, c_k in enumerate(c_k_list):
@@ -615,14 +657,17 @@ def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu, random_input, lmu_key):
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
 
 
-def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt, random_input, lagt_key):
+def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt, random_16_input, lagt_key):
     print("HiPPO OPERATOR LAGT")
     i = 0
-    x_tensor = torch.tensor(random_input, dtype=torch.float32)
-    x_jnp = jnp.asarray(x_tensor, dtype=jnp.float32)  # convert torch array to jax array
-    params = hippo_lagt.init(lagt_key, f=x_jnp, t_step=(x_jnp.shape[0]))
+    x_np = np.asarray(random_16_input, dtype=np.float32)
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    params = hippo_lagt.init(
+        lagt_key, f=random_16_input, t_step=random_16_input.shape[1]
+    )
     c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_lagt.apply(
-        params, f=x_jnp, t_step=(x_jnp.shape[0])
+        params, f=random_16_input, t_step=random_16_input.shape[1]
     )
     GU_c_k = gu_hippo_lagt(x_tensor)
     for i, c_k in enumerate(c_k_list):
@@ -632,14 +677,15 @@ def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt, random_input, lagt_key):
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
 
 
-def test_hippo_fru_operator(hippo_fru, gu_hippo_fru, random_input, fru_key):
+def test_hippo_fru_operator(hippo_fru, gu_hippo_fru, random_16_input, fru_key):
     print("HiPPO OPERATOR FRU")
     i = 0
-    x_tensor = torch.tensor(random_input, dtype=torch.float32)
-    x_jnp = jnp.asarray(x_tensor, dtype=jnp.float32)  # convert torch array to jax array
-    params = hippo_fru.init(fru_key, f=x_jnp, t_step=(x_jnp.shape[0]))
+    x_np = np.asarray(random_16_input, dtype=np.float32)
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    params = hippo_fru.init(fru_key, f=random_16_input, t_step=random_16_input.shape[1])
     c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_fru.apply(
-        params, f=x_jnp, t_step=(x_jnp.shape[0])
+        params, f=random_16_input, t_step=random_16_input.shape[1]
     )
     GU_c_k = gu_hippo_fru(x_tensor)
     for i, c_k in enumerate(c_k_list):
@@ -649,14 +695,17 @@ def test_hippo_fru_operator(hippo_fru, gu_hippo_fru, random_input, fru_key):
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
 
 
-def test_hippo_fout_operator(hippo_fout, gu_hippo_fout, random_input, fout_key):
+def test_hippo_fout_operator(hippo_fout, gu_hippo_fout, random_16_input, fout_key):
     print("HiPPO OPERATOR FOUT")
     i = 0
-    x_tensor = torch.tensor(random_input, dtype=torch.float32)
-    x_jnp = jnp.asarray(x_tensor, dtype=jnp.float32)  # convert torch array to jax array
-    params = hippo_fout.init(fout_key, f=x_jnp, t_step=(x_jnp.shape[0]))
+    x_np = np.asarray(random_16_input, dtype=np.float32)
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    params = hippo_fout.init(
+        fout_key, f=random_16_input, t_step=random_16_input.shape[1]
+    )
     c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_fout.apply(
-        params, f=x_jnp, t_step=(x_jnp.shape[0])
+        params, f=random_16_input, t_step=random_16_input.shape[1]
     )
     GU_c_k = gu_hippo_fout(x_tensor)
     for i, c_k in enumerate(c_k_list):
@@ -666,14 +715,17 @@ def test_hippo_fout_operator(hippo_fout, gu_hippo_fout, random_input, fout_key):
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
 
 
-def test_hippo_foud_operator(hippo_foud, gu_hippo_foud, random_input, foud_key):
+def test_hippo_foud_operator(hippo_foud, gu_hippo_foud, random_16_input, foud_key):
     print("HiPPO OPERATOR FOUD")
     i = 0
-    x_tensor = torch.tensor(random_input, dtype=torch.float32)
-    x_jnp = jnp.asarray(x_tensor, dtype=jnp.float32)  # convert torch array to jax array
-    params = hippo_foud.init(foud_key, f=x_jnp, t_step=(x_jnp.shape[0]))
+    x_np = np.asarray(random_16_input, dtype=np.float32)
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    params = hippo_foud.init(
+        foud_key, f=random_16_input, t_step=random_16_input.shape[1]
+    )
     c_k_list, y_k_list, GBT_A_list, GBT_B_list = hippo_foud.apply(
-        params, f=x_jnp, t_step=(x_jnp.shape[0])
+        params, f=random_16_input, t_step=random_16_input.shape[1]
     )
     GU_c_k = gu_hippo_foud(x_tensor)
     for i, c_k in enumerate(c_k_list):

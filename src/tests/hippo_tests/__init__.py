@@ -72,10 +72,10 @@ from src.tests.hippo_tests.trans_matrices import (  # transition dplr matrices f
 )
 from src.tests.hippo_tests.hippo_utils import N, N2, N16, big_N
 from src.tests.hippo_tests.hippo_utils import (
-    random_input,
-    ones_input,
-    zeros_input,
-    desc_input,
+    random_1_input,
+    random_16_input,
+    random_32_input,
+    random_64_input,
 )
 from src.tests.hippo_tests.hippo_utils import (
     key_generator,

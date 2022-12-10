@@ -91,10 +91,10 @@ from src.tests.hippo_tests.hippo_utils import N, N2, N16, big_N
 
 # inputs for the HiPPO operators
 from src.tests.hippo_tests.hippo_utils import (
-    random_input,
-    ones_input,
-    zeros_input,
-    desc_input,
+    random_1_input,
+    random_16_input,
+    random_32_input,
+    random_64_input,
 )
 
 # Psuedo-random number generator
