@@ -566,7 +566,7 @@ def test_dplr_foud(dplr_foud, gu_dplr_foud):
 
 
 def test_GBT_legs(hippo_legs, gu_hippo_legs, legs_matrices, random_16_input):
-    print("HiPPO OPERATOR LEGS")
+    print("HiPPO GBT LEGS")
     L = random_16_input.shape[1]
     A, B = legs_matrices
 
@@ -583,7 +583,7 @@ def test_GBT_legs(hippo_legs, gu_hippo_legs, legs_matrices, random_16_input):
 
 
 def test_hippo_legs_operator(hippo_legs, gu_hippo_legs, random_16_input, legs_key):
-    print("HiPPO GBT LEGS")
+    print("HiPPO OPERATOR LEGS")
     i = 0
     x_np = np.asarray(random_16_input, dtype=np.float32)
     x_tensor = torch.tensor(x_np, dtype=torch.float32)
