@@ -29,6 +29,8 @@ The data we used to benchmark this is:
 - [PanNuke](https://jgamper.github.io/PanNukeDataset/)
 - [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/)
 - [PanNuke](https://jgamper.github.io/PanNukeDataset/)
+- [Mesmer](https://www.biorxiv.org/content/10.1101/2021.03.01.431313v2.full.pdf)
+- [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga)
 
 **View [documentation](https://pathml.readthedocs.io/en/latest/)**
 

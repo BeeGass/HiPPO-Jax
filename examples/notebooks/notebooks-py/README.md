@@ -11,6 +11,7 @@
 
 - [Diagonal State Spaces are as Effective as Structured State Spaces](https://arxiv.org/pdf/2203.14343.pdf) - DSS
 - [Long Range Language Modeling via Gated State Spaces](https://arxiv.org/pdf/2206.13947.pdf) - GSS
+- [Simplifying and Understanding State Space Models with Diagonal Linear RNNs](https://arxiv.org/abs/2212.00768) - DLR
 
 **S4:**
 

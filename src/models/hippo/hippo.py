@@ -48,10 +48,10 @@ class HiPPO(nn.Module):
 
         GBT_a_list = []
         GBT_b_list = []
-        for i in range(self.seq_L):
+        for i in range(1, self.seq_L + 1):
             # TODO: make this scale invariant optional
-            GBT_A, GBT_B, _, _ = self.discretize(
-                self, A, B, self.C, self.D, step=i, alpha=self.GBT_alpha
+            GBT_A, GBT_B = self.discretion(
+                A, B, step=i, alpha=self.GBT_alpha, dtype=jnp.float32
             )
             GBT_a_list.append(GBT_A)
             GBT_b_list.append(GBT_B)
@@ -132,7 +132,8 @@ class HiPPO(nn.Module):
         """
         return (self.eval_matrix @ jnp.expand_dims(c, -1)).squeeze(-1)
 
-    def discretize(self, A, B, C, D, step, alpha=0.5):
+    # @staticmethod
+    def discretion(self, A, B, step, alpha=0.5, dtype=jnp.float32):
         """
         function used for discretizing the HiPPO matrix
 
@@ -162,12 +163,44 @@ class HiPPO(nn.Module):
             GBT_A = jax.scipy.linalg.expm(step_size * A)
             GBT_B = (jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step_size * A) - I)) @ B
 
-        return (
-            GBT_A.astype(jnp.float32),
-            GBT_B.astype(jnp.float32),
-            C.astype(jnp.float32),
-            D.astype(jnp.float32),
-        )
+        return GBT_A.astype(dtype), GBT_B.astype(dtype)
+
+    # def discretize(self, A, B, C, D, step, alpha=0.5):
+    #     """
+    #     function used for discretizing the HiPPO matrix
+
+    #     Args:
+    #         A (jnp.ndarray): matrix to be discretized
+    #         B (jnp.ndarray): matrix to be discretized
+    #         C (jnp.ndarray): matrix to be discretized
+    #         D (jnp.ndarray): matrix to be discretized
+    #         step (float): step size used for discretization
+    #         alpha (float, optional): used for determining which generalized bilinear transformation to use
+    #             - forward Euler corresponds to α = 0,
+    #             - backward Euler corresponds to α = 1,
+    #             - bilinear corresponds to α = 0.5,
+    #             - Zero-order Hold corresponds to α > 1
+    #     """
+    #     I = jnp.eye(A.shape[0])
+    #     step_size = 1 / step
+    #     part1 = I - (step_size * alpha * A)
+    #     part2 = I + (step_size * (1 - alpha) * A)
+
+    #     GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
+
+    #     base_GBT_B = jnp.linalg.lstsq(part1, B, rcond=None)[0]
+    #     GBT_B = step_size * base_GBT_B
+
+    #     if alpha > 1:  # Zero-order Hold
+    #         GBT_A = jax.scipy.linalg.expm(step_size * A)
+    #         GBT_B = (jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step_size * A) - I)) @ B
+
+    #     return (
+    #         GBT_A.astype(jnp.float32),
+    #         GBT_B.astype(jnp.float32),
+    #         C.astype(jnp.float32),
+    #         D.astype(jnp.float32),
+    #     )
 
     def collect_SSM_vars(self, A, B, C, D, f, t_step=0, alpha=0.5):
         """
@@ -262,19 +295,14 @@ class HiPPO(nn.Module):
         y_k_list = []
 
         c_k = c_0.copy()
-        for i in range(1, f.shape[1] + 1):
-            Ad_i, Bd_i, Cd_i, Dd_i = self.collect_SSM_vars(
-                A=A, B=B, C=C, D=D, f=f, t_step=i, alpha=alpha
-            )
+        for i in range(f.shape[1]):
             c_k, y_k = jax.vmap(self.loop_step, in_axes=(None, None, None, None, 0, 0))(
-                Ad_i, Bd_i, Cd_i, Dd_i, c_k, f[:, i - 1, :]
+                self.GBT_A_list[i], self.GBT_B_list[i], C, D, c_k, f[:, i, :]
             )
             c_k_list.append(c_k.copy())
             y_k_list.append(y_k.copy())
-            GBT_A_lst.append(Ad_i.copy())
-            GBT_B_lst.append(Bd_i.copy())
 
-        return c_k_list, y_k_list, GBT_A_lst, GBT_B_lst
+        return c_k_list, y_k_list, self.GBT_A_list, self.GBT_B_list
 
     def loop_step(self, Ad, Bd, Cd, Dd, c_k_i, f_k):
         """
