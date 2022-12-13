@@ -1,4 +1,5 @@
 # S4'mer
+<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Typical_State_Space_model.svg/472px-Typical_State_Space_model.svg.png width=600>
 
 [![black](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml/badge.svg)](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml)
 
@@ -37,73 +38,132 @@ The data we used to benchmark this is:
 :construction: the `dev` branch is under active development, with experimental features, bug fixes, and refactors that may happen at any time!
 Stable versions are available as tagged releases on GitHub, or as versioned releases on PyPI
 
-# Installation
+## Installation
+---
+There are several ways to install S4mer:
 
-Install [poetry](https://python-poetry.org/):
+1. Use a package manager
+    1. poetry install (recommended for users)
+    2. pip install from PyPI
+2. Clone repo to local machine and install from source (recommended for developers/contributors)
+
+Ensure your [CUDA drivers](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#installation) have been installed correctly, this will effect dependencies like [Jax](https://github.com/google/jax#installation) and [PyTorch](https://pytorch.org/)
+
+Note: these instructions are for Linux. Commands may be different for other platforms.
+
+### Installation option 1: poetry install
+---
+
+1. Install [poetry](https://python-poetry.org/):
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3 - --preview
+curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-Ensure python version is set to 3.8:
+2. Ensure python version is set to 3.8:
 
 ```bash
 $ python --version
 > 3.8.x
 ```
 
-Install lock file dependencies:
+3. Activate poetry virtual environment
 
 ```bash
-poetry install --with jax,torch,mltools,dataset
+poetry shell
 ```
 
-if you plan to use a jupyter notebook also install:
+4. (optional) Update the dependencies to ensure dependencies work with your system
 
 ```bash
-poetry install --with jupyter
+poetry update
+```
+
+5. Install lock file dependencies:
+
+```bash
+poetry install --with jax,torch,mltools,jupyter,additional,dataset
+```
+
+### Installation option 1: pip install
+---
+
+1. Create and activate virtual environment
+```bash
+conda create --name s4mer python=3.8
+conda activate s4mer
+```
+
+2. Install dependencies 
+```bash
+pip install -r requirements.txt
+```
+
+### Installation option 2: clone repo and install from source
+---
+
+1. Clone repo:
+
+via HTTPS:
+```bash
+git clone https://github.com/Dana-Farber-AIOS/s4mer.git
+cd s4mer
+```
+
+via SSH
+```bash
+git clone git@github.com:Dana-Farber-AIOS/s4mer.git
+cd s4mer
+```
+
+2. Create conda environment:
+
+```bash
+conda env create -f requirements.txt
+conda activate s4mer
+```
+
+3. Install `S4mer` from source:
+
+```bash
+pip install -e .
 ```
 
 Thats it!
 
-## Dev
+## Examples
 
-## Installation
+```python
+import jax.random as jr
 
-Install [poetry](https://python-poetry.org/):
-
-```bash
-curl -sSL https://install.python-poetry.org | python3 - --preview
+key1, key2, key3 = jr.split(jr.PRNGKey(0), 3)
 ```
 
-Ensure python version is set to 3.8:
+**HiPPO**
 
-```bash
-$ python --version
-> 3.8.13
+```python
+from s4mer.src.models.hippo.transition import TransMatrix
+from s4mer.src.models.hippo.hippo import HiPPO
+
+N = 100
+gbt_type = 0.5
+L = 784 # length of data
+measure = "legs"
+
+matrices = TransMatrix(N, measure)
+A = matrices.A_matrix
+B = matrices.B_matrix
+
+hippo = HiPPO(
+    N, L, 1.0 / L, gbt_type, L, A, B, measure
+)
+
+
 ```
 
-Install lock file dependencies:
-
-```bash
-poetry install --with torch,jax,mltools,additional,dataset
-```
-
-if you plan to use a jupyter notebook:
-
-```bash
-poetry install --with jupyter
-```
-
-Refer to [this](https://python-poetry.org/docs/cli#add) in the future if you need help
-
-```bash
-poetry add --editable ../s4mer/
-```
+# Running Experiments
 
 There are several ways to run your own local `S4'former` experiments:
-
-TODO: add installation guide
 
 # Contributing
 
@@ -124,6 +184,9 @@ Commercial license options are available also.
 
 Questions? Comments? Suggestions? Get in touch!
 
-[bryan_gass@dfci.harvard.edu](mailto:bryan_gass@dfci.harvard.edu)
+[bagass@wpi.edu](mailto:bagass@wpi.edu)
 
-<img src=https://raw.githubusercontent.com/Dana-Farber-AIOS/pathml/master/docs/source/_static/images/dfci_cornell_joint_logos.png width="750">
+<p align="center"> 
+<img style="vertical-align:middle" src=https://raw.githubusercontent.com/Dana-Farber-AIOS/pathml/master/docs/source/_static/images/dfci_cornell_joint_logos.png width="525"> 
+<img style="vertical-align:middle" src=https://www.wpi.edu/sites/default/files/inline-image/Offices/Marketing-Communications/WPI_Inst_Prim_FulClr_PREVIEW.png?1670371200029 width=200>
+</p> 

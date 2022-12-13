@@ -19,7 +19,7 @@ from src.tests.hippo_tests.hippo_utils import (
 def legs_matrices():
     the_measure = "legs"
     legs_matrices = TransMatrix(N=8, measure=the_measure)
-    return legs_matrices.A_matrix, legs_matrices.B_matrix
+    return legs_matrices.A, legs_matrices.B
 
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def dplr_legs():
 def legt_matrices():
     the_measure = "legt"
     legt_matrices = TransMatrix(N=8, measure=the_measure, lambda_n=1.0)
-    return legt_matrices.A_matrix, legt_matrices.B_matrix
+    return legt_matrices.A, legt_matrices.B
 
 
 @pytest.fixture
@@ -77,7 +77,7 @@ def legt_lmu_matrices():
     lmu_matrices = TransMatrix(
         N=8, measure=the_measure, lambda_n=2.0
     )  # change lambda so resulting matrix is in the form of LMU
-    return lmu_matrices.A_matrix, lmu_matrices.B_matrix
+    return lmu_matrices.A, lmu_matrices.B
 
 
 @pytest.fixture
@@ -112,7 +112,7 @@ def lagt_matrices():
         alpha=0.0,  # change resulting tilt through alpha and beta
         beta=1.0,
     )  # change resulting tilt through alpha and beta
-    return lagt_matrices.A_matrix, lagt_matrices.B_matrix
+    return lagt_matrices.A, lagt_matrices.B
 
 
 @pytest.fixture
@@ -153,7 +153,7 @@ def fru_matrices():
     the_measure = "fourier"
     fourier_type = "fru"
     fru_matrices = TransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
-    return fru_matrices.A_matrix, fru_matrices.B_matrix
+    return fru_matrices.A, fru_matrices.B
 
 
 @pytest.fixture
@@ -186,7 +186,7 @@ def fout_matrices():
     the_measure = "fourier"
     fourier_type = "fout"
     fout_matrices = TransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
-    return fout_matrices.A_matrix, fout_matrices.B_matrix
+    return fout_matrices.A, fout_matrices.B
 
 
 @pytest.fixture
@@ -219,7 +219,7 @@ def foud_matrices():
     the_measure = "fourier"
     fourier_type = "foud"
     foud_matrices = TransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
-    return foud_matrices.A_matrix, foud_matrices.B_matrix
+    return foud_matrices.A, foud_matrices.B
 
 
 @pytest.fixture
@@ -255,7 +255,7 @@ def dplr_foud():
 def gu_legs_matrices():
     the_measure = "legs"
     legs_matrices = GuTransMatrix(N=8, measure=the_measure)
-    return legs_matrices.A_matrix, legs_matrices.B_matrix
+    return legs_matrices.A, legs_matrices.B
 
 
 @pytest.fixture
@@ -281,7 +281,7 @@ def gu_dplr_legs():
 def gu_legt_matrices():
     the_measure = "legt"
     legt_matrices = GuTransMatrix(N=8, measure=the_measure, lambda_n=1.0)
-    return legt_matrices.A_matrix, legt_matrices.B_matrix
+    return legt_matrices.A, legt_matrices.B
 
 
 @pytest.fixture
@@ -313,7 +313,7 @@ def gu_legt_lmu_matrices():
     lmu_matrices = GuTransMatrix(
         N=8, measure=the_measure, lambda_n=2.0
     )  # change lambda so resulting matrix is in the form of LMU
-    return lmu_matrices.A_matrix, lmu_matrices.B_matrix
+    return lmu_matrices.A, lmu_matrices.B
 
 
 @pytest.fixture
@@ -348,7 +348,7 @@ def gu_lagt_matrices():
         alpha=0.0,  # change resulting tilt through alpha and beta
         beta=1.0,
     )  # change resulting tilt through alpha and beta
-    return lagt_matrices.A_matrix, lagt_matrices.B_matrix
+    return lagt_matrices.A, lagt_matrices.B
 
 
 @pytest.fixture
@@ -389,7 +389,7 @@ def gu_fru_matrices():
     the_measure = "fourier"
     fourier_type = "fru"
     fru_matrices = GuTransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
-    return fru_matrices.A_matrix, fru_matrices.B_matrix
+    return fru_matrices.A, fru_matrices.B
 
 
 @pytest.fixture
@@ -422,7 +422,7 @@ def gu_fout_matrices():
     the_measure = "fourier"
     fourier_type = "fout"
     fout_matrices = GuTransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
-    return fout_matrices.A_matrix, fout_matrices.B_matrix
+    return fout_matrices.A, fout_matrices.B
 
 
 @pytest.fixture
@@ -455,7 +455,7 @@ def gu_foud_matrices():
     the_measure = "fourier"
     fourier_type = "foud"
     foud_matrices = GuTransMatrix(N=8, measure=the_measure, fourier_type=fourier_type)
-    return foud_matrices.A_matrix, foud_matrices.B_matrix
+    return foud_matrices.A, foud_matrices.B
 
 
 @pytest.fixture

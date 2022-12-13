@@ -199,7 +199,7 @@ A_{nk} &=
 -2\pi k & \text{if } k - n = 1, n \text{ odd}  \\
 0 & \text{otherwise}  \\
 \end{cases} \\
-B_{n} &= 
+B_{n} &=
 \begin{cases}
 2 & \text{if } n = 0  \\
 2\sqrt{2} & \text{if } n \text{ odd}  \\

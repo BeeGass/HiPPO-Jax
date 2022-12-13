@@ -3,11 +3,18 @@ import jax.numpy as jnp
 from jax.numpy.linalg import inv
 from scipy import special as ss
 from opt_einsum import contract
+from typing import Any
 
 
 class TransMatrix:
     def __init__(
-        self, N, measure="legs", lambda_n=1, fourier_type="fru", alpha=0, beta=1
+        self,
+        N: int,
+        measure: str = "legs",
+        lambda_n: float = 1.0,
+        alpha: float = 0.0,
+        beta: float = 1.0,
+        dtype: Any = jnp.float32,
     ):
         """
         Instantiates the HiPPO matrix of a given order using a particular measure.
@@ -37,17 +44,17 @@ class TransMatrix:
         """
         A = None
         B = None
-        if measure == "legt":
-            A, B = self.build_LegT(N=N, lambda_n=lambda_n)
+        if measure in ["legt", "lmu"]:
+            A, B = self.build_LegT(N=N, lambda_n=lambda_n, dtype=dtype)
 
         elif measure == "lagt":
-            A, B = self.build_LagT(alpha=alpha, beta=beta, N=N)
+            A, B = self.build_LagT(alpha=alpha, beta=beta, N=N, dtype=dtype)
 
         elif measure == "legs":
-            A, B = self.build_LegS(N=N)
+            A, B = self.build_LegS(N=N, dtype=dtype)
 
-        elif measure == "fourier":
-            A, B = self.build_Fourier(N=N, fourier_type=fourier_type)
+        elif measure in ["fout", "fru", "foud"]:
+            A, B = self.build_Fourier(N=N, fourier_type=measure, dtype=dtype)
 
         elif measure == "random":
             A = jnp.random.randn(N, N) / N
@@ -60,12 +67,12 @@ class TransMatrix:
         else:
             raise ValueError("Invalid HiPPO type")
 
-        self.A_matrix = (A.copy()).astype(jnp.float32)
-        self.B_matrix = (B.copy()).astype(jnp.float32)
+        self.A = (A.copy()).astype(dtype)
+        self.B = (B.copy()).astype(dtype)
 
     # Translated Legendre (LegT) - vectorized
     @staticmethod
-    def build_LegT(N, lambda_n=1):
+    def build_LegT(N, lambda_n=1, dtype=jnp.float32):
         """
         The, vectorized implementation of the, measure derived from the translated Legendre basis.
 
@@ -80,7 +87,7 @@ class TransMatrix:
             B (jnp.ndarray): The B HiPPO matrix.
 
         """
-        q = jnp.arange(N, dtype=jnp.float32)
+        q = jnp.arange(N, dtype=dtype)
         k, n = jnp.meshgrid(q, q)
         case = jnp.power(-1.0, (n - k))
         A = None
@@ -101,11 +108,11 @@ class TransMatrix:
                 k <= n, A_base * case, A_base
             )  # if n >= k, then case_2 * A_base is used, otherwise A_base
 
-        return -A, B
+        return -A.astype(dtype), B.astype(dtype)
 
     # Translated Laguerre (LagT) - non-vectorized
     @staticmethod
-    def build_LagT(alpha, beta, N):
+    def build_LagT(alpha, beta, N, dtype=jnp.float32):
         """
         The, vectorized implementation of the, measure derived from the translated Laguerre basis.
 
@@ -135,11 +142,11 @@ class TransMatrix:
             * pre_B
         )
 
-        return A, B
+        return A.astype(dtype), B.astype(dtype)
 
     # Scaled Legendre (LegS) vectorized
     @staticmethod
-    def build_LegS(N):
+    def build_LegS(N, dtype=jnp.float32):
         """
         The, vectorized implementation of the, measure derived from the Scaled Legendre basis.
 
@@ -151,7 +158,7 @@ class TransMatrix:
             B (jnp.ndarray): The B HiPPO matrix.
 
         """
-        q = jnp.arange(N, dtype=jnp.float32)
+        q = jnp.arange(N, dtype=dtype)
         k, n = jnp.meshgrid(q, q)
         pre_D = jnp.sqrt(jnp.diag(2 * q + 1))
         B = D = jnp.diag(pre_D)[:, None]
@@ -160,11 +167,11 @@ class TransMatrix:
 
         A = jnp.where(n > k, A_base, jnp.where(n == k, n + 1, 0.0))
 
-        return -A.astype(jnp.float32), B.astype(jnp.float32)
+        return -A.astype(dtype), B.astype(dtype)
 
     # Fourier Basis OPs and functions - vectorized
     @staticmethod
-    def build_Fourier(N, fourier_type="fru"):
+    def build_Fourier(N, fourier_type="fru", dtype=jnp.float32):
         """
         Vectorized measure implementations derived from fourier basis.
 
@@ -184,12 +191,12 @@ class TransMatrix:
             jnp.stack([jnp.zeros(N // 2), jnp.zeros(N // 2)], axis=-1).reshape(-1)[1:],
             1,
         )
-        B = jnp.zeros(A.shape[1], dtype=jnp.float32)
+        B = jnp.zeros(A.shape[1], dtype=dtype)
 
         B = B.at[0::2].set(jnp.sqrt(2))
         B = B.at[0].set(1)
 
-        q = jnp.arange(A.shape[1], dtype=jnp.float32)
+        q = jnp.arange(A.shape[1], dtype=dtype)
         k, n = jnp.meshgrid(q, q)
 
         n_odd = n % 2 == 0
@@ -266,7 +273,7 @@ class TransMatrix:
 
         B = B[:, None]
 
-        return A.astype(jnp.float32), B.astype(jnp.float32)
+        return A.astype(dtype), B.astype(dtype)
 
 
 class LowRankMatrix:

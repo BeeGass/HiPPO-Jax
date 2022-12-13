@@ -14,9 +14,7 @@ from src.models.hippo.unroll import *
 
 
 class GuTransMatrix:
-    def __init__(
-        self, N, measure="legs", lambda_n=1.0, fourier_type="fru", alpha=0, beta=1
-    ):
+    def __init__(self, N, measure="legs", lambda_n=1.0, alpha=0.0, beta=1.0):
         """
         Instantiates the HiPPO matrix of a given order using a particular measure.
         Args:
@@ -45,7 +43,7 @@ class GuTransMatrix:
         """
         A = None
         B = None
-        if measure == "legt":
+        if measure in ["legt", "lmu"]:
             A, B = self.build_gu_LegT(N=N, lambda_n=lambda_n)
 
         elif measure == "lagt":
@@ -54,8 +52,8 @@ class GuTransMatrix:
         elif measure == "legs":
             A, B = self.build_gu_LegS(N=N)
 
-        elif measure == "fourier":
-            A, B = self.build_gu_Fourier(N=N, fourier_type=fourier_type)
+        elif measure in ["fout", "fru", "foud"]:
+            A, B = self.build_gu_Fourier(N=N, fourier_type=measure)
 
         elif measure == "random":
             A = jnp.random.randn(N, N) / N
@@ -68,8 +66,8 @@ class GuTransMatrix:
         else:
             raise ValueError("Invalid HiPPO type")
 
-        self.A_matrix = A.copy()
-        self.B_matrix = B.copy()
+        self.A = A.copy()
+        self.B = B.copy()
 
     # Scaled Legendre (LegS), non-vectorized
     @staticmethod

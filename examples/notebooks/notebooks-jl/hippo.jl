@@ -12,7 +12,7 @@ Create an orthogonal state-space model `sys::StateSpace{Continuous, T}` derived 
 function legt_ss end
 
 function legt_ss(T::Type{<:AbstractFloat}, dim::Integer, theta::Real=1)
-    A, B = setprecision(precision(T)*2) do 
+    A, B = setprecision(precision(T)*2) do
         B = sqrt.(big.(1:2:dim+dim))
         A = -flipsign.(convert(Matrix{T},(inv(big(theta)) .* B * B')),((-one(Int8)) .^ triu([1:dim;] .- [1:dim;]')))
         return A, convert(Vector{T},B)
@@ -85,7 +85,7 @@ Create an orthogonal state-space model `sys::StateSpace{Continuous, T}` derived 
 function fout_ss end
 
 function fout_ss(T::Type{<:AbstractFloat}, dim::Integer, theta::Real=1)
-    
+
     # Construct the normal component of the system/state transition matrix
     d = pi*[zeros(Int64,div(dim,2)) [0:2:dim-1;]]'[2:dim] * theta
     normal = Tridiagonal(d,zeros(dim),-d) # Use a Tridiagonal view to prevent creating a dense matrix
@@ -96,11 +96,11 @@ function fout_ss(T::Type{<:AbstractFloat}, dim::Integer, theta::Real=1)
     low_rank[1] = √2
 
     # Constuct A from normal and low-rank
-    A = T.(normal .- low_rank .* low_rank' .* theta) 
+    A = T.(normal .- low_rank .* low_rank' .* theta)
     A[1,1] = T(-2.0 * theta) # Fix (√2.0)² ≠ 2.0
-    
+
     # Copy B from A for efficency and numerics
-    B = -copy(A[1,:]) 
+    B = -copy(A[1,:])
 
     return ss(A, B, Matrix(I, dim, dim), 0)
 end

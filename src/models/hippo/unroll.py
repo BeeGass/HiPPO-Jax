@@ -1,7 +1,60 @@
+import numpy as np
+from scipy import special as ss
 import torch
 import torch.nn.functional as F
 
 ### Utilities
+
+
+def measure(method, c=0.0):
+    if method in ["legt", "lmu"]:
+        fn = lambda x: np.heaviside(x, 0.0) * np.heaviside(1.0 - x, 0.0)
+    elif method == "legs":
+        fn = lambda x: np.heaviside(x, 1.0) * np.exp(-x)
+    elif method == "lagt":
+        fn = lambda x: np.heaviside(x, 1.0) * np.exp(-x)
+    elif method in ["fourier", "fru", "fout", "foud"]:
+        fn = lambda x: np.heaviside(x, 1.0) * np.heaviside(1.0 - x, 1.0)
+    else:
+        raise NotImplementedError
+    fn_tilted = lambda x: np.exp(c * x) * fn(x)
+    return fn_tilted
+
+
+def basis(method, N, vals, c=0.0, truncate_measure=True):
+    """
+    vals: list of times (forward in time)
+    returns: shape (T, N) where T is length of vals
+    """
+    if method in ["legt", "lmu"]:
+        eval_matrix = ss.eval_legendre(np.arange(N)[:, None], 2 * vals - 1).T
+        eval_matrix *= (2 * np.arange(N) + 1) ** 0.5 * (-1) ** np.arange(N)
+    elif method == "legs":
+        _vals = np.exp(-vals)
+        eval_matrix = ss.eval_legendre(np.arange(N)[:, None], 1 - 2 * _vals).T  # (L, N)
+        eval_matrix *= (2 * np.arange(N) + 1) ** 0.5 * (-1) ** np.arange(N)
+    elif method == "lagt":
+        vals = vals[::-1]
+        eval_matrix = ss.eval_genlaguerre(np.arange(N)[:, None], 0, vals)
+        eval_matrix = eval_matrix * np.exp(-vals / 2)
+        eval_matrix = eval_matrix.T
+    elif method in ["fourier", "fru", "fout", "foud"]:
+        cos = 2**0.5 * np.cos(
+            2 * np.pi * np.arange(N // 2)[:, None] * (vals)
+        )  # (N/2, T/dt)
+        sin = 2**0.5 * np.sin(
+            2 * np.pi * np.arange(N // 2)[:, None] * (vals)
+        )  # (N/2, T/dt)
+        cos[0] /= 2**0.5
+        eval_matrix = np.stack([cos.T, sin.T], axis=-1).reshape(-1, N)  # (T/dt, N)
+    #     print("eval_matrix shape", eval_matrix.shape)
+
+    if truncate_measure:
+        eval_matrix[measure(method)(vals) == 0.0] = 0.0
+
+    p = torch.tensor(eval_matrix)
+    p *= np.exp(-c * vals)[:, None]  # [::-1, None]
+    return p
 
 
 def shift_up(a, s=None, drop=True, dim=0):

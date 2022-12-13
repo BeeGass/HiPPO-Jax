@@ -3,15 +3,89 @@ import jax.numpy as jnp
 import numpy as np
 import torch
 
-from src.tests.hippo_tests.hippo_operator import (  # fixtures for respective operators
-    hippo_legs,
-    hippo_legt,
-    hippo_lmu,
-    hippo_lagt,
-    hippo_fru,
-    hippo_fout,
-    hippo_foud,
+# fixtures for respective operators
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_fe,
+    hippo_lsi_legs_fe,
+    hippo_legt_fe,
+    hippo_lmu_fe,
+    hippo_lagt_fe,
+    hippo_fru_fe,
+    hippo_fout_fe,
+    hippo_foud_fe,
 )
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_be,
+    hippo_lsi_legs_be,
+    hippo_legt_be,
+    hippo_lmu_be,
+    hippo_lagt_be,
+    hippo_fru_be,
+    hippo_fout_be,
+    hippo_foud_be,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_bi,
+    hippo_lsi_legs_bi,
+    hippo_legt_bi,
+    hippo_lmu_bi,
+    hippo_lagt_bi,
+    hippo_fru_bi,
+    hippo_fout_bi,
+    hippo_foud_bi,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_zoh,
+    hippo_lsi_legs_zoh,
+    hippo_legt_zoh,
+    hippo_lmu_zoh,
+    hippo_lagt_zoh,
+    hippo_fru_zoh,
+    hippo_fout_zoh,
+    hippo_foud_zoh,
+)
+
+from src.tests.hippo_tests.hippo_operator import (
+    gu_hippo_lti_legs_fe,
+    gu_hippo_lsi_legs_fe,
+    gu_hippo_lti_legt_fe,
+    gu_hippo_lti_lmu_fe,
+    gu_hippo_lti_lagt_fe,
+    gu_hippo_lti_fru_fe,
+    gu_hippo_lti_fout_fe,
+    gu_hippo_lti_foud_fe,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    gu_hippo_lti_legs_be,
+    gu_hippo_lsi_legs_be,
+    gu_hippo_lti_legt_be,
+    gu_hippo_lti_lmu_be,
+    gu_hippo_lti_lagt_be,
+    gu_hippo_lti_fru_be,
+    gu_hippo_lti_fout_be,
+    gu_hippo_lti_foud_be,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    gu_hippo_lti_legs_bi,
+    gu_hippo_lsi_legs_bi,
+    gu_hippo_lti_legt_bi,
+    gu_hippo_lti_lmu_bi,
+    gu_hippo_lti_lagt_bi,
+    gu_hippo_lti_fru_bi,
+    gu_hippo_lti_fout_bi,
+    gu_hippo_lti_foud_bi,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    gu_hippo_lti_legs_zoh,
+    gu_hippo_lsi_legs_zoh,
+    gu_hippo_lti_legt_zoh,
+    gu_hippo_lti_lmu_zoh,
+    gu_hippo_lti_lagt_zoh,
+    gu_hippo_lti_fru_zoh,
+    gu_hippo_lti_fout_zoh,
+    gu_hippo_lti_foud_zoh,
+)
+
 from src.tests.hippo_tests.hippo_operator import (  # fixtures for respective operators made by Albert Gu
     gu_hippo_legs,
     gu_hippo_legt,
@@ -93,9 +167,9 @@ from src.tests.hippo_tests.hippo_utils import (
 )
 import jax
 
-# ------------------------------------------------ #
-# --------------- Test HiPPO Matrices ------------ #
-# ------------------------------------------------ #
+# ----------------------------------------------------------------
+# ---------------------- Test HiPPO Matrices ---------------------
+# ----------------------------------------------------------------
 
 # ---------------
 # --- Vanilla ---
@@ -186,9 +260,9 @@ def test_foud_matrices(foud_matrices, gu_foud_matrices):
     assert jnp.allclose(B, gu_B)
 
 
-# ---------------
-# ----- NPLR ----
-# ---------------
+# ----------------------------------------------------------------
+# ----------------------- Test NPLR Matrices ---------------------
+# ----------------------------------------------------------------
 
 
 def test_nplr_legt(nplr_legt, gu_nplr_legt):
@@ -373,9 +447,9 @@ def test_nplr_foud(nplr_foud, gu_nplr_foud):
     assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
 
 
-# ---------------
-# ----- DPLR ----
-# ---------------
+# ----------------------------------------------------------------
+# ---------------------- Test DPLR Matrices ----------------------
+# ----------------------------------------------------------------
 
 
 def test_dplr_legt(dplr_legt, gu_dplr_legt):
@@ -560,12 +634,160 @@ def test_dplr_foud(dplr_foud, gu_dplr_foud):
     assert jnp.allclose(V, gu_V, rtol=1e-04, atol=1e-06)
 
 
-# ------------------------------------------------ #
-# -------------- Test HiPPO Operators ------------ #
-# ------------------------------------------------ #
+# ----------------------------------------------------------------
+# --------------- Test HiPPO Matrix Transformations --------------
+# ----------------------------------------------------------------
+
+# --------------------
+# -- Forward Euler --
+# --------------------
+
+# ----------
+# -- legs --
+# ----------
 
 
-def test_GBT_legs(hippo_legs, gu_hippo_legs, legs_matrices, random_16_input):
+def test_GBT_LSI_legs_FE(
+    hippo_lti_legs_fe, gu_hippo_legs, legs_matrices, random_16_input
+):
+    print("HiPPO GBT LEGS")
+    L = random_16_input.shape[1]
+    A, B = legs_matrices
+
+    for i in range(1, L + 1):
+        GBT_A, GBT_B = hippo_lti_legs_fe.discretion(
+            A, B, step=i, alpha=0.5, dtype=jnp.float32
+        )
+        gu_GBT_A, gu_GBT_B = (
+            jnp.asarray(gu_hippo_legs.A_stacked[i - 1], dtype=jnp.float32),
+            jnp.expand_dims(
+                jnp.asarray(gu_hippo_legs.B_stacked[i - 1], dtype=jnp.float32), axis=1
+            ),
+        )
+        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
+        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+
+
+def test_GBT_LTI_legs_FE(
+    hippo_lsi_legs_fe, gu_hippo_legs, legs_matrices, random_16_input
+):
+    print("HiPPO GBT LEGS")
+    L = random_16_input.shape[1]
+    A, B = legs_matrices
+
+    for i in range(1, L + 1):
+        GBT_A, GBT_B = hippo_lsi_legs_fe.discretion(
+            A, B, step=i, alpha=0.5, dtype=jnp.float32
+        )
+        gu_GBT_A, gu_GBT_B = (
+            jnp.asarray(gu_hippo_legs.A_stacked[i - 1], dtype=jnp.float32),
+            jnp.expand_dims(
+                jnp.asarray(gu_hippo_legs.B_stacked[i - 1], dtype=jnp.float32), axis=1
+            ),
+        )
+        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
+        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+def test_GBT_LTI_legt_FE(
+    hippo_lsi_legt_fe, gu_hippo_legs, legs_matrices, random_16_input
+):
+    print("HiPPO GBT LEGS")
+    L = random_16_input.shape[1]
+    A, B = legs_matrices
+
+    for i in range(1, L + 1):
+        GBT_A, GBT_B = hippo_lsi_legs_fe.discretion(
+            A, B, step=i, alpha=0.5, dtype=jnp.float32
+        )
+        gu_GBT_A, gu_GBT_B = (
+            jnp.asarray(gu_hippo_legs.A_stacked[i - 1], dtype=jnp.float32),
+            jnp.expand_dims(
+                jnp.asarray(gu_hippo_legs.B_stacked[i - 1], dtype=jnp.float32), axis=1
+            ),
+        )
+        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
+        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+# --------------------
+# -- Backward Euler --
+# --------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+# ------------
+# --- foud ---
+# ------------
+
+# --------------------
+# ----- Bilinear -----
+# --------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+def test_GBT_LSI_legs(hippo_legs, gu_hippo_legs, legs_matrices, random_16_input):
     print("HiPPO GBT LEGS")
     L = random_16_input.shape[1]
     A, B = legs_matrices
@@ -580,6 +802,134 @@ def test_GBT_legs(hippo_legs, gu_hippo_legs, legs_matrices, random_16_input):
         )
         assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
         assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+
+
+def test_GBT_LTI_legs(hippo_legs, gu_hippo_legs, legs_matrices, random_16_input):
+    print("HiPPO GBT LEGS")
+    L = random_16_input.shape[1]
+    A, B = legs_matrices
+
+    for i in range(1, L + 1):
+        GBT_A, GBT_B = hippo_legs.discretion(A, B, step=i, alpha=0.5, dtype=jnp.float32)
+        gu_GBT_A, gu_GBT_B = (
+            jnp.asarray(gu_hippo_legs.A_stacked[i - 1], dtype=jnp.float32),
+            jnp.expand_dims(
+                jnp.asarray(gu_hippo_legs.B_stacked[i - 1], dtype=jnp.float32), axis=1
+            ),
+        )
+        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
+        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+def test_GBT_legt(hippo_legt, gu_hippo_legt, legt_matrices, random_16_input):
+    print("HiPPO GBT LEGT")
+    L = random_16_input.shape[1]
+    A, B = legt_matrices
+
+    for i in range(1, L + 1):
+        GBT_A, GBT_B = hippo_legt.discretion(A, B, step=i, alpha=0.5, dtype=jnp.float32)
+        gu_GBT_A, gu_GBT_B = (
+            jnp.asarray(gu_hippo_legt.A_stacked[i - 1], dtype=jnp.float32),
+            jnp.expand_dims(
+                jnp.asarray(gu_hippo_legt.B_stacked[i - 1], dtype=jnp.float32), axis=1
+            ),
+        )
+        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
+        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+def test_GBT_lmu(hippo_lmu, gu_hippo_lmu, lmu_matrices, random_16_input):
+    print("HiPPO GBT LMU")
+    L = random_16_input.shape[1]
+    A, B = lmu_matrices
+
+    for i in range(1, L + 1):
+        GBT_A, GBT_B = hippo_lmu.discretion(A, B, step=i, alpha=0.5, dtype=jnp.float32)
+        gu_GBT_A, gu_GBT_B = (
+            jnp.asarray(gu_hippo_lmu.A_stacked[i - 1], dtype=jnp.float32),
+            jnp.expand_dims(
+                jnp.asarray(gu_hippo_lmu.B_stacked[i - 1], dtype=jnp.float32), axis=1
+            ),
+        )
+        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
+        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+# ------------
+# --- foud ---
+# ------------
+
+# --------------------
+# - Zero-order Hold --
+# --------------------
+
+# ----------
+# -- legs --
+# ----------
+
+
+# ----------
+# -- legt --
+# ----------
+
+
+# ----------
+# -- lmu --
+# ----------
+
+
+# ----------
+# -- lagt --
+# ----------
+
+
+# ----------
+# --- fru --
+# ----------
+
+
+# ------------
+# --- fout ---
+# ------------
+
+
+# ------------
+# --- foud ---
+# ------------
+
+
+# ----------------------------------------------------------------
+# --------------------- Test HiPPO Operators ---------------------
+# ----------------------------------------------------------------
+
+# ----------
+# -- legs --
+# ----------
 
 
 def test_hippo_legs_operator(hippo_legs, gu_hippo_legs, random_16_input, legs_key):
@@ -617,21 +967,9 @@ def test_hippo_legs_operator(hippo_legs, gu_hippo_legs, random_16_input, legs_ke
             ), f"batch {i} on trajectory {j} compare: {jnp.allclose(c_k[i,j,:,:], gu_c[i,j,:,:], rtol=1e-04, atol=1e-04)}"
 
 
-def test_GBT_legt(hippo_legt, gu_hippo_legt, legt_matrices, random_16_input):
-    print("HiPPO GBT LEGT")
-    L = random_16_input.shape[1]
-    A, B = legt_matrices
-
-    for i in range(1, L + 1):
-        GBT_A, GBT_B = hippo_legt.discretion(A, B, step=i, alpha=0.5, dtype=jnp.float32)
-        gu_GBT_A, gu_GBT_B = (
-            jnp.asarray(gu_hippo_legt.A_stacked[i - 1], dtype=jnp.float32),
-            jnp.expand_dims(
-                jnp.asarray(gu_hippo_legt.B_stacked[i - 1], dtype=jnp.float32), axis=1
-            ),
-        )
-        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
-        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+# ----------
+# -- legt --
+# ----------
 
 
 def test_hippo_legt_operator(hippo_legt, gu_hippo_legt, random_16_input, legt_key):
@@ -654,21 +992,9 @@ def test_hippo_legt_operator(hippo_legt, gu_hippo_legt, random_16_input, legt_ke
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
 
 
-def test_GBT_lmu(hippo_lmu, gu_hippo_lmu, lmu_matrices, random_16_input):
-    print("HiPPO GBT LMU")
-    L = random_16_input.shape[1]
-    A, B = lmu_matrices
-
-    for i in range(1, L + 1):
-        GBT_A, GBT_B = hippo_lmu.discretion(A, B, step=i, alpha=0.5, dtype=jnp.float32)
-        gu_GBT_A, gu_GBT_B = (
-            jnp.asarray(gu_hippo_lmu.A_stacked[i - 1], dtype=jnp.float32),
-            jnp.expand_dims(
-                jnp.asarray(gu_hippo_lmu.B_stacked[i - 1], dtype=jnp.float32), axis=1
-            ),
-        )
-        assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
-        assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
+# ----------
+# -- lmu --
+# ----------
 
 
 def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu, random_16_input, lmu_key):
@@ -687,6 +1013,11 @@ def test_hippo_lmu_operator(hippo_lmu, gu_hippo_lmu, random_16_input, lmu_key):
         gu = torch.unsqueeze(g_c_k, -1)
         gu_c = jnp.asarray(gu, dtype=jnp.float32)  # convert torch array to jax array
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
+
+
+# ----------
+# -- lagt --
+# ----------
 
 
 def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt, random_16_input, lagt_key):
@@ -709,6 +1040,11 @@ def test_hippo_lagt_operator(hippo_lagt, gu_hippo_lagt, random_16_input, lagt_ke
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
 
 
+# ----------
+# --- fru --
+# ----------
+
+
 def test_hippo_fru_operator(hippo_fru, gu_hippo_fru, random_16_input, fru_key):
     print("HiPPO OPERATOR FRU")
     i = 0
@@ -725,6 +1061,11 @@ def test_hippo_fru_operator(hippo_fru, gu_hippo_fru, random_16_input, fru_key):
         gu = torch.unsqueeze(g_c_k, -1)
         gu_c = jnp.asarray(gu, dtype=jnp.float32)  # convert torch array to jax array
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
+
+
+# ------------
+# --- fout ---
+# ------------
 
 
 def test_hippo_fout_operator(hippo_fout, gu_hippo_fout, random_16_input, fout_key):
@@ -745,6 +1086,11 @@ def test_hippo_fout_operator(hippo_fout, gu_hippo_fout, random_16_input, fout_ke
         gu = torch.unsqueeze(g_c_k, -1)
         gu_c = jnp.asarray(gu, dtype=jnp.float32)  # convert torch array to jax array
         assert jnp.allclose(c_k, gu_c, rtol=1e-04, atol=1e-06)
+
+
+# ------------
+# --- foud ---
+# ------------
 
 
 def test_hippo_foud_operator(hippo_foud, gu_hippo_foud, random_16_input, foud_key):
