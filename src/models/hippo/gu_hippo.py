@@ -28,7 +28,7 @@ class HiPPO_LSI(nn.Module):
         N,
         method="legs",
         max_length=1024,
-        discretization="bilinear",
+        discretization=0.5,
         lambda_n=1.0,
         alpha=0.0,
         beta=1.0,
@@ -50,15 +50,15 @@ class HiPPO_LSI(nn.Module):
         for t in range(1, max_length + 1):
             At = A / t
             Bt = B / t
-            if discretization == "forward":
+            if discretization == 0.0:  # forward
                 A_stacked[t - 1] = np.eye(N) + At
                 B_stacked[t - 1] = Bt
-            elif discretization == "backward":
+            elif discretization == 1.0:  # backward
                 A_stacked[t - 1] = la.solve_triangular(
                     np.eye(N) - At, np.eye(N), lower=True
                 )
                 B_stacked[t - 1] = la.solve_triangular(np.eye(N) - At, Bt, lower=True)
-            elif discretization == "bilinear":
+            elif discretization == 0.5:  # bilinear
                 # A_stacked[t - 1] = la.solve_triangular(
                 #     np.eye(N) - At / 2, np.eye(N) + At / 2, lower=True
                 # )
@@ -128,7 +128,7 @@ class HiPPO_LTI(nn.Module):
         method="legt",
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         lambda_n=1.0,
         alpha=0.0,
         beta=1.0,
@@ -159,9 +159,12 @@ class HiPPO_LTI(nn.Module):
 
         C = np.ones((1, N))
         D = np.zeros((1,))
-        dA, dB, _, _, _ = signal.cont2discrete(
-            (A, B, C, D), dt=dt, method=discretization
-        )
+        if type(discretization) in [float, int]:
+            dA, dB, _, _, _ = signal.cont2discrete(
+                (A, B, C, D), dt=dt, method="gbt", alpha=discretization
+            )
+        else:
+            dA, dB, _, _, _ = signal.cont2discrete((A, B, C, D), dt=dt, method="zoh")
 
         dB = dB.squeeze(-1)
 

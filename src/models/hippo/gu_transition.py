@@ -10,11 +10,20 @@ from scipy import special as ss
 from einops import rearrange, repeat
 from opt_einsum import contract
 import math
+from typing import Any
 from src.models.hippo.unroll import *
 
 
 class GuTransMatrix:
-    def __init__(self, N, measure="legs", lambda_n=1.0, alpha=0.0, beta=1.0):
+    def __init__(
+        self,
+        N: int,
+        measure: str = "legs",
+        lambda_n: float = 1.0,
+        alpha: float = 0.0,
+        beta: float = 1.0,
+        dtype: Any = jnp.float32,
+    ):
         """
         Instantiates the HiPPO matrix of a given order using a particular measure.
         Args:
@@ -66,8 +75,8 @@ class GuTransMatrix:
         else:
             raise ValueError("Invalid HiPPO type")
 
-        self.A = A.copy()
-        self.B = B.copy()
+        self.A = (A.copy()).astype(dtype)
+        self.B = (B.copy()).astype(dtype)
 
     # Scaled Legendre (LegS), non-vectorized
     @staticmethod
@@ -239,32 +248,29 @@ class GuTransMatrix:
 class GuLowRankMatrix:
     def __init__(
         self,
-        N,
-        rank,
-        measure="legs",
-        lambda_n=1,
-        fourier_type="fru",
-        alpha=0,
-        beta=1,
-        DPLR=True,
-        dtype=torch.float32,
+        N: int,
+        rank: int = 1,
+        measure: str = "legs",
+        lambda_n: float = 1.0,
+        alpha: float = 0.0,
+        beta: float = 1.0,
+        DPLR: bool = True,
+        dtype: Any = torch.float,
     ):
         self.N = N
         self.measure = measure
         self.rank = rank
-        _trans_matrix = GuTransMatrix(N, measure, lambda_n, fourier_type, alpha, beta)
+        _trans_matrix = GuTransMatrix(
+            N, measure, lambda_n, alpha, beta, dtype=jnp.float32
+        )
 
-        Lambda = None
-        P = None
-        B = None
-        V = None
         A, B, P, S = self.pre_nplr(trans_matrix=_trans_matrix, dtype=dtype)
         if DPLR:
             Lambda, P, B, V = self.dplr(
                 trans_matrix=_trans_matrix,
                 scaling="hippo",
                 H=1,
-                dtype=torch.float,
+                dtype=dtype,
                 real_scale=1.0,
                 imag_scale=1.0,
                 random_real=False,
@@ -306,7 +312,7 @@ class GuLowRankMatrix:
             assert self.rank >= 1
             P = 0.5**0.5 * torch.ones(1, self.N, dtype=dtype)
 
-        elif self.measure in ["fourier", "fout"]:
+        elif self.measure in ["fourier", "fout", "fru"]:
             P = torch.zeros(self.N)
             P[0::2] = 2**0.5
             P[0] = 1
@@ -340,8 +346,8 @@ class GuLowRankMatrix:
         return P
 
     def pre_nplr(self, trans_matrix, dtype=torch.float):
-        jnp_A = trans_matrix.A_matrix
-        jnp_B = trans_matrix.B_matrix
+        jnp_A = trans_matrix.A
+        jnp_B = trans_matrix.B
 
         np_A = np.asarray(jnp_A)
         A = torch.from_numpy(np_A)  # (N, N)
@@ -365,7 +371,7 @@ class GuLowRankMatrix:
         ) > 1e-5:  # if not torch.allclose(_A - _A[0,0]*torch.eye(N), torch.zeros(N, N), atol=1e-5):
             print("WARNING: HiPPO matrix not skew symmetric", err)
 
-    def nplr(self, trans_matrix, dtype=torch.float, diagonalize_precision=True):
+    def nplr(self, trans_matrix, diagonalize_precision=True, dtype=torch.float):
         """Return w, p, q, V, B such that
         (w - p q^*, B) is unitarily equivalent to the original HiPPO A, B by the matrix V
         i.e. A = V[w - p q^*]V^*, B = V B

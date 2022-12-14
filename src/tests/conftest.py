@@ -4,58 +4,6 @@
 
 # Gu's implementation of HiPPO Operators
 from src.tests.hippo_tests.hippo_operator import (
-    gu_hippo_legs,
-    gu_hippo_legt,
-    gu_hippo_lmu,
-    gu_hippo_lagt,
-    gu_hippo_fru,
-    gu_hippo_fout,
-    gu_hippo_foud,
-)
-
-# HiPPO Operators
-from src.tests.hippo_tests.hippo_operator import (
-    hippo_lti_legs_fe,
-    hippo_lsi_legs_fe,
-    hippo_legt_fe,
-    hippo_lmu_fe,
-    hippo_lagt_fe,
-    hippo_fru_fe,
-    hippo_fout_fe,
-    hippo_foud_fe,
-)
-from src.tests.hippo_tests.hippo_operator import (
-    hippo_lti_legs_be,
-    hippo_lsi_legs_be,
-    hippo_legt_be,
-    hippo_lmu_be,
-    hippo_lagt_be,
-    hippo_fru_be,
-    hippo_fout_be,
-    hippo_foud_be,
-)
-from src.tests.hippo_tests.hippo_operator import (
-    hippo_lti_legs_bi,
-    hippo_lsi_legs_bi,
-    hippo_legt_bi,
-    hippo_lmu_bi,
-    hippo_lagt_bi,
-    hippo_fru_bi,
-    hippo_fout_bi,
-    hippo_foud_bi,
-)
-from src.tests.hippo_tests.hippo_operator import (
-    hippo_lti_legs_zoh,
-    hippo_lsi_legs_zoh,
-    hippo_legt_zoh,
-    hippo_lmu_zoh,
-    hippo_lagt_zoh,
-    hippo_fru_zoh,
-    hippo_fout_zoh,
-    hippo_foud_zoh,
-)
-
-from src.tests.hippo_tests.hippo_operator import (
     gu_hippo_lti_legs_fe,
     gu_hippo_lsi_legs_fe,
     gu_hippo_lti_legt_fe,
@@ -94,6 +42,48 @@ from src.tests.hippo_tests.hippo_operator import (
     gu_hippo_lti_fru_zoh,
     gu_hippo_lti_fout_zoh,
     gu_hippo_lti_foud_zoh,
+)
+
+# implementation of HiPPO Operators
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_fe,
+    hippo_lsi_legs_fe,
+    hippo_lti_legt_fe,
+    hippo_lti_lmu_fe,
+    hippo_lti_lagt_fe,
+    hippo_lti_fru_fe,
+    hippo_lti_fout_fe,
+    hippo_lti_foud_fe,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_be,
+    hippo_lsi_legs_be,
+    hippo_lti_legt_be,
+    hippo_lti_lmu_be,
+    hippo_lti_lagt_be,
+    hippo_lti_fru_be,
+    hippo_lti_fout_be,
+    hippo_lti_foud_be,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_bi,
+    hippo_lsi_legs_bi,
+    hippo_lti_legt_bi,
+    hippo_lti_lmu_bi,
+    hippo_lti_lagt_bi,
+    hippo_lti_fru_bi,
+    hippo_lti_fout_bi,
+    hippo_lti_foud_bi,
+)
+from src.tests.hippo_tests.hippo_operator import (
+    hippo_lti_legs_zoh,
+    hippo_lsi_legs_zoh,
+    hippo_lti_legt_zoh,
+    hippo_lti_lmu_zoh,
+    hippo_lti_lagt_zoh,
+    hippo_lti_fru_zoh,
+    hippo_lti_fout_zoh,
+    hippo_lti_foud_zoh,
 )
 
 # Gu's implementation of HiPPO matrices

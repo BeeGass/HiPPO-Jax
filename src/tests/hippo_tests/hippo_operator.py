@@ -78,7 +78,7 @@ def hippo_lsi_legs_fe(random_16_input):
 
 
 @pytest.fixture
-def hippo_legt_fe(random_16_input):
+def hippo_lti_legt_fe(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -99,7 +99,7 @@ def hippo_legt_fe(random_16_input):
 
 
 @pytest.fixture
-def hippo_lmu_fe(random_16_input):
+def hippo_lti_lmu_fe(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -120,7 +120,7 @@ def hippo_lmu_fe(random_16_input):
 
 
 @pytest.fixture
-def hippo_lagt_fe(random_16_input):
+def hippo_lti_lagt_fe(random_16_input):
     measure = "lagt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -142,7 +142,7 @@ def hippo_lagt_fe(random_16_input):
 
 
 @pytest.fixture
-def hippo_fru_fe(random_16_input):
+def hippo_lti_fru_fe(random_16_input):
     measure = "fru"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -162,7 +162,7 @@ def hippo_fru_fe(random_16_input):
 
 
 @pytest.fixture
-def hippo_fout_fe(random_16_input):
+def hippo_lti_fout_fe(random_16_input):
     measure = "fout"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -182,7 +182,7 @@ def hippo_fout_fe(random_16_input):
 
 
 @pytest.fixture
-def hippo_foud_fe(random_16_input):
+def hippo_lti_foud_fe(random_16_input):
     measure = "foud"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -241,7 +241,7 @@ def hippo_lsi_legs_be(random_16_input):
 
 
 @pytest.fixture
-def hippo_legt_be(random_16_input):
+def hippo_lti_legt_be(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -262,7 +262,7 @@ def hippo_legt_be(random_16_input):
 
 
 @pytest.fixture
-def hippo_lmu_be(random_16_input):
+def hippo_lti_lmu_be(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -283,7 +283,7 @@ def hippo_lmu_be(random_16_input):
 
 
 @pytest.fixture
-def hippo_lagt_be(random_16_input):
+def hippo_lti_lagt_be(random_16_input):
     measure = "lagt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -305,7 +305,7 @@ def hippo_lagt_be(random_16_input):
 
 
 @pytest.fixture
-def hippo_fru_be(random_16_input):
+def hippo_lti_fru_be(random_16_input):
     measure = "fru"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -325,7 +325,7 @@ def hippo_fru_be(random_16_input):
 
 
 @pytest.fixture
-def hippo_fout_be(random_16_input):
+def hippo_lti_fout_be(random_16_input):
     measure = "fout"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -345,7 +345,7 @@ def hippo_fout_be(random_16_input):
 
 
 @pytest.fixture
-def hippo_foud_be(random_16_input):
+def hippo_lti_foud_be(random_16_input):
     measure = "foud"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -404,7 +404,7 @@ def hippo_lsi_legs_bi(random_16_input):
 
 
 @pytest.fixture
-def hippo_legt_bi(random_16_input):
+def hippo_lti_legt_bi(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -425,7 +425,7 @@ def hippo_legt_bi(random_16_input):
 
 
 @pytest.fixture
-def hippo_lmu_bi(random_16_input):
+def hippo_lti_lmu_bi(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -446,7 +446,7 @@ def hippo_lmu_bi(random_16_input):
 
 
 @pytest.fixture
-def hippo_lagt_bi(random_16_input):
+def hippo_lti_lagt_bi(random_16_input):
     measure = "lagt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -468,7 +468,7 @@ def hippo_lagt_bi(random_16_input):
 
 
 @pytest.fixture
-def hippo_fru_bi(random_16_input):
+def hippo_lti_fru_bi(random_16_input):
     measure = "fru"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -488,7 +488,7 @@ def hippo_fru_bi(random_16_input):
 
 
 @pytest.fixture
-def hippo_fout_bi(random_16_input):
+def hippo_lti_fout_bi(random_16_input):
     measure = "fout"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -508,7 +508,7 @@ def hippo_fout_bi(random_16_input):
 
 
 @pytest.fixture
-def hippo_foud_bi(random_16_input):
+def hippo_lti_foud_bi(random_16_input):
     measure = "foud"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -567,7 +567,7 @@ def hippo_lsi_legs_zoh(random_16_input):
 
 
 @pytest.fixture
-def hippo_legt_zoh(random_16_input):
+def hippo_lti_legt_zoh(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -588,7 +588,7 @@ def hippo_legt_zoh(random_16_input):
 
 
 @pytest.fixture
-def hippo_lmu_zoh(random_16_input):
+def hippo_lti_lmu_zoh(random_16_input):
     measure = "legt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -609,7 +609,7 @@ def hippo_lmu_zoh(random_16_input):
 
 
 @pytest.fixture
-def hippo_lagt_zoh(random_16_input):
+def hippo_lti_lagt_zoh(random_16_input):
     measure = "lagt"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -631,7 +631,7 @@ def hippo_lagt_zoh(random_16_input):
 
 
 @pytest.fixture
-def hippo_fru_zoh(random_16_input):
+def hippo_lti_fru_zoh(random_16_input):
     measure = "fru"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -651,7 +651,7 @@ def hippo_fru_zoh(random_16_input):
 
 
 @pytest.fixture
-def hippo_fout_zoh(random_16_input):
+def hippo_lti_fout_zoh(random_16_input):
     measure = "fout"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -671,7 +671,7 @@ def hippo_fout_zoh(random_16_input):
 
 
 @pytest.fixture
-def hippo_foud_zoh(random_16_input):
+def hippo_lti_foud_zoh(random_16_input):
     measure = "foud"
     L = random_16_input.shape[1]
     return HiPPO(
@@ -688,103 +688,6 @@ def hippo_foud_zoh(random_16_input):
 # ----------------------------------------------------------------
 # --------------------- Gu's Implementations ---------------------
 # ----------------------------------------------------------------
-
-
-@pytest.fixture
-def gu_hippo_legs(random_16_input):
-    measure = "legs"
-    L = random_16_input.shape[1]
-    return HiPPO_LegS(N=8, max_length=L, measure=measure, discretization="bilinear")
-
-
-@pytest.fixture
-def gu_hippo_legt(random_16_input):
-    measure = "legt"
-    A, B = gu_legt_matrices
-    L = random_16_input.shape[1]
-    return HiPPO_LegT(N=8, dt=1.0, discretization="bilinear", lambda_n=1.0)
-
-
-@pytest.fixture
-def gu_hippo_lmu(random_16_input):
-    measure = "lmu"
-    A, B = gu_legt_lmu_matrices
-    L = random_16_input.shape[1]
-    # raise NotImplementedError("HiPPO_LegT_LMU not implemented yet")
-    return HiPPO_LegT(N=8, dt=1.0, discretization="bilinear", lambda_n=2.0)
-
-
-@pytest.fixture
-def gu_hippo_lagt(random_16_input):
-    measure = "lagt"
-    A, B = gu_lagt_matrices
-    L = random_16_input.shape[1]
-    raise NotImplementedError("HiPPO_LagT not implemented yet")
-    return HiPPO(
-        N=8,
-        max_length=L,
-        step=1.0 / L,
-        GBT_alpha=0.5,
-        seq_L=L,
-        A=A,
-        B=B,
-        measure=measure,
-    )
-
-
-@pytest.fixture
-def gu_hippo_fru(random_16_input):
-    measure = "fru"
-    A, B = gu_fru_matrices
-    L = random_16_input.shape[1]
-    raise NotImplementedError("HiPPO_FRU not implemented yet")
-    return HiPPO(
-        N=8,
-        max_length=L,
-        step=1.0 / L,
-        GBT_alpha=0.5,
-        seq_L=L,
-        A=A,
-        B=B,
-        measure=measure,
-    )
-
-
-@pytest.fixture
-def gu_hippo_fout(random_16_input):
-    measure = "fout"
-    A, B = gu_fout_matrices
-    L = random_16_input.shape[1]
-    raise NotImplementedError("HiPPO_FouT not implemented yet")
-    return HiPPO(
-        N=8,
-        max_length=L,
-        step=1.0 / L,
-        GBT_alpha=0.5,
-        seq_L=L,
-        A=A,
-        B=B,
-        measure=measure,
-    )
-
-
-@pytest.fixture
-def gu_hippo_foud(random_16_input):
-    measure = "foud"
-    A, B = gu_foud_matrices
-    L = random_16_input.shape[1]
-    raise NotImplementedError("HiPPO_FouD not implemented yet")
-    return HiPPO(
-        N=8,
-        max_length=L,
-        step=1.0 / L,
-        GBT_alpha=0.5,
-        seq_L=L,
-        A=A,
-        B=B,
-        measure=measure,
-    )
-
 
 # --------------------
 # -- Forward Euler --
@@ -804,7 +707,7 @@ def gu_hippo_lti_legs_fe(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="forward",
+        discretization=0.0,
         c=0.0,
     )
 
@@ -813,7 +716,7 @@ def gu_hippo_lti_legs_fe(random_16_input):
 def gu_hippo_lsi_legs_fe(random_16_input):
     measure = "legs"
     L = random_16_input.shape[1]
-    return HiPPO_LSI(N=100, method=measure, max_length=L, discretization="forward")
+    return HiPPO_LSI(N=100, method=measure, max_length=L, discretization=0.0)
 
 
 # ----------
@@ -830,7 +733,7 @@ def gu_hippo_lti_legt_fe(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="forward",
+        discretization=0.0,
         lambda_n=1.0,
         c=0.0,
     )
@@ -850,7 +753,7 @@ def gu_hippo_lti_lmu_fe(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="forward",
+        discretization=0.0,
         lambda_n=2.0,
         c=0.0,
     )
@@ -870,7 +773,7 @@ def gu_hippo_lti_lagt_fe(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="forward",
+        discretization=0.0,
         alpha=0.0,
         beta=1.0,
         c=0.0,
@@ -891,7 +794,7 @@ def gu_hippo_lti_fru_fe(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="forward",
+        discretization=0.0,
         lambda_n=2.0,
         c=0.0,
     )
@@ -911,7 +814,7 @@ def gu_hippo_lti_fout_fe(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="forward",
+        discretization=0.0,
         c=0.0,
     )
 
@@ -930,7 +833,7 @@ def gu_hippo_lti_foud_fe(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="forward",
+        discretization=0.0,
         c=0.0,
     )
 
@@ -953,7 +856,7 @@ def gu_hippo_lti_legs_be(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="backward",
+        discretization=1.0,
         c=0.0,
     )
 
@@ -962,7 +865,7 @@ def gu_hippo_lti_legs_be(random_16_input):
 def gu_hippo_lsi_legs_be(random_16_input):
     measure = "legs"
     L = random_16_input.shape[1]
-    return HiPPO_LSI(N=100, method=measure, max_length=L, discretization="backward")
+    return HiPPO_LSI(N=100, method=measure, max_length=L, discretization=1.0)
 
 
 # ----------
@@ -979,7 +882,7 @@ def gu_hippo_lti_legt_be(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="backward",
+        discretization=1.0,
         lambda_n=1.0,
         c=0.0,
     )
@@ -999,7 +902,7 @@ def gu_hippo_lti_lmu_be(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="backward",
+        discretization=1.0,
         lambda_n=2.0,
         c=0.0,
     )
@@ -1019,7 +922,7 @@ def gu_hippo_lti_lagt_be(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="backward",
+        discretization=1.0,
         alpha=0.0,
         beta=1.0,
         c=0.0,
@@ -1040,7 +943,7 @@ def gu_hippo_lti_fru_be(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="backward",
+        discretization=1.0,
         c=0.0,
     )
 
@@ -1059,7 +962,7 @@ def gu_hippo_lti_fout_be(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="backward",
+        discretization=1.0,
         c=0.0,
     )
 
@@ -1078,7 +981,7 @@ def gu_hippo_lti_foud_be(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="backward",
+        discretization=1.0,
         c=0.0,
     )
 
@@ -1101,7 +1004,7 @@ def gu_hippo_lti_legs_bi(random_16_input):
         method="legs",
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         c=0.0,
     )
 
@@ -1110,7 +1013,7 @@ def gu_hippo_lti_legs_bi(random_16_input):
 def gu_hippo_lsi_legs_bi(random_16_input):
     measure = "legs"
     L = random_16_input.shape[1]
-    return HiPPO_LSI(N=100, method="legs", max_length=L, discretization="bilinear")
+    return HiPPO_LSI(N=100, method="legs", max_length=L, discretization=0.5)
 
 
 # ----------
@@ -1127,7 +1030,7 @@ def gu_hippo_lti_legt_bi(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         lambda_n=1.0,
         c=0.0,
     )
@@ -1147,7 +1050,7 @@ def gu_hippo_lti_lmu_bi(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         lambda_n=2.0,
         c=0.0,
     )
@@ -1167,7 +1070,7 @@ def gu_hippo_lti_lagt_bi(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         alpha=0.0,
         beta=1.0,
         c=0.0,
@@ -1188,7 +1091,7 @@ def gu_hippo_lti_fru_bi(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         c=0.0,
     )
 
@@ -1207,7 +1110,7 @@ def gu_hippo_lti_fout_bi(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         c=0.0,
     )
 
@@ -1226,7 +1129,7 @@ def gu_hippo_lti_foud_bi(random_16_input):
         method=measure,
         dt=1.0,
         T=1.0,
-        discretization="bilinear",
+        discretization=0.5,
         c=0.0,
     )
 
