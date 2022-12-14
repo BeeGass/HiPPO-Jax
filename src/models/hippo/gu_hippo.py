@@ -168,8 +168,8 @@ class HiPPO_LTI(nn.Module):
 
         dB = dB.squeeze(-1)
 
-        self.register_buffer("dA", torch.Tensor(dA))  # (N, N)
-        self.register_buffer("dB", torch.Tensor(dB))  # (N,)
+        self.dA = torch.Tensor(dA.copy())  # (N, N)
+        self.dB = torch.Tensor(dB.copy())  # (N, )
 
         self.vals = np.arange(0.0, T, dt)
         self.eval_matrix = basis(self.method, self.N, self.vals, c=self.c)  # (T/dt, N)
