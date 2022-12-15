@@ -100,7 +100,7 @@ class HiPPO_LSI(nn.Module):
         inputs = inputs.unsqueeze(-1)
         u = torch.transpose(inputs, 0, -2)
         u = u * self.B_stacked[:L]
-        print(f"Gu - u * self.B_stacked[:L]: {u}")
+        # print(f"Gu - u * self.B_stacked[:L]: {u}")
         u = torch.transpose(u, 0, -2)  # (length, ..., N)
 
         if fast:
@@ -111,6 +111,25 @@ class HiPPO_LSI(nn.Module):
         cs = []
         for t, f in enumerate(inputs):
             c = F.linear(c, self.A_stacked[t]) + self.B_stacked[t] * f
+
+            print(f"self.A_stacked[{t}] shape:\n{self.A_stacked[t].shape}")
+            print(f"self.A_stacked[{t}]:\n{self.A_stacked[t]}")
+
+            print(f"c shape:\n{c.shape}")
+            print(f"c:\n{c}")
+
+            print(f"self.B_stacked[{t}] shape:\n{self.B_stacked[t].shape}")
+            print(f"self.B_stacked[{t}]:\n{self.B_stacked[t]}")
+
+            print(f"f shape:\n{f.shape}")
+            print(f"f:\n{f}")
+
+            print(f"part1 shape:\n{(F.linear(c, self.A_stacked[t])).shape}")
+            print(f"part1:\n{(F.linear(c, self.A_stacked[t]))}")
+
+            print(f"part2 shape:\n{(self.B_stacked[t] * f).shape}")
+            print(f"part2:\n{(self.B_stacked[t] * f)}")
+
             cs.append(c)
         return torch.stack(cs, dim=0)
 
@@ -192,6 +211,25 @@ class HiPPO_LTI(nn.Module):
         cs = []
         for f in inputs:
             c = F.linear(c, self.dA) + self.dB * f
+
+            print(f"self.self.dA shape:\n{self.dA.shape}")
+            print(f"self.dA:\n{self.dA}")
+
+            print(f"c shape:\n{c.shape}")
+            print(f"c:\n{c}")
+
+            print(f"self.self.dA shape:\n{self.dB.shape}")
+            print(f"self.dA:\n{self.dB}")
+
+            print(f"f shape:\n{f.shape}")
+            print(f"f:\n{f}")
+
+            print(f"part1 shape:\n{(F.linear(c, self.dA)).shape}")
+            print(f"part1:\n{(F.linear(c, self.dA))}")
+
+            print(f"part2 shape:\n{(self.dB * f).shape}")
+            print(f"part2:\n{(self.dB * f)}")
+
             cs.append(c)
         return torch.stack(cs, dim=0)
 

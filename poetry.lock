@@ -859,14 +859,14 @@ packaging = "*"
 
 [[package]]
 name = "identify"
-version = "2.5.9"
+version = "2.5.10"
 description = "File identification library for Python"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "identify-2.5.9-py2.py3-none-any.whl", hash = "sha256:a390fb696e164dbddb047a0db26e57972ae52fbd037ae68797e5ae2f4492485d"},
-    {file = "identify-2.5.9.tar.gz", hash = "sha256:906036344ca769539610436e40a684e170c3648b552194980bb7b617a8daeb9f"},
+    {file = "identify-2.5.10-py2.py3-none-any.whl", hash = "sha256:fb7c2feaeca6976a3ffa31ec3236a6911fbc51aec9acc111de2aed99f244ade2"},
+    {file = "identify-2.5.10.tar.gz", hash = "sha256:dce9e31fee7dbc45fea36a9e855c316b8fbf807e65a862f160840bb5a2bf5dfd"},
 ]
 
 [package.extras]
@@ -2779,14 +2779,14 @@ win32 = ["pywin32"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.11.1"
+version = "1.12.0"
 description = "Python client for Sentry (https://sentry.io)"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.11.1.tar.gz", hash = "sha256:675f6279b6bb1fea09fd61751061f9a90dca3b5929ef631dd50dc8b3aeb245e9"},
-    {file = "sentry_sdk-1.11.1-py2.py3-none-any.whl", hash = "sha256:8b4ff696c0bdcceb3f70bbb87a57ba84fd3168b1332d493fcd16c137f709578c"},
+    {file = "sentry-sdk-1.12.0.tar.gz", hash = "sha256:dc0fe6ef2f77a3853b399c75c97d87be7666098817c1c314f8fcdf68a6865914"},
+    {file = "sentry_sdk-1.12.0-py2.py3-none-any.whl", hash = "sha256:3c9bc64025976842c1103cd75d45cff94a7c0cc48fa07770d07a09d2ab8dac30"},
 ]
 
 [package.dependencies]
@@ -2804,6 +2804,7 @@ falcon = ["falcon (>=1.4)"]
 fastapi = ["fastapi (>=0.79.0)"]
 flask = ["blinker (>=1.1)", "flask (>=0.11)"]
 httpx = ["httpx (>=0.16.0)"]
+opentelemetry = ["opentelemetry-distro (>=0.350b0)"]
 pure-eval = ["asttokens", "executing", "pure-eval"]
 pymongo = ["pymongo (>=3.1)"]
 pyspark = ["pyspark (>=2.4.4)"]
@@ -3113,21 +3114,21 @@ files = [
 
 [[package]]
 name = "torch"
-version = "1.13.0+cu116"
+version = "1.13.1+cu116"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
 category = "dev"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "torch-1.13.0+cu116-cp310-cp310-linux_x86_64.whl", hash = "sha256:31218793334775bc63af95e1ea3b18694eaa902aeea5fd9b3215abaf22eafad0"},
-    {file = "torch-1.13.0+cu116-cp310-cp310-win_amd64.whl", hash = "sha256:799421803c39e36c969fdb0811e58f4c646588b90a35fabb9896752811928ad9"},
-    {file = "torch-1.13.0+cu116-cp311-cp311-linux_x86_64.whl", hash = "sha256:b49598ab06ce2a8d143553aff72616e5ea0fbe6fc8d7f2236c3aed9dd2ab7b24"},
-    {file = "torch-1.13.0+cu116-cp37-cp37m-linux_x86_64.whl", hash = "sha256:191c4c4241a0b6874d214531907a5a419a18cf7ea8813d33252a8995c4f06c7e"},
-    {file = "torch-1.13.0+cu116-cp37-cp37m-win_amd64.whl", hash = "sha256:ea9b09fac51ef9a241d29176465dd149708ff61eb04a2fbc01217c7f813f81d2"},
-    {file = "torch-1.13.0+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:56cb9d84018ff2fd36cdb94a30fcf92ef641557dbf38710c411a18cef321505f"},
-    {file = "torch-1.13.0+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:170654b91c371c18f4468f8fd91c3b419ff2c97d216495631ff3b8594d4ee1a3"},
-    {file = "torch-1.13.0+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:129d95249fe20ccd83d156323a5e2a6aba83e18841a00ac724e270ad806dd493"},
-    {file = "torch-1.13.0+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:15d3ee5d7ea8809548dd5139e064dab8a7c7bc98e599fadc13606d8fac577540"},
+    {file = "torch-1.13.1+cu116-cp310-cp310-linux_x86_64.whl", hash = "sha256:51d5870cdf05b6208b1c739fe0ba511b977eca37f9507829675596acc11b6ca4"},
+    {file = "torch-1.13.1+cu116-cp310-cp310-win_amd64.whl", hash = "sha256:6d59b73bbd83eee53e7978925168fe068709e1344050fdabf4043695084b2ccc"},
+    {file = "torch-1.13.1+cu116-cp311-cp311-linux_x86_64.whl", hash = "sha256:8cbfbb27f44fcc246d298f3812f3f7963622b4c1f2823670ae549416199f5ef7"},
+    {file = "torch-1.13.1+cu116-cp37-cp37m-linux_x86_64.whl", hash = "sha256:20d7c6e00804b6bea6f69b77240c4fcdf244cce2f6b1ff73beff7c0df6553d9d"},
+    {file = "torch-1.13.1+cu116-cp37-cp37m-win_amd64.whl", hash = "sha256:c2493a30d0c5ff426fad3d60d9d535c24678b45cc4ce1cffca0f1044d408cb96"},
+    {file = "torch-1.13.1+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:9338faa0a5a0eb625e17e39729f06fb0a574098d7ab88d856bbda4cb76a0b665"},
+    {file = "torch-1.13.1+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:1c33942d411d4dee25e56755cfd09538f53a497a6f0453d54ce96a5ca341627b"},
+    {file = "torch-1.13.1+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:db457a822d736013b6ffe509053001bc918bdd78fe68967b605f53984a9afac5"},
+    {file = "torch-1.13.1+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:80a6b55915ac72c087ab85122289431fde5c5a4c85ca83a38c6d11a7ecbfdb35"},
 ]
 
 [package.dependencies]
@@ -3143,27 +3144,27 @@ reference = "pytorch"
 
 [[package]]
 name = "torchvision"
-version = "0.14.0+cu116"
+version = "0.14.1+cu116"
 description = "image and video datasets and models for torch deep learning"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "torchvision-0.14.0+cu116-cp310-cp310-linux_x86_64.whl", hash = "sha256:eb95ba2c2f15e7bae2c2d98a8bde5bf0be1a1c170c81948151ea64868ed0e987"},
-    {file = "torchvision-0.14.0+cu116-cp310-cp310-win_amd64.whl", hash = "sha256:781c44662dc210d37f8085ac7479d8598e35142e48106aabe2016002ef6a7ccb"},
-    {file = "torchvision-0.14.0+cu116-cp37-cp37m-linux_x86_64.whl", hash = "sha256:22e6405ae54a52ffa4229a648f8123a9aa876cf122766a4e845cda3a440e230b"},
-    {file = "torchvision-0.14.0+cu116-cp37-cp37m-win_amd64.whl", hash = "sha256:b4fb01b3ac362fe1e761017b6b5c4c4554446ed53bc63c095ceb477f7f037d73"},
-    {file = "torchvision-0.14.0+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:0ec2275ecafffcc39fd98c173e1543a3965e2fce933f0cea78da634403e4d9b9"},
-    {file = "torchvision-0.14.0+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:2247195de982009716a3c3a1b1c004eed68f22763c683336c3c61a455fbb5441"},
-    {file = "torchvision-0.14.0+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:d242cf264f1ab4f5583028c5a8ad50d5884803c9b836992ca5ac8f753e4be8ec"},
-    {file = "torchvision-0.14.0+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:56265d3990d137eaec6bef6f270e36452359d63a60340c903b713c379f8b7bb1"},
+    {file = "torchvision-0.14.1+cu116-cp310-cp310-linux_x86_64.whl", hash = "sha256:fcb58d41bf95dd8b85d388fa1969d1dcad55eec055e317981d653a05c4ca6d8b"},
+    {file = "torchvision-0.14.1+cu116-cp310-cp310-win_amd64.whl", hash = "sha256:0481f119c1ca5bf3704d0848161be956db04d26c01ffb95b3b3b08cbdfa301c2"},
+    {file = "torchvision-0.14.1+cu116-cp37-cp37m-linux_x86_64.whl", hash = "sha256:4985719c66c9612ff4bb2d3a53c3faafdd934152b2a87414d27bdc7874a4360f"},
+    {file = "torchvision-0.14.1+cu116-cp37-cp37m-win_amd64.whl", hash = "sha256:5debbbda105c5e0ce8d0b40718c435a88e61b2c2c64d3d0d80ca89e4e9b3f6c7"},
+    {file = "torchvision-0.14.1+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:47593585e971c3e0c980fabfbfb885eb5ff054716baa555660c5b0304c9ea39d"},
+    {file = "torchvision-0.14.1+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:fefa6bee4c3019723320c6e554e400d6781ccecce99c1772a165efd0696b3462"},
+    {file = "torchvision-0.14.1+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:a9fc38040e133d1779f131b4497caef830e9e699faf89cd323cd58794ffb305b"},
+    {file = "torchvision-0.14.1+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:4b75cfe80d1e778f252fce94a7dd4ea35bc66a10efd53c4c63910ee95425face"},
 ]
 
 [package.dependencies]
 numpy = "*"
 pillow = ">=5.3.0,<8.3.0 || >=8.4.0"
 requests = "*"
-torch = "1.13.0"
+torch = "1.13.1"
 typing-extensions = "*"
 
 [package.extras]
