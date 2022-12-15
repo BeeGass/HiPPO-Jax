@@ -73,9 +73,6 @@ class HiPPO(nn.Module):
             if init_state is None:
                 init_state = jnp.zeros((f.shape[0], self.N, 1))
 
-            # Ab, Bb, Cb, Db = self.collect_SSM_vars(
-            #     self.A, self.B, self.C, self.D, f, t_step=t_step, alpha=self.GBT_alpha
-            # )
             if self.step_size == 1.0:
                 c_k, y_k = self.lsi_recurrence(
                     A=self.GBT_A_list,
@@ -279,15 +276,14 @@ class HiPPO(nn.Module):
             part4 = D.T @ f_k
             y_k = part3 + part4
 
-            return c_k, y_k
+            return c_k, (c_k, y_k)
 
-        partial_scan_step = partial(jax.lax.scan, lti_step)
-        result, stacked_result = jax.vmap(partial_scan_step, in_axes=(0, 0))(c_0, f)
+        c_k, (c_s, y_s) = jax.vmap(jax.lax.scan, in_axes=(None, 0, 0))(lti_step, c_0, f)
 
         if self.verbose:
-            return stacked_result
+            return c_s, y_s
         else:
-            return result
+            return c_k, y_s
 
     def lsi_step(self, Ad, Bd, Cd, Dd, c_k_i, f_k):
         """
