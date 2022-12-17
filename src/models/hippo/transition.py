@@ -26,14 +26,11 @@ class TransMatrix:
                     - HiPPO w/ Translated Legendre (LegT) - legt
                     - HiPPO w/ Translated Laguerre (LagT) - lagt
                     - HiPPO w/ Scaled Legendre (LegS) - legs
-                    - HiPPO w/ Fourier basis - fourier
-                        - FRU: Fourier Recurrent Unit
-                        - FouT: Translated Fourier
+                    - HiPPO w/ Fourier basis
+                        - FRU: Fourier Recurrent Unit - fru
+                        - FouT: Translated Fourier - fout
+                        - FourD: Fourier Decay - fourd
             lambda_n (int): The amount of tilt applied to the HiPPO-LegS basis, determines between LegS and LMU.
-            fourier_type (str): chooses between the following:
-                - FRU: Fourier Recurrent Unit - fru
-                - FouT: Translated Fourier - fout
-                - FourD: Fourier Decay - fourd
             alpha (float): The order of the Laguerre basis.
             beta (float): The scale of the Laguerre basis.
 

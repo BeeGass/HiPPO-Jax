@@ -43,7 +43,6 @@ class HiPPO_LSI(nn.Module):
         )
         A = matrices.A
         B = matrices.B
-        # A, B = transition(method, N)
         B = B.squeeze(-1)
         A_stacked = np.empty((max_length, N, N), dtype=A.dtype)
         B_stacked = np.empty((max_length, N), dtype=B.dtype)
@@ -59,12 +58,6 @@ class HiPPO_LSI(nn.Module):
                 )
                 B_stacked[t - 1] = la.solve_triangular(np.eye(N) - At, Bt, lower=True)
             elif discretization == 0.5:  # bilinear
-                # A_stacked[t - 1] = la.solve_triangular(
-                #     np.eye(N) - At / 2, np.eye(N) + At / 2, lower=True
-                # )
-                # B_stacked[t - 1] = la.solve_triangular(
-                #     np.eye(N) - At / 2, Bt, lower=True
-                # )
                 alpha = 0.5
                 A_stacked[t - 1] = np.linalg.lstsq(
                     np.eye(N) - (At * alpha), np.eye(N) + (At * alpha), rcond=None
@@ -79,6 +72,7 @@ class HiPPO_LSI(nn.Module):
                 B_stacked[t - 1] = la.solve_triangular(
                     A, A_stacked[t - 1] @ B - B, lower=True
                 )
+
         self.A_stacked = torch.Tensor(A_stacked.copy())  # (max_length, N, N)
         self.B_stacked = torch.Tensor(B_stacked.copy())  # (max_length, N)
 
@@ -100,7 +94,6 @@ class HiPPO_LSI(nn.Module):
         inputs = inputs.unsqueeze(-1)
         u = torch.transpose(inputs, 0, -2)
         u = u * self.B_stacked[:L]
-        # print(f"Gu - u * self.B_stacked[:L]: {u}")
         u = torch.transpose(u, 0, -2)  # (length, ..., N)
 
         if fast:
@@ -110,25 +103,8 @@ class HiPPO_LSI(nn.Module):
         c = torch.zeros(u.shape[1:]).to(inputs)
         cs = []
         for t, f in enumerate(inputs):
+
             c = F.linear(c, self.A_stacked[t]) + self.B_stacked[t] * f
-
-            print(f"self.A_stacked[{t}] shape:\n{self.A_stacked[t].shape}")
-            print(f"self.A_stacked[{t}]:\n{self.A_stacked[t]}")
-
-            print(f"c shape:\n{c.shape}")
-            print(f"c:\n{c}")
-
-            print(f"self.B_stacked[{t}] shape:\n{self.B_stacked[t].shape}")
-            print(f"self.B_stacked[{t}]:\n{self.B_stacked[t]}")
-
-            print(f"f shape:\n{f.shape}")
-            print(f"f:\n{f}")
-
-            print(f"part1 shape:\n{(F.linear(c, self.A_stacked[t])).shape}")
-            print(f"part1:\n{(F.linear(c, self.A_stacked[t]))}")
-
-            print(f"part2 shape:\n{(self.B_stacked[t] * f).shape}")
-            print(f"part2:\n{(self.B_stacked[t] * f)}")
 
             cs.append(c)
         return torch.stack(cs, dim=0)
@@ -170,7 +146,7 @@ class HiPPO_LTI(nn.Module):
         )
         A = matrices.A
         B = matrices.B
-        # A, B = transition(method, N)
+
         A = A + np.eye(N) * c
         self.A = A
         self.B = B.squeeze(-1)
@@ -210,25 +186,8 @@ class HiPPO_LTI(nn.Module):
         c = torch.zeros(u.shape[1:]).to(inputs)
         cs = []
         for f in inputs:
+
             c = F.linear(c, self.dA) + self.dB * f
-
-            print(f"self.self.dA shape:\n{self.dA.shape}")
-            print(f"self.dA:\n{self.dA}")
-
-            print(f"c shape:\n{c.shape}")
-            print(f"c:\n{c}")
-
-            print(f"self.self.dA shape:\n{self.dB.shape}")
-            print(f"self.dA:\n{self.dB}")
-
-            print(f"f shape:\n{f.shape}")
-            print(f"f:\n{f}")
-
-            print(f"part1 shape:\n{(F.linear(c, self.dA)).shape}")
-            print(f"part1:\n{(F.linear(c, self.dA))}")
-
-            print(f"part2 shape:\n{(self.dB * f).shape}")
-            print(f"part2:\n{(self.dB * f)}")
 
             cs.append(c)
         return torch.stack(cs, dim=0)

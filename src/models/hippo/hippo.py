@@ -14,24 +14,44 @@ class HiPPO(nn.Module):
     class that constructs HiPPO model using the defined measure.
 
     Args:
-        N (int): order of the HiPPO projection, aka the number of coefficients to describe the matrix
-        max_length (int): maximum sequence length to be input
-        measure (str): the measure used to define which way to instantiate the HiPPO matrix
-        step (float): step size used for descretization
-        GBT_alpha (float): represents which descretization transformation to use based off the alpha value
-        seq_L (int): length of the sequence to be used for training
-        v (str): choice of vectorized or non-vectorized function instantiation
-            - 'v': vectorized
-            - 'nv': non-vectorized
-        lambda_n (float): value associated with the tilt of legt
+
+        max_length (int):
+            maximum sequence length to be input
+
+        step_size (float):
+            step size used for descretization
+
+        N (int):
+            order of the HiPPO projection, aka the number of coefficients to describe the matrix
+
+        lambda_n (float):
+            value associated with the tilt of legt
             - 1: tilt on legt
             - \sqrt(2n+1)(-1)^{N}: tilt associated with the legendre memory unit (LMU)
-        fourier_type (str): choice of fourier measures
-            - fru: fourier recurrent unit measure (FRU) - 'fru'
-            - fout: truncated Fourier (FouT) - 'fout'
-            - fourd: decaying fourier transform - 'fourd'
-        alpha (float): The order of the Laguerre basis.
-        beta (float): The scale of the Laguerre basis.
+
+        alpha (float):
+            The order of the Laguerre basis.
+
+        beta (float):
+            The scale of the Laguerre basis.
+
+        GBT_alpha (float):
+            represents which descretization transformation to use based off the alpha value
+
+        measure (str):
+            the measure used to define which way to instantiate the HiPPO matrix
+
+        s_t (str):
+            choice between LSI and LTI systems
+            - "lsi"
+            - "lti"
+
+        dtype (jnp.float):
+            represents the float precision of the class
+
+        verbose (bool):
+            shows the rolled out coefficients over time/scale
+
     """
 
     max_length: int
@@ -42,6 +62,7 @@ class HiPPO(nn.Module):
     beta: float = 1.0
     GBT_alpha: float = 0.5
     measure: str = "legs"
+    s_t: str = "lti"
     dtype: Any = jnp.float32
     verbose: bool = False
 
@@ -58,7 +79,7 @@ class HiPPO(nn.Module):
         self.A = matrices.A
         self.B = matrices.B
 
-        self.C = jnp.ones((self.N,))
+        self.C = jnp.ones((self.N, 1))
         self.D = jnp.zeros((1,))
 
         if self.step_size == 1.0:
@@ -71,9 +92,10 @@ class HiPPO(nn.Module):
     def __call__(self, f, init_state=None, kernel=False):
         if not kernel:
             if init_state is None:
-                init_state = jnp.zeros((f.shape[0], self.N, 1))
+                # init_state = jnp.zeros((f.shape[0], self.N, 1))
+                init_state = jnp.zeros((f.shape[0], 1, self.N))
 
-            if self.step_size == 1.0:
+            if self.s_t == "lsi":
                 c_k, y_k = self.lsi_recurrence(
                     A=self.GBT_A_list,
                     B=self.GBT_B_list,
@@ -87,7 +109,7 @@ class HiPPO(nn.Module):
                 c_k = jnp.stack(c_k, axis=0)
                 y_k = jnp.stack(y_k, axis=0)
 
-            else:
+            elif self.s_t == "lti":
                 c_k, y_k = self.lti_recurrence(
                     A=self.A,
                     B=self.B,
@@ -97,6 +119,10 @@ class HiPPO(nn.Module):
                     f=f,
                     alpha=self.GBT_alpha,
                     dtype=self.dtype,
+                )
+            else:
+                raise ValueError(
+                    f"Incorrect value associated with invariance options, either pick 'lsi' or 'lti'."
                 )
 
         else:
@@ -133,7 +159,6 @@ class HiPPO(nn.Module):
         GBT_a_list = []
         GBT_b_list = []
         for i in range(1, self.max_length + 1):
-            # TODO: make this scale invariant optional
             GBT_A, GBT_B = self.discretize(
                 A, B, step=i, alpha=self.GBT_alpha, dtype=dtype
             )
@@ -186,12 +211,27 @@ class HiPPO(nn.Module):
         function used for discretizing the HiPPO matrix
 
         Args:
-            A (jnp.ndarray): matrix to be discretized
-            B (jnp.ndarray): matrix to be discretized
-            C (jnp.ndarray): matrix to be discretized
-            D (jnp.ndarray): matrix to be discretized
-            step (float): step size used for discretization
-            alpha (float, optional): used for determining which generalized bilinear transformation to use
+            A (jnp.ndarray):
+                shape: (N, N)
+                matrix to be discretized
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                matrix to be discretized
+
+            C (jnp.ndarray):
+                shape: (N, 1)
+                matrix to be discretized
+
+            D (jnp.ndarray):
+                shape: (1,)
+                matrix to be discretized
+
+            step (float):
+                step size used for discretization
+
+            alpha (float, optional):
+                used for determining which generalized bilinear transformation to use
                 - forward Euler corresponds to α = 0,
                 - backward Euler corresponds to α = 1,
                 - bilinear corresponds to α = 0.5,
@@ -204,8 +244,7 @@ class HiPPO(nn.Module):
 
         GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
 
-        base_GBT_B = jnp.linalg.lstsq(part1, B, rcond=None)[0]
-        GBT_B = step_size * base_GBT_B
+        GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
 
         if alpha > 1:  # Zero-order Hold
             GBT_A = jax.scipy.linalg.expm(step_size * A)
@@ -213,15 +252,31 @@ class HiPPO(nn.Module):
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)
 
-    def lsi_recurrence(self, A, B, C, D, c_0, f, alpha=0.5, dtype=jnp.float32):
+    def lsi_recurrence(self, A, B, C, D, c_0, f, dtype=jnp.float32):
         """
         This is for returning the discretized hidden state often needed for an RNN.
         Args:
-            Ab (jnp.ndarray): the discretized A matrix
-            Bb (jnp.ndarray): the discretized B matrix
-            Cb (jnp.ndarray): the discretized C matrix
-            f (jnp.ndarray): the input sequence
-            c_0 (jnp.ndarray): the initial hidden state
+            A (jnp.ndarray):
+                shape: (N, N)
+                the discretized A matrix
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                the discretized B matrix
+
+            C (jnp.ndarray):
+                shape: (N, 1)
+                the discretized C matrix
+
+            c_0 (jnp.ndarray):
+                shape: (batch size, input length, N)
+                the initial hidden state
+
+            f (jnp.ndarray):
+                shape: (sequence length, 1)
+                the input sequence
+
+
         Returns:
             the next hidden state (aka coefficients representing the function, f(t))
         """
@@ -246,37 +301,56 @@ class HiPPO(nn.Module):
         """
         This is for returning the discretized hidden state often needed for an RNN.
         Args:
-            Ab (jnp.ndarray): the discretized A matrix
-            Bb (jnp.ndarray): the discretized B matrix
-            Cb (jnp.ndarray): the discretized C matrix
-            f (jnp.ndarray): the input sequence
-            c_0 (jnp.ndarray): the initial hidden state
+            A (jnp.ndarray):
+                shape: (N, N)
+                the discretized A matrix
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                the discretized B matrix
+
+            C (jnp.ndarray):
+                shape: (N, 1)
+                the discretized C matrix
+
+            D (jnp.ndarray):
+                shape: (N, 1)
+                the discretized C matrix
+
+            f (jnp.ndarray):
+                shape: (sequence length, 1)
+                the input sequence
+
+            c_0 (jnp.ndarray):
+                shape: (batch size, input length, N)
+                the initial hidden state
+
         Returns:
             the next hidden state (aka coefficients representing the function, f(t))
         """
         Ad, Bd = self.discretize(
-            A=A, B=B, step=1 / self.step_size, alpha=alpha, dtype=dtype
+            A=A, B=B, step=self.step_size, alpha=alpha, dtype=dtype
         )
 
         def lti_step(c_k_i, f_k):
             """
             Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
             Args:
-                c_k_i: previous hidden state
-                f_k: output from function f at, descritized, time step, k.
+                c_k_i:
+                    shape: (input length, N)
+                    previous hidden state
+
+                f_k:
+                    shape: (1, )
+                    output from function f at, descritized, time step, k.
 
             Returns:
                 c_k: current hidden state
                 y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
             """
 
-            part1 = Ad @ c_k_i
-            part2 = Bd * f_k
-            c_k = part1 + part2
-
-            part3 = C @ c_k
-            part4 = D.T @ f_k
-            y_k = part3 + part4
+            c_k = jnp.dot(c_k_i, Ad.T) + (Bd.T * f_k)
+            y_k = jnp.dot(C, c_k) + (D * f_k)
 
             return c_k, (c_k, y_k)
 
@@ -291,21 +365,21 @@ class HiPPO(nn.Module):
         """
         Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
         Args:
-            c_k_i: previous hidden state
-            f_k: output from function f at, descritized, time step, k.
+            c_k_i:
+                shape: (input length, N)
+                previous hidden state
+
+            f_k:
+                shape: (1, )
+                output from function f at, descritized, time step, k.
 
         Returns:
             c_k: current hidden state
             y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
         """
 
-        part1 = Ad @ c_k_i
-        part2 = Bd * f_k
-        c_k = part1 + part2
-
-        part3 = Cd @ c_k
-        part4 = Dd.T @ f_k
-        y_k = part3 + part4
+        c_k = jnp.dot(c_k_i, Ad.T) + (Bd.T * f_k)
+        y_k = jnp.dot(Cd, c_k) + (Dd * f_k)
 
         return c_k, y_k
 
