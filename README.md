@@ -139,10 +139,22 @@ import jax.random as jr
 key1, key2, key3 = jr.split(jr.PRNGKey(0), 3)
 ```
 
-**HiPPO**
+**HiPPO Matrices**
 
 ```python
 from s4mer.src.models.hippo.transition import TransMatrix
+
+N = 100
+measure = "legs"
+
+matrices = TransMatrix(N=N, measure=measure)
+A = matrices.A
+B = matrices.B
+```
+
+**HiPPO Operator**
+
+```python
 from s4mer.src.models.hippo.hippo import HiPPO
 
 N = 100
@@ -150,14 +162,13 @@ gbt_type = 0.5
 L = 784 # length of data
 measure = "legs"
 
-matrices = TransMatrix(N, measure)
-A = matrices.A_matrix
-B = matrices.B_matrix
-
 hippo = HiPPO(
-    N, L, 1.0 / L, gbt_type, L, A, B, measure
+    max_length=L,
+    step_size=1.0,
+    N=N,
+    GBT_alpha=gbt_type,
+    measure=measure,
 )
-
 
 ```
 
