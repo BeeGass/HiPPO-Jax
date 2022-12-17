@@ -84,6 +84,8 @@ class HiPPO(nn.Module):
                     alpha=self.GBT_alpha,
                     dtype=self.dtype,
                 )
+                c_k = jnp.stack(c_k, axis=0)
+                y_k = jnp.stack(y_k, axis=0)
 
             else:
                 c_k, y_k = self.lti_recurrence(
