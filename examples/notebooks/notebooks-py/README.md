@@ -23,6 +23,7 @@
 - [Liquid Structural State-Space Models](https://arxiv.org/abs/2209.12951) - Liquid-S4
 - [Hungry Hungry HiPPOs](https://openreview.net/pdf?id=COZDy0WYGg) - S4 LLM
 - [S4ND](https://arxiv.org/abs/2210.06583) - S4ND
+- [Efficient Long Sequence Modeling via State Space Augmented Transformer](https://arxiv.org/abs/2212.08136) S4 augmented transformer
 
 **Applied SSMs:**
 

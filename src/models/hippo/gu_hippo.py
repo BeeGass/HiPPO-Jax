@@ -41,8 +41,8 @@ class HiPPO_LSI(nn.Module):
         matrices = GuTransMatrix(
             N=N, measure=method, lambda_n=lambda_n, alpha=alpha, beta=beta
         )
-        A = matrices.A
-        B = matrices.B
+        A = np.asarray(matrices.A, dtype=np.float32)
+        B = np.asarray(matrices.B, dtype=np.float32)
         B = B.squeeze(-1)
         A_stacked = np.empty((max_length, N, N), dtype=A.dtype)
         B_stacked = np.empty((max_length, N), dtype=B.dtype)
@@ -68,7 +68,8 @@ class HiPPO_LSI(nn.Module):
                     np.eye(N) - (At * alpha), Bt, rcond=None
                 )[0]
             else:  # ZOH
-                A_stacked[t - 1] = la.expm(A * (math.log(t + 1) - math.log(t)))
+                # A_stacked[t - 1] = la.expm(A * (math.log(t + 1) - math.log(t)))
+                A_stacked[t - 1] = la.expm(At)
                 B_stacked[t - 1] = la.solve_triangular(
                     A, A_stacked[t - 1] @ B - B, lower=True
                 )
@@ -144,8 +145,8 @@ class HiPPO_LTI(nn.Module):
         matrices = GuTransMatrix(
             N=N, measure=method, lambda_n=lambda_n, alpha=alpha, beta=beta
         )
-        A = matrices.A
-        B = matrices.B
+        A = np.asarray(matrices.A, dtype=np.float32)
+        B = np.asarray(matrices.B, dtype=np.float32)
 
         A = A + np.eye(N) * c
         self.A = A

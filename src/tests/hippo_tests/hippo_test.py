@@ -1317,6 +1317,7 @@ def test_GBT_LSI_legs_ZOH(
                 axis=1,
             ),
         )
+
         assert jnp.allclose(GBT_A, gu_GBT_A, rtol=1e-04, atol=1e-04)
         assert jnp.allclose(GBT_B, gu_GBT_B, rtol=1e-04, atol=1e-04)
 

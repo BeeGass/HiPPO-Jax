@@ -248,7 +248,7 @@ class HiPPO(nn.Module):
 
         if alpha > 1:  # Zero-order Hold
             GBT_A = jax.scipy.linalg.expm(step_size * A)
-            GBT_B = (jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step_size * A) - I)) @ B
+            GBT_B = jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step_size * A) - I) @ B
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)
 
