@@ -6,7 +6,7 @@ from jax.numpy.linalg import inv
 from scipy import special as ss
 from src.models.hippo.transition import TransMatrix
 from typing import Any
-from functools import partial
+import math
 
 
 class HiPPO(nn.Module):
@@ -247,8 +247,10 @@ class HiPPO(nn.Module):
         GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
 
         if alpha > 1:  # Zero-order Hold
-            GBT_A = jax.scipy.linalg.expm(step_size * A)
-            GBT_B = jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step_size * A) - I) @ B
+            GBT_A = jax.scipy.linalg.expm(
+                A * (math.log(step + self.step_size) - math.log(step))
+            )
+            GBT_B = jnp.linalg.inv(A) @ (GBT_A - I) @ B
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)
 

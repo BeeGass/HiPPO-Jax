@@ -68,8 +68,8 @@ class HiPPO_LSI(nn.Module):
                     np.eye(N) - (At * alpha), Bt, rcond=None
                 )[0]
             else:  # ZOH
-                # A_stacked[t - 1] = la.expm(A * (math.log(t + 1) - math.log(t)))
-                A_stacked[t - 1] = la.expm(At)
+                A_stacked[t - 1] = la.expm(A * (math.log(t + 1) - math.log(t)))
+                # A_stacked[t - 1] = la.expm(At)
                 B_stacked[t - 1] = la.solve_triangular(
                     A, A_stacked[t - 1] @ B - B, lower=True
                 )
