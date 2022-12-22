@@ -172,17 +172,7 @@ class HiPPO(nn.Module):
         Creates the evaluation matrix used for reconstructing the signal
         """
         eval_matrix = None
-        if self.measure == "legt":
-            L = self.max_length
-            vals = jnp.arange(0.0, 1.0, L)
-            # n = jnp.arange(self.N)[:, None]
-            zero_N = self.N - 1
-            x = 1 - 2 * vals
-            eval_matrix = jax.scipy.special.lpmn_values(
-                m=zero_N, n=zero_N, z=x, is_normalized=False
-            ).T  # ss.eval_legendre(n, x).T
-
-        elif self.measure == "legs":
+        if self.measure == "legs":
             L = self.max_length
             vals = jnp.linspace(0.0, 1.0, L)
             # n = jnp.arange(self.N)[:, None]
@@ -195,11 +185,27 @@ class HiPPO(nn.Module):
                 )
             ).T  # ss.eval_legendre(n, x)).T
 
-        elif self.measure == "lagt":
-            raise NotImplementedError("Translated Laguerre measure not implemented yet")
+        elif self.measure == "legt":
+            L = self.max_length
+            vals = jnp.arange(0.0, 1.0, L)
+            # n = jnp.arange(self.N)[:, None]
+            zero_N = self.N - 1
+            x = 1 - 2 * vals
+            eval_matrix = jax.scipy.special.lpmn_values(
+                m=zero_N, n=zero_N, z=x, is_normalized=False
+            ).T  # ss.eval_legendre(n, x).T
 
-        elif self.measure == "fourier":
-            raise NotImplementedError("Fourier measures are not implemented yet")
+        elif self.measure == "lmu":
+            # raise NotImplementedError("LMU measure not implemented yet")
+            pass
+
+        elif self.measure == "lagt":
+            # raise NotImplementedError("Translated Laguerre measure not implemented yet")
+            pass
+
+        elif self.measure in ["fourier", "fru", "fout", "foud"]:
+            # raise NotImplementedError("Fourier measures are not implemented yet")
+            pass
 
         else:
             raise ValueError("invalid measure")
