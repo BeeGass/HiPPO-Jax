@@ -835,7 +835,7 @@ def test_GBT_LTI_fout_FE(
 # ------------
 
 
-def test_GBT_LTI_fout_FE(
+def test_GBT_LTI_foud_FE(
     hippo_lti_foud_fe, gu_hippo_lti_foud_fe, foud_matrices, random_16_input
 ):
     print("HiPPO GBT LEGS")
@@ -1051,7 +1051,7 @@ def test_GBT_LTI_fout_BE(
 # ------------
 
 
-def test_GBT_LTI_fout_BE(
+def test_GBT_LTI_foud_BE(
     hippo_lti_foud_be, gu_hippo_lti_foud_be, foud_matrices, random_16_input
 ):
     print("HiPPO GBT LEGS")
@@ -1267,7 +1267,7 @@ def test_GBT_LTI_fout_BI(
 # ------------
 
 
-def test_GBT_LTI_fout_BI(
+def test_GBT_LTI_foud_BI(
     hippo_lti_foud_bi, gu_hippo_lti_foud_bi, foud_matrices, random_16_input
 ):
     print("HiPPO GBT LEGS")
@@ -1484,7 +1484,7 @@ def test_GBT_LTI_fout_ZOH(
 # ------------
 
 
-def test_GBT_LTI_fout_ZOH(
+def test_GBT_LTI_foud_ZOH(
     hippo_lti_foud_zoh, gu_hippo_lti_foud_zoh, foud_matrices, random_16_input
 ):
     print("HiPPO GBT LEGS")

@@ -114,7 +114,7 @@ def hippo_lti_legt_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_fe(random_16_input):
-    measure = "legt"
+    measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 0.0
     return HiPPO(
@@ -313,7 +313,7 @@ def hippo_lti_legt_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_be(random_16_input):
-    measure = "legt"
+    measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 1.0
     return HiPPO(
@@ -512,7 +512,7 @@ def hippo_lti_legt_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_bi(random_16_input):
-    measure = "legt"
+    measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 0.5
     return HiPPO(
@@ -711,7 +711,7 @@ def hippo_lti_legt_zoh(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_zoh(random_16_input):
-    measure = "legt"
+    measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 2.0
     return HiPPO(
@@ -1087,7 +1087,7 @@ def gu_hippo_lti_legt_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lmu_be(random_16_input):
-    measure = "legt"
+    measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 1.0
     return HiPPO_LTI(
@@ -1268,7 +1268,7 @@ def gu_hippo_lti_legt_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lmu_bi(random_16_input):
-    measure = "legt"
+    measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 0.5
     return HiPPO_LTI(
@@ -1449,7 +1449,7 @@ def gu_hippo_lti_legt_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lmu_zoh(random_16_input):
-    measure = "legt"
+    measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = "zoh"
     return HiPPO_LTI(

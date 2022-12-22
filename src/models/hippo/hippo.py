@@ -247,9 +247,14 @@ class HiPPO(nn.Module):
         GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
 
         if alpha > 1:  # Zero-order Hold
-            GBT_A = jax.scipy.linalg.expm(
-                A * (math.log(step + self.step_size) - math.log(step))
-            )
+            GBT_A = jnp.zeros(A.shape)
+            if self.s_t == "lsi":
+                GBT_A = jax.scipy.linalg.expm(
+                    A * (math.log(step + self.step_size) - math.log(step))
+                )
+            else:
+                GBT_A = jax.scipy.linalg.expm(A * self.step_size)
+
             GBT_B = jnp.linalg.inv(A) @ (GBT_A - I) @ B
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)

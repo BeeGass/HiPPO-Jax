@@ -73,7 +73,7 @@ def dplr_legt():
 # ------------
 @pytest.fixture
 def legt_lmu_matrices():
-    the_measure = "legt"
+    the_measure = "lmu"
     lmu_matrices = TransMatrix(
         N=100, measure=the_measure, lambda_n=2.0
     )  # change lambda so resulting matrix is in the form of LMU
@@ -82,7 +82,7 @@ def legt_lmu_matrices():
 
 @pytest.fixture
 def nplr_lmu():
-    the_measure = "legt"
+    the_measure = "lmu"
     rank = 2
     nplr_lmu = LowRankMatrix(
         N=100, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=False
@@ -92,7 +92,7 @@ def nplr_lmu():
 
 @pytest.fixture
 def dplr_lmu():
-    the_measure = "legt"
+    the_measure = "lmu"
     rank = 2
     dplr_lmu = LowRankMatrix(
         N=100, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=True
@@ -288,7 +288,7 @@ def gu_dplr_legt():
 # ------------
 @pytest.fixture
 def gu_legt_lmu_matrices():
-    the_measure = "legt"
+    the_measure = "lmu"
     lmu_matrices = GuTransMatrix(
         N=100, measure=the_measure, lambda_n=2.0
     )  # change lambda so resulting matrix is in the form of LMU
@@ -297,7 +297,7 @@ def gu_legt_lmu_matrices():
 
 @pytest.fixture
 def gu_nplr_lmu():
-    the_measure = "legt"
+    the_measure = "lmu"
     rank = 2
     gu_nplr_lmu = GuLowRankMatrix(
         N=100, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=False
@@ -307,7 +307,7 @@ def gu_nplr_lmu():
 
 @pytest.fixture
 def gu_dplr_lmu():
-    the_measure = "legt"
+    the_measure = "lmu"
     rank = 2
     gu_dplr_lmu = GuLowRankMatrix(
         N=100, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=True

@@ -42,6 +42,13 @@ class TransMatrix:
         A = None
         B = None
         if measure in ["legt", "lmu"]:
+            if measure == "legt":
+                assert lambda_n == 1.0
+            elif measure == "lmu":
+                assert lambda_n == 2.0
+            else:
+                raise ValueError("Invalid lambda_n for HiPPO type 'legt' or 'lmu")
+
             A, B = self.build_LegT(N=N, lambda_n=lambda_n, dtype=dtype)
 
         elif measure == "lagt":

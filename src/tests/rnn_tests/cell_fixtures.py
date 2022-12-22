@@ -104,7 +104,7 @@ def hippo_lmu_lstm_cell():
         bias=True,
         param_dtype=jnp.float32,
         activation_fn=tanh,
-        measure="legt",
+        measure="lmu",
         lambda_n=2.0,
         rnn_cell=LSTMCell,
     )
@@ -241,7 +241,7 @@ def hippo_lmu_gru_cell():
         bias=True,
         param_dtype=jnp.float32,
         activation_fn=tanh,
-        measure="legt",
+        measure="lmu",
         lambda_n=2.0,
         rnn_cell=GRUCell,
     )
