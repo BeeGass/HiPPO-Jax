@@ -186,7 +186,7 @@ import jax
 def test_GBT_LSI_legs_FE(
     hippo_lsi_legs_fe, gu_hippo_lsi_legs_fe, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = legs_matrices
@@ -213,7 +213,7 @@ def test_GBT_LSI_legs_FE(
 def test_GBT_LTI_legs_FE(
     hippo_lti_legs_fe, gu_hippo_lti_legs_fe, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = legs_matrices
@@ -244,7 +244,7 @@ def test_GBT_LTI_legs_FE(
 def test_GBT_LTI_legt_FE(
     hippo_lti_legt_fe, gu_hippo_lti_legt_fe, legt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = legt_matrices
@@ -275,7 +275,7 @@ def test_GBT_LTI_legt_FE(
 def test_GBT_LTI_lmu_FE(
     hippo_lti_lmu_fe, gu_hippo_lti_lmu_fe, legt_lmu_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = legt_lmu_matrices
@@ -306,7 +306,7 @@ def test_GBT_LTI_lmu_FE(
 def test_GBT_LTI_lagt_FE(
     hippo_lti_lagt_fe, gu_hippo_lti_lagt_fe, lagt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = lagt_matrices
@@ -337,7 +337,7 @@ def test_GBT_LTI_lagt_FE(
 def test_GBT_LTI_fru_FE(
     hippo_lti_fru_fe, gu_hippo_lti_fru_fe, fru_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = fru_matrices
@@ -368,7 +368,7 @@ def test_GBT_LTI_fru_FE(
 def test_GBT_LTI_fout_FE(
     hippo_lti_fout_fe, gu_hippo_lti_fout_fe, fout_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = fout_matrices
@@ -399,7 +399,7 @@ def test_GBT_LTI_fout_FE(
 def test_GBT_LTI_foud_FE(
     hippo_lti_foud_fe, gu_hippo_lti_foud_fe, foud_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.0
     A, B = foud_matrices
@@ -434,7 +434,7 @@ def test_GBT_LTI_foud_FE(
 def test_GBT_LSI_legs_BE(
     hippo_lsi_legs_be, gu_hippo_lsi_legs_be, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = legs_matrices
@@ -461,7 +461,7 @@ def test_GBT_LSI_legs_BE(
 def test_GBT_LTI_legs_BE(
     hippo_lti_legs_be, gu_hippo_lti_legs_be, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = legs_matrices
@@ -492,7 +492,7 @@ def test_GBT_LTI_legs_BE(
 def test_GBT_LTI_legt_BE(
     hippo_lti_legt_be, gu_hippo_lti_legt_be, legt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = legt_matrices
@@ -523,7 +523,7 @@ def test_GBT_LTI_legt_BE(
 def test_GBT_LTI_lmu_BE(
     hippo_lti_lmu_be, gu_hippo_lti_lmu_be, legt_lmu_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = legt_lmu_matrices
@@ -554,7 +554,7 @@ def test_GBT_LTI_lmu_BE(
 def test_GBT_LTI_lagt_BE(
     hippo_lti_lagt_be, gu_hippo_lti_lagt_be, lagt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = lagt_matrices
@@ -585,7 +585,7 @@ def test_GBT_LTI_lagt_BE(
 def test_GBT_LTI_fru_BE(
     hippo_lti_fru_be, gu_hippo_lti_fru_be, fru_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = fru_matrices
@@ -616,7 +616,7 @@ def test_GBT_LTI_fru_BE(
 def test_GBT_LTI_fout_BE(
     hippo_lti_fout_be, gu_hippo_lti_fout_be, fout_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = fout_matrices
@@ -647,7 +647,7 @@ def test_GBT_LTI_fout_BE(
 def test_GBT_LTI_foud_BE(
     hippo_lti_foud_be, gu_hippo_lti_foud_be, foud_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 1.0
     A, B = foud_matrices
@@ -682,7 +682,7 @@ def test_GBT_LTI_foud_BE(
 def test_GBT_LSI_legs_BI(
     hippo_lsi_legs_bi, gu_hippo_lsi_legs_bi, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = legs_matrices
@@ -709,7 +709,7 @@ def test_GBT_LSI_legs_BI(
 def test_GBT_LTI_legs_BI(
     hippo_lti_legs_bi, gu_hippo_lti_legs_bi, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = legs_matrices
@@ -740,7 +740,7 @@ def test_GBT_LTI_legs_BI(
 def test_GBT_LTI_legt_BI(
     hippo_lti_legt_bi, gu_hippo_lti_legt_bi, legt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = legt_matrices
@@ -771,7 +771,7 @@ def test_GBT_LTI_legt_BI(
 def test_GBT_LTI_lmu_BI(
     hippo_lti_lmu_bi, gu_hippo_lti_lmu_bi, legt_lmu_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = legt_lmu_matrices
@@ -802,7 +802,7 @@ def test_GBT_LTI_lmu_BI(
 def test_GBT_LTI_lagt_BI(
     hippo_lti_lagt_bi, gu_hippo_lti_lagt_bi, lagt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = lagt_matrices
@@ -833,7 +833,7 @@ def test_GBT_LTI_lagt_BI(
 def test_GBT_LTI_fru_BI(
     hippo_lti_fru_bi, gu_hippo_lti_fru_bi, fru_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = fru_matrices
@@ -864,7 +864,7 @@ def test_GBT_LTI_fru_BI(
 def test_GBT_LTI_fout_BI(
     hippo_lti_fout_bi, gu_hippo_lti_fout_bi, fout_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = fout_matrices
@@ -895,7 +895,7 @@ def test_GBT_LTI_fout_BI(
 def test_GBT_LTI_foud_BI(
     hippo_lti_foud_bi, gu_hippo_lti_foud_bi, foud_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 0.5
     A, B = foud_matrices
@@ -930,7 +930,7 @@ def test_GBT_LTI_foud_BI(
 def test_GBT_LSI_legs_ZOH(
     hippo_lsi_legs_zoh, gu_hippo_lsi_legs_zoh, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = legs_matrices
@@ -958,7 +958,7 @@ def test_GBT_LSI_legs_ZOH(
 def test_GBT_LTI_legs_ZOH(
     hippo_lti_legs_zoh, gu_hippo_lti_legs_zoh, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = legs_matrices
@@ -989,7 +989,7 @@ def test_GBT_LTI_legs_ZOH(
 def test_GBT_LTI_legt_ZOH(
     hippo_lti_legt_zoh, gu_hippo_lti_legt_zoh, legt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = legt_matrices
@@ -1031,7 +1031,7 @@ def test_GBT_LTI_legt_ZOH(
 def test_GBT_LTI_lmu_ZOH(
     hippo_lti_lmu_zoh, gu_hippo_lti_lmu_zoh, legt_lmu_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = legt_lmu_matrices
@@ -1073,7 +1073,7 @@ def test_GBT_LTI_lmu_ZOH(
 def test_GBT_LTI_lagt_ZOH(
     hippo_lti_lagt_zoh, gu_hippo_lti_lagt_zoh, lagt_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = lagt_matrices
@@ -1104,7 +1104,7 @@ def test_GBT_LTI_lagt_ZOH(
 def test_GBT_LTI_fru_ZOH(
     hippo_lti_fru_zoh, gu_hippo_lti_fru_zoh, legs_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = legs_matrices
@@ -1135,7 +1135,7 @@ def test_GBT_LTI_fru_ZOH(
 def test_GBT_LTI_fout_ZOH(
     hippo_lti_fout_zoh, gu_hippo_lti_fout_zoh, fout_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = fout_matrices
@@ -1166,7 +1166,7 @@ def test_GBT_LTI_fout_ZOH(
 def test_GBT_LTI_foud_ZOH(
     hippo_lti_foud_zoh, gu_hippo_lti_foud_zoh, foud_matrices, random_16_input
 ):
-    print("HiPPO GBT LEGS")
+    print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
     A, B = foud_matrices
