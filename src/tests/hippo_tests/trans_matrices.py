@@ -1,4 +1,3 @@
-import pytest
 from src.models.hippo.gu_transition import GuTransMatrix, GuLowRankMatrix
 from src.models.hippo.transition import TransMatrix, LowRankMatrix
 from src.tests.hippo_tests.hippo_utils import (
@@ -7,6 +6,8 @@ from src.tests.hippo_tests.hippo_utils import (
     random_32_input,
     random_64_input,
 )
+import pytest
+import jax.numpy as jnp
 
 # ----------------------------------------------------------
 # --- Home Grown, Grass Fed, All Organic Implementations ---
@@ -75,8 +76,13 @@ def dplr_legt():
 def legt_lmu_matrices():
     the_measure = "lmu"
     lmu_matrices = TransMatrix(
-        N=100, measure=the_measure, lambda_n=2.0
-    )  # change lambda so resulting matrix is in the form of LMU
+        N=100,
+        measure=the_measure,
+        lambda_n=2.0,
+        alpha=0.0,
+        beta=1.0,
+        dtype=jnp.float32,
+    )
     return lmu_matrices.A, lmu_matrices.B
 
 
@@ -290,8 +296,8 @@ def gu_dplr_legt():
 def gu_legt_lmu_matrices():
     the_measure = "lmu"
     lmu_matrices = GuTransMatrix(
-        N=100, measure=the_measure, lambda_n=2.0
-    )  # change lambda so resulting matrix is in the form of LMU
+        N=100, measure=the_measure, lambda_n=2.0, alpha=0.0, beta=1.0
+    )
     return lmu_matrices.A, lmu_matrices.B
 
 

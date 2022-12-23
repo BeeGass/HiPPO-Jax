@@ -85,6 +85,7 @@ def random_1_input(key_generator):
     batch_size = 1
     data_size = 512
     input_size = 1
+
     # x = jax.random.randint(key_generator[8], (batch_size, data_size), 0, 255)
     x = jax.random.uniform(key_generator[8], (batch_size, data_size))
     return np.asarray(vmap(moving_window, in_axes=(0, None))(x, input_size))
@@ -95,9 +96,10 @@ def random_16_input(key_generator):
     batch_size = 16
     data_size = 512
     input_size = 1
+
     # x = jax.random.randint(key_generator[9], (batch_size, data_size), 0, 255)
     x = jax.random.uniform(key_generator[9], (batch_size, data_size))
-    return np.asarray(vmap(moving_window, in_axes=(0, None))(x, input_size))
+    return np.asarray(jax.vmap(moving_window, in_axes=(0, None))(x, input_size))
 
 
 @pytest.fixture
@@ -105,6 +107,7 @@ def random_32_input(key_generator):
     batch_size = 32
     data_size = 512
     input_size = 1
+
     # x = jax.random.randint(key_generator[10], (batch_size, data_size), 0, 255)
     x = jax.random.uniform(key_generator[10], (batch_size, data_size))
     return np.asarray(vmap(moving_window, in_axes=(0, None))(x, input_size))
@@ -115,6 +118,7 @@ def random_64_input(key_generator):
     batch_size = 64
     data_size = 512
     input_size = 1
+
     # x = jax.random.randint(key_generator[11], (batch_size, data_size), 0, 255)
     x = jax.random.uniform(key_generator[11], (batch_size, data_size))
     return np.asarray(vmap(moving_window, in_axes=(0, None))(x, input_size))

@@ -43,6 +43,7 @@ class HiPPO_LSI(nn.Module):
         )
         A = np.asarray(matrices.A, dtype=np.float32)
         B = np.asarray(matrices.B, dtype=np.float32)
+
         B = B.squeeze(-1)
         A_stacked = np.empty((max_length, N, N), dtype=A.dtype)
         B_stacked = np.empty((max_length, N), dtype=B.dtype)
@@ -104,9 +105,7 @@ class HiPPO_LSI(nn.Module):
         c = torch.zeros(u.shape[1:]).to(inputs)
         cs = []
         for t, f in enumerate(inputs):
-
-            c = F.linear(c, self.A_stacked[t]) + self.B_stacked[t] * f
-
+            c = (F.linear(c, self.A_stacked[t])) + (self.B_stacked[t] * f)
             cs.append(c)
         return torch.stack(cs, dim=0)
 
@@ -147,7 +146,7 @@ class HiPPO_LTI(nn.Module):
         )
         A = np.asarray(matrices.A, dtype=np.float32)
         B = np.asarray(matrices.B, dtype=np.float32)
-
+        # A, B = transition(method, N)
         A = A + np.eye(N) * c
         self.A = A
         self.B = B.squeeze(-1)
@@ -187,9 +186,7 @@ class HiPPO_LTI(nn.Module):
         c = torch.zeros(u.shape[1:]).to(inputs)
         cs = []
         for f in inputs:
-
-            c = F.linear(c, self.dA) + self.dB * f
-
+            c = (F.linear(c, self.dA)) + (self.dB * f)
             cs.append(c)
         return torch.stack(cs, dim=0)
 

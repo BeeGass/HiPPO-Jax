@@ -53,6 +53,13 @@ class GuTransMatrix:
         A = None
         B = None
         if measure in ["legt", "lmu"]:
+            if measure == "legt":
+                assert lambda_n == 1.0
+            elif measure == "lmu":
+                assert lambda_n == 2.0
+            else:
+                raise ValueError("Invalid lambda_n for HiPPO type 'legt' or 'lmu")
+
             A, B = self.build_gu_LegT(N=N, lambda_n=lambda_n)
 
         elif measure == "lagt":
@@ -260,14 +267,14 @@ class GuLowRankMatrix:
         self.N = N
         self.measure = measure
         self.rank = rank
-        _trans_matrix = GuTransMatrix(
-            N, measure, lambda_n, alpha, beta, dtype=jnp.float32
+        matrices = GuTransMatrix(
+            N=N, measure=measure, lambda_n=lambda_n, alpha=alpha, beta=beta
         )
 
-        A, B, P, S = self.pre_nplr(trans_matrix=_trans_matrix, dtype=dtype)
+        A, B, P, S = self.pre_nplr(trans_matrix=matrices, measure=measure, dtype=dtype)
         if DPLR:
             Lambda, P, B, V = self.dplr(
-                trans_matrix=_trans_matrix,
+                trans_matrix=matrices,
                 scaling="hippo",
                 H=1,
                 dtype=dtype,
@@ -287,16 +294,16 @@ class GuLowRankMatrix:
         self.P = P  # HiPPO rank correction matrix (N x rank)
         self.S = S  # HiPPO normal (skew-symmetric) matrix (N x N)
 
-    def rank_correction(self, dtype=torch.float):
+    def rank_correction(self, measure, dtype=torch.float):
         """Return low-rank matrix L such that A + L is normal"""
 
-        if self.measure == "legs":
+        if measure == "legs":
             assert self.rank >= 1
             P = torch.sqrt(0.5 + torch.arange(self.N, dtype=dtype)).unsqueeze(
                 0
             )  # (1 N)
 
-        elif self.measure == "legt":
+        elif measure in ["legt", "lmu"]:
             assert self.rank >= 2
             P = torch.sqrt(1 + 2 * torch.arange(self.N, dtype=dtype))  # (N)
             P0 = P.clone()
@@ -308,30 +315,30 @@ class GuLowRankMatrix:
                 -0.5
             )  # Halve the rank correct just like the original matrix was halved
 
-        elif self.measure == "lagt":
+        elif measure == "lagt":
             assert self.rank >= 1
             P = 0.5**0.5 * torch.ones(1, self.N, dtype=dtype)
 
-        elif self.measure in ["fourier", "fout", "fru"]:
+        elif measure in ["fourier", "fout", "fru"]:
             P = torch.zeros(self.N)
             P[0::2] = 2**0.5
             P[0] = 1
             P = P.unsqueeze(0)
 
-        elif self.measure == "fourier_decay":
+        elif measure in ["fourier_decay", "foud"]:
             P = torch.zeros(self.N)
             P[0::2] = 2**0.5
             P[0] = 1
             P = P.unsqueeze(0)
             P = P / 2**0.5
 
-        elif self.measure == "fourier2":
+        elif measure == "fourier2":
             P = torch.zeros(self.N)
             P[0::2] = 2**0.5
             P[0] = 1
             P = 2**0.5 * P.unsqueeze(0)
 
-        elif self.measure in ["fourier_diag", "foud", "legsd"]:
+        elif measure in ["fourier_diag", "legsd"]:
             P = torch.zeros(1, self.N, dtype=dtype)
 
         else:
@@ -345,7 +352,7 @@ class GuLowRankMatrix:
 
         return P
 
-    def pre_nplr(self, trans_matrix, dtype=torch.float):
+    def pre_nplr(self, trans_matrix, measure, dtype=torch.float):
         jnp_A = trans_matrix.A
         jnp_B = trans_matrix.B
 
@@ -355,7 +362,7 @@ class GuLowRankMatrix:
         np_B = np.asarray(jnp_B)
         B = torch.from_numpy(np_B)  # [:, 0]  # (N,)
 
-        P = self.rank_correction(dtype=dtype)  # (r N)
+        P = self.rank_correction(measure=measure, dtype=dtype)  # (r N)
         AP = A + torch.sum(P.unsqueeze(-2) * P.unsqueeze(-1), dim=-3)
 
         return A, B, P, AP

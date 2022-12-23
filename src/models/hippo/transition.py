@@ -295,9 +295,17 @@ class LowRankMatrix:
         self.N = N
         self.measure = measure
         self.rank = rank
-        _trans_matrix = TransMatrix(N, measure, lambda_n, alpha, beta, dtype=dtype)
 
-        A, B, P, S = self.make_NPLR(trans_matrix=_trans_matrix, dtype=dtype)
+        matrices = TransMatrix(
+            N=N,
+            measure=measure,
+            lambda_n=lambda_n,
+            alpha=alpha,
+            beta=beta,
+            dtype=dtype,
+        )
+
+        A, B, P, S = self.make_NPLR(measure=measure, trans_matrix=matrices, dtype=dtype)
         if DPLR:
             Lambda, P, B, V = self.make_DPLR(B=B, P=P, S=S, dtype=dtype)
             self.Lambda = (Lambda.copy()).astype(dtype)  # real eigenvalues
@@ -366,11 +374,11 @@ class LowRankMatrix:
 
         return Lambda, V
 
-    def make_NPLR(self, trans_matrix, dtype=jnp.float32):
+    def make_NPLR(self, measure, trans_matrix, dtype=jnp.float32):
         A = trans_matrix.A
         B = trans_matrix.B
 
-        P = self.rank_correction(dtype=dtype)  # (r N)
+        P = self.rank_correction(measure=measure, dtype=dtype)  # (r N)
 
         S = A + jnp.sum(
             jnp.expand_dims(P, -2) * jnp.expand_dims(P, -1), axis=-3
@@ -401,16 +409,16 @@ class LowRankMatrix:
 
         return Lambda.astype(dtype), P.astype(dtype), B.astype(dtype), V.astype(dtype)
 
-    def rank_correction(self, dtype=jnp.float32):
+    def rank_correction(self, measure, dtype=jnp.float32):
         """Return low-rank matrix L such that A + L is normal"""
 
-        if self.measure == "legs":
+        if measure == "legs":
             assert self.rank >= 1
             P = jnp.expand_dims(
                 jnp.sqrt(0.5 + jnp.arange(self.N, dtype=dtype)), 0
             )  # (1 N)
 
-        elif self.measure == "legt":
+        elif measure in ["legt", "lmu"]:
             assert self.rank >= 2
             P = jnp.sqrt(1 + 2 * jnp.arange(self.N, dtype=dtype))  # (N)
             P0 = P.clone()
@@ -422,30 +430,30 @@ class LowRankMatrix:
                 2 ** (-0.5)
             )  # Halve the rank correct just like the original matrix was halved
 
-        elif self.measure == "lagt":
+        elif measure == "lagt":
             assert self.rank >= 1
             P = 0.5**0.5 * jnp.ones((1, self.N), dtype=dtype)
 
-        elif self.measure in ["fourier", "fout", "fru"]:
+        elif measure in ["fourier", "fout", "fru"]:
             P = jnp.zeros(self.N)
             P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
             P = P.at[0].set(1)  # P[0] = 1
             P = jnp.expand_dims(P, 0)
 
-        elif self.measure == "fourier_decay":
+        elif measure in ["fourier_decay", "foud"]:
             P = jnp.zeros(self.N)
             P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
             P = P.at[0].set(1)  # P[0] = 1
             P = jnp.expand_dims(P, 0)
             P = P / 2**0.5
 
-        elif self.measure == "fourier2":
+        elif measure == "fourier2":
             P = jnp.zeros(self.N)
             P = P.at[0::2].set(2**0.5)  # P[0::2] = 2**0.5
             P = P.at[0].set(1)  # P[0] = 1
             P = 2**0.5 * jnp.expand_dims(P, 0)
 
-        elif self.measure in ["fourier_diag", "foud", "legsd"]:
+        elif measure in ["fourier_diag", "legsd"]:
             P = jnp.zeros((1, self.N), dtype=dtype)
 
         else:
