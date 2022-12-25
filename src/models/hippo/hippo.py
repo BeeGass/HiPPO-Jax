@@ -245,15 +245,16 @@ class HiPPO(nn.Module):
                 - bilinear corresponds to α = 0.5,
                 - Zero-order Hold corresponds to α > 1
         """
-        I = jnp.eye(A.shape[0])
-        step_size = 1 / step
-        part1 = I - (step_size * alpha * A)
-        part2 = I + (step_size * (1 - alpha) * A)
+        if alpha <= 1:  # Generalized Bilinear Transformation
+            I = jnp.eye(A.shape[0])
+            step_size = 1 / step
+            part1 = I - (step_size * alpha * A)
+            part2 = I + (step_size * (1 - alpha) * A)
 
-        GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
-        GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
+            GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
+            GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
 
-        if alpha > 1:  # Zero-order Hold
+        else:  # Zero-order Hold
             GBT_A = jnp.zeros(A.shape)
             if self.s_t == "lsi":
                 GBT_A = jax.scipy.linalg.expm(
@@ -261,6 +262,7 @@ class HiPPO(nn.Module):
                 )
             else:
                 GBT_A = jax.scipy.linalg.expm(A * self.step_size)
+
             GBT_B = jnp.linalg.inv(A) @ (GBT_A - I) @ B
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)

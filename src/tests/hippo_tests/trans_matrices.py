@@ -10,9 +10,9 @@ from src.tests.hippo_tests.hippo_utils import (
     random_64_input,
 )
 
-# ----------------------------------------------------------
-# --- Home Grown, Grass Fed, All Organic Implementations ---
-# ----------------------------------------------------------
+# ----------------------------------------------------------------
+# --- Home Grown, Grass Fed, All Organic HiPPO Implementations ---
+# ----------------------------------------------------------------
 
 # ------------
 # --- legs ---
