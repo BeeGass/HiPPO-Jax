@@ -1,6 +1,7 @@
-import pytest
 import jax
+import pytest
 from jax import vmap
+
 from src.data.process import moving_window, rolling_window
 
 # --- Random Keys

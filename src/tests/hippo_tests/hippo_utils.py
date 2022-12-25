@@ -1,10 +1,10 @@
-import pytest
 import jax
-from jax import vmap
 import jax.numpy as jnp
 import numpy as np
-from src.data.process import moving_window, rolling_window
+import pytest
+from jax import vmap
 
+from src.data.process import moving_window, rolling_window
 
 # --- Random Keys
 

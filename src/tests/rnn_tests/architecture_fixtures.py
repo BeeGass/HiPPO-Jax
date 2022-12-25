@@ -1,71 +1,58 @@
 # List Of RNN Cells
-from src.tests.rnn_tests.rnn_fixtures import (
-    rnn_cell_list,
-    lstm_cell_list,
-    gru_cell_list,
-)
+import pytest
 
-# List Of HiPPO-LSTM Cells
-from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_lstm_cell_list,
-    hippo_legt_lstm_cell_list,
-    hippo_lmu_lstm_cell_list,
-    hippo_lagt_lstm_cell_list,
-    hippo_fru_lstm_cell_list,
-    hippo_fout_lstm_cell_list,
-    hippo_foud_lstm_cell_list,
-)
-
-# List Of HiPPO-GRU Cells
-from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_gru_cell_list,
-    hippo_legt_gru_cell_list,
-    hippo_lmu_gru_cell_list,
-    hippo_lagt_gru_cell_list,
-    hippo_fru_gru_cell_list,
-    hippo_fout_gru_cell_list,
-    hippo_foud_gru_cell_list,
-)
-
-# List Only Containing One RNN Cell
-from src.tests.rnn_tests.rnn_fixtures import (
-    rnn_cell_single,
-    lstm_cell_single,
-    gru_cell_single,
-)
-
-# List Only Containing One HiPPO-LSTM Cell
-from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_lstm_cell_single,
-    hippo_legt_lstm_cell_single,
-    hippo_lmu_lstm_cell_single,
-    hippo_lagt_lstm_cell_single,
-    hippo_fru_lstm_cell_single,
-    hippo_fout_lstm_cell_single,
-    hippo_foud_lstm_cell_single,
+from src.models.rnn.rnn import (
+    BiRNN,
+    DeepBiRNN,
+    ManyToManyDeepRNN,
+    ManyToManyRNN,
+    ManyToOneDeepRNN,
+    ManyToOneRNN,
+    OneToManyDeepRNN,
+    OneToManyRNN,
 )
 
 # List Only Containing One HiPPO-GRU Cell
+# List Only Containing One HiPPO-LSTM Cell
+# List Only Containing One RNN Cell
+# List Of HiPPO-GRU Cells
+# List Of HiPPO-LSTM Cells
 from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_gru_cell_single,
-    hippo_legt_gru_cell_single,
-    hippo_lmu_gru_cell_single,
-    hippo_lagt_gru_cell_single,
-    hippo_fru_gru_cell_single,
-    hippo_fout_gru_cell_single,
+    gru_cell_list,
+    gru_cell_single,
+    hippo_foud_gru_cell_list,
     hippo_foud_gru_cell_single,
+    hippo_foud_lstm_cell_list,
+    hippo_foud_lstm_cell_single,
+    hippo_fout_gru_cell_list,
+    hippo_fout_gru_cell_single,
+    hippo_fout_lstm_cell_list,
+    hippo_fout_lstm_cell_single,
+    hippo_fru_gru_cell_list,
+    hippo_fru_gru_cell_single,
+    hippo_fru_lstm_cell_list,
+    hippo_fru_lstm_cell_single,
+    hippo_lagt_gru_cell_list,
+    hippo_lagt_gru_cell_single,
+    hippo_lagt_lstm_cell_list,
+    hippo_lagt_lstm_cell_single,
+    hippo_legs_gru_cell_list,
+    hippo_legs_gru_cell_single,
+    hippo_legs_lstm_cell_list,
+    hippo_legs_lstm_cell_single,
+    hippo_legt_gru_cell_list,
+    hippo_legt_gru_cell_single,
+    hippo_legt_lstm_cell_list,
+    hippo_legt_lstm_cell_single,
+    hippo_lmu_gru_cell_list,
+    hippo_lmu_gru_cell_single,
+    hippo_lmu_lstm_cell_list,
+    hippo_lmu_lstm_cell_single,
+    lstm_cell_list,
+    lstm_cell_single,
+    rnn_cell_list,
+    rnn_cell_single,
 )
-from src.models.rnn.rnn import (
-    OneToManyRNN,
-    ManyToOneRNN,
-    ManyToManyRNN,
-    OneToManyDeepRNN,
-    ManyToOneDeepRNN,
-    ManyToManyDeepRNN,
-    BiRNN,
-    DeepBiRNN,
-)
-import pytest
 
 # ----------------------------------------------------------------
 # --------------------- Single Cell Architectures ----------------

@@ -1,272 +1,199 @@
 # List Of RNN Cells
-from src.tests.rnn_tests.rnn_fixtures import (
-    rnn_cell_list,
-    lstm_cell_list,
-    gru_cell_list,
-)
-
-# List Of HiPPO-LSTM Cells
-from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_lstm_cell_list,
-    hippo_legt_lstm_cell_list,
-    hippo_lmu_lstm_cell_list,
-    hippo_lagt_lstm_cell_list,
-    hippo_fru_lstm_cell_list,
-    hippo_fout_lstm_cell_list,
-    hippo_foud_lstm_cell_list,
-)
-
-# List Of HiPPO-GRU Cells
-from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_gru_cell_list,
-    hippo_legt_gru_cell_list,
-    hippo_lmu_gru_cell_list,
-    hippo_lagt_gru_cell_list,
-    hippo_fru_gru_cell_list,
-    hippo_fout_gru_cell_list,
-    hippo_foud_gru_cell_list,
-)
-
-# List Only Containing One RNN Cell
-from src.tests.rnn_tests.rnn_fixtures import (
-    rnn_cell_single,
-    lstm_cell_single,
-    gru_cell_single,
-)
-
-# List Only Containing One HiPPO-LSTM Cell
-from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_lstm_cell_single,
-    hippo_legt_lstm_cell_single,
-    hippo_lmu_lstm_cell_single,
-    hippo_lagt_lstm_cell_single,
-    hippo_fru_lstm_cell_single,
-    hippo_fout_lstm_cell_single,
-    hippo_foud_lstm_cell_single,
-)
+import jax
+import pytest
+from flax import linen as nn
 
 # List Only Containing One HiPPO-GRU Cell
+# List Only Containing One HiPPO-LSTM Cell
+# List Only Containing One RNN Cell
+# List Of HiPPO-GRU Cells
+# List Of HiPPO-LSTM Cells
 from src.tests.rnn_tests.rnn_fixtures import (
-    hippo_legs_gru_cell_single,
-    hippo_legt_gru_cell_single,
-    hippo_lmu_gru_cell_single,
-    hippo_lagt_gru_cell_single,
-    hippo_fru_gru_cell_single,
-    hippo_fout_gru_cell_single,
+    gru_cell_list,
+    gru_cell_single,
+    hippo_foud_gru_cell_list,
     hippo_foud_gru_cell_single,
-)
-
-
-# Psuedo-Random Number Generator Keys for Single Cell RNNs
-from src.tests.rnn_tests.rnn_utils import (
-    one_to_many_single_cell_rnn_key,
-    one_to_many_single_cell_lstm_key,
-    one_to_many_single_cell_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_one_single_cell_rnn_key,
-    many_to_one_single_cell_lstm_key,
-    many_to_one_single_cell_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_many_single_cell_rnn_key,
-    many_to_many_single_cell_lstm_key,
-    many_to_many_single_cell_gru_key,
-)
-
-# Psuedo-Random Number Generator Keys for Single Cell Bidirectional RNNs
-from src.tests.rnn_tests.rnn_utils import (
-    single_cell_birnn_key,
-    single_cell_bilstm_key,
-    single_cell_bigru_key,
-)
-
-# Psuedo-Random Number Generator Keys for Deep RNNs
-from src.tests.rnn_tests.rnn_utils import (
-    one_to_many_deep_rnn_key,
-    one_to_many_deep_lstm_key,
-    one_to_many_deep_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_one_deep_rnn_key,
-    many_to_one_deep_lstm_key,
-    many_to_one_deep_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_many_deep_rnn_key,
-    many_to_many_deep_lstm_key,
-    many_to_many_deep_gru_key,
-)
-
-# Psuedo-Random Number Generator Keys for Deep Bidirectional RNNs
-from src.tests.rnn_tests.rnn_utils import (
-    deep_birnn_key,
-    deep_bilstm_key,
-    deep_bigru_key,
-)
-
-# Psuedo-Random Number Generator Keys for Single Cell HiPPO RNNs
-from src.tests.rnn_tests.rnn_utils import (
-    one_to_many_single_hippo_legs_lstm_key,
-    one_to_many_single_hippo_legt_lstm_key,
-    one_to_many_single_hippo_lmu_lstm_key,
-    one_to_many_single_hippo_lagt_lstm_key,
-    one_to_many_single_hippo_fru_lstm_key,
-    one_to_many_single_hippo_fout_lstm_key,
-    one_to_many_single_hippo_foud_lstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_one_single_hippo_legs_lstm_key,
-    many_to_one_single_hippo_legt_lstm_key,
-    many_to_one_single_hippo_lmu_lstm_key,
-    many_to_one_single_hippo_lagt_lstm_key,
-    many_to_one_single_hippo_fru_lstm_key,
-    many_to_one_single_hippo_fout_lstm_key,
-    many_to_one_single_hippo_foud_lstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_many_single_hippo_legs_lstm_key,
-    many_to_many_single_hippo_legt_lstm_key,
-    many_to_many_single_hippo_lmu_lstm_key,
-    many_to_many_single_hippo_lagt_lstm_key,
-    many_to_many_single_hippo_fru_lstm_key,
-    many_to_many_single_hippo_fout_lstm_key,
-    many_to_many_single_hippo_foud_lstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    one_to_many_single_hippo_legs_gru_key,
-    one_to_many_single_hippo_legt_gru_key,
-    one_to_many_single_hippo_lmu_gru_key,
-    one_to_many_single_hippo_lagt_gru_key,
-    one_to_many_single_hippo_fru_gru_key,
-    one_to_many_single_hippo_fout_gru_key,
-    one_to_many_single_hippo_foud_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_one_single_hippo_legs_gru_key,
-    many_to_one_single_hippo_legt_gru_key,
-    many_to_one_single_hippo_lmu_gru_key,
-    many_to_one_single_hippo_lagt_gru_key,
-    many_to_one_single_hippo_fru_gru_key,
-    many_to_one_single_hippo_fout_gru_key,
-    many_to_one_single_hippo_foud_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_many_single_hippo_legs_gru_key,
-    many_to_many_single_hippo_legt_gru_key,
-    many_to_many_single_hippo_lmu_gru_key,
-    many_to_many_single_hippo_lagt_gru_key,
-    many_to_many_single_hippo_fru_gru_key,
-    many_to_many_single_hippo_fout_gru_key,
-    many_to_many_single_hippo_foud_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    single_cell_hippo_legs_bilstm_key,
-    single_cell_hippo_legt_bilstm_key,
-    single_cell_hippo_lmu_bilstm_key,
-    single_cell_hippo_lagt_bilstm_key,
-    single_cell_hippo_fru_bilstm_key,
-    single_cell_hippo_fout_bilstm_key,
-    single_cell_hippo_foud_bilstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    single_cell_hippo_legs_bigru_key,
-    single_cell_hippo_legt_bigru_key,
-    single_cell_hippo_lmu_bigru_key,
-    single_cell_hippo_lagt_bigru_key,
-    single_cell_hippo_fru_bigru_key,
-    single_cell_hippo_fout_bigru_key,
-    single_cell_hippo_foud_bigru_key,
-)
-
-# Psuedo-Random Number Generator Keys for Deep HiPPO RNNs
-from src.tests.rnn_tests.rnn_utils import (
-    one_to_many_deep_hippo_legs_lstm_key,
-    one_to_many_deep_hippo_legt_lstm_key,
-    one_to_many_deep_hippo_lmu_lstm_key,
-    one_to_many_deep_hippo_lagt_lstm_key,
-    one_to_many_deep_hippo_fru_lstm_key,
-    one_to_many_deep_hippo_fout_lstm_key,
-    one_to_many_deep_hippo_foud_lstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_one_deep_hippo_legs_lstm_key,
-    many_to_one_deep_hippo_legt_lstm_key,
-    many_to_one_deep_hippo_lmu_lstm_key,
-    many_to_one_deep_hippo_lagt_lstm_key,
-    many_to_one_deep_hippo_fru_lstm_key,
-    many_to_one_deep_hippo_fout_lstm_key,
-    many_to_one_deep_hippo_foud_lstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_many_deep_hippo_legs_lstm_key,
-    many_to_many_deep_hippo_legt_lstm_key,
-    many_to_many_deep_hippo_lmu_lstm_key,
-    many_to_many_deep_hippo_lagt_lstm_key,
-    many_to_many_deep_hippo_fru_lstm_key,
-    many_to_many_deep_hippo_fout_lstm_key,
-    many_to_many_deep_hippo_foud_lstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    one_to_many_deep_hippo_legs_gru_key,
-    one_to_many_deep_hippo_legt_gru_key,
-    one_to_many_deep_hippo_lmu_gru_key,
-    one_to_many_deep_hippo_lagt_gru_key,
-    one_to_many_deep_hippo_fru_gru_key,
-    one_to_many_deep_hippo_fout_gru_key,
-    one_to_many_deep_hippo_foud_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_one_deep_hippo_legs_gru_key,
-    many_to_one_deep_hippo_legt_gru_key,
-    many_to_one_deep_hippo_lmu_gru_key,
-    many_to_one_deep_hippo_lagt_gru_key,
-    many_to_one_deep_hippo_fru_gru_key,
-    many_to_one_deep_hippo_fout_gru_key,
-    many_to_one_deep_hippo_foud_gru_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    many_to_many_deep_hippo_legs_gru_key,
-    many_to_many_deep_hippo_legt_gru_key,
-    many_to_many_deep_hippo_lmu_gru_key,
-    many_to_many_deep_hippo_lagt_gru_key,
-    many_to_many_deep_hippo_fru_gru_key,
-    many_to_many_deep_hippo_fout_gru_key,
-    many_to_many_deep_hippo_foud_gru_key,
-)
-
-# Psuedo-Random Number Generator Keys for Deep Bidirectional RNNs
-from src.tests.rnn_tests.rnn_utils import (
-    deep_hippo_legs_bilstm_key,
-    deep_hippo_legt_bilstm_key,
-    deep_hippo_lmu_bilstm_key,
-    deep_hippo_lagt_bilstm_key,
-    deep_hippo_fru_bilstm_key,
-    deep_hippo_fout_bilstm_key,
-    deep_hippo_foud_bilstm_key,
-)
-from src.tests.rnn_tests.rnn_utils import (
-    deep_hippo_legs_bigru_key,
-    deep_hippo_legt_bigru_key,
-    deep_hippo_lmu_bigru_key,
-    deep_hippo_lagt_bigru_key,
-    deep_hippo_fru_bigru_key,
-    deep_hippo_fout_bigru_key,
-    deep_hippo_foud_bigru_key,
+    hippo_foud_lstm_cell_list,
+    hippo_foud_lstm_cell_single,
+    hippo_fout_gru_cell_list,
+    hippo_fout_gru_cell_single,
+    hippo_fout_lstm_cell_list,
+    hippo_fout_lstm_cell_single,
+    hippo_fru_gru_cell_list,
+    hippo_fru_gru_cell_single,
+    hippo_fru_lstm_cell_list,
+    hippo_fru_lstm_cell_single,
+    hippo_lagt_gru_cell_list,
+    hippo_lagt_gru_cell_single,
+    hippo_lagt_lstm_cell_list,
+    hippo_lagt_lstm_cell_single,
+    hippo_legs_gru_cell_list,
+    hippo_legs_gru_cell_single,
+    hippo_legs_lstm_cell_list,
+    hippo_legs_lstm_cell_single,
+    hippo_legt_gru_cell_list,
+    hippo_legt_gru_cell_single,
+    hippo_legt_lstm_cell_list,
+    hippo_legt_lstm_cell_single,
+    hippo_lmu_gru_cell_list,
+    hippo_lmu_gru_cell_single,
+    hippo_lmu_lstm_cell_list,
+    hippo_lmu_lstm_cell_single,
+    lstm_cell_list,
+    lstm_cell_single,
+    rnn_cell_list,
+    rnn_cell_single,
 )
 
 # Inputs for the models
+# Psuedo-Random Number Generator Keys for Deep Bidirectional RNNs
+# Psuedo-Random Number Generator Keys for Deep HiPPO RNNs
+# Psuedo-Random Number Generator Keys for Single Cell HiPPO RNNs
+# Psuedo-Random Number Generator Keys for Deep Bidirectional RNNs
+# Psuedo-Random Number Generator Keys for Deep RNNs
+# Psuedo-Random Number Generator Keys for Single Cell Bidirectional RNNs
+# Psuedo-Random Number Generator Keys for Single Cell RNNs
 from src.tests.rnn_tests.rnn_utils import (
+    deep_bigru_key,
+    deep_bilstm_key,
+    deep_birnn_key,
+    deep_hippo_foud_bigru_key,
+    deep_hippo_foud_bilstm_key,
+    deep_hippo_fout_bigru_key,
+    deep_hippo_fout_bilstm_key,
+    deep_hippo_fru_bigru_key,
+    deep_hippo_fru_bilstm_key,
+    deep_hippo_lagt_bigru_key,
+    deep_hippo_lagt_bilstm_key,
+    deep_hippo_legs_bigru_key,
+    deep_hippo_legs_bilstm_key,
+    deep_hippo_legt_bigru_key,
+    deep_hippo_legt_bilstm_key,
+    deep_hippo_lmu_bigru_key,
+    deep_hippo_lmu_bilstm_key,
+    many_to_many_deep_gru_key,
+    many_to_many_deep_hippo_foud_gru_key,
+    many_to_many_deep_hippo_foud_lstm_key,
+    many_to_many_deep_hippo_fout_gru_key,
+    many_to_many_deep_hippo_fout_lstm_key,
+    many_to_many_deep_hippo_fru_gru_key,
+    many_to_many_deep_hippo_fru_lstm_key,
+    many_to_many_deep_hippo_lagt_gru_key,
+    many_to_many_deep_hippo_lagt_lstm_key,
+    many_to_many_deep_hippo_legs_gru_key,
+    many_to_many_deep_hippo_legs_lstm_key,
+    many_to_many_deep_hippo_legt_gru_key,
+    many_to_many_deep_hippo_legt_lstm_key,
+    many_to_many_deep_hippo_lmu_gru_key,
+    many_to_many_deep_hippo_lmu_lstm_key,
+    many_to_many_deep_lstm_key,
+    many_to_many_deep_rnn_key,
+    many_to_many_single_cell_gru_key,
+    many_to_many_single_cell_lstm_key,
+    many_to_many_single_cell_rnn_key,
+    many_to_many_single_hippo_foud_gru_key,
+    many_to_many_single_hippo_foud_lstm_key,
+    many_to_many_single_hippo_fout_gru_key,
+    many_to_many_single_hippo_fout_lstm_key,
+    many_to_many_single_hippo_fru_gru_key,
+    many_to_many_single_hippo_fru_lstm_key,
+    many_to_many_single_hippo_lagt_gru_key,
+    many_to_many_single_hippo_lagt_lstm_key,
+    many_to_many_single_hippo_legs_gru_key,
+    many_to_many_single_hippo_legs_lstm_key,
+    many_to_many_single_hippo_legt_gru_key,
+    many_to_many_single_hippo_legt_lstm_key,
+    many_to_many_single_hippo_lmu_gru_key,
+    many_to_many_single_hippo_lmu_lstm_key,
+    many_to_one_deep_gru_key,
+    many_to_one_deep_hippo_foud_gru_key,
+    many_to_one_deep_hippo_foud_lstm_key,
+    many_to_one_deep_hippo_fout_gru_key,
+    many_to_one_deep_hippo_fout_lstm_key,
+    many_to_one_deep_hippo_fru_gru_key,
+    many_to_one_deep_hippo_fru_lstm_key,
+    many_to_one_deep_hippo_lagt_gru_key,
+    many_to_one_deep_hippo_lagt_lstm_key,
+    many_to_one_deep_hippo_legs_gru_key,
+    many_to_one_deep_hippo_legs_lstm_key,
+    many_to_one_deep_hippo_legt_gru_key,
+    many_to_one_deep_hippo_legt_lstm_key,
+    many_to_one_deep_hippo_lmu_gru_key,
+    many_to_one_deep_hippo_lmu_lstm_key,
+    many_to_one_deep_lstm_key,
+    many_to_one_deep_rnn_key,
+    many_to_one_single_cell_gru_key,
+    many_to_one_single_cell_lstm_key,
+    many_to_one_single_cell_rnn_key,
+    many_to_one_single_hippo_foud_gru_key,
+    many_to_one_single_hippo_foud_lstm_key,
+    many_to_one_single_hippo_fout_gru_key,
+    many_to_one_single_hippo_fout_lstm_key,
+    many_to_one_single_hippo_fru_gru_key,
+    many_to_one_single_hippo_fru_lstm_key,
+    many_to_one_single_hippo_lagt_gru_key,
+    many_to_one_single_hippo_lagt_lstm_key,
+    many_to_one_single_hippo_legs_gru_key,
+    many_to_one_single_hippo_legs_lstm_key,
+    many_to_one_single_hippo_legt_gru_key,
+    many_to_one_single_hippo_legt_lstm_key,
+    many_to_one_single_hippo_lmu_gru_key,
+    many_to_one_single_hippo_lmu_lstm_key,
+    one_to_many_deep_gru_key,
+    one_to_many_deep_hippo_foud_gru_key,
+    one_to_many_deep_hippo_foud_lstm_key,
+    one_to_many_deep_hippo_fout_gru_key,
+    one_to_many_deep_hippo_fout_lstm_key,
+    one_to_many_deep_hippo_fru_gru_key,
+    one_to_many_deep_hippo_fru_lstm_key,
+    one_to_many_deep_hippo_lagt_gru_key,
+    one_to_many_deep_hippo_lagt_lstm_key,
+    one_to_many_deep_hippo_legs_gru_key,
+    one_to_many_deep_hippo_legs_lstm_key,
+    one_to_many_deep_hippo_legt_gru_key,
+    one_to_many_deep_hippo_legt_lstm_key,
+    one_to_many_deep_hippo_lmu_gru_key,
+    one_to_many_deep_hippo_lmu_lstm_key,
+    one_to_many_deep_lstm_key,
+    one_to_many_deep_rnn_key,
+    one_to_many_single_cell_gru_key,
+    one_to_many_single_cell_lstm_key,
+    one_to_many_single_cell_rnn_key,
+    one_to_many_single_hippo_foud_gru_key,
+    one_to_many_single_hippo_foud_lstm_key,
+    one_to_many_single_hippo_fout_gru_key,
+    one_to_many_single_hippo_fout_lstm_key,
+    one_to_many_single_hippo_fru_gru_key,
+    one_to_many_single_hippo_fru_lstm_key,
+    one_to_many_single_hippo_lagt_gru_key,
+    one_to_many_single_hippo_lagt_lstm_key,
+    one_to_many_single_hippo_legs_gru_key,
+    one_to_many_single_hippo_legs_lstm_key,
+    one_to_many_single_hippo_legt_gru_key,
+    one_to_many_single_hippo_legt_lstm_key,
+    one_to_many_single_hippo_lmu_gru_key,
+    one_to_many_single_hippo_lmu_lstm_key,
     random_16_input,
     random_32_input,
     random_64_input,
+    single_cell_bigru_key,
+    single_cell_bilstm_key,
+    single_cell_birnn_key,
+    single_cell_hippo_foud_bigru_key,
+    single_cell_hippo_foud_bilstm_key,
+    single_cell_hippo_fout_bigru_key,
+    single_cell_hippo_fout_bilstm_key,
+    single_cell_hippo_fru_bigru_key,
+    single_cell_hippo_fru_bilstm_key,
+    single_cell_hippo_lagt_bigru_key,
+    single_cell_hippo_lagt_bilstm_key,
+    single_cell_hippo_legs_bigru_key,
+    single_cell_hippo_legs_bilstm_key,
+    single_cell_hippo_legt_bigru_key,
+    single_cell_hippo_legt_bilstm_key,
+    single_cell_hippo_lmu_bigru_key,
+    single_cell_hippo_lmu_bilstm_key,
 )
-
-
-import jax
-from flax import linen as nn
-import pytest
-
 
 # ----------------------------------------------------------------
 # ------------------ Single Cell Architectures Tests -------------

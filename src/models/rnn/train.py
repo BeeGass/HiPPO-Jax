@@ -1,38 +1,35 @@
-import jax
-from jax import jit, vmap
-import jax.numpy as jnp
-
-import numpy as np
-import optax
+import time
+from collections import defaultdict
+from typing import Any, Callable, Optional, Sequence, Tuple, Union
 
 import flax
+import hydra
+import jax
+import jax.numpy as jnp
+import numpy as np
+import optax
+import torch
+import wandb
 from flax import linen as nn
+from flax.linen.activation import sigmoid, tanh
 from flax.training import train_state
-from flax.linen.activation import tanh
-from flax.linen.activation import sigmoid
+from jax import jit, vmap
+from omegaconf import DictConfig, OmegaConf
+from torchvision import datasets, transforms
+
+from src.data.process import moving_window, rolling_window
+from src.models.hippo.hippo import HiPPO
+from src.models.hippo.transition import TransMatrix
 
 # from flax.linen.recurrent import RNNCellBase
 from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
 from src.models.rnn.rnn import (
-    OneToManyRNN,
-    ManyToOneRNN,
-    ManyToManyRNN,
-    DeepRNN,
     BidirectionalRNN,
+    DeepRNN,
+    ManyToManyRNN,
+    ManyToOneRNN,
+    OneToManyRNN,
 )
-from src.models.hippo.hippo import HiPPO
-from src.models.hippo.transition import TransMatrix
-from src.data.process import moving_window, rolling_window
-
-import torch
-from torchvision import datasets, transforms
-
-import time
-from typing import Any, Callable, Sequence, Optional, Tuple, Union
-from collections import defaultdict
-from omegaconf import DictConfig, OmegaConf
-import wandb
-import hydra
 
 
 def get_datasets(cfg):

@@ -1,13 +1,12 @@
 from dataclasses import field
-from typing import Any, Callable, Optional, Sequence
 from functools import partial
+from typing import Any, Callable, Optional, Sequence
 
 import jax
 import jax.numpy as jnp
-from jax import jit, vmap
-
 from flax import linen as nn
 from flax.linen.initializers import zeros
+from jax import jit, vmap
 
 from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
 

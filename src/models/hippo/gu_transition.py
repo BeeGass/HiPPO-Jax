@@ -1,16 +1,17 @@
 ## import packages
+import math
+from typing import Any
+
 import jax.numpy as jnp
-from jax.numpy.linalg import inv
-from scipy import special as ss
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-from scipy import special as ss
 from einops import rearrange, repeat
+from jax.numpy.linalg import inv
 from opt_einsum import contract
-import math
-from typing import Any
+from scipy import special as ss
+
 from src.models.hippo.unroll import *
 
 

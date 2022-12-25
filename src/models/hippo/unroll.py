@@ -1,7 +1,7 @@
 import numpy as np
-from scipy import special as ss
 import torch
 import torch.nn.functional as F
+from scipy import special as ss
 
 ### Utilities
 

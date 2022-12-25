@@ -1,33 +1,34 @@
+import jax.numpy as jnp
 import pytest
+
+from src.models.hippo.gu_hippo import HiPPO_LSI, HiPPO_LTI
 from src.models.hippo.hippo import HiPPO
-from src.tests.hippo_tests.trans_matrices import (
-    legs_matrices,
-    legt_matrices,
-    legt_lmu_matrices,
-    lagt_matrices,
-    fru_matrices,
-    fout_matrices,
-    foud_matrices,
-)
-from src.tests.hippo_tests.trans_matrices import (
-    gu_legs_matrices,
-    gu_legt_matrices,
-    gu_legt_lmu_matrices,
-    gu_lagt_matrices,
-    gu_fru_matrices,
-    gu_fout_matrices,
-    gu_foud_matrices,
-)
-from src.tests.hippo_tests.hippo_utils import N, N2, N16, big_N
 from src.tests.hippo_tests.hippo_utils import (
+    N2,
+    N16,
+    N,
+    big_N,
     random_1_input,
     random_16_input,
     random_32_input,
     random_64_input,
 )
-from src.models.hippo.gu_hippo import HiPPO_LSI, HiPPO_LTI
-import jax.numpy as jnp
-
+from src.tests.hippo_tests.trans_matrices import (
+    foud_matrices,
+    fout_matrices,
+    fru_matrices,
+    gu_foud_matrices,
+    gu_fout_matrices,
+    gu_fru_matrices,
+    gu_lagt_matrices,
+    gu_legs_matrices,
+    gu_legt_lmu_matrices,
+    gu_legt_matrices,
+    lagt_matrices,
+    legs_matrices,
+    legt_lmu_matrices,
+    legt_matrices,
+)
 
 # ----------------------------------------------------------------
 # ------------------------ HiPPO operators -----------------------

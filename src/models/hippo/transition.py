@@ -1,9 +1,10 @@
 ## import packages
+from typing import Any
+
 import jax.numpy as jnp
 from jax.numpy.linalg import inv
-from scipy import special as ss
 from opt_einsum import contract
-from typing import Any
+from scipy import special as ss
 
 
 class TransMatrix:

@@ -1,13 +1,14 @@
-from src.models.hippo.gu_transition import GuTransMatrix, GuLowRankMatrix
-from src.models.hippo.transition import TransMatrix, LowRankMatrix
+import jax.numpy as jnp
+import pytest
+
+from src.models.hippo.gu_transition import GuLowRankMatrix, GuTransMatrix
+from src.models.hippo.transition import LowRankMatrix, TransMatrix
 from src.tests.hippo_tests.hippo_utils import (
     random_1_input,
     random_16_input,
     random_32_input,
     random_64_input,
 )
-import pytest
-import jax.numpy as jnp
 
 # ----------------------------------------------------------
 # --- Home Grown, Grass Fed, All Organic Implementations ---

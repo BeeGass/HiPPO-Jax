@@ -1,9 +1,8 @@
-from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
-
 import jax.numpy as jnp
-from flax.linen.activation import tanh
-from flax.linen.activation import sigmoid
 import pytest
+from flax.linen.activation import sigmoid, tanh
+
+from src.models.rnn.cells import GRUCell, HiPPOCell, LSTMCell, RNNCell
 
 # ----------------------------------------------------------------
 # ----------------------------- Cells ----------------------------

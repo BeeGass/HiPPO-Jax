@@ -1,12 +1,10 @@
+from typing import Any, Callable
+
 import jax
 import jax.numpy as jnp
-
 from flax import linen as nn
+from flax.linen.activation import sigmoid, tanh
 from flax.linen.recurrent import GRUCell as r_GRUCell
-from flax.linen.activation import tanh
-from flax.linen.activation import sigmoid
-
-from typing import Any, Callable
 
 from src.models.hippo.hippo import HiPPO
 from src.models.hippo.transition import TransMatrix

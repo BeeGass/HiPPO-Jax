@@ -1,23 +1,22 @@
+import math
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-
+from einops import rearrange, reduce, repeat
 from scipy import linalg as la
 from scipy import signal
 from scipy import special as ss
-from einops import rearrange, repeat, reduce
 
 from src.models.hippo.gu_transition import GuTransMatrix
 from src.models.hippo.transition import TransMatrix
 from src.models.hippo.unroll import (
-    measure,
     basis,
+    measure,
     variable_unroll_matrix,
     variable_unroll_matrix_sequential,
 )
-
-import math
 
 
 class HiPPO_LSI(nn.Module):
