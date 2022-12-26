@@ -165,12 +165,13 @@ def test_hippo_legs_lti_fe_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legs_fe(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -201,7 +202,7 @@ def test_hippo_legs_lsi_fe_operator(
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -229,12 +230,13 @@ def test_hippo_legt_lti_fe_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legt_fe(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -262,12 +264,13 @@ def test_hippo_lmu_lti_fe_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lmu_fe(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -295,12 +298,13 @@ def test_hippo_lagt_lti_fe_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lagt_fe(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -328,12 +332,13 @@ def test_hippo_fru_lti_fe_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fru_fe(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -361,12 +366,13 @@ def test_hippo_fout_lti_fe_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fout_fe(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -394,12 +400,13 @@ def test_hippo_foud_lti_fe_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_foud_fe(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -431,12 +438,13 @@ def test_hippo_legs_lti_be_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legs_be(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -467,7 +475,7 @@ def test_hippo_legs_lsi_be_operator(
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -495,12 +503,13 @@ def test_hippo_legt_lti_be_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legt_be(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -528,12 +537,13 @@ def test_hippo_lmu_lti_be_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lmu_be(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -561,12 +571,13 @@ def test_hippo_lagt_lti_be_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lagt_be(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -594,12 +605,13 @@ def test_hippo_fru_lti_be_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fru_be(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -627,12 +639,13 @@ def test_hippo_fout_lti_be_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fout_be(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -660,12 +673,13 @@ def test_hippo_foud_lti_be_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_foud_be(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -696,12 +710,13 @@ def test_hippo_legs_lti_bi_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legs_bi(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -732,7 +747,7 @@ def test_hippo_legs_lsi_bi_operator(
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -760,12 +775,13 @@ def test_hippo_legt_lti_bi_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legt_bi(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -793,12 +809,13 @@ def test_hippo_lmu_lti_bi_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lmu_bi(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -826,12 +843,13 @@ def test_hippo_lagt_lti_bi_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lagt_bi(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -859,12 +877,13 @@ def test_hippo_fru_lti_bi_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fru_bi(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -892,12 +911,13 @@ def test_hippo_fout_lti_bi_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fout_bi(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -925,12 +945,13 @@ def test_hippo_foud_lti_bi_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_foud_bi(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -962,12 +983,13 @@ def test_hippo_legs_lti_zoh_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legs_zoh(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -998,7 +1020,7 @@ def test_hippo_legs_lsi_zoh_operator(
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -1026,12 +1048,13 @@ def test_hippo_legt_lti_zoh_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_legt_zoh(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -1059,12 +1082,13 @@ def test_hippo_lmu_lti_zoh_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lmu_zoh(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -1092,12 +1116,13 @@ def test_hippo_lagt_lti_zoh_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_lagt_zoh(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -1125,12 +1150,13 @@ def test_hippo_fru_lti_zoh_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fru_zoh(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -1158,12 +1184,13 @@ def test_hippo_fout_lti_zoh_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_fout_zoh(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
@@ -1191,12 +1218,13 @@ def test_hippo_foud_lti_zoh_operator(
     x_tensor = torch.moveaxis(x_tensor, 0, 1)
     GU_c_k = gu_hippo_lti_foud_zoh(x_tensor, fast=False)
     gu_c = jnp.asarray(GU_c_k, dtype=jnp.float32)  # convert torch array to jax array
+    gu_c = jnp.moveaxis(gu_c, 0, 1)
 
     assert gu_c.shape == c_k.shape
     assert c_k.shape[0] == 16
     assert c_k.shape[1] == 512
     assert c_k.shape[2] == 1
-    assert c_k.shape[3] == 100
+    assert c_k.shape[3] == 50
 
     for i in range(c_k.shape[0]):
         for j in range(c_k.shape[1]):
