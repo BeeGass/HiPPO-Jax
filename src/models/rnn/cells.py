@@ -255,59 +255,34 @@ class HiPPOCell(nn.Module):
 
     input_size: int
     hidden_size: int
+    step_size: float
     bias: bool = True
     param_dtype: Any = jnp.float32
     gate_fn: Callable[..., Any] = sigmoid
     activation_fn: Callable[..., Any] = tanh
     measure: str = "legs"
     lambda_n: float = 1.0
-    fourier_type: str = "fru"
     alpha: float = 0.0
     beta: float = 1.0
+    s_t: str = "lsi"
     GBT_alpha: float = 0.5
     rnn_cell: Callable[..., Any] = GRUCell
+    dtype: Any = jnp.float32
 
     def setup(self):
-        hippo_matrices = TransMatrix(
-            N=self.hidden_size,
-            measure=self.measure,
-            lambda_n=self.lambda_n,
-            fourier_type=self.fourier_type,
-            alpha=self.alpha,
-            beta=self.beta,
-        )
-        A = hippo_matrices.A_matrix
-        B = hippo_matrices.B_matrix
         L = self.input_size
-
-        # self.hippo = HiPPO(
-        #     N=self.hidden_size,
-        #     max_length=L,
-        #     step=1.0 / L,
-        #     GBT_alpha=self.GBT_alpha,
-        #     seq_L=L,
-        #     A=A,
-        #     B=B,
-        #     measure=self.measure,
-        # )
-
-        hippo = nn.vmap(
-            HiPPO,
-            in_axes=(0, None, None, None),
-            variable_axes={"params": None},
-            split_rngs={"params": False},
-        )
-
-        self.hippo = hippo(
-            N=self.hidden_size,
+        self.hippo  = HiPPO(
             max_length=L,
-            step=1.0 / L,
+            step_size=self.step_size,
+            N=self.hidden_size,
+            lambda_n=self.lambda_n,
+            alpha=self.alpha,
+            beta=self.beta
             GBT_alpha=self.GBT_alpha,
-            seq_L=L,
-            A=A,
-            B=B,
             measure=self.measure,
-        )
+            s_t=self.s_t,
+            dtype = self.dtype,
+        ) 
 
         self.rnn = self.rnn_cell(
             input_size=self.input_size,
@@ -324,29 +299,13 @@ class HiPPOCell(nn.Module):
 
     @nn.compact
     def __call__(self, carry, input):
-        # def hippo_init_fn(input_shape, seed=1701):
-        #     rng = jax.random.PRNGKey(seed)
-        #     dummy_input = jnp.ones(*input_shape)
-        #     dummy_c_t_1 = jnp.ones((self.hippo.N, 1))
-
-        #     return self.hippo.init(
-        #         rng,
-        #         f=dummy_input,
-        #         init_state=dummy_c_t_1,
-        #         t_step=dummy_input.shape[0],
-        #         kernel=False,
-        #     )
-
         _, c_t_1 = carry
 
         carry, _ = self.rnn(carry, input)
         h_t, _ = carry
 
         f_t = self.dense_f_th(h_t)
-        # c_t = nn.vmap(self.hippo, in_axes=(0, None, None, None))(
-        #     f_t, c_t_1, f_t.shape[0], False
-        # )
-        c_t = self.hippo(f=f_t, init_state=c_t_1, t_step=f_t.shape[0], kernel=False)
+        c_t = self.hippo(f=f_t, init_state=c_t_1)
 
         return (h_t, c_t), h_t
 
@@ -379,42 +338,37 @@ class HIPPOCell(nn.Module):
     Returns:
         A tuple with the new carry and the output.
     """
-
+    
     input_size: int
     hidden_size: int
+    step_size: float
     bias: bool = True
     param_dtype: Any = jnp.float32
+    gate_fn: Callable[..., Any] = sigmoid
+    activation_fn: Callable[..., Any] = tanh
     measure: str = "legs"
     lambda_n: float = 1.0
-    fourier_type: str = "fru"
     alpha: float = 0.0
     beta: float = 1.0
+    s_t: str = "lsi"
     GBT_alpha: float = 0.5
     rnn_cell: Callable[..., Any] = r_GRUCell
+    dtype: Any = jnp.float32
 
     def setup(self):
-        hippo_matrices = TransMatrix(
-            N=self.hidden_size,
-            measure=self.measure,
-            lambda_n=self.lambda_n,
-            fourier_type=self.fourier_type,
-            alpha=self.alpha,
-            beta=self.beta,
-        )
-        A = hippo_matrices.A_matrix
-        B = hippo_matrices.B_matrix
         L = self.input_size
-
-        self.hippo = HiPPO(
-            N=self.hidden_size,
+        self.hippo  = HiPPO(
             max_length=L,
-            step=1.0 / L,
+            step_size=self.step_size,
+            N=self.hidden_size,
+            lambda_n=self.lambda_n,
+            alpha=self.alpha,
+            beta=self.beta
             GBT_alpha=self.GBT_alpha,
-            seq_L=L,
-            A=A,
-            B=B,
             measure=self.measure,
-        )
+            s_t=self.s_t,
+            dtype = self.dtype,
+        ) 
 
         self.rnn = self.rnn_cell()
 
@@ -429,9 +383,7 @@ class HIPPOCell(nn.Module):
         h_t, _ = carry
 
         f_t = self.dense_f_th(h_t)
-        c_t = nn.vmap(self.hippo, in_axes=(0, None, None, None))(
-            f=f_t, init_state=c_t_1, t_step=f_t.shape[0], kernel=False
-        )
+        c_t = self.hippo(f=f_t, init_state=c_t_1)
 
         return (h_t, c_t)
 
