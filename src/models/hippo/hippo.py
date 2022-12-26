@@ -84,7 +84,7 @@ class HiPPO(nn.Module):
         self.C = jnp.ones((self.N, 1))
         self.D = jnp.zeros((1,))
 
-        if self.step_size == 1.0:
+        if self.s_t == "lsi":
             self.GBT_A_list, self.GBT_B_list = self.make_GBT_list(
                 matrices.A, matrices.B, dtype=self.dtype
             )
@@ -245,6 +245,15 @@ class HiPPO(nn.Module):
                 - bilinear corresponds to α = 0.5,
                 - Zero-order Hold corresponds to α > 1
         """
+        if alpha <= 1:
+            assert (
+                alpha == 0.0 or alpha == 0.5 or alpha == 1.0
+            ), "alpha must be 0, 0.5, or 1"
+        else:
+            assert (
+                alpha > 1 or type(alpha) == str
+            ), "alpha must be greater than 1 for zero-order hold"
+
         I = jnp.eye(A.shape[0])
 
         if alpha <= 1:  # Generalized Bilinear Transformation
@@ -256,26 +265,23 @@ class HiPPO(nn.Module):
             GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
 
         else:  # Zero-order Hold
-            GBT_A = jnp.zeros(A.shape)
-            GBT_B = jnp.zeros(B.shape)
-            if self.s_t == "lsi":
-                # refer to zero-order hold portion of paper to understand why this works
-                GBT_A = jax.scipy.linalg.expm(
-                    A * (math.log(step + self.step_size) - math.log(step))
-                )
-                GBT_B = jnp.linalg.inv(A) @ (GBT_A - I) @ B
-            else:
-                # refer to this for why this works
-                # https://en.wikipedia.org/wiki/Discretization#:~:text=A%20clever%20trick%20to%20compute%20Ad%20and%20Bd%20in%20one%20step%20is%20by%20utilizing%20the%20following%20property
+            # refer to this for why this works
+            # https://en.wikipedia.org/wiki/Discretization#:~:text=A%20clever%20trick%20to%20compute%20Ad%20and%20Bd%20in%20one%20step%20is%20by%20utilizing%20the%20following%20property
 
-                n = A.shape[0]
-                A_step = A * self.step_size
-                A_B_square = jnp.block(
-                    [[A_step, B], [jnp.zeros((1, n)), jnp.zeros((1, 1))]]
+            n = A.shape[0]
+            b_n = B.shape[1]
+            A_B_square = jnp.block(
+                [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
+            )
+            if self.s_t == "lsi":
+                A_B = jax.scipy.linalg.expm(
+                    A_B_square * (math.log(step + self.step_size) - math.log(step))
                 )
-                A_B = jax.scipy.linalg.expm(A_B_square)
-                GBT_A = A_B[0:n, 0:n]
-                GBT_B = A_B[0:-1, -1:]
+            else:
+                A_B = jax.scipy.linalg.expm(A_B_square * self.step_size)
+
+            GBT_A = A_B[0:n, 0:n]
+            GBT_B = A_B[0:-b_n, -b_n:]
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)
 

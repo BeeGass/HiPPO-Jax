@@ -119,7 +119,7 @@ class HiPPO_LTI(nn.Module):
     def __init__(
         self,
         N,
-        method="legt",
+        method="legs",
         dt=1.0,
         T=1.0,
         discretization=0.5,
@@ -146,7 +146,7 @@ class HiPPO_LTI(nn.Module):
         A = np.asarray(matrices.A, dtype=np.float32)
         B = np.asarray(matrices.B, dtype=np.float32)
         # A, B = transition(method, N)
-        A = A + np.eye(N) * c
+        A = A + (np.eye(N) * c)
         self.A = A
         self.B = B.squeeze(-1)
         self.measure_fn = measure(method)
