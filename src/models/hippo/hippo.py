@@ -245,8 +245,9 @@ class HiPPO(nn.Module):
                 - bilinear corresponds to α = 0.5,
                 - Zero-order Hold corresponds to α > 1
         """
+        I = jnp.eye(A.shape[0])
+
         if alpha <= 1:  # Generalized Bilinear Transformation
-            I = jnp.eye(A.shape[0])
             step_size = 1 / step
             part1 = I - (step_size * alpha * A)
             part2 = I + (step_size * (1 - alpha) * A)
@@ -256,14 +257,25 @@ class HiPPO(nn.Module):
 
         else:  # Zero-order Hold
             GBT_A = jnp.zeros(A.shape)
+            GBT_B = jnp.zeros(B.shape)
             if self.s_t == "lsi":
+                # refer to zero-order hold portion of paper to understand why this works
                 GBT_A = jax.scipy.linalg.expm(
                     A * (math.log(step + self.step_size) - math.log(step))
                 )
+                GBT_B = jnp.linalg.inv(A) @ (GBT_A - I) @ B
             else:
-                GBT_A = jax.scipy.linalg.expm(A * self.step_size)
+                # refer to this for why this works
+                # https://en.wikipedia.org/wiki/Discretization#:~:text=A%20clever%20trick%20to%20compute%20Ad%20and%20Bd%20in%20one%20step%20is%20by%20utilizing%20the%20following%20property
 
-            GBT_B = jnp.linalg.inv(A) @ (GBT_A - I) @ B
+                n = A.shape[0]
+                A_step = A * self.step_size
+                A_B_square = jnp.block(
+                    [[A_step, B], [jnp.zeros((1, n)), jnp.zeros((1, 1))]]
+                )
+                A_B = jax.scipy.linalg.expm(A_B_square)
+                GBT_A = A_B[0:n, 0:n]
+                GBT_B = A_B[0:-1, -1:]
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)
 

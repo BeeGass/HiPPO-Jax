@@ -1070,12 +1070,12 @@ def test_GBT_LTI_lagt_ZOH(
 
 
 def test_GBT_LTI_fru_ZOH(
-    hippo_lti_fru_zoh, gu_hippo_lti_fru_zoh, legs_matrices, random_16_input
+    hippo_lti_fru_zoh, gu_hippo_lti_fru_zoh, fru_matrices, random_16_input
 ):
     print("\nHiPPO GBT LEGS")
     L = random_16_input.shape[1]
     alpha = 2.0
-    A, B = legs_matrices
+    A, B = fru_matrices
 
     GBT_A, GBT_B = hippo_lti_fru_zoh.discretize(
         A, B, step=1.0, alpha=alpha, dtype=jnp.float32
