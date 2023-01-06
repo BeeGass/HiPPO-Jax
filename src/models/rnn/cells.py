@@ -271,18 +271,18 @@ class HiPPOCell(nn.Module):
 
     def setup(self):
         L = self.input_size
-        self.hippo  = HiPPO(
+        self.hippo = HiPPO(
             max_length=L,
             step_size=self.step_size,
             N=self.hidden_size,
             lambda_n=self.lambda_n,
             alpha=self.alpha,
-            beta=self.beta
+            beta=self.beta,
             GBT_alpha=self.GBT_alpha,
             measure=self.measure,
             s_t=self.s_t,
-            dtype = self.dtype,
-        ) 
+            dtype=self.dtype,
+        )
 
         self.rnn = self.rnn_cell(
             input_size=self.input_size,
@@ -338,7 +338,7 @@ class HIPPOCell(nn.Module):
     Returns:
         A tuple with the new carry and the output.
     """
-    
+
     input_size: int
     hidden_size: int
     step_size: float
@@ -357,18 +357,18 @@ class HIPPOCell(nn.Module):
 
     def setup(self):
         L = self.input_size
-        self.hippo  = HiPPO(
+        self.hippo = HiPPO(
             max_length=L,
             step_size=self.step_size,
             N=self.hidden_size,
             lambda_n=self.lambda_n,
             alpha=self.alpha,
-            beta=self.beta
+            beta=self.beta,
             GBT_alpha=self.GBT_alpha,
             measure=self.measure,
             s_t=self.s_t,
-            dtype = self.dtype,
-        ) 
+            dtype=self.dtype,
+        )
 
         self.rnn = self.rnn_cell()
 

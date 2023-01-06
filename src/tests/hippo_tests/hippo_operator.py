@@ -45,41 +45,51 @@ from src.tests.hippo_tests.trans_matrices import (
 
 @pytest.fixture
 def hippo_lti_legs_fe(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
 @pytest.fixture
 def hippo_lsi_legs_fe(random_16_input):
-    measure = "legs"
+    N = 50
     L = random_16_input.shape[1]
     desc_val = 0.0
+    measure = "legs"
+    s_t = "lsi"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lsi",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -90,21 +100,26 @@ def hippo_lsi_legs_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_legt_fe(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -115,21 +130,26 @@ def hippo_lti_legt_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_fe(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=2.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 2.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -140,21 +160,26 @@ def hippo_lti_lmu_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lagt_fe(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -165,21 +190,26 @@ def hippo_lti_lagt_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fru_fe(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -190,21 +220,26 @@ def hippo_lti_fru_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fout_fe(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -215,21 +250,26 @@ def hippo_lti_fout_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_foud_fe(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -244,41 +284,51 @@ def hippo_lti_foud_fe(random_16_input):
 
 @pytest.fixture
 def hippo_lti_legs_be(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
 @pytest.fixture
 def hippo_lsi_legs_be(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lsi"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lsi",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -289,21 +339,26 @@ def hippo_lsi_legs_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_legt_be(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -314,21 +369,26 @@ def hippo_lti_legt_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_be(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=2.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 2.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -339,21 +399,26 @@ def hippo_lti_lmu_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lagt_be(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -364,21 +429,26 @@ def hippo_lti_lagt_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fru_be(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -389,21 +459,26 @@ def hippo_lti_fru_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fout_be(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -414,21 +489,26 @@ def hippo_lti_fout_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_foud_be(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -443,41 +523,51 @@ def hippo_lti_foud_be(random_16_input):
 
 @pytest.fixture
 def hippo_lti_legs_bi(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
 @pytest.fixture
 def hippo_lsi_legs_bi(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lsi"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lsi",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -488,21 +578,26 @@ def hippo_lsi_legs_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_legt_bi(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -513,21 +608,26 @@ def hippo_lti_legt_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_bi(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=2.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 2.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -538,21 +638,26 @@ def hippo_lti_lmu_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lagt_bi(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -563,21 +668,26 @@ def hippo_lti_lagt_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fru_bi(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -588,21 +698,26 @@ def hippo_lti_fru_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fout_bi(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -613,21 +728,26 @@ def hippo_lti_fout_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_foud_bi(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -642,41 +762,51 @@ def hippo_lti_foud_bi(random_16_input):
 
 @pytest.fixture
 def hippo_lti_legs_zoh(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
 @pytest.fixture
 def hippo_lsi_legs_zoh(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lsi"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lsi",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -687,21 +817,26 @@ def hippo_lsi_legs_zoh(random_16_input):
 
 @pytest.fixture
 def hippo_lti_legt_zoh(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -712,21 +847,26 @@ def hippo_lti_legt_zoh(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lmu_zoh(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=2.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 2.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -737,21 +877,26 @@ def hippo_lti_lmu_zoh(random_16_input):
 
 @pytest.fixture
 def hippo_lti_lagt_zoh(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -762,21 +907,26 @@ def hippo_lti_lagt_zoh(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fru_zoh(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -787,21 +937,26 @@ def hippo_lti_fru_zoh(random_16_input):
 
 @pytest.fixture
 def hippo_lti_fout_zoh(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -812,21 +967,26 @@ def hippo_lti_fout_zoh(random_16_input):
 
 @pytest.fixture
 def hippo_lti_foud_zoh(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
     desc_val = 2.0
+    s_t = "lti"
     return HiPPO(
-        max_length=L,
-        step_size=1.0,
-        N=50,
-        lambda_n=1.0,
-        alpha=0.0,
-        beta=1.0,
-        GBT_alpha=desc_val,
-        measure=measure,
-        s_t="lti",
-        dtype=jnp.float32,
-        verbose=True,
+        N=N,
+        max_length = L,
+        step_size = 1.0,
+        basis_length = 1.0,
+        lambda_n = 1.0,
+        alpha = 0.0,
+        beta = 1.0,
+        GBT_alpha = desc_val,
+        measure = measure,
+        s_t = s_t,
+        dtype = jnp.float32,
+        truncate_measure = True,
+        dtype = jnp.float32,
+        verbose = True,
     )
 
 
@@ -845,9 +1005,11 @@ def hippo_lti_foud_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legs_fe(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -863,9 +1025,11 @@ def gu_hippo_lti_legs_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lsi_legs_fe(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LSI(
         N=50,
         method=measure,
@@ -884,9 +1048,11 @@ def gu_hippo_lsi_legs_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legt_fe(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -907,9 +1073,11 @@ def gu_hippo_lti_legt_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lmu_fe(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -930,9 +1098,11 @@ def gu_hippo_lti_lmu_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lagt_fe(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -953,9 +1123,11 @@ def gu_hippo_lti_lagt_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fru_fe(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -976,9 +1148,11 @@ def gu_hippo_lti_fru_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fout_fe(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -999,9 +1173,11 @@ def gu_hippo_lti_fout_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_foud_fe(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
     desc_val = 0.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1026,9 +1202,11 @@ def gu_hippo_lti_foud_fe(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legs_be(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1044,9 +1222,11 @@ def gu_hippo_lti_legs_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lsi_legs_be(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LSI(
         N=50,
         method=measure,
@@ -1065,9 +1245,11 @@ def gu_hippo_lsi_legs_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legt_be(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1088,9 +1270,11 @@ def gu_hippo_lti_legt_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lmu_be(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1111,9 +1295,11 @@ def gu_hippo_lti_lmu_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lagt_be(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1134,9 +1320,11 @@ def gu_hippo_lti_lagt_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fru_be(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1157,9 +1345,11 @@ def gu_hippo_lti_fru_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fout_be(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1180,9 +1370,11 @@ def gu_hippo_lti_fout_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_foud_be(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
     desc_val = 1.0
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1207,9 +1399,11 @@ def gu_hippo_lti_foud_be(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legs_bi(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1225,9 +1419,11 @@ def gu_hippo_lti_legs_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lsi_legs_bi(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LSI(
         N=50,
         method=measure,
@@ -1246,9 +1442,11 @@ def gu_hippo_lsi_legs_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legt_bi(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1269,9 +1467,11 @@ def gu_hippo_lti_legt_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lmu_bi(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1292,9 +1492,11 @@ def gu_hippo_lti_lmu_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lagt_bi(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1315,9 +1517,11 @@ def gu_hippo_lti_lagt_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fru_bi(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1338,9 +1542,11 @@ def gu_hippo_lti_fru_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fout_bi(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1361,9 +1567,11 @@ def gu_hippo_lti_fout_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_foud_bi(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
     desc_val = 0.5
+    s_t = "lti"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1388,9 +1596,11 @@ def gu_hippo_lti_foud_bi(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legs_zoh(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1406,9 +1616,11 @@ def gu_hippo_lti_legs_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lsi_legs_zoh(random_16_input):
+    N=50
     measure = "legs"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LSI(
         N=50,
         method=measure,
@@ -1427,9 +1639,11 @@ def gu_hippo_lsi_legs_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_legt_zoh(random_16_input):
+    N=50
     measure = "legt"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1450,9 +1664,11 @@ def gu_hippo_lti_legt_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lmu_zoh(random_16_input):
+    N=50
     measure = "lmu"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1473,9 +1689,11 @@ def gu_hippo_lti_lmu_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_lagt_zoh(random_16_input):
+    N=50
     measure = "lagt"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1496,9 +1714,11 @@ def gu_hippo_lti_lagt_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fru_zoh(random_16_input):
+    N=50
     measure = "fru"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1519,9 +1739,11 @@ def gu_hippo_lti_fru_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_fout_zoh(random_16_input):
+    N=50
     measure = "fout"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LTI(
         N=50,
         method=measure,
@@ -1542,9 +1764,11 @@ def gu_hippo_lti_fout_zoh(random_16_input):
 
 @pytest.fixture
 def gu_hippo_lti_foud_zoh(random_16_input):
+    N=50
     measure = "foud"
     L = random_16_input.shape[1]
-    desc_val = "zoh"
+    desc_val = "zo
+    s_t = "lti"h"
     return HiPPO_LTI(
         N=50,
         method=measure,

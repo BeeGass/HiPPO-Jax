@@ -91,9 +91,9 @@ optional = true
 [tool.poetry.group.jax.dependencies]
 # ~~~~~ Jax dependencies ~~~~~
 jaxlib = [
-    {extras = ["cuda"], version = "^0.4.1", platform = "linux"},
-    {extras = ["cpu"], version = "^0.4.1", platform = "darwin", source = "pypi"}
-    ]
+    {version = "0.4.1", platform = "darwin", source="pypi"},
+    {version = "^0.4.1+cuda11.cudnn82", platform = "linux"}
+]
 flax = [
     {version = "^0.5.3", platform = "linux"},
     {version = "^0.5.2", platform = "darwin"} # issue with flax installing tensorstore that isnt compatible on mac
