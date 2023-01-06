@@ -248,7 +248,7 @@ class HiPPOLSI(nn.Module):
         return c_k
 
     def reconstruct(self, c):
-        y = self.eval_matrix.to(c) @ c.unsqueeze(-1)
+        y = self.eval_matrix @ c
 
         return y
 
@@ -321,8 +321,10 @@ class HiPPOLTI(nn.Module):
         self.A = matrices.A
         self.B = matrices.B
 
-        self.vals = jnp.arange(0.0, T, dt)
-        self.eval_matrix = basis(self.method, self.N, self.vals, c=self.c)  # (T/dt, N)
+        self.vals = jnp.arange(0.0, T, dt)  # TODO: fix parameters
+        self.eval_matrix = self.basis(
+            self.method, self.N, self.vals, c=self.c
+        )  # (T/dt, N)
 
     def __call__(self, f, init_state=None):
         if init_state is None:
@@ -468,189 +470,6 @@ class HiPPOLTI(nn.Module):
         else:
             return c_k
 
-
-class HiPPOEncoder(nn.Module):
-    """
-    class that constructs HiPPO model using the defined measure.
-
-    Args:
-
-        max_length (int):
-            maximum sequence length to be input
-
-        step_size (float):
-            step size used for descretization
-
-        N (int):
-            order of the HiPPO projection, aka the number of coefficients to describe the matrix
-
-        lambda_n (float):
-            value associated with the tilt of legt
-            - 1: tilt on legt
-            - \sqrt(2n+1)(-1)^{N}: tilt associated with the legendre memory unit (LMU)
-
-        alpha (float):
-            The order of the Laguerre basis.
-
-        beta (float):
-            The scale of the Laguerre basis.
-
-        GBT_alpha (float):
-            represents which descretization transformation to use based off the alpha value
-
-        measure (str):
-            the measure used to define which way to instantiate the HiPPO matrix
-
-        s_t (str):
-            choice between LSI and LTI systems
-            - "lsi"
-            - "lti"
-
-        dtype (jnp.float):
-            represents the float precision of the class
-
-        verbose (bool):
-            shows the rolled out coefficients over time/scale
-
-    """
-
-    N: int
-    max_length: int = 1024
-    step_size: float = 1.0
-    lambda_n: float = 1.0
-    alpha: float = 0.0
-    beta: float = 1.0
-    GBT_alpha: float = 0.5
-    measure: str = "legs"
-    s_t: str = "lti"
-    dtype: Any = jnp.float32
-    verbose: bool = False
-
-    def setup(self):
-        if self.s_t == "lsi":
-            self.encoder = HiPPOLSI(
-                N=self.N,
-                max_length=self.max_length,
-                step_size=self.step_size,
-                lambda_n=self.lambda_n,
-                alpha=self.alpha,
-                beta=self.beta,
-                GBT_alpha=self.GBT_alpha,
-                measure=self.measure,
-                dtype=self.dtype,
-                verbose=self.verbose,
-            )
-        elif self.s_t == "lti":
-            self.encoder = HiPPOLTI(
-                N=self.N,
-                step_size=self.step_size,
-                lambda_n=self.lambda_n,
-                alpha=self.alpha,
-                beta=self.beta,
-                GBT_alpha=self.GBT_alpha,
-                measure=self.measure,
-                dtype=self.dtype,
-                verbose=self.verbose,
-            )
-        else:
-            raise ValueError("s_t must be either 'lsi' or 'lti'")
-
-    def __call__(self, f, init_state=None):
-        """
-        function used for discretizing the HiPPO matrix
-
-        Args:
-            f (jnp.ndarray):
-                shape: (sequence length, 1)
-                the input sequence
-
-            init_state (jnp.ndarray):
-                shape: (batch size, input length, N)
-                the initial hidden state
-        """
-
-        return self.encoder(f, init_state=init_state)
-
-
-class HiPPODecoder(nn.Module):
-
-    N: int
-    max_length: int = 1024
-    step_size: float = 1.0
-    basis_length: int = 1.0
-    measure: str = "legs"
-    truncate_measure: bool = True
-    dtype: Any = jnp.float32
-
-    @nn.compact
-    def __call__(self, c, evals=None):
-        return self.basis(
-            method=self.measure,
-            N=self.N,
-            vals=eval,
-            c=c,
-            truncate_measure=self.truncate_measure,
-        )
-
-    # def basis(self, measure, N, vals=None, c=0.0, truncate_measure=True):
-    #     """
-    #     vals: # This is a float or array of floats that specifies the value(s) of the independent variable for which to compute the polynomials.
-    #     returns: shape (T, N) where T is length of vals
-    #     """
-    #     if vals is None:
-    #         if measure == "legs":
-    #             vals = jnp.linspace(0.0, 1.0, self.max_length)
-    #         elif measure == "legt":
-    #             vals = jnp.arange(0.0, self.basis_length, self.step_size)
-    #         elif measure == "lmu":
-    #             raise NotImplementedError
-    #         elif measure == "lagt":
-    #             raise NotImplementedError
-    #         elif measure in ["fourier", "fru", "fout", "foud"]:
-    #             raise NotImplementedError
-    #         else:
-    #             raise ValueError("invalid measure")
-
-    #     eval_matrix = None
-
-    #     if measure == "legs":
-    #         zero_N = self.N - 1
-    #         x = 2 * vals - 1
-    #         eval_matrix = jax.scipy.special.lpmn_values(
-    #             m=zero_N, n=zero_N, z=x, is_normalized=False
-    #         )
-    #         eval_matrix *= (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(N)
-
-    #     elif measure == "legt":
-    #         zero_N = self.N - 1
-    #         x = 1 - 2 * vals
-    #         eval_matrix = jax.scipy.special.lpmn_values(
-    #             m=zero_N, n=zero_N, z=x, is_normalized=False
-    #         ).T  # ss.eval_legendre(n, x).T
-    #         eval_matrix *= (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(N)
-
-    #     elif measure == "lmu":
-    #         raise NotImplementedError("LMU measure not implemented")
-    #     elif measure == "lagt":
-    #         eval_matrix = ss.eval_genlaguerre(jnp.arange(self.N)[:, None], 0, vals)
-    #         eval_matrix = eval_matrix * jnp.exp(-vals / 2)
-    #         eval_matrix = eval_matrix.T
-
-    #     elif measure in ["fourier", "fru", "fout", "foud"]:
-    #         cos = 2**0.5 * jnp.cos(
-    #             2 * jnp.pi * jnp.arange(self.N // 2)[:, None] * (vals)
-    #         )  # (N/2, T/dt)
-    #         sin = 2**0.5 * jnp.sin(
-    #             2 * jnp.pi * jnp.arange(self.N // 2)[:, None] * (vals)
-    #         )  # (N/2, T/dt)
-    #         cos[0] /= 2**0.5
-    #         eval_matrix = jnp.stack([cos.T, sin.T], dim=-1).reshape(
-    #             -1, self.N
-    #         )  # (T/dt, N)
-
-    #     else:
-    #         raise ValueError("invalid measure")
-
     def measure(self, method, c=0.0):
         if method == "legt":
             fn = lambda x: jnp.heaviside(x, 0.0) * jnp.heaviside(1.0 - x, 0.0)
@@ -706,7 +525,21 @@ class HiPPODecoder(nn.Module):
 
         p = eval_matrix * jnp.exp(-c * vals)[:, None]  # [::-1, None]
 
-        return p
+    def reconstruct(
+        self, c, evals=None
+    ):  # TODO take in a times array for reconstruction
+        """
+        c: (..., N,) HiPPO coefficients (same as x(t) in S4 notation)
+        output: (..., L,)
+        """
+        if evals is not None:
+            eval_matrix = self.basis(self.method, self.N, evals)
+        else:
+            eval_matrix = self.eval_matrix
+
+        y = eval_matrix @ c
+
+        return y
 
 
 class HiPPO(nn.Module):
@@ -759,24 +592,16 @@ class HiPPO(nn.Module):
                 f"s_t must be either 'lsi' or 'lti'. s_t is currently set to: {self.s_t}"
             )
 
-        # store the polynomial projection in memory module, then project coefficients to output space
-        self.decoder = HiPPODecoder(
-            N=self.N,
-            max_length=self.max_length,
-            step_size=self.step_size,
-            basis_length=self.basis_length,
-            measure=self.measure,
-            truncate_measure=self.truncate_measure,
-            dtype=self.dtype,
-        )
-
     def __call__(self, x, init_state=None):
 
         # Apply the polynomial projections to the input
         hidden = self.encoder(x, init_state=init_state)
 
         # Decode the polynomial projections to the output space through applying the coefficients to the basis
-        output = self.decoder(hidden)
+        if self.s_t == "lti":
+            output = self.encoder.reconstruct(c=hidden, evals=x)
+        else:
+            output = self.encoder.reconstruct(c=hidden)
 
         return hidden, output
 
