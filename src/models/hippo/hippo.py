@@ -305,6 +305,7 @@ class HiPPOLTI(nn.Module):
     beta: float = 1.0
     GBT_alpha: float = 0.5
     measure: str = "legs"
+    basis_size: float = 1.0
     dtype: Any = jnp.float32
     verbose: bool = False
 
@@ -321,9 +322,9 @@ class HiPPOLTI(nn.Module):
         self.A = matrices.A
         self.B = matrices.B
 
-        self.vals = jnp.arange(0.0, T, dt)  # TODO: fix parameters
+        self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
         self.eval_matrix = self.basis(
-            self.method, self.N, self.vals, c=self.c
+            self.method, self.N, self.vals, c=0.0
         )  # (T/dt, N)
 
     def __call__(self, f, init_state=None):
@@ -470,7 +471,7 @@ class HiPPOLTI(nn.Module):
         else:
             return c_k
 
-    def measure(self, method, c=0.0):
+    def measure_fn(self, method, c=0.0):
         if method == "legt":
             fn = lambda x: jnp.heaviside(x, 0.0) * jnp.heaviside(1.0 - x, 0.0)
         elif method == "legs":
@@ -521,7 +522,7 @@ class HiPPOLTI(nn.Module):
         #     print("eval_matrix shape", eval_matrix.shape)
 
         if truncate_measure:
-            eval_matrix[self.measure(method)(vals) == 0.0] = 0.0
+            eval_matrix[self.measure_fn(method)(vals) == 0.0] = 0.0
 
         p = eval_matrix * jnp.exp(-c * vals)[:, None]  # [::-1, None]
 
@@ -533,7 +534,7 @@ class HiPPOLTI(nn.Module):
         output: (..., L,)
         """
         if evals is not None:
-            eval_matrix = self.basis(self.method, self.N, evals)
+            eval_matrix = self.basis(self.measure, self.N, evals)
         else:
             eval_matrix = self.eval_matrix
 
@@ -553,8 +554,8 @@ class HiPPO(nn.Module):
     beta: float = 1.0
     GBT_alpha: float = 0.5
     measure: str = "legs"
+    basis_size: float = 1.0
     s_t: str = "lti"
-    dtype: Any = jnp.float32
     truncate_measure: bool = True
     dtype: Any = jnp.float32
     verbose: bool = False
@@ -584,6 +585,7 @@ class HiPPO(nn.Module):
                 beta=self.beta,
                 GBT_alpha=self.GBT_alpha,
                 measure=self.measure,
+                basis_size=self.basis_size,
                 dtype=self.dtype,
                 verbose=self.verbose,
             )
@@ -604,14 +606,6 @@ class HiPPO(nn.Module):
             output = self.encoder.reconstruct(c=hidden)
 
         return hidden, output
-
-    def optimize_projections(self, optimizer):
-
-        # Use the optimizer to update the projection parameters
-        optimizer.zero_grad()
-        projections_loss = self.projections.loss()
-        projections_loss.backward()
-        optimizer.step()
 
 
 class DLPR_HiPPO:

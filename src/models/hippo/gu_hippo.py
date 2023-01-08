@@ -19,7 +19,7 @@ from src.models.hippo.unroll import (
 )
 
 
-class HiPPO_LSI(nn.Module):
+class gu_HiPPO_LSI(nn.Module):
     """Vanilla HiPPO-LegS model (scale invariant instead of time invariant)"""
 
     def __init__(
@@ -113,7 +113,7 @@ class HiPPO_LSI(nn.Module):
         return a
 
 
-class HiPPO_LTI(nn.Module):
+class gu_HiPPO_LTI(nn.Module):
     """Linear time invariant x' = Ax + Bu"""
 
     def __init__(

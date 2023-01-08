@@ -217,7 +217,7 @@ def test_GBT_LTI_legt_FE(
     alpha = 0.0
     A, B = legt_matrices
 
-    GBT_A, GBT_B = hippo_lti_legt_fe.discretize(
+    GBT_A, GBT_B = hippo_lti_legt_fe.encoder.discretize(
         A, B, step=1.0, alpha=alpha, dtype=jnp.float32
     )
     gu_GBT_A, gu_GBT_B = (
