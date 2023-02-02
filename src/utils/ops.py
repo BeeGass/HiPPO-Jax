@@ -5,7 +5,7 @@ import jax
 def genlaguerre(n, alpha, x):
     assert alpha >= 0, "alpha must be non-negative"
 
-    def step(i, p):
+    def step(p, i):
         Ln, Lnm1 = p
 
         # Recursive definition: L_n^alpha(x) = (2*n + alpha - x) / (n) * L_{n-1}^alpha(x) - (n + alpha - 1) / n * L_{n-2}^alpha(x)
@@ -14,9 +14,9 @@ def genlaguerre(n, alpha, x):
         return Lnp1, Ln
 
     # Initial values: L_{-1}^alpha(x) = 0, L_0^alpha(x) = 1
-    L_init = (jnp.zeros_like(x), jnp.ones_like(x))
+    L_init = (jnp.zeros_like(x, dtype=jnp.float32), jnp.ones_like(x, dtype=jnp.float32))
 
     # Use lax.scan to compute L_1^alpha(x), L_2^alpha(x), ..., L_n^alpha(x)
-    _, Ln = jax.lax.scan(step, jnp.arange(1, n + 1), L_init)
+    _, Ln = jax.lax.scan(step, L_init, jnp.arange(1, n + 1))
 
     return Ln

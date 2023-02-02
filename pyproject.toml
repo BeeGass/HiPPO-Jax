@@ -90,10 +90,16 @@ optional = true
 
 [tool.poetry.group.jax.dependencies]
 # ~~~~~ Jax dependencies ~~~~~
-jaxlib = [
-    {version = "0.4.1", platform = "darwin", source="pypi"},
+jax = [
     {version = "^0.4.1+cuda11.cudnn82", platform = "linux"}
 ]
+
+#jaxlib = [
+#    {version = "0.4.1", platform = "darwin", source="pypi"},
+#    #{extras = ["cuda"], version = "^0.4.1", platform = "linux"},
+#    {version = "^0.4.1+cuda11.cudnn82", platform = "linux"}
+#]
+
 flax = [
     {version = "^0.5.3", platform = "linux"},
     {version = "^0.5.2", platform = "darwin"} # issue with flax installing tensorstore that isnt compatible on mac
@@ -135,8 +141,8 @@ optional = true
 [tool.poetry.group.additional.dependencies]
 # ~~~~~ additional dependencies ~~~~~
 black = [
-    {version = "^22.6.0", platform = "linux"},
-    {version = "^22.6.0", platform = "darwin"}
+    {extras = ["jupyter"], version = "^22.6.0", platform = "linux"},
+    {extras = ["jupyter"], version = "^22.6.0", platform = "darwin"}
     ]
 pre-commit = [
     {version = "^2.20.0", platform = "linux"},
@@ -154,11 +160,11 @@ default = false
 secondary = true
 
 
-#[[tool.poetry.source]]
-#name = "jax"
-#url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
-#default = false
-#secondary = false
+[[tool.poetry.source]]
+name = "jax"
+url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
+default = false
+secondary = false
 
 [build-system]
 requires = ["poetry-core"]
