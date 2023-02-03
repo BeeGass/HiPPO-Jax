@@ -29,6 +29,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.8.0,<=3.8.13"
+jaxtyping = "^0.2.11"
 
 [tool.poetry.group.mltools]
 optional = true

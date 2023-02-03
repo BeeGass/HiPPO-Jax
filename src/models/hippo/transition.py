@@ -1,5 +1,6 @@
 ## import packages
-from typing import Any
+from jaxtyping import Array, UInt, Float, Float16, Float32, Float64
+from typing import Callable, List, Optional, Tuple, Any, Union
 
 import jax.numpy as jnp
 from jax.numpy.linalg import inv
@@ -77,7 +78,9 @@ class TransMatrix:
 
     # Translated Legendre (LegT) - vectorized
     @staticmethod
-    def build_LegT(N, lambda_n=1, dtype=jnp.float32):
+    def build_LegT(
+        N: int, lambda_n: int = 1, dtype=jnp.float32
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
         """
         The, vectorized implementation of the, measure derived from the translated Legendre basis.
 
@@ -117,7 +120,9 @@ class TransMatrix:
 
     # Translated Laguerre (LagT) - non-vectorized
     @staticmethod
-    def build_LagT(alpha, beta, N, dtype=jnp.float32):
+    def build_LagT(
+        alpha: float, beta: float, N: int, dtype=jnp.float32
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
         """
         The, vectorized implementation of the, measure derived from the translated Laguerre basis.
 
@@ -151,7 +156,9 @@ class TransMatrix:
 
     # Scaled Legendre (LegS) vectorized
     @staticmethod
-    def build_LegS(N, dtype=jnp.float32):
+    def build_LegS(
+        N: int, dtype=jnp.float32
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
         """
         The, vectorized implementation of the, measure derived from the Scaled Legendre basis.
 
@@ -176,7 +183,9 @@ class TransMatrix:
 
     # Fourier Basis OPs and functions - vectorized
     @staticmethod
-    def build_Fourier(N, fourier_type="fru", dtype=jnp.float32):
+    def build_Fourier(
+        N: int, fourier_type: str = "fru", dtype=jnp.float32
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
         """
         Vectorized measure implementations derived from fourier basis.
 

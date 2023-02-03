@@ -1,6 +1,7 @@
 ## import packages
 import math
-from typing import Any
+from jaxtyping import Array, Float, Float16, Float32, Float64
+from typing import Callable, List, Optional, Tuple, Any, Union
 
 import jax
 import jax.numpy as jnp
@@ -81,16 +82,18 @@ class HiPPOLSI(nn.Module):
             matrices.A, matrices.B, dtype=self.dtype
         )
 
-        self.A = matrices.A
-        self.B = matrices.B
-
         vals = jnp.linspace(0.0, 1.0, self.max_length)
         self.eval_matrix = (
             (matrices.B)[:, None]
             * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)
         ).T
 
-    def __call__(self, f, init_state=None, kernel=False):
+    def __call__(
+        self,
+        f: Float[Array, "batch seq_len input_size"],
+        init_state: Optional[Float[Array, "batch input_size N"]] = None,
+    ) -> Float[Array, "batch input_size N"]:
+
         if init_state is None:
             init_state = jnp.zeros((f.shape[0], 1, self.N))
 
@@ -105,7 +108,9 @@ class HiPPOLSI(nn.Module):
 
         return c_k
 
-    def temporal_GBT(self, A, B, dtype=jnp.float32):
+    def temporal_GBT(
+        self, A: Float[Array, "N_a N_b"], B: Float[Array, "N 1"], dtype=jnp.float32
+    ) -> Tuple[List[Float[Array, "N_a N_b"]], List[Float[Array, "N 1"]]]:
         """
         Creates the list of discretized GBT matrices for the given step size
         """
@@ -120,7 +125,14 @@ class HiPPOLSI(nn.Module):
 
         return GBT_a_list, GBT_b_list
 
-    def discretize(self, A, B, step, alpha=0.5, dtype=jnp.float32):
+    def discretize(
+        self,
+        A: Float[Array, "N_a N_b"],
+        B: Float[Array, "N 1"],
+        step: float,
+        alpha: Union[float, str] = 0.5,
+        dtype=jnp.float32,
+    ) -> Tuple[Float[Array, "N_a N_b"], Float[Array, "N 1"]]:
         """
         function used for discretizing the HiPPO matrix
 
@@ -187,7 +199,16 @@ class HiPPOLSI(nn.Module):
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)
 
-    def recurrence(self, A, B, c_0, f, dtype=jnp.float32):
+    def recurrence(
+        self,
+        A: Float[Array, "N_a N_b"],
+        B: Float[Array, "N 1"],
+        c_0: Float[Array, "batch input_size N"],
+        f: Float[Array, "batch seq_len input_size"],
+        dtype=jnp.float32,
+    ) -> Union[
+        List[Float[Array, "batch input_size N"]], Float[Array, "batch input_size N"]
+    ]:
         """
         This is for returning the discretized hidden state often needed for an RNN.
         Args:
@@ -216,7 +237,7 @@ class HiPPOLSI(nn.Module):
 
         c_k = c_0.copy()
         for i in range(f.shape[1]):
-            c_k = jax.vmap(self.step, in_axes=(None, None, None, None, 0, 0))(
+            c_k = jax.vmap(self.step, in_axes=(None, None, 0, 0))(
                 A[i], B[i], c_k, f[:, i, :]
             )
             c_s.append((c_k.copy()).astype(dtype))
@@ -226,7 +247,13 @@ class HiPPOLSI(nn.Module):
         else:
             return c_s[-1]  # last hidden state
 
-    def step(self, Ad, Bd, c_k_i, f_k):
+    def step(
+        self,
+        Ad: Float[Array, "N_a N_b"],
+        Bd: Float[Array, "N 1"],
+        c_k_i: Float[Array, "batch input_size N"],
+        f_k: Float[Array, "batch seq_len input_size"],
+    ) -> Float[Array, "batch input_size N"]:
         """
         Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
         Args:
@@ -247,7 +274,9 @@ class HiPPOLSI(nn.Module):
 
         return c_k
 
-    def reconstruct(self, c):
+    def reconstruct(
+        self, c: Float[Array, "batch input_size N"]
+    ) -> Float[Array, "batch seq_len input_size"]:
         y = self.eval_matrix @ c
 
         return y
@@ -319,31 +348,50 @@ class HiPPOLTI(nn.Module):
             dtype=self.dtype,
         )
 
-        self.A = matrices.A
-        self.B = matrices.B
+        self.Ad, self.Bd = self.discretize(
+            A=matrices.A,
+            B=matrices.B,
+            step=self.step_size,
+            alpha=self.GBT_alpha,
+            dtype=self.dtype,
+        )
 
         self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
+        jax.debug.print("self.vals shape:\n{x3}", x3=self.vals.shape)
+        jax.debug.print("self.vals:\n{x4}", x4=self.vals)
+        # self.eval_matrix = jax.vmap(self.basis, in_axes=(None, None, 0, None))(self.measure, self.N, self.vals, 0.0)
         self.eval_matrix = self.basis(
-            self.method, self.N, self.vals, c=0.0
+            self.measure, self.N, self.vals, c=0.0
         )  # (T/dt, N)
+        # jax.debug.print("eval_matrix shape:\n{x5}", x5=self.eval_matrix.shape)
 
-    def __call__(self, f, init_state=None):
+    def __call__(
+        self,
+        f: Float[Array, "batch seq_len input_size"],
+        init_state: Optional[Float[Array, "batch input_size N"]] = None,
+    ) -> Float[Array, "batch input_size N"]:
+
         if init_state is None:
             init_state = jnp.zeros((f.shape[0], 1, self.N))
 
         c_k = self.recurrence(
-            A=self.A,
-            B=self.B,
+            Ad=self.Ad,
+            Bd=self.Bd,
             c_0=init_state,
             f=f,
-            alpha=self.GBT_alpha,
-            step_size=self.step_size,
             dtype=self.dtype,
         )
 
         return c_k
 
-    def discretize(self, A, B, step, alpha=0.5, dtype=jnp.float32):
+    def discretize(
+        self,
+        A: Float[Array, "N_a N_b"],
+        B: Float[Array, "N 1"],
+        step: float,
+        alpha: Union[float, str] = 0.5,
+        dtype=jnp.float32,
+    ) -> Tuple[Float[Array, "N_a N_b"], Float[Array, "N 1"]]:
         """
         function used for discretizing the HiPPO matrix
 
@@ -418,15 +466,24 @@ class HiPPOLTI(nn.Module):
 
         return GBT_A.astype(dtype), GBT_B.astype(dtype)
 
-    def recurrence(self, A, B, c_0, f, alpha=0.5, step_size=1.0, dtype=jnp.float32):
+    def recurrence(
+        self,
+        A: Float[Array, "N_a N_b"],
+        B: Float[Array, "N 1"],
+        c_0: Float[Array, "batch input_size N"],
+        f: Float[Array, "batch seq_len input_size"],
+        dtype=jnp.float32,
+    ) -> Union[
+        List[Float[Array, "batch input_size N"]], Float[Array, "batch input_size N"]
+    ]:
         """
         This is for returning the discretized hidden state often needed for an RNN.
         Args:
-            A (jnp.ndarray):
+            Ad (jnp.ndarray):
                 shape: (N, N)
                 the discretized A matrix
 
-            B (jnp.ndarray):
+            Bd (jnp.ndarray):
                 shape: (N, 1)
                 the discretized B matrix
 
@@ -441,9 +498,11 @@ class HiPPOLTI(nn.Module):
         Returns:
             the next hidden state (aka coefficients representing the function, f(t))
         """
-        Ad, Bd = self.discretize(A=A, B=B, step=step_size, alpha=alpha, dtype=dtype)
 
-        def step(c_k_i, f_k):
+        def step(
+            c_k_i: Float32[Array, "batch input_size N"],
+            f_k: Float32[Array, "batch seq_len input_size"],
+        ):
             """
             Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
             Args:
@@ -472,13 +531,14 @@ class HiPPOLTI(nn.Module):
             return c_k
 
     def measure_fn(self, method, c=0.0):
-        if method == "legt":
-            fn = lambda x: jnp.heaviside(x, 0.0) * jnp.heaviside(1.0 - x, 0.0)
-        elif method == "legs":
+
+        if method == "legs":
             fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
+        elif method in ["legt", "lmu"]:
+            fn = lambda x: jnp.heaviside(x, 0.0) * jnp.heaviside(1.0 - x, 0.0)
         elif method == "lagt":
             fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
-        elif method in ["fourier"]:
+        elif method in ["fourier", "fru", "fout", "foud"]:
             fn = lambda x: jnp.heaviside(x, 1.0) * jnp.heaviside(1.0 - x, 1.0)
         else:
             raise NotImplementedError
@@ -493,20 +553,53 @@ class HiPPOLTI(nn.Module):
         returns: shape (T, N) where T is length of vals
         """
         eval_matrix = None
-        if method in ["legt", "lmu"]:
-            eval_matrix = ss.eval_legendre(jnp.arange(N)[:, None], 2 * vals - 1).T
+        if method == "legs":
+            zero_N = self.N - 1
+            jax.debug.print("vals shape:\n{x1}", x1=vals.shape)
+            jax.debug.print("vals:\n{x2}", x2=vals)
+            x = 2 * vals - 1
+            # x = jnp.expand_dims(x, axis=0)
+            jax.debug.print("x shape:\n{x1}", x1=x.shape)
+            jax.debug.print("x:\n{x2}", x2=x)
+            # x = jnp.arccos(x)
+            jax.debug.print("x shape:\n{x1}", x1=x.shape)
+            jax.debug.print("x:\n{x2}", x2=x)
+            eval_matrix = jnp.real(
+                jax.scipy.special.sph_harm(
+                    m=jnp.array([0]), n=jnp.array([zero_N]), theta=x, phi=x
+                )
+            )
+            # ri_eval_matrix = jax.vmap(jax.scipy.special.sph_harm, in_axes=(None, None, 0, 0))(jnp.array([0]), jnp.array([zero_N]), x, x)
+            # eval_matrix = jnp.real(ri_eval_matrix)
+            jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
+            jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
+            # eval_matrix = ss.eval_legendre(zero_N, x).T
+            # jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
+            # jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
             eval_matrix *= (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(N)
+            jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
+            jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
 
-        elif method == "legs":
-            _vals = jnp.exp(-vals)
-            eval_matrix = ss.eval_legendre(
-                jnp.arange(N)[:, None], 1 - 2 * _vals
-            ).T  # (L, N)
+        elif method in ["legt", "lmu"]:
+            zero_N = self.N - 1
+            x = 1 - 2 * vals
+            # x = jnp.expand_dims(x, axis=0)
+            eval_matrix = jnp.real(
+                jax.scipy.special.sph_harm(
+                    m=jnp.array([0]), n=jnp.array([zero_N]), theta=x, phi=x
+                )
+            )
+            # eval_matrix = jax.scipy.special.lpmn_values(
+            #     m=0, n=zero_N, z=x, is_normalized=False
+            # ).T # Legendre polynomials are special cases of legendre functions, in this case where m=0
+            # eval_matrix = ss.eval_legendre(zero_N, x).T
             eval_matrix *= (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(N)
 
         elif method == "lagt":
             vals = vals[::-1]
-            eval_matrix = ss.eval_genlaguerre(np.arange(N)[:, None], 0, vals)
+            # eval_matrix = ss.eval_genlaguerre(np.arange(N)[:, None], 0, vals)
+            zero_N = self.N - 1
+            eval_matrix = genlaguerre(zero_N, 0, vals)
             eval_matrix = eval_matrix * jnp.exp(-vals / 2)
             eval_matrix = eval_matrix.T
 
@@ -518,16 +611,24 @@ class HiPPOLTI(nn.Module):
                 2 * jnp.pi * jnp.arange(N // 2)[:, None] * (vals)
             )  # (N/2, T/dt)
             cos[0] /= 2**0.5
-            eval_matrix = jnp.stack([cos.T, sin.T], dim=-1).reshape(-1, N)  # (T/dt, N)
+            eval_matrix = jnp.stack([cos.T, sin.T], axis=-1).reshape(-1, N)  # (T/dt, N)
         #     print("eval_matrix shape", eval_matrix.shape)
 
         if truncate_measure:
-            eval_matrix[self.measure_fn(method)(vals) == 0.0] = 0.0
+            jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
+            jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
+            tilting_fn = self.measure_fn(method, c=c)
+            val = tilting_fn(vals)
+            jax.debug.print("val shape:\n{x3}", x3=val.shape)
+            jax.debug.print("val:\n{x3}", x3=val)
+            eval_matrix = jnp.where(val == 0.0, 0.0, eval_matrix)
 
         p = eval_matrix * jnp.exp(-c * vals)[:, None]  # [::-1, None]
 
+        return p
+
     def reconstruct(
-        self, c, evals=None
+        self, c: Float[Array, "batch input_size N"], evals=None
     ):  # TODO take in a times array for reconstruction
         """
         c: (..., N,) HiPPO coefficients (same as x(t) in S4 notation)
