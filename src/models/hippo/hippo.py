@@ -14,18 +14,18 @@ from src.models.hippo.transition import TransMatrix
 
 class HiPPOLSI(nn.Module):
     """
-    class that constructs HiPPO model using the defined measure.
+    class that constructs a Linearly Scale Invariant (LSI) HiPPO model using the defined measure.
 
     Args:
+
+        N (int):
+            order of the HiPPO projection, aka the number of coefficients to describe the matrix
 
         max_length (int):
             maximum sequence length to be input
 
         step_size (float):
             step size used for descretization
-
-        N (int):
-            order of the HiPPO projection, aka the number of coefficients to describe the matrix
 
         lambda_n (float):
             value associated with the tilt of legt
@@ -44,17 +44,11 @@ class HiPPOLSI(nn.Module):
         measure (str):
             the measure used to define which way to instantiate the HiPPO matrix
 
-        s_t (str):
-            choice between LSI and LTI systems
-            - "lsi"
-            - "lti"
-
         dtype (jnp.float):
             represents the float precision of the class
 
-        verbose (bool):
+        unroll (bool):
             shows the rolled out coefficients over time/scale
-
     """
 
     N: int
@@ -66,7 +60,7 @@ class HiPPOLSI(nn.Module):
     GBT_alpha: float = 0.5
     measure: str = "legs"
     dtype: Any = jnp.float32
-    verbose: bool = False
+    unroll: bool = False
 
     def setup(self):
         matrices = TransMatrix(
@@ -90,9 +84,9 @@ class HiPPOLSI(nn.Module):
 
     def __call__(
         self,
-        f: Float[Array, "batch seq_len input_size"],
-        init_state: Optional[Float[Array, "batch input_size N"]] = None,
-    ) -> Float[Array, "batch input_size N"]:
+        f: Float[Array, "#batch seq_len input_size"],
+        init_state: Optional[Float[Array, "#batch input_size N"]] = None,
+    ) -> Float[Array, "#batch input_size N"]:
 
         if init_state is None:
             init_state = jnp.zeros((f.shape[0], 1, self.N))
@@ -109,10 +103,29 @@ class HiPPOLSI(nn.Module):
         return c_k
 
     def temporal_GBT(
-        self, A: Float[Array, "N_a N_b"], B: Float[Array, "N 1"], dtype=jnp.float32
-    ) -> Tuple[List[Float[Array, "N_a N_b"]], List[Float[Array, "N 1"]]]:
+        self, A: Float[Array, "N N"], B: Float[Array, "N 1"], dtype=jnp.float32
+    ) -> Tuple[List[Float[Array, "N N"]], List[Float[Array, "N 1"]]]:
         """
         Creates the list of discretized GBT matrices for the given step size
+
+        Args:
+            A (jnp.ndarray):
+                shape: (N, N)
+                matrix to be discretized
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                matrix to be discretized
+
+            dtype (jnp.float):
+                type of float precision to be used
+
+        Returns:
+            GBT_a_list (list):
+                list of discretized A matrices across all time steps
+
+            GBT_b_list (list):
+                list of discretized B matrices across all time steps
         """
         GBT_a_list = []
         GBT_b_list = []
@@ -127,14 +140,14 @@ class HiPPOLSI(nn.Module):
 
     def discretize(
         self,
-        A: Float[Array, "N_a N_b"],
+        A: Float[Array, "N N"],
         B: Float[Array, "N 1"],
         step: float,
         alpha: Union[float, str] = 0.5,
         dtype=jnp.float32,
-    ) -> Tuple[Float[Array, "N_a N_b"], Float[Array, "N 1"]]:
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
         """
-        function used for discretizing the HiPPO matrix
+        Function used for discretizing the HiPPO A and B matrices
 
         Args:
             A (jnp.ndarray):
@@ -154,6 +167,18 @@ class HiPPOLSI(nn.Module):
                 - backward Euler corresponds to α = 1,
                 - bilinear corresponds to α = 0.5,
                 - Zero-order Hold corresponds to α > 1
+
+            dtype (jnp.float):
+                type of float precision to be used
+
+        Returns:
+            GBT_A (jnp.ndarray):
+                shape: (N, N)
+                discretized A matrix based on the given step size and alpha value
+
+            GBT_B (jnp.ndarray):
+                shape: (N, 1)
+                discretized B matrix based on the given step size and alpha value
         """
         if alpha <= 1:
             assert (
@@ -187,12 +212,9 @@ class HiPPOLSI(nn.Module):
             A_B_square = jnp.block(
                 [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
             )
-            if self.s_t == "lsi":
-                A_B = jax.scipy.linalg.expm(
-                    A_B_square * (math.log(step + self.step_size) - math.log(step))
-                )
-            else:
-                A_B = jax.scipy.linalg.expm(A_B_square * self.step_size)
+            A_B = jax.scipy.linalg.expm(
+                A_B_square * (math.log(step + self.step_size) - math.log(step))
+            )
 
             GBT_A = A_B[0:n, 0:n]
             GBT_B = A_B[0:-b_n, -b_n:]
@@ -201,28 +223,29 @@ class HiPPOLSI(nn.Module):
 
     def recurrence(
         self,
-        A: Float[Array, "N_a N_b"],
+        A: Float[Array, "N N"],
         B: Float[Array, "N 1"],
-        c_0: Float[Array, "batch input_size N"],
-        f: Float[Array, "batch seq_len input_size"],
+        c_0: Float[Array, "#batch input_size N"],
+        f: Float[Array, "#batch seq_len input_size"],
         dtype=jnp.float32,
     ) -> Union[
-        List[Float[Array, "batch input_size N"]], Float[Array, "batch input_size N"]
+        List[Float[Array, "#batch input_size N"]], Float[Array, "#batch input_size N"]
     ]:
         """
-        This is for returning the discretized hidden state often needed for an RNN.
+        Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
+
         Args:
             A (jnp.ndarray):
                 shape: (N, N)
-                the discretized A matrix
+                The list of discretized A matrices
 
             B (jnp.ndarray):
                 shape: (N, 1)
-                the discretized B matrix
+                The list of discretized B matrices
 
             c_0 (jnp.ndarray):
                 shape: (batch size, input length, N)
-                the initial hidden state
+                the initial hidden state (i.e. the initial coefficients)
 
             f (jnp.ndarray):
                 shape: (sequence length, 1)
@@ -230,44 +253,60 @@ class HiPPOLSI(nn.Module):
 
 
         Returns:
-            the next hidden state (aka coefficients representing the function, f(t))
+            c_s (list[jnp.ndarray]]):
+                shape: (batch size, sequence length, input length, N)
+                List of the vector of estimated coefficients representing the function, f(t), at each time step
+
+            c_s[-1] (jnp.ndarray):
+                shape: (batch size, sequence length, input length, N)
+                Vector of the estimated coefficients representing the function, f(t), at the last time step
         """
 
         c_s = []
 
         c_k = c_0.copy()
         for i in range(f.shape[1]):
-            c_k = jax.vmap(self.step, in_axes=(None, None, 0, 0))(
+            c_k = jax.vmap(self.hippo_op, in_axes=(None, None, 0, 0))(
                 A[i], B[i], c_k, f[:, i, :]
             )
             c_s.append((c_k.copy()).astype(dtype))
 
-        if self.verbose:
+        if self.unroll:
             return c_s  # list of hidden states
         else:
             return c_s[-1]  # last hidden state
 
-    def step(
+    def hippo_op(
         self,
-        Ad: Float[Array, "N_a N_b"],
+        Ad: Float[Array, "N N"],
         Bd: Float[Array, "N 1"],
-        c_k_i: Float[Array, "batch input_size N"],
-        f_k: Float[Array, "batch seq_len input_size"],
-    ) -> Float[Array, "batch input_size N"]:
+        c_k_i: Float[Array, "#batch input_size N"],
+        f_k: Float[Array, "#batch seq_len input_size"],
+    ) -> Float[Array, "#batch input_size N"]:
         """
-        Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
+        The HiPPO operator, that is used to perform the recurrence of the HiPPO model
+
         Args:
+            Ad (jnp.ndarray):
+                shape: (N, N)
+                discretized A matrix
+
+            Bd (jnp.ndarray):
+                shape: (N, 1)
+                discretized B matrix
+
             c_k_i:
                 shape: (input length, N)
                 previous hidden state
 
             f_k:
-                shape: (1, )
-                output from function f at, descritized, time step, k.
+                shape: (input_size, )
+                value of input sequence at time step k
 
         Returns:
-            c_k: current hidden state
-            y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
+            c_k (jnp.ndarray):
+                shape: (input length, N)
+                Vector of the estimated coefficients, given the history of the function/sequence up to time step k.
         """
 
         c_k = (jnp.dot(c_k_i, Ad.T)) + (Bd.T * f_k)
@@ -275,8 +314,8 @@ class HiPPOLSI(nn.Module):
         return c_k
 
     def reconstruct(
-        self, c: Float[Array, "batch input_size N"]
-    ) -> Float[Array, "batch seq_len input_size"]:
+        self, c: Float[Array, "#batch input_size N"]
+    ) -> Float[Array, "#batch seq_len input_size"]:
         y = self.eval_matrix @ c
 
         return y
@@ -284,21 +323,18 @@ class HiPPOLSI(nn.Module):
 
 class HiPPOLTI(nn.Module):
     """
-    class that constructs HiPPO model using the defined measure.
+    class that constructs a Linearly Time Invariant (LTI) HiPPO model using the defined measure.
 
     Args:
 
-        max_length (int):
-            maximum sequence length to be input
+        N (int):
+            Order of the HiPPO projection, aka the number of coefficients to describe the matrix
 
         step_size (float):
-            step size used for descretization
-
-        N (int):
-            order of the HiPPO projection, aka the number of coefficients to describe the matrix
+            Step size used for descretization
 
         lambda_n (float):
-            value associated with the tilt of legt
+            Value associated with the tilt of legt
             - 1: tilt on legt
             - \sqrt(2n+1)(-1)^{N}: tilt associated with the legendre memory unit (LMU)
 
@@ -309,22 +345,19 @@ class HiPPOLTI(nn.Module):
             The scale of the Laguerre basis.
 
         GBT_alpha (float):
-            represents which descretization transformation to use based off the alpha value
+            Represents which descretization transformation to use based off the alpha value
 
         measure (str):
-            the measure used to define which way to instantiate the HiPPO matrix
+            The measure used to define which way to instantiate the HiPPO matrix
 
-        s_t (str):
-            choice between LSI and LTI systems
-            - "lsi"
-            - "lti"
+        basis_size (float):
+            The intended maximum value of the basis function for the coefficients to be projected onto
 
         dtype (jnp.float):
-            represents the float precision of the class
+            Represents the float precision of the class
 
-        verbose (bool):
-            shows the rolled out coefficients over time/scale
-
+        unroll (bool):
+            Shows the rolled out coefficients over time/scale
     """
 
     N: int
@@ -336,7 +369,7 @@ class HiPPOLTI(nn.Module):
     measure: str = "legs"
     basis_size: float = 1.0
     dtype: Any = jnp.float32
-    verbose: bool = False
+    unroll: bool = False
 
     def setup(self):
         matrices = TransMatrix(
@@ -356,20 +389,20 @@ class HiPPOLTI(nn.Module):
             dtype=self.dtype,
         )
 
-        self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
-        jax.debug.print("self.vals shape:\n{x3}", x3=self.vals.shape)
-        jax.debug.print("self.vals:\n{x4}", x4=self.vals)
-        # self.eval_matrix = jax.vmap(self.basis, in_axes=(None, None, 0, None))(self.measure, self.N, self.vals, 0.0)
-        self.eval_matrix = self.basis(
-            self.measure, self.N, self.vals, c=0.0
-        )  # (T/dt, N)
+        # self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
+        # jax.debug.print("self.vals shape:\n{x3}", x3=self.vals.shape)
+        # jax.debug.print("self.vals:\n{x4}", x4=self.vals)
+        # # self.eval_matrix = jax.vmap(self.basis, in_axes=(None, None, 0, None))(self.measure, self.N, self.vals, 0.0)
+        # self.eval_matrix = self.basis(
+        #     self.measure, self.N, self.vals, c=0.0
+        # )  # (T/dt, N)
         # jax.debug.print("eval_matrix shape:\n{x5}", x5=self.eval_matrix.shape)
 
     def __call__(
         self,
-        f: Float[Array, "batch seq_len input_size"],
-        init_state: Optional[Float[Array, "batch input_size N"]] = None,
-    ) -> Float[Array, "batch input_size N"]:
+        f: Float[Array, "#batch seq_len input_size"],
+        init_state: Optional[Float[Array, "#batch input_size N"]] = None,
+    ) -> Float[Array, "#batch input_size N"]:
 
         if init_state is None:
             init_state = jnp.zeros((f.shape[0], 1, self.N))
@@ -386,14 +419,14 @@ class HiPPOLTI(nn.Module):
 
     def discretize(
         self,
-        A: Float[Array, "N_a N_b"],
+        A: Float[Array, "N N"],
         B: Float[Array, "N 1"],
         step: float,
         alpha: Union[float, str] = 0.5,
         dtype=jnp.float32,
-    ) -> Tuple[Float[Array, "N_a N_b"], Float[Array, "N 1"]]:
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
         """
-        function used for discretizing the HiPPO matrix
+        Function used for discretizing the HiPPO A and B matrices
 
         Args:
             A (jnp.ndarray):
@@ -402,14 +435,6 @@ class HiPPOLTI(nn.Module):
 
             B (jnp.ndarray):
                 shape: (N, 1)
-                matrix to be discretized
-
-            C (jnp.ndarray):
-                shape: (N, 1)
-                matrix to be discretized
-
-            D (jnp.ndarray):
-                shape: (1,)
                 matrix to be discretized
 
             step (float):
@@ -421,6 +446,18 @@ class HiPPOLTI(nn.Module):
                 - backward Euler corresponds to α = 1,
                 - bilinear corresponds to α = 0.5,
                 - Zero-order Hold corresponds to α > 1
+
+            dtype (jnp.float):
+                type of float precision to be used
+
+        Returns:
+            GBT_A (jnp.ndarray):
+                shape: (N, N)
+                discretized A matrix based on the given step size and alpha value
+
+            GBT_B (jnp.ndarray):
+                shape: (N, 1)
+                discretized B matrix based on the given step size and alpha value
         """
         if alpha <= 1:
             assert (
@@ -454,12 +491,7 @@ class HiPPOLTI(nn.Module):
             A_B_square = jnp.block(
                 [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
             )
-            if self.s_t == "lsi":
-                A_B = jax.scipy.linalg.expm(
-                    A_B_square * (math.log(step + self.step_size) - math.log(step))
-                )
-            else:
-                A_B = jax.scipy.linalg.expm(A_B_square * self.step_size)
+            A_B = jax.scipy.linalg.expm(A_B_square * self.step_size)
 
             GBT_A = A_B[0:n, 0:n]
             GBT_B = A_B[0:-b_n, -b_n:]
@@ -468,64 +500,81 @@ class HiPPOLTI(nn.Module):
 
     def recurrence(
         self,
-        A: Float[Array, "N_a N_b"],
-        B: Float[Array, "N 1"],
-        c_0: Float[Array, "batch input_size N"],
-        f: Float[Array, "batch seq_len input_size"],
+        Ad: Float[Array, "N N"],
+        Bd: Float[Array, "N 1"],
+        c_0: Float[Array, "#batch input_size N"],
+        f: Float[Array, "#batch seq_len input_size"],
         dtype=jnp.float32,
     ) -> Union[
-        List[Float[Array, "batch input_size N"]], Float[Array, "batch input_size N"]
+        List[Float[Array, "#batch input_size N"]], Float[Array, "#batch input_size N"]
     ]:
         """
-        This is for returning the discretized hidden state often needed for an RNN.
-        Args:
-            Ad (jnp.ndarray):
-                shape: (N, N)
-                the discretized A matrix
+        Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
 
-            Bd (jnp.ndarray):
+        Args:
+            A (jnp.ndarray):
+                shape: (N, N)
+                The discretized A matrix weighted by the step size
+
+            B (jnp.ndarray):
                 shape: (N, 1)
-                the discretized B matrix
+                The discretized A matrix weighted by the step size
+
+            c_0 (jnp.ndarray):
+                shape: (batch size, input length, N)
+                the initial hidden state (i.e. the initial coefficients)
 
             f (jnp.ndarray):
                 shape: (sequence length, 1)
                 the input sequence
 
-            c_0 (jnp.ndarray):
-                shape: (batch size, input length, N)
-                the initial hidden state
 
         Returns:
-            the next hidden state (aka coefficients representing the function, f(t))
+            c_s (list[jnp.ndarray]]):
+                shape: (batch size, sequence length, input length, N)
+                List of the vector of estimated coefficients representing the function, f(t), at each time step
+
+            c_k (jnp.ndarray):
+                shape: (batch size, sequence length, input length, N)
+                Vector of the estimated coefficients representing the function, f(t), at the last time step
         """
 
-        def step(
-            c_k_i: Float32[Array, "batch input_size N"],
-            f_k: Float32[Array, "batch seq_len input_size"],
-        ):
+        def hippo_op(
+            c_k_i: Float[Array, "#batch input_size N"],
+            f_k: Float[Array, "#batch seq_len input_size"],
+        ) -> Tuple[
+            List[Float[Array, "#batch input_size N"]],
+            Float[Array, "#batch input_size N"],
+        ]:
             """
             Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
+
             Args:
                 c_k_i:
-                    shape: (input length, N)
-                    previous hidden state
+                shape: (input length, N)
+                previous hidden state
 
-                f_k:
-                    shape: (1, )
-                    output from function f at, descritized, time step, k.
+            f_k:
+                shape: (input_size, )
+                value of input sequence at time step k
 
             Returns:
-                c_k: current hidden state
-                y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
+                c_k (jnp.ndarray):
+                    shape: (input length, N)
+                    Vector of the estimated coefficients, given the history of the function/sequence up to time step k.
+
+                c_k (list[jnp.ndarray]):
+                    shape: (input length, N)
+                    List of the vector of estimated coefficients representing the function, f(t), at each time step
             """
 
             c_k = (jnp.dot(c_k_i, Ad.T)) + (Bd.T * f_k)
 
             return c_k, c_k
 
-        c_k, c_s = jax.vmap(jax.lax.scan, in_axes=(None, 0, 0))(step, c_0, f)
+        c_k, c_s = jax.vmap(jax.lax.scan, in_axes=(None, 0, 0))(hippo_op, c_0, f)
 
-        if self.verbose:
+        if self.unroll:
             return c_s
         else:
             return c_k
@@ -628,7 +677,7 @@ class HiPPOLTI(nn.Module):
         return p
 
     def reconstruct(
-        self, c: Float[Array, "batch input_size N"], evals=None
+        self, c: Float[Array, "#batch input_size N"], evals=None
     ):  # TODO take in a times array for reconstruction
         """
         c: (..., N,) HiPPO coefficients (same as x(t) in S4 notation)
@@ -649,20 +698,18 @@ class HiPPO(nn.Module):
     N: int
     max_length: int = 1024
     step_size: float = 1.0
-    basis_length: int = 1.0
+    basis_size: float = 1.0
     lambda_n: float = 1.0
     alpha: float = 0.0
     beta: float = 1.0
     GBT_alpha: float = 0.5
     measure: str = "legs"
-    basis_size: float = 1.0
     s_t: str = "lti"
     truncate_measure: bool = True
     dtype: Any = jnp.float32
-    verbose: bool = False
+    unroll: bool = False
 
     def setup(self) -> None:
-
         # Define the encoder that performs the polynomial projections with user specified matrix initialization
         if self.s_t == "lsi":
             self.encoder = HiPPOLSI(
@@ -675,7 +722,7 @@ class HiPPO(nn.Module):
                 GBT_alpha=self.GBT_alpha,
                 measure=self.measure,
                 dtype=self.dtype,
-                verbose=self.verbose,
+                unroll=self.unroll,
             )
         elif self.s_t == "lti":
             self.encoder = HiPPOLTI(
@@ -688,25 +735,29 @@ class HiPPO(nn.Module):
                 measure=self.measure,
                 basis_size=self.basis_size,
                 dtype=self.dtype,
-                verbose=self.verbose,
+                unroll=self.unroll,
             )
         else:
             raise ValueError(
                 f"s_t must be either 'lsi' or 'lti'. s_t is currently set to: {self.s_t}"
             )
 
-    def __call__(self, x, init_state=None):
+    def __call__(
+        self,
+        x: Float[Array, "#batch seq_len input_size"],
+        init_state: Optional[Float[Array, "#batch input_size N"]] = None,
+    ) -> Float[Array, "#batch input_size N"]:
 
         # Apply the polynomial projections to the input
         hidden = self.encoder(x, init_state=init_state)
 
         # Decode the polynomial projections to the output space through applying the coefficients to the basis
-        if self.s_t == "lti":
-            output = self.encoder.reconstruct(c=hidden, evals=x)
-        else:
-            output = self.encoder.reconstruct(c=hidden)
+        # if self.s_t == "lti":
+        #     output = self.encoder.reconstruct(c=hidden, evals=x)
+        # else:
+        #     output = self.encoder.reconstruct(c=hidden)
 
-        return hidden, output
+        return hidden  # , output
 
 
 class DLPR_HiPPO:
