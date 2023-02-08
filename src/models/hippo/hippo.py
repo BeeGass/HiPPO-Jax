@@ -316,7 +316,21 @@ class HiPPOLSI(nn.Module):
     def reconstruct(
         self, c: Float[Array, "#batch input_size N"]
     ) -> Float[Array, "#batch seq_len input_size"]:
-        y = self.eval_matrix @ c
+        """reconstructs the input sequence from the estimated coefficients and the evaluation matrix
+
+        Args:
+            c (jnp.ndarray):
+                shape: (batch size, input length, N)
+                Vector of the estimated coefficients, given the history of the function/sequence
+
+        Returns:
+            y (jnp.ndarray):
+                shape: (batch size, input length, input size)
+                The reconstructed input sequence
+        """
+        eval_matrix = self.eval_matrix
+        c = jnp.moveaxis(c, 1, 2)
+        y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
 
         return y
 
@@ -389,14 +403,12 @@ class HiPPOLTI(nn.Module):
             dtype=self.dtype,
         )
 
-        # self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
-        # jax.debug.print("self.vals shape:\n{x3}", x3=self.vals.shape)
-        # jax.debug.print("self.vals:\n{x4}", x4=self.vals)
-        # # self.eval_matrix = jax.vmap(self.basis, in_axes=(None, None, 0, None))(self.measure, self.N, self.vals, 0.0)
-        # self.eval_matrix = self.basis(
-        #     self.measure, self.N, self.vals, c=0.0
-        # )  # (T/dt, N)
-        # jax.debug.print("eval_matrix shape:\n{x5}", x5=self.eval_matrix.shape)
+        self.B = matrices.B
+
+        self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
+        self.eval_matrix = self.basis(
+            B=self.B, method=self.measure, N=self.N, vals=self.vals, c=0.0
+        )  # (T/dt, N)
 
     def __call__(
         self,
@@ -596,62 +608,31 @@ class HiPPOLTI(nn.Module):
 
         return fn_tilted
 
-    def basis(self, method, N, vals, c=0.0, truncate_measure=True):
+    def basis(
+        self,
+        B: Float[Array, "N 1"],
+        method: str,
+        N: int,
+        vals: Float[Array, "1"],
+        c: float = 0.0,
+        truncate_measure: bool = True,
+    ):
         """
         vals: list of times (forward in time)
         returns: shape (T, N) where T is length of vals
         """
-        eval_matrix = None
+
         if method == "legs":
-            zero_N = self.N - 1
-            jax.debug.print("vals shape:\n{x1}", x1=vals.shape)
-            jax.debug.print("vals:\n{x2}", x2=vals)
-            x = 2 * vals - 1
-            # x = jnp.expand_dims(x, axis=0)
-            jax.debug.print("x shape:\n{x1}", x1=x.shape)
-            jax.debug.print("x:\n{x2}", x2=x)
-            # x = jnp.arccos(x)
-            jax.debug.print("x shape:\n{x1}", x1=x.shape)
-            jax.debug.print("x:\n{x2}", x2=x)
-            eval_matrix = jnp.real(
-                jax.scipy.special.sph_harm(
-                    m=jnp.array([0]), n=jnp.array([zero_N]), theta=x, phi=x
-                )
-            )
-            # ri_eval_matrix = jax.vmap(jax.scipy.special.sph_harm, in_axes=(None, None, 0, 0))(jnp.array([0]), jnp.array([zero_N]), x, x)
-            # eval_matrix = jnp.real(ri_eval_matrix)
-            jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
-            jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
-            # eval_matrix = ss.eval_legendre(zero_N, x).T
-            # jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
-            # jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
-            eval_matrix *= (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(N)
-            jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
-            jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
+            _vals = jnp.exp(-vals)
+            eval_matrix = (
+                B * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
+            ).T  # (L, N)
 
         elif method in ["legt", "lmu"]:
-            zero_N = self.N - 1
-            x = 1 - 2 * vals
-            # x = jnp.expand_dims(x, axis=0)
-            eval_matrix = jnp.real(
-                jax.scipy.special.sph_harm(
-                    m=jnp.array([0]), n=jnp.array([zero_N]), theta=x, phi=x
-                )
-            )
-            # eval_matrix = jax.scipy.special.lpmn_values(
-            #     m=0, n=zero_N, z=x, is_normalized=False
-            # ).T # Legendre polynomials are special cases of legendre functions, in this case where m=0
-            # eval_matrix = ss.eval_legendre(zero_N, x).T
-            eval_matrix *= (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(N)
-
+            eval_matrix = (B * ss.eval_legendre(jnp.arange(N)[:, None], 2 * vals - 1)).T
         elif method == "lagt":
             vals = vals[::-1]
-            # eval_matrix = ss.eval_genlaguerre(np.arange(N)[:, None], 0, vals)
-            zero_N = self.N - 1
-            eval_matrix = genlaguerre(zero_N, 0, vals)
-            eval_matrix = eval_matrix * jnp.exp(-vals / 2)
-            eval_matrix = eval_matrix.T
-
+            eval_matrix = (B * ss.eval_genlaguerre(jnp.arange(N)[:, None], 0, vals)).T
         elif method in ["fourier", "fru", "fout", "foud"]:
             cos = 2**0.5 * jnp.cos(
                 2 * jnp.pi * jnp.arange(N // 2)[:, None] * (vals)
@@ -659,18 +640,15 @@ class HiPPOLTI(nn.Module):
             sin = 2**0.5 * jnp.sin(
                 2 * jnp.pi * jnp.arange(N // 2)[:, None] * (vals)
             )  # (N/2, T/dt)
-            cos[0] /= 2**0.5
+            cos = cos.at[0].set(cos[0] / 2**0.5)
             eval_matrix = jnp.stack([cos.T, sin.T], axis=-1).reshape(-1, N)  # (T/dt, N)
-        #     print("eval_matrix shape", eval_matrix.shape)
+        else:
+            raise NotImplementedError(f"method {method} not implemented")
 
         if truncate_measure:
-            jax.debug.print("eval_matrix shape:\n{x3}", x3=eval_matrix.shape)
-            jax.debug.print("eval_matrix:\n{x3}", x3=eval_matrix)
             tilting_fn = self.measure_fn(method, c=c)
             val = tilting_fn(vals)
-            jax.debug.print("val shape:\n{x3}", x3=val.shape)
-            jax.debug.print("val:\n{x3}", x3=val)
-            eval_matrix = jnp.where(val == 0.0, 0.0, eval_matrix)
+            eval_matrix = eval_matrix.at[val == 0.0].set(0.0)
 
         p = eval_matrix * jnp.exp(-c * vals)[:, None]  # [::-1, None]
 
@@ -678,86 +656,34 @@ class HiPPOLTI(nn.Module):
 
     def reconstruct(
         self, c: Float[Array, "#batch input_size N"], evals=None
-    ):  # TODO take in a times array for reconstruction
-        """
-        c: (..., N,) HiPPO coefficients (same as x(t) in S4 notation)
-        output: (..., L,)
+    ) -> Float[Array, "#batch seq_len input_size"]:
+        """reconstructs the input sequence from the estimated coefficients and the evaluation matrix
+
+        Args:
+            c (jnp.ndarray):
+                shape: (batch size, input length, N)
+                Vector of the estimated coefficients, given the history of the function/sequence
+
+            evals (jnp.ndarray, optional):
+                shape: ()
+                Vector of the evaluation points. Defaults to None.
+
+        Returns:
+            y (jnp.ndarray):
+                shape: (batch size, input length, input size)
+                The reconstructed input sequence
         """
         if evals is not None:
-            eval_matrix = self.basis(self.measure, self.N, evals)
+            eval_matrix = self.basis(
+                B=self.B, method=self.measure, N=self.N, vals=evals
+            )
         else:
             eval_matrix = self.eval_matrix
 
-        y = eval_matrix @ c
+        c = jnp.moveaxis(c, 1, 2)
+        y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
 
         return y
-
-
-class HiPPO(nn.Module):
-
-    N: int
-    max_length: int = 1024
-    step_size: float = 1.0
-    basis_size: float = 1.0
-    lambda_n: float = 1.0
-    alpha: float = 0.0
-    beta: float = 1.0
-    GBT_alpha: float = 0.5
-    measure: str = "legs"
-    s_t: str = "lti"
-    truncate_measure: bool = True
-    dtype: Any = jnp.float32
-    unroll: bool = False
-
-    def setup(self) -> None:
-        # Define the encoder that performs the polynomial projections with user specified matrix initialization
-        if self.s_t == "lsi":
-            self.encoder = HiPPOLSI(
-                N=self.N,
-                max_length=self.max_length,
-                step_size=self.step_size,
-                lambda_n=self.lambda_n,
-                alpha=self.alpha,
-                beta=self.beta,
-                GBT_alpha=self.GBT_alpha,
-                measure=self.measure,
-                dtype=self.dtype,
-                unroll=self.unroll,
-            )
-        elif self.s_t == "lti":
-            self.encoder = HiPPOLTI(
-                N=self.N,
-                step_size=self.step_size,
-                lambda_n=self.lambda_n,
-                alpha=self.alpha,
-                beta=self.beta,
-                GBT_alpha=self.GBT_alpha,
-                measure=self.measure,
-                basis_size=self.basis_size,
-                dtype=self.dtype,
-                unroll=self.unroll,
-            )
-        else:
-            raise ValueError(
-                f"s_t must be either 'lsi' or 'lti'. s_t is currently set to: {self.s_t}"
-            )
-
-    def __call__(
-        self,
-        x: Float[Array, "#batch seq_len input_size"],
-        init_state: Optional[Float[Array, "#batch input_size N"]] = None,
-    ) -> Float[Array, "#batch input_size N"]:
-
-        # Apply the polynomial projections to the input
-        hidden = self.encoder(x, init_state=init_state)
-
-        # Decode the polynomial projections to the output space through applying the coefficients to the basis
-        # if self.s_t == "lti":
-        #     output = self.encoder.reconstruct(c=hidden, evals=x)
-        # else:
-        #     output = self.encoder.reconstruct(c=hidden)
-
-        return hidden  # , output
 
 
 class DLPR_HiPPO:

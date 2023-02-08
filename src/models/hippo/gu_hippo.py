@@ -4,6 +4,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import functorch
+
 from einops import rearrange, reduce, repeat
 from scipy import linalg as la
 from scipy import signal
@@ -42,7 +44,7 @@ class gu_HiPPO_LSI(nn.Module):
         )
         A = np.asarray(matrices.A, dtype=np.float32)
         B = np.asarray(matrices.B, dtype=np.float32)
-
+        # A, B = transition(method, N)
         B = B.squeeze(-1)
         A_stacked = np.empty((max_length, N, N), dtype=A.dtype)
         B_stacked = np.empty((max_length, N), dtype=B.dtype)
@@ -58,6 +60,12 @@ class gu_HiPPO_LSI(nn.Module):
                 )
                 B_stacked[t - 1] = la.solve_triangular(np.eye(N) - At, Bt, lower=True)
             elif discretization == 0.5:  # bilinear
+                # A_stacked[t - 1] = la.solve_triangular(
+                #     np.eye(N) - At / 2, np.eye(N) + At / 2, lower=True
+                # )
+                # B_stacked[t - 1] = la.solve_triangular(
+                #     np.eye(N) - At / 2, Bt, lower=True
+                # )
                 alpha = 0.5
                 A_stacked[t - 1] = np.linalg.lstsq(
                     np.eye(N) - (At * alpha), np.eye(N) + (At * alpha), rcond=None
@@ -73,6 +81,12 @@ class gu_HiPPO_LSI(nn.Module):
                 B_stacked[t - 1] = la.solve_triangular(
                     A, A_stacked[t - 1] @ B - B, lower=True
                 )
+
+                # A_stacked[t - 1] = la.expm(At)
+                # B_stacked[t - 1] = la.inv(A) @ (la.expm(At) - np.eye(A.shape[0])) @ B
+
+        # self.register_buffer('A_stacked', torch.Tensor(A_stacked)) # (max_length, N, N)
+        # self.register_buffer('B_stacked', torch.Tensor(B_stacked)) # (max_length, N)
 
         self.A_stacked = torch.Tensor(A_stacked.copy())  # (max_length, N, N)
         self.B_stacked = torch.Tensor(B_stacked.copy())  # (max_length, N)
@@ -95,6 +109,7 @@ class gu_HiPPO_LSI(nn.Module):
         inputs = inputs.unsqueeze(-1)
         u = torch.transpose(inputs, 0, -2)
         u = u * self.B_stacked[:L]
+        # print(f"Gu - u * self.B_stacked[:L]: {u}")
         u = torch.transpose(u, 0, -2)  # (length, ..., N)
 
         if fast:
@@ -104,13 +119,25 @@ class gu_HiPPO_LSI(nn.Module):
         c = torch.zeros(u.shape[1:]).to(inputs)
         cs = []
         for t, f in enumerate(inputs):
-            c = (F.linear(c, self.A_stacked[t])) + (self.B_stacked[t] * f)
+
+            batched_linear = functorch.vmap(F.linear, in_dims=(0, None))
+            batched_hadamard = functorch.vmap(torch.mul, in_dims=(None, 0))
+
+            part1 = batched_linear(c, self.A_stacked[t])
+            part2 = batched_hadamard(self.B_stacked[t], f)
+
+            c = part1 + part2
+
             cs.append(c)
-        return torch.stack(cs, dim=0)
+        return torch.stack(cs, dim=0), c
 
     def reconstruct(self, c):
-        a = self.eval_matrix.to(c) @ c.unsqueeze(-1)
-        return a
+
+        c = torch.moveaxis(c, 1, 2)
+        batched_matmul = functorch.vmap(torch.matmul, in_dims=(None, 0))
+        y = batched_matmul(self.eval_matrix.to(c), c)
+
+        return y
 
 
 class gu_HiPPO_LTI(nn.Module):
@@ -119,7 +146,7 @@ class gu_HiPPO_LTI(nn.Module):
     def __init__(
         self,
         N,
-        method="legs",
+        method="legt",
         dt=1.0,
         T=1.0,
         discretization=0.5,
@@ -185,13 +212,19 @@ class gu_HiPPO_LTI(nn.Module):
         c = torch.zeros(u.shape[1:]).to(inputs)
         cs = []
         for f in inputs:
-            c = (F.linear(c, self.dA)) + (self.dB * f)
-            cs.append(c)
-        return torch.stack(cs, dim=0)
 
-    def reconstruct(
-        self, c, evals=None
-    ):  # TODO take in a times array for reconstruction
+            batched_linear = functorch.vmap(F.linear, in_dims=(0, None))
+            batched_hadamard = functorch.vmap(torch.mul, in_dims=(None, 0))
+
+            part1 = batched_linear(c, self.dA)
+            part2 = batched_hadamard(self.dB, f)
+
+            c = part1 + part2
+
+            cs.append(c)
+        return torch.stack(cs, dim=0), c
+
+    def reconstruct(self, c, evals=None):
         """
         c: (..., N,) HiPPO coefficients (same as x(t) in S4 notation)
         output: (..., L,)
@@ -203,6 +236,8 @@ class gu_HiPPO_LTI(nn.Module):
 
         m = self.measure[self.measure != 0.0]
 
-        c = c.unsqueeze(-1)
-        y = eval_matrix.to(c) @ c
-        return y.squeeze(-1).flip(-1)
+        c = torch.moveaxis(c, 1, 2)
+        batched_matmul = functorch.vmap(torch.matmul, in_dims=(None, 0))
+        y = batched_matmul(eval_matrix.to(c), c)
+
+        return y

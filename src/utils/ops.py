@@ -1,8 +1,10 @@
 import jax.numpy as jnp
 import jax
+from jax import jit
 
 
 def genlaguerre(n, alpha, x):
+
     assert alpha >= 0, "alpha must be non-negative"
 
     def step(p, i):
@@ -20,3 +22,24 @@ def genlaguerre(n, alpha, x):
     _, Ln = jax.lax.scan(step, L_init, jnp.arange(1, n + 1))
 
     return Ln
+
+
+# def legendre_polynomial(n, x):
+#     if n == 0:
+#         return jnp.ones_like(x)
+#     if n == 1:
+#         return x
+#     return (
+#         (2 * n - 1) * x * legendre_polynomial(n - 1, x)
+#         - (n - 1) * legendre_polynomial(n - 2, x)
+#     ) / n
+
+
+def legendre_polynomial(n, x):
+    p_prev = jnp.ones_like(x, dtype=jnp.float32)
+    p_curr = x.astype(jnp.float32)
+    for i in range(1, n):
+        p_next = ((2 * i + 1) * x * p_curr - i * p_prev) / (i + 1)
+        p_prev = p_curr
+        p_curr = p_next
+    return p_curr
