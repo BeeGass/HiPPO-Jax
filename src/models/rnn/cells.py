@@ -6,7 +6,7 @@ from flax import linen as nn
 from flax.linen.activation import sigmoid, tanh
 from flax.linen.recurrent import GRUCell as r_GRUCell
 
-from src.models.hippo.hippo import HiPPO
+from src.models.hippo.hippo import HiPPOLTI, HiPPOLSI
 from src.models.hippo.transition import TransMatrix
 
 

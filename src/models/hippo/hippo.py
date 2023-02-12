@@ -2,6 +2,7 @@
 import math
 from jaxtyping import Array, Float, Float16, Float32, Float64
 from typing import Callable, List, Optional, Tuple, Any, Union
+import einops
 
 import jax
 import jax.numpy as jnp
@@ -77,10 +78,15 @@ class HiPPOLSI(nn.Module):
         )
 
         vals = jnp.linspace(0.0, 1.0, self.max_length)
+        # self.eval_matrix = (
+        #     (matrices.B)[:, None]
+        #     * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)
+        # ).T
         self.eval_matrix = (
-            (matrices.B)[:, None]
-            * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)
-        ).T
+            (matrices.B)
+            * ss.eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
+        ).T  # (L, N)
+        jax.debug.print("LSI - eval_matrix shape:\n{x}", x=(self.eval_matrix).shape)
 
     def __call__(
         self,
@@ -98,7 +104,6 @@ class HiPPOLSI(nn.Module):
             f=f,
             dtype=self.dtype,
         )
-        c_k = jnp.stack(c_k, axis=0)
 
         return c_k
 
@@ -229,7 +234,7 @@ class HiPPOLSI(nn.Module):
         f: Float[Array, "#batch seq_len input_size"],
         dtype=jnp.float32,
     ) -> Union[
-        List[Float[Array, "#batch input_size N"]], Float[Array, "#batch input_size N"]
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
     ]:
         """
         Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
@@ -272,9 +277,11 @@ class HiPPOLSI(nn.Module):
             c_s.append((c_k.copy()).astype(dtype))
 
         if self.unroll:
-            return c_s  # list of hidden states
+            return einops.rearrange(
+                c_s, "seq_len batch input_size N -> batch seq_len input_size N"
+            )  # list of hidden states
         else:
-            return c_s[-1]  # last hidden state
+            return c_s[-1]
 
     def hippo_op(
         self,
@@ -329,8 +336,24 @@ class HiPPOLSI(nn.Module):
                 The reconstructed input sequence
         """
         eval_matrix = self.eval_matrix
-        c = jnp.moveaxis(c, 1, 2)
-        y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
+        print(f"LSI eval_matrix.shape: {(eval_matrix).shape}")
+        print(f"c.shape: {c.shape}")
+
+        y = None
+        if len(c.shape) == 3:
+            c = einops.rearrange(c, "batch input_size N -> batch N input_size")
+            y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
+        elif len(c.shape) == 4:
+            c = einops.rearrange(
+                c, "batch seq_len input_size N -> batch seq_len N input_size"
+            )
+            time_dot = jax.vmap(jnp.dot, in_axes=(None, 0))
+            batch_time_dot = jax.vmap(time_dot, in_axes=(None, 0))
+            y = batch_time_dot(eval_matrix, c)
+        else:
+            raise ValueError(
+                "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
+            )
 
         return y
 
@@ -518,7 +541,7 @@ class HiPPOLTI(nn.Module):
         f: Float[Array, "#batch seq_len input_size"],
         dtype=jnp.float32,
     ) -> Union[
-        List[Float[Array, "#batch input_size N"]], Float[Array, "#batch input_size N"]
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
     ]:
         """
         Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
@@ -680,8 +703,24 @@ class HiPPOLTI(nn.Module):
         else:
             eval_matrix = self.eval_matrix
 
-        c = jnp.moveaxis(c, 1, 2)
-        y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
+        print(f"LTI eval_matrix.shape: {(eval_matrix).shape}")
+        print(f"c.shape: {c.shape}")
+
+        y = None
+        if len(c.shape) == 3:
+            c = einops.rearrange(c, "batch input_size N -> batch N input_size")
+            y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
+        elif len(c.shape) == 4:
+            c = einops.rearrange(
+                c, "batch seq_len input_size N -> batch seq_len N input_size"
+            )
+            time_dot = jax.vmap(jnp.dot, in_axes=(None, 0))
+            batch_time_dot = jax.vmap(time_dot, in_axes=(None, 0))
+            y = batch_time_dot(eval_matrix, c)
+        else:
+            raise ValueError(
+                "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
+            )
 
         return y
 

@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import functorch
 
-from einops import rearrange, reduce, repeat
+import einops
 from scipy import linalg as la
 from scipy import signal
 from scipy import special as ss
@@ -132,10 +132,26 @@ class gu_HiPPO_LSI(nn.Module):
         return torch.stack(cs, dim=0), c
 
     def reconstruct(self, c):
+        eval_matrix = self.eval_matrix
 
-        c = torch.moveaxis(c, 1, 2)
-        batched_matmul = functorch.vmap(torch.matmul, in_dims=(None, 0))
-        y = batched_matmul(self.eval_matrix.to(c), c)
+        print(f"gu LSI eval_matrix.shape: {(eval_matrix).shape}")
+        print(f"c.shape: {c.shape}")
+
+        y = None
+        if len(c.shape) == 3:
+            c = einops.rearrange(c, "batch input_size N -> batch N input_size")
+            y = functorch.vmap(torch.matmul, in_dims=(None, 0))(eval_matrix.to(c), c)
+        elif len(c.shape) == 4:
+            c = einops.rearrange(
+                c, "seq_len batch input_size N -> batch seq_len N input_size"
+            )
+            time_dot = functorch.vmap(torch.matmul, in_dims=(None, 0))
+            batch_time_dot = functorch.vmap(time_dot, in_dims=(None, 0))
+            y = batch_time_dot(eval_matrix.to(c), c)
+        else:
+            raise ValueError(
+                "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
+            )
 
         return y
 
@@ -206,7 +222,7 @@ class gu_HiPPO_LTI(nn.Module):
         u = inputs * self.dB  # (length, ..., N)
 
         if fast:
-            dA = repeat(self.dA, "m n -> l m n", l=u.size(0))
+            dA = einops.repeat(self.dA, "m n -> l m n", l=u.size(0))
             return variable_unroll_matrix(dA, u)
 
         c = torch.zeros(u.shape[1:]).to(inputs)
@@ -236,8 +252,23 @@ class gu_HiPPO_LTI(nn.Module):
 
         m = self.measure[self.measure != 0.0]
 
-        c = torch.moveaxis(c, 1, 2)
-        batched_matmul = functorch.vmap(torch.matmul, in_dims=(None, 0))
-        y = batched_matmul(eval_matrix.to(c), c)
+        print(f"gu LTI eval_matrix.shape: {(eval_matrix).shape}")
+        print(f"c.shape: {c.shape}")
+
+        y = None
+        if len(c.shape) == 3:
+            c = einops.rearrange(c, "batch input_size N -> batch N input_size")
+            y = functorch.vmap(torch.matmul, in_dims=(None, 0))(eval_matrix.to(c), c)
+        elif len(c.shape) == 4:
+            c = einops.rearrange(
+                c, "seq_len batch input_size N -> batch seq_len N input_size"
+            )
+            time_dot = functorch.vmap(torch.matmul, in_dims=(None, 0))
+            batch_time_dot = functorch.vmap(time_dot, in_dims=(None, 0))
+            y = batch_time_dot(eval_matrix.to(c), c)
+        else:
+            raise ValueError(
+                "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
+            )
 
         return y

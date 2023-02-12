@@ -275,12 +275,8 @@ optional = false
 python-versions = ">=3.6"
 files = [
     {file = "certifi-2022.12.7-py3-none-any.whl", hash = "sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18"},
+    {file = "certifi-2022.12.7.tar.gz", hash = "sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3"},
 ]
-
-[package.source]
-type = "legacy"
-url = "https://download.pytorch.org/whl/nightly/cu118"
-reference = "pytorch"
 
 [[package]]
 name = "cffi"
@@ -657,7 +653,6 @@ files = [
     {file = "debugpy-1.6.6-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9b5d1b13d7c7bf5d7cf700e33c0b8ddb7baf030fcf502f76fc061ddd9405d16c"},
     {file = "debugpy-1.6.6-cp38-cp38-win32.whl", hash = "sha256:70ab53918fd907a3ade01909b3ed783287ede362c80c75f41e79596d5ccacd32"},
     {file = "debugpy-1.6.6-cp38-cp38-win_amd64.whl", hash = "sha256:c05349890804d846eca32ce0623ab66c06f8800db881af7a876dc073ac1c2225"},
-    {file = "debugpy-1.6.6-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:11a0f3a106f69901e4a9a5683ce943a7a5605696024134b522aa1bfda25b5fec"},
     {file = "debugpy-1.6.6-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a771739902b1ae22a120dbbb6bd91b2cae6696c0e318b5007c5348519a4211c6"},
     {file = "debugpy-1.6.6-cp39-cp39-win32.whl", hash = "sha256:549ae0cb2d34fc09d1675f9b01942499751d174381b6082279cf19cdb3c47cbe"},
     {file = "debugpy-1.6.6-cp39-cp39-win_amd64.whl", hash = "sha256:de4a045fbf388e120bb6ec66501458d3134f4729faed26ff95de52a754abddb1"},
@@ -831,16 +826,12 @@ optional = false
 python-versions = ">=3.7"
 files = [
     {file = "filelock-3.9.0-py3-none-any.whl", hash = "sha256:f58d535af89bb9ad5cd4df046f741f8553a418c01a7856bf0d173bbc9f6bd16d"},
+    {file = "filelock-3.9.0.tar.gz", hash = "sha256:7b319f24340b51f55a2bf7a12ac0755a9b03e718311dac567a0f4f7fabd2f5de"},
 ]
 
 [package.extras]
 docs = ["furo (>=2022.12.7)", "sphinx (>=5.3)", "sphinx-autodoc-typehints (>=1.19.5)"]
 testing = ["covdefaults (>=2.2.2)", "coverage (>=7.0.1)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-timeout (>=2.1)"]
-
-[package.source]
-type = "legacy"
-url = "https://download.pytorch.org/whl/nightly/cu118"
-reference = "pytorch"
 
 [[package]]
 name = "flax"
@@ -995,12 +986,8 @@ optional = false
 python-versions = ">=3.5"
 files = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
+    {file = "idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
 ]
-
-[package.source]
-type = "legacy"
-url = "https://download.pytorch.org/whl/nightly/cu118"
-reference = "pytorch"
 
 [[package]]
 name = "importlib-metadata"
@@ -1089,14 +1076,14 @@ test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio"
 
 [[package]]
 name = "ipython"
-version = "8.9.0"
+version = "8.10.0"
 description = "IPython: Productive Interactive Computing"
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "ipython-8.9.0-py3-none-any.whl", hash = "sha256:9c207b0ef2d276d1bfcfeb9a62804336abbe4b170574ea061500952319b1d78c"},
-    {file = "ipython-8.9.0.tar.gz", hash = "sha256:71618e82e6d59487bea059626e7c79fb4a5b760d1510d02fab1160db6fdfa1f7"},
+    {file = "ipython-8.10.0-py3-none-any.whl", hash = "sha256:b38c31e8fc7eff642fc7c597061fff462537cf2314e3225a19c906b7b0d8a345"},
+    {file = "ipython-8.10.0.tar.gz", hash = "sha256:b13a1d6c1f5818bd388db53b7107d17454129a70de2b87481d555daede5eb49e"},
 ]
 
 [package.dependencies]
@@ -1113,7 +1100,7 @@ stack-data = "*"
 traitlets = ">=5"
 
 [package.extras]
-all = ["black", "curio", "docrepr", "ipykernel", "ipyparallel", "ipywidgets", "matplotlib", "matplotlib (!=3.2.0)", "nbconvert", "nbformat", "notebook", "numpy (>=1.20)", "pandas", "pytest (<7)", "pytest (<7.1)", "pytest-asyncio", "qtconsole", "setuptools (>=18.5)", "sphinx (>=1.3)", "sphinx-rtd-theme", "stack-data", "testpath", "trio", "typing-extensions"]
+all = ["black", "curio", "docrepr", "ipykernel", "ipyparallel", "ipywidgets", "matplotlib", "matplotlib (!=3.2.0)", "nbconvert", "nbformat", "notebook", "numpy (>=1.21)", "pandas", "pytest (<7)", "pytest (<7.1)", "pytest-asyncio", "qtconsole", "setuptools (>=18.5)", "sphinx (>=1.3)", "sphinx-rtd-theme", "stack-data", "testpath", "trio", "typing-extensions"]
 black = ["black"]
 doc = ["docrepr", "ipykernel", "matplotlib", "pytest (<7)", "pytest (<7.1)", "pytest-asyncio", "setuptools (>=18.5)", "sphinx (>=1.3)", "sphinx-rtd-theme", "stack-data", "testpath", "typing-extensions"]
 kernel = ["ipykernel"]
@@ -1123,7 +1110,7 @@ notebook = ["ipywidgets", "notebook"]
 parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
 test = ["pytest (<7.1)", "pytest-asyncio", "testpath"]
-test-extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.20)", "pandas", "pytest (<7.1)", "pytest-asyncio", "testpath", "trio"]
+test-extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.21)", "pandas", "pytest (<7.1)", "pytest-asyncio", "testpath", "trio"]
 
 [[package]]
 name = "ipython-genutils"
@@ -1176,13 +1163,13 @@ arrow = ">=0.15.0"
 
 [[package]]
 name = "jax"
-version = "0.4.2"
+version = "0.4.3"
 description = "Differentiate, compile, and transform Numpy code."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jax-0.4.2.tar.gz", hash = "sha256:d561d431f1662a3888eae73818a53c280fba405c13442a32ac8238dc7e5dcca4"},
+    {file = "jax-0.4.3.tar.gz", hash = "sha256:d43f08f940aa30eb339965cfb3d6bee2296537b0dc2f0c65ccae3009279529ae"},
 ]
 
 [package.dependencies]
@@ -1192,26 +1179,26 @@ scipy = ">=1.5"
 
 [package.extras]
 australis = ["protobuf (>=3.13,<4)"]
-ci = ["jaxlib (==0.4.1)"]
-cpu = ["jaxlib (==0.4.2)"]
-cuda = ["jaxlib (==0.4.2+cuda11.cudnn86)"]
-cuda11-cudnn82 = ["jaxlib (==0.4.2+cuda11.cudnn82)"]
-cuda11-cudnn86 = ["jaxlib (==0.4.2+cuda11.cudnn86)"]
-minimum-jaxlib = ["jaxlib (==0.4.1)"]
-tpu = ["jaxlib (==0.4.2)", "libtpu-nightly (==0.1.dev20230124)", "requests"]
+ci = ["jaxlib (==0.4.2)"]
+cpu = ["jaxlib (==0.4.3)"]
+cuda = ["jaxlib (==0.4.3+cuda11.cudnn86)"]
+cuda11-cudnn82 = ["jaxlib (==0.4.3+cuda11.cudnn82)"]
+cuda11-cudnn86 = ["jaxlib (==0.4.3+cuda11.cudnn86)"]
+minimum-jaxlib = ["jaxlib (==0.4.2)"]
+tpu = ["jaxlib (==0.4.3)", "libtpu-nightly (==0.1.dev20230207)", "requests"]
 
 [[package]]
 name = "jaxlib"
-version = "0.4.2+cuda11.cudnn86"
+version = "0.4.3+cuda11.cudnn86"
 description = "XLA library for JAX"
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jaxlib-0.4.2+cuda11.cudnn86-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:c559d43aa86d6c48731f350a16e71340da93f4d8be8084d2bc4fb1aa99f5f05b"},
-    {file = "jaxlib-0.4.2+cuda11.cudnn86-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:d1e8f6f3291b4ee0e6ab3e2a1115ef1332dc676c4d1dbc2d0af22190c89d1bfb"},
-    {file = "jaxlib-0.4.2+cuda11.cudnn86-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:06cbe40667d44ac6cb00aff17059b61269564b920eab5f5ee71da7eb6e7c67d1"},
-    {file = "jaxlib-0.4.2+cuda11.cudnn86-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:fd06c9f95d15dea69b83933a3c6f232fdcbbc274e436a71a37111a26fe15cc5a"},
+    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:9d46ade41393e9b125e75bb3a8ac9574487377095557bfc85ec547ceb61ee213"},
+    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:9d590e219791c314cef5d2a1e2ef251c68102fb4e70788abac9835d9b6b58cf5"},
+    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:cbfde1e410940ff2cf69c6c095b103441d8e7c6c7f3334a1731a2db7a9ab8a74"},
+    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:cbd9edf1a97c57615a8de2b0d101ea7ea558847b040b89164b4bd27168c5f044"},
 ]
 
 [package.dependencies]
@@ -1367,25 +1354,28 @@ test = ["codecov", "coverage", "ipykernel (>=6.14)", "mypy", "paramiko", "pre-co
 
 [[package]]
 name = "jupyter-console"
-version = "6.4.4"
+version = "6.5.0"
 description = "Jupyter terminal console"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "jupyter_console-6.4.4-py3-none-any.whl", hash = "sha256:756df7f4f60c986e7bc0172e4493d3830a7e6e75c08750bbe59c0a5403ad6dee"},
-    {file = "jupyter_console-6.4.4.tar.gz", hash = "sha256:172f5335e31d600df61613a97b7f0352f2c8250bbd1092ef2d658f77249f89fb"},
+    {file = "jupyter_console-6.5.0-py3-none-any.whl", hash = "sha256:87826ab6c8c418731fd78f14ec504df735e79554e35784d0a6379018bb3ef9d7"},
+    {file = "jupyter_console-6.5.0.tar.gz", hash = "sha256:67e68f1da16bc3f6f78ed846dd5543ec0679369f8504734f10bfd206faae39ea"},
 ]
 
 [package.dependencies]
-ipykernel = "*"
+ipykernel = ">=6.14"
 ipython = "*"
 jupyter-client = ">=7.0.0"
-prompt-toolkit = ">=2.0.0,<3.0.0 || >3.0.0,<3.0.1 || >3.0.1,<3.1.0"
+jupyter-core = ">=4.12,<5.0.0 || >=5.1.0"
+prompt-toolkit = ">=3.0.30"
 pygments = "*"
+pyzmq = ">=17"
+traitlets = ">=5.4"
 
 [package.extras]
-test = ["pexpect"]
+test = ["pexpect", "pytest"]
 
 [[package]]
 name = "jupyter-core"
@@ -3335,36 +3325,6 @@ typing-extensions = "*"
 opt-einsum = ["opt-einsum (>=3.3)"]
 
 [[package]]
-name = "torch"
-version = "1.13.1+cu116"
-description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
-category = "dev"
-optional = false
-python-versions = ">=3.7.0"
-files = [
-    {file = "torch-1.13.1+cu116-cp310-cp310-linux_x86_64.whl", hash = "sha256:51d5870cdf05b6208b1c739fe0ba511b977eca37f9507829675596acc11b6ca4"},
-    {file = "torch-1.13.1+cu116-cp310-cp310-win_amd64.whl", hash = "sha256:6d59b73bbd83eee53e7978925168fe068709e1344050fdabf4043695084b2ccc"},
-    {file = "torch-1.13.1+cu116-cp311-cp311-linux_x86_64.whl", hash = "sha256:8cbfbb27f44fcc246d298f3812f3f7963622b4c1f2823670ae549416199f5ef7"},
-    {file = "torch-1.13.1+cu116-cp37-cp37m-linux_x86_64.whl", hash = "sha256:20d7c6e00804b6bea6f69b77240c4fcdf244cce2f6b1ff73beff7c0df6553d9d"},
-    {file = "torch-1.13.1+cu116-cp37-cp37m-win_amd64.whl", hash = "sha256:c2493a30d0c5ff426fad3d60d9d535c24678b45cc4ce1cffca0f1044d408cb96"},
-    {file = "torch-1.13.1+cu116-cp38-cp38-linux_x86_64.whl", hash = "sha256:9338faa0a5a0eb625e17e39729f06fb0a574098d7ab88d856bbda4cb76a0b665"},
-    {file = "torch-1.13.1+cu116-cp38-cp38-win_amd64.whl", hash = "sha256:1c33942d411d4dee25e56755cfd09538f53a497a6f0453d54ce96a5ca341627b"},
-    {file = "torch-1.13.1+cu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:db457a822d736013b6ffe509053001bc918bdd78fe68967b605f53984a9afac5"},
-    {file = "torch-1.13.1+cu116-cp39-cp39-win_amd64.whl", hash = "sha256:80a6b55915ac72c087ab85122289431fde5c5a4c85ca83a38c6d11a7ecbfdb35"},
-]
-
-[package.dependencies]
-typing-extensions = "*"
-
-[package.extras]
-opt-einsum = ["opt-einsum (>=3.3)"]
-
-[package.source]
-type = "legacy"
-url = "https://download.pytorch.org/whl/nightly/cu118"
-reference = "pytorch"
-
-[[package]]
 name = "torchvision"
 version = "0.14.1"
 description = "image and video datasets and models for torch deep learning"
@@ -3465,12 +3425,8 @@ optional = false
 python-versions = ">=3.7"
 files = [
     {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
+    {file = "typing_extensions-4.4.0.tar.gz", hash = "sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa"},
 ]
-
-[package.source]
-type = "legacy"
-url = "https://download.pytorch.org/whl/nightly/cu118"
-reference = "pytorch"
 
 [[package]]
 name = "uri-template"
@@ -3648,14 +3604,14 @@ files = [
 
 [[package]]
 name = "zipp"
-version = "3.12.1"
+version = "3.13.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "zipp-3.12.1-py3-none-any.whl", hash = "sha256:6c4fe274b8f85ec73c37a8e4e3fa00df9fb9335da96fb789e3b96b318e5097b3"},
-    {file = "zipp-3.12.1.tar.gz", hash = "sha256:a3cac813d40993596b39ea9e93a18e8a2076d5c378b8bc88ec32ab264e04ad02"},
+    {file = "zipp-3.13.0-py3-none-any.whl", hash = "sha256:e8b2a36ea17df80ffe9e2c4fda3f693c3dad6df1697d3cd3af232db680950b0b"},
+    {file = "zipp-3.13.0.tar.gz", hash = "sha256:23f70e964bc11a34cef175bc90ba2914e1e4545ea1e3e2f67c079671883f9cb6"},
 ]
 
 [package.extras]
@@ -3665,4 +3621,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.0,<=3.8.13"
-content-hash = "bb20a58c03a88b42dda76f573a4ceb0d9fbf9a58bf5563a4449c52b55b38ca4c"
+content-hash = "a5b6615d4536f4681e13b0fe674163a5a8aa7a1b96525bf960ae102789d71200"

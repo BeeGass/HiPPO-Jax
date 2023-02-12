@@ -74,12 +74,13 @@ optional = true
 
 [tool.poetry.group.torch.dependencies]
 # ~~~~~ PyTorch dependencies ~~~~~
+
 torch = [
-    {platform = "linux", version = "^1.12.0+cu118", source = "pytorch"},
+    {platform = "linux", version = "^1.13.1", source = "pypi"},
     {platform = "darwin", version = "^1.13.1", source = "pypi"}
 ]
 torchvision = [
-    {platform = "linux", version = "^0.14.0+cu118"},
+    {platform = "linux", version = "^0.14.1", source = "pypi"},
     {platform = "darwin", version = "^0.14.1", source = "pypi"}
     ]
 #torchaudio = [
@@ -96,13 +97,12 @@ optional = true
 [tool.poetry.group.jax.dependencies]
 # ~~~~~ Jax dependencies ~~~~~
 jax = [
-    {version = "^0.4.1+cuda11.cudnn82", platform = "linux"}
+    {version = "^0.4.1+cuda11.cudnn86", platform = "linux"}
 ]
 
 #jaxlib = [
-#    {version = "0.4.1", platform = "darwin", source="pypi"},
-#    #{extras = ["cuda"], version = "^0.4.1", platform = "linux"},
-#    {version = "^0.4.1+cuda11.cudnn82", platform = "linux"}
+#    {version = "^0.4.1", platform = "darwin", source="pypi"},
+#    {version = "^0.4.1+cuda11.cudnn86", platform = "linux"}
 #]
 
 flax = [
@@ -158,11 +158,11 @@ pytest = [
     {version = "^7.1.3", platform = "darwin"},
     ]
 
-[[tool.poetry.source]]
-name = "pytorch"
-url = "https://download.pytorch.org/whl/nightly/cu118"
-default = false
-secondary = true
+#[[tool.poetry.source]]
+#name = "pytorch"
+#url = "https://download.pytorch.org/whl/nightly/cu118"
+#default = false
+#secondary = true
 
 
 [[tool.poetry.source]]
