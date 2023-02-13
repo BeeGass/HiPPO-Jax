@@ -1,13 +1,13 @@
 ## import packages
 import math
-from jaxtyping import Array, Float, Float16, Float32, Float64
-from typing import Callable, List, Optional, Tuple, Any, Union
-import einops
+from typing import Any, Callable, List, Optional, Tuple, Union
 
+import einops
 import jax
 import jax.numpy as jnp
 from flax import linen as nn
 from jax.numpy.linalg import inv
+from jaxtyping import Array, Float, Float16, Float32, Float64
 from scipy import special as ss
 
 from src.models.hippo.transition import TransMatrix
