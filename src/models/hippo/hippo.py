@@ -87,10 +87,13 @@ class HiPPOLSI(nn.Module):
         #     * ss.eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
         # ).T  # (L, N)
         self.eval_matrix = (
-            (matrices.B)
-            * ss.eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
-        ).T
-        jax.debug.print("LSI - eval_matrix shape:\n{x}", x=(self.eval_matrix).shape)
+            (
+                (matrices.B)
+                * ss.eval_legendre(
+                    jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1
+                )
+            ).T
+        ).astype(self.dtype)
 
     def __call__(
         self,
@@ -155,7 +158,7 @@ class HiPPOLSI(nn.Module):
         B: Float[Array, "N input_size"],
         step: float,
         alpha: Union[float, str] = 0.5,
-        dtype=jnp.float32,
+        dtype: Any = jnp.float32,
     ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
         """
         Function used for discretizing the HiPPO A and B matrices
@@ -238,7 +241,7 @@ class HiPPOLSI(nn.Module):
         B: List[Float[Array, "N input_size"]],
         c_0: Float[Array, "#batch input_size N"],
         f: Float[Array, "#batch seq_len input_size"],
-        dtype=jnp.float32,
+        dtype: Any = jnp.float32,
     ) -> Union[
         Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
     ]:
@@ -283,11 +286,15 @@ class HiPPOLSI(nn.Module):
             c_s.append((c_k.copy()).astype(dtype))
 
         if self.unroll:
-            return einops.rearrange(
-                c_s, "seq_len batch input_size N -> batch seq_len input_size N"
+            return (
+                einops.rearrange(
+                    c_s, "seq_len batch input_size N -> batch seq_len input_size N"
+                )
+            ).astype(
+                dtype
             )  # list of hidden states
         else:
-            return c_s[-1]
+            return (c_s[-1]).astype(dtype)
 
     def hippo_op(
         self,
@@ -342,8 +349,6 @@ class HiPPOLSI(nn.Module):
                 The reconstructed input sequence
         """
         eval_matrix = self.eval_matrix
-        print(f"LSI eval_matrix.shape: {(eval_matrix).shape}")
-        print(f"c.shape: {c.shape}")
 
         y = None
         if len(c.shape) == 3:
@@ -436,7 +441,12 @@ class HiPPOLTI(nn.Module):
 
         self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
         self.eval_matrix = self.basis(
-            B=self.B, method=self.measure, N=self.N, vals=self.vals, c=0.0
+            B=self.B,
+            method=self.measure,
+            N=self.N,
+            vals=self.vals,
+            c=0.0,
+            dtype=self.dtype,
         )  # (T/dt, N)
 
     def __call__(
@@ -466,7 +476,7 @@ class HiPPOLTI(nn.Module):
         B: Float[Array, "N input_size"],
         step: float,
         alpha: Union[float, str] = 0.5,
-        dtype=jnp.float32,
+        dtype: Any = jnp.float32,
     ) -> Tuple[Float[Array, "N N"], Float[Array, "N input_size"]]:
         """
         Function used for discretizing the HiPPO A and B matrices
@@ -547,7 +557,7 @@ class HiPPOLTI(nn.Module):
         Bd: Float[Array, "N input_size"],
         c_0: Float[Array, "#batch input_size N"],
         f: Float[Array, "#batch seq_len input_size"],
-        dtype=jnp.float32,
+        dtype: Any = jnp.float32,
     ) -> Union[
         Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
     ]:
@@ -618,9 +628,9 @@ class HiPPOLTI(nn.Module):
         c_k, c_s = jax.vmap(jax.lax.scan, in_axes=(None, 0, 0))(hippo_op, c_0, f)
 
         if self.unroll:
-            return c_s
+            return c_s.astype(dtype)
         else:
-            return c_k
+            return c_k.astype(dtype)
 
     def measure_fn(self, method: str, c: float = 0.0) -> Callable:
 
@@ -647,6 +657,7 @@ class HiPPOLTI(nn.Module):
         vals: Float[Array, "1"],
         c: float = 0.0,
         truncate_measure: bool = True,
+        dtype: Any = jnp.float32,
     ) -> Float[Array, "seq_len N"]:
         """
         vals: list of times (forward in time)
@@ -698,7 +709,7 @@ class HiPPOLTI(nn.Module):
 
         p = eval_matrix * jnp.exp(-c * vals)[:, None]  # [::-1, None]
 
-        return p
+        return p.astype(dtype)
 
     def reconstruct(
         self, c: Float[Array, "#batch input_size N"], evals=None
@@ -725,9 +736,6 @@ class HiPPOLTI(nn.Module):
             )
         else:
             eval_matrix = self.eval_matrix
-
-        print(f"LTI eval_matrix.shape: {(eval_matrix).shape}")
-        print(f"c.shape: {c.shape}")
 
         y = None
         if len(c.shape) == 3:

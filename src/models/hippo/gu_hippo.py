@@ -108,7 +108,6 @@ class gu_HiPPO_LSI(nn.Module):
         inputs = inputs.unsqueeze(-1)
         u = torch.transpose(inputs, 0, -2)
         u = u * self.B_stacked[:L]
-        # print(f"Gu - u * self.B_stacked[:L]: {u}")
         u = torch.transpose(u, 0, -2)  # (length, ..., N)
 
         if fast:
@@ -132,9 +131,6 @@ class gu_HiPPO_LSI(nn.Module):
 
     def reconstruct(self, c):
         eval_matrix = self.eval_matrix
-
-        print(f"gu LSI eval_matrix.shape: {(eval_matrix).shape}")
-        print(f"c.shape: {c.shape}")
 
         y = None
         if len(c.shape) == 3:
@@ -250,9 +246,6 @@ class gu_HiPPO_LTI(nn.Module):
             eval_matrix = self.eval_matrix
 
         m = self.measure[self.measure != 0.0]
-
-        print(f"gu LTI eval_matrix.shape: {(eval_matrix).shape}")
-        print(f"c.shape: {c.shape}")
 
         y = None
         if len(c.shape) == 3:
