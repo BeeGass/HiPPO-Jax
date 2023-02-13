@@ -92,7 +92,9 @@ class HiPPOLSI(nn.Module):
         self,
         f: Float[Array, "#batch seq_len input_size"],
         init_state: Optional[Float[Array, "#batch input_size N"]] = None,
-    ) -> Float[Array, "#batch input_size N"]:
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ]:
 
         if init_state is None:
             init_state = jnp.zeros((f.shape[0], 1, self.N))
@@ -108,8 +110,8 @@ class HiPPOLSI(nn.Module):
         return c_k
 
     def temporal_GBT(
-        self, A: Float[Array, "N N"], B: Float[Array, "N 1"], dtype=jnp.float32
-    ) -> Tuple[List[Float[Array, "N N"]], List[Float[Array, "N 1"]]]:
+        self, A: Float[Array, "N N"], B: Float[Array, "N input_size"], dtype=jnp.float32
+    ) -> Tuple[List[Float[Array, "N N"]], List[Float[Array, "N input_size"]]]:
         """
         Creates the list of discretized GBT matrices for the given step size
 
@@ -146,7 +148,7 @@ class HiPPOLSI(nn.Module):
     def discretize(
         self,
         A: Float[Array, "N N"],
-        B: Float[Array, "N 1"],
+        B: Float[Array, "N input_size"],
         step: float,
         alpha: Union[float, str] = 0.5,
         dtype=jnp.float32,
@@ -228,8 +230,8 @@ class HiPPOLSI(nn.Module):
 
     def recurrence(
         self,
-        A: Float[Array, "N N"],
-        B: Float[Array, "N 1"],
+        A: List[Float[Array, "N N"]],
+        B: List[Float[Array, "N input_size"]],
         c_0: Float[Array, "#batch input_size N"],
         f: Float[Array, "#batch seq_len input_size"],
         dtype=jnp.float32,
@@ -286,7 +288,7 @@ class HiPPOLSI(nn.Module):
     def hippo_op(
         self,
         Ad: Float[Array, "N N"],
-        Bd: Float[Array, "N 1"],
+        Bd: Float[Array, "N input_size"],
         c_k_i: Float[Array, "#batch input_size N"],
         f_k: Float[Array, "#batch seq_len input_size"],
     ) -> Float[Array, "#batch input_size N"]:
@@ -408,7 +410,7 @@ class HiPPOLTI(nn.Module):
     dtype: Any = jnp.float32
     unroll: bool = False
 
-    def setup(self):
+    def setup(self) -> None:
         matrices = TransMatrix(
             N=self.N,
             measure=self.measure,
@@ -437,7 +439,9 @@ class HiPPOLTI(nn.Module):
         self,
         f: Float[Array, "#batch seq_len input_size"],
         init_state: Optional[Float[Array, "#batch input_size N"]] = None,
-    ) -> Float[Array, "#batch input_size N"]:
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ]:
 
         if init_state is None:
             init_state = jnp.zeros((f.shape[0], 1, self.N))
@@ -455,11 +459,11 @@ class HiPPOLTI(nn.Module):
     def discretize(
         self,
         A: Float[Array, "N N"],
-        B: Float[Array, "N 1"],
+        B: Float[Array, "N input_size"],
         step: float,
         alpha: Union[float, str] = 0.5,
         dtype=jnp.float32,
-    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N input_size"]]:
         """
         Function used for discretizing the HiPPO A and B matrices
 
@@ -536,7 +540,7 @@ class HiPPOLTI(nn.Module):
     def recurrence(
         self,
         Ad: Float[Array, "N N"],
-        Bd: Float[Array, "N 1"],
+        Bd: Float[Array, "N input_size"],
         c_0: Float[Array, "#batch input_size N"],
         f: Float[Array, "#batch seq_len input_size"],
         dtype=jnp.float32,
@@ -578,7 +582,7 @@ class HiPPOLTI(nn.Module):
             c_k_i: Float[Array, "#batch input_size N"],
             f_k: Float[Array, "#batch seq_len input_size"],
         ) -> Tuple[
-            List[Float[Array, "#batch input_size N"]],
+            Float[Array, "#batch seq_len input_size N"],
             Float[Array, "#batch input_size N"],
         ]:
             """
@@ -614,7 +618,7 @@ class HiPPOLTI(nn.Module):
         else:
             return c_k
 
-    def measure_fn(self, method, c=0.0):
+    def measure_fn(self, method: str, c: float = 0.0) -> Callable:
 
         if method == "legs":
             fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
@@ -633,13 +637,13 @@ class HiPPOLTI(nn.Module):
 
     def basis(
         self,
-        B: Float[Array, "N 1"],
+        B: Float[Array, "N input_size"],
         method: str,
         N: int,
         vals: Float[Array, "1"],
         c: float = 0.0,
         truncate_measure: bool = True,
-    ):
+    ) -> Float[Array, "seq_len N"]:
         """
         vals: list of times (forward in time)
         returns: shape (T, N) where T is length of vals
