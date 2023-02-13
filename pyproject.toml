@@ -96,7 +96,7 @@ optional = true
 
 [tool.poetry.group.jax.dependencies]
 # ~~~~~ Jax dependencies ~~~~~
-jaxlib = [
+jax = [
     {version = "^0.4.3", platform = "darwin", source="pypi"},
     {version = "^0.4.1+cuda11.cudnn86", platform = "linux"}
 ]
@@ -166,11 +166,11 @@ pytest = [
 #secondary = true
 
 
-#[[tool.poetry.source]]
-#name = "jax"
-#url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
-#default = false
-#secondary = false
+[[tool.poetry.source]]
+name = "jax"
+url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
+default = false
+secondary = false
 
 [build-system]
 requires = ["poetry-core"]

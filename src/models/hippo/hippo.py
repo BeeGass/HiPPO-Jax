@@ -82,10 +82,14 @@ class HiPPOLSI(nn.Module):
         #     (matrices.B)[:, None]
         #     * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)
         # ).T
+        # self.eval_matrix = (
+        #     (matrices.B)
+        #     * ss.eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
+        # ).T  # (L, N)
         self.eval_matrix = (
             (matrices.B)
             * ss.eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
-        ).T  # (L, N)
+        ).T
         jax.debug.print("LSI - eval_matrix shape:\n{x}", x=(self.eval_matrix).shape)
 
     def __call__(
@@ -651,15 +655,30 @@ class HiPPOLTI(nn.Module):
 
         if method == "legs":
             _vals = jnp.exp(-vals)
+            base = (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(
+                N
+            )  # unscaled, untranslated legendre polynomial matrix
+            base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                B * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
+                base
+                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
             ).T  # (L, N)
 
         elif method in ["legt", "lmu"]:
-            eval_matrix = (B * ss.eval_legendre(jnp.arange(N)[:, None], 2 * vals - 1)).T
+            base = (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(
+                N
+            )  # unscaled, untranslated legendre polynomial matrix
+            base = einops.rearrange(base, "N -> N 1")
+            eval_matrix = (
+                base
+                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
+            ).T
         elif method == "lagt":
-            vals = vals[::-1]
-            eval_matrix = (B * ss.eval_genlaguerre(jnp.arange(N)[:, None], 0, vals)).T
+            _vals = vals[::-1]
+            eval_matrix = ss.eval_genlaguerre(
+                jnp.expand_dims(jnp.arange(N), -1), 0, _vals
+            )
+            eval_matrix = (eval_matrix * jnp.exp(-_vals / 2)).T
         elif method in ["fourier", "fru", "fout", "foud"]:
             cos = 2**0.5 * jnp.cos(
                 2 * jnp.pi * jnp.arange(N // 2)[:, None] * (vals)
