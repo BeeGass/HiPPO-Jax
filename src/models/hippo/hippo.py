@@ -78,14 +78,6 @@ class HiPPOLSI(nn.Module):
         )
 
         vals = jnp.linspace(0.0, 1.0, self.max_length)
-        # self.eval_matrix = (
-        #     (matrices.B)[:, None]
-        #     * ss.eval_legendre(jnp.arange(self.N)[:, None], 2 * vals - 1)
-        # ).T
-        # self.eval_matrix = (
-        #     (matrices.B)
-        #     * ss.eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
-        # ).T  # (L, N)
         self.eval_matrix = (
             (
                 (matrices.B)
