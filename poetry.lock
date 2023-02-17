@@ -931,14 +931,14 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "gitpython"
-version = "3.1.30"
-description = "GitPython is a python library used to interact with Git repositories"
+version = "3.1.31"
+description = "GitPython is a Python library used to interact with Git repositories"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "GitPython-3.1.30-py3-none-any.whl", hash = "sha256:cd455b0000615c60e286208ba540271af9fe531fa6a87cc590a7298785ab2882"},
-    {file = "GitPython-3.1.30.tar.gz", hash = "sha256:769c2d83e13f5d938b7688479da374c4e3d49f71549aaf462b646db9602ea6f8"},
+    {file = "GitPython-3.1.31-py3-none-any.whl", hash = "sha256:f04893614f6aa713a60cbbe1e6a97403ef633103cdd0ef5eb6efe0deb98dbe8d"},
+    {file = "GitPython-3.1.31.tar.gz", hash = "sha256:8ce3bcf69adfdf7c7d503e78fd3b1c492af782d58893b650adb2ac8912ddd573"},
 ]
 
 [package.dependencies]
@@ -1163,13 +1163,13 @@ arrow = ">=0.15.0"
 
 [[package]]
 name = "jax"
-version = "0.4.3"
+version = "0.4.4"
 description = "Differentiate, compile, and transform Numpy code."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jax-0.4.3.tar.gz", hash = "sha256:d43f08f940aa30eb339965cfb3d6bee2296537b0dc2f0c65ccae3009279529ae"},
+    {file = "jax-0.4.4.tar.gz", hash = "sha256:39b07e07343ed7c74492ee5e75db77456d3afdd038a322671f09fc748f6392cb"},
 ]
 
 [package.dependencies]
@@ -1179,26 +1179,26 @@ scipy = ">=1.5"
 
 [package.extras]
 australis = ["protobuf (>=3.13,<4)"]
-ci = ["jaxlib (==0.4.2)"]
-cpu = ["jaxlib (==0.4.3)"]
-cuda = ["jaxlib (==0.4.3+cuda11.cudnn86)"]
-cuda11-cudnn82 = ["jaxlib (==0.4.3+cuda11.cudnn82)"]
-cuda11-cudnn86 = ["jaxlib (==0.4.3+cuda11.cudnn86)"]
+ci = ["jaxlib (==0.4.3)"]
+cpu = ["jaxlib (==0.4.4)"]
+cuda = ["jaxlib (==0.4.4+cuda11.cudnn86)"]
+cuda11-cudnn82 = ["jaxlib (==0.4.4+cuda11.cudnn82)"]
+cuda11-cudnn86 = ["jaxlib (==0.4.4+cuda11.cudnn86)"]
 minimum-jaxlib = ["jaxlib (==0.4.2)"]
-tpu = ["jaxlib (==0.4.3)", "libtpu-nightly (==0.1.dev20230207)", "requests"]
+tpu = ["jaxlib (==0.4.4)", "libtpu-nightly (==0.1.dev20230216)", "requests"]
 
 [[package]]
 name = "jaxlib"
-version = "0.4.3+cuda11.cudnn86"
+version = "0.4.4+cuda11.cudnn86"
 description = "XLA library for JAX"
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:9d46ade41393e9b125e75bb3a8ac9574487377095557bfc85ec547ceb61ee213"},
-    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:9d590e219791c314cef5d2a1e2ef251c68102fb4e70788abac9835d9b6b58cf5"},
-    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:cbfde1e410940ff2cf69c6c095b103441d8e7c6c7f3334a1731a2db7a9ab8a74"},
-    {file = "jaxlib-0.4.3+cuda11.cudnn86-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:cbd9edf1a97c57615a8de2b0d101ea7ea558847b040b89164b4bd27168c5f044"},
+    {file = "jaxlib-0.4.4+cuda11.cudnn86-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:2248ce9c99bdc58a7ca634047bc90bddff227a58224f0a9f7fddc736f9dcec52"},
+    {file = "jaxlib-0.4.4+cuda11.cudnn86-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:2801b02db6d801b1c1abaebb9d5dbc10d483b6834dbf3270f126efdbc5e834fd"},
+    {file = "jaxlib-0.4.4+cuda11.cudnn86-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:b2294328da65de22ba4228f735b387151e4d4bfb840214a37eec5a203a9ce5c1"},
+    {file = "jaxlib-0.4.4+cuda11.cudnn86-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:7cc659c7fe8110917715ae0458d3f7939080d21ac94e696ac5d5015a65cfb7be"},
 ]
 
 [package.dependencies]
@@ -1212,14 +1212,14 @@ reference = "jax"
 
 [[package]]
 name = "jaxtyping"
-version = "0.2.11"
+version = "0.2.12"
 description = "Type annotations and runtime checking for shape and dtype of JAX arrays, and PyTrees."
 category = "main"
 optional = false
 python-versions = "~=3.7"
 files = [
-    {file = "jaxtyping-0.2.11-py3-none-any.whl", hash = "sha256:1f418bdf243d96ce6ed285767a2cc6730878f02410e9ab3741d06a659bcbd7e0"},
-    {file = "jaxtyping-0.2.11.tar.gz", hash = "sha256:effef88191b4a0b0d0a7b921f2d315290e77a86f3b2f6d1353dea810ba6c76bd"},
+    {file = "jaxtyping-0.2.12-py3-none-any.whl", hash = "sha256:ae17bb386d3f0b7af8306d910bec85be793bdad427e28b4ea7a23d409488fb70"},
+    {file = "jaxtyping-0.2.12.tar.gz", hash = "sha256:7d3bca2bdbcb2f74d2f54d18d1957a2836a11dff09e44c2c023da254ddaf20e8"},
 ]
 
 [package.dependencies]
@@ -1330,14 +1330,14 @@ qtconsole = "*"
 
 [[package]]
 name = "jupyter-client"
-version = "8.0.2"
+version = "8.0.3"
 description = "Jupyter protocol implementation and client libraries"
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_client-8.0.2-py3-none-any.whl", hash = "sha256:c53731eb590b68839b0ce04bf46ff8c4f03278f5d9fe5c3b0f268a57cc2bd97e"},
-    {file = "jupyter_client-8.0.2.tar.gz", hash = "sha256:47ac9f586dbcff4d79387ec264faf0fdeb5f14845fa7345fd7d1e378f8096011"},
+    {file = "jupyter_client-8.0.3-py3-none-any.whl", hash = "sha256:be48ac6bd659cbbddb7a674cf06b3b8afbf53f228253cf58bde604c03bd487b0"},
+    {file = "jupyter_client-8.0.3.tar.gz", hash = "sha256:ed65498bea6d876ef9d8da3e0db3dd33c5d129f5b2645f56ae03993782966bd0"},
 ]
 
 [package.dependencies]
@@ -1424,14 +1424,14 @@ test = ["click", "coverage", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (>=
 
 [[package]]
 name = "jupyter-server"
-version = "2.2.1"
+version = "2.3.0"
 description = "The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_server-2.2.1-py3-none-any.whl", hash = "sha256:854fb7d49f6b7f545d4f8354172b004dcda887ba0699def7112daf785ba3c9ce"},
-    {file = "jupyter_server-2.2.1.tar.gz", hash = "sha256:5afb8a0cdfee37d02d69bdf470ae9cbb1dee5d4788f9bc6cc8e54bd8c83fb096"},
+    {file = "jupyter_server-2.3.0-py3-none-any.whl", hash = "sha256:b15078954120886d580e19d1746e2b62a3dc7bd082cb4716115c25fcd7061b00"},
+    {file = "jupyter_server-2.3.0.tar.gz", hash = "sha256:29d6657bfb160b0e39b9030d67f33f918a188f2eba28065314a933b327fef872"},
 ]
 
 [package.dependencies]
@@ -2438,26 +2438,25 @@ wcwidth = "*"
 
 [[package]]
 name = "protobuf"
-version = "4.21.12"
+version = "4.22.0"
 description = ""
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "protobuf-4.21.12-cp310-abi3-win32.whl", hash = "sha256:b135410244ebe777db80298297a97fbb4c862c881b4403b71bac9d4107d61fd1"},
-    {file = "protobuf-4.21.12-cp310-abi3-win_amd64.whl", hash = "sha256:89f9149e4a0169cddfc44c74f230d7743002e3aa0b9472d8c28f0388102fc4c2"},
-    {file = "protobuf-4.21.12-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:299ea899484ee6f44604deb71f424234f654606b983cb496ea2a53e3c63ab791"},
-    {file = "protobuf-4.21.12-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:d1736130bce8cf131ac7957fa26880ca19227d4ad68b4888b3be0dea1f95df97"},
-    {file = "protobuf-4.21.12-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:78a28c9fa223998472886c77042e9b9afb6fe4242bd2a2a5aced88e3f4422aa7"},
-    {file = "protobuf-4.21.12-cp37-cp37m-win32.whl", hash = "sha256:3d164928ff0727d97022957c2b849250ca0e64777ee31efd7d6de2e07c494717"},
-    {file = "protobuf-4.21.12-cp37-cp37m-win_amd64.whl", hash = "sha256:f45460f9ee70a0ec1b6694c6e4e348ad2019275680bd68a1d9314b8c7e01e574"},
-    {file = "protobuf-4.21.12-cp38-cp38-win32.whl", hash = "sha256:6ab80df09e3208f742c98443b6166bcb70d65f52cfeb67357d52032ea1ae9bec"},
-    {file = "protobuf-4.21.12-cp38-cp38-win_amd64.whl", hash = "sha256:1f22ac0ca65bb70a876060d96d914dae09ac98d114294f77584b0d2644fa9c30"},
-    {file = "protobuf-4.21.12-cp39-cp39-win32.whl", hash = "sha256:27f4d15021da6d2b706ddc3860fac0a5ddaba34ab679dc182b60a8bb4e1121cc"},
-    {file = "protobuf-4.21.12-cp39-cp39-win_amd64.whl", hash = "sha256:237216c3326d46808a9f7c26fd1bd4b20015fb6867dc5d263a493ef9a539293b"},
-    {file = "protobuf-4.21.12-py2.py3-none-any.whl", hash = "sha256:a53fd3f03e578553623272dc46ac2f189de23862e68565e83dde203d41b76fc5"},
-    {file = "protobuf-4.21.12-py3-none-any.whl", hash = "sha256:b98d0148f84e3a3c569e19f52103ca1feacdac0d2df8d6533cf983d1fda28462"},
-    {file = "protobuf-4.21.12.tar.gz", hash = "sha256:7cd532c4566d0e6feafecc1059d04c7915aec8e182d1cf7adee8b24ef1e2e6ab"},
+    {file = "protobuf-4.22.0-cp310-abi3-win32.whl", hash = "sha256:b2fea9dc8e3c0f32c38124790ef16cba2ee0628fe2022a52e435e1117bfef9b1"},
+    {file = "protobuf-4.22.0-cp310-abi3-win_amd64.whl", hash = "sha256:a33a273d21852f911b8bda47f39f4383fe7c061eb1814db2c76c9875c89c2491"},
+    {file = "protobuf-4.22.0-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:e894e9ae603e963f0842498c4cd5d39c6a60f0d7e4c103df50ee939564298658"},
+    {file = "protobuf-4.22.0-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:7c535d126e7dcc714105ab20b418c4fedbd28f8b8afc42b7350b1e317bbbcc71"},
+    {file = "protobuf-4.22.0-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:86c3d20428b007537ba6792b475c0853bba7f66b1f60e610d913b77d94b486e4"},
+    {file = "protobuf-4.22.0-cp37-cp37m-win32.whl", hash = "sha256:1669cb7524221a8e2d9008d0842453dbefdd0fcdd64d67672f657244867635fb"},
+    {file = "protobuf-4.22.0-cp37-cp37m-win_amd64.whl", hash = "sha256:ab4d043865dd04e6b09386981fe8f80b39a1e46139fb4a3c206229d6b9f36ff6"},
+    {file = "protobuf-4.22.0-cp38-cp38-win32.whl", hash = "sha256:29288813aacaa302afa2381db1d6e0482165737b0afdf2811df5fa99185c457b"},
+    {file = "protobuf-4.22.0-cp38-cp38-win_amd64.whl", hash = "sha256:e474b63bab0a2ea32a7b26a4d8eec59e33e709321e5e16fb66e766b61b82a95e"},
+    {file = "protobuf-4.22.0-cp39-cp39-win32.whl", hash = "sha256:47d31bdf58222dd296976aa1646c68c6ee80b96d22e0a3c336c9174e253fd35e"},
+    {file = "protobuf-4.22.0-cp39-cp39-win_amd64.whl", hash = "sha256:c27f371f0159feb70e6ea52ed7e768b3f3a4c5676c1900a7e51a24740381650e"},
+    {file = "protobuf-4.22.0-py3-none-any.whl", hash = "sha256:c3325803095fb4c2a48649c321d2fbde59f8fbfcb9bfc7a86df27d112831c571"},
+    {file = "protobuf-4.22.0.tar.gz", hash = "sha256:652d8dfece122a24d98eebfef30e31e455d300efa41999d1182e015984ac5930"},
 ]
 
 [[package]]
@@ -3095,14 +3094,14 @@ test = ["pytest"]
 
 [[package]]
 name = "setuptools"
-version = "67.3.1"
+version = "67.3.2"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.3.1-py3-none-any.whl", hash = "sha256:23c86b4e44432bfd8899384afc08872ec166a24f48a3f99f293b0a557e6a6b5d"},
-    {file = "setuptools-67.3.1.tar.gz", hash = "sha256:daec07fd848d80676694d6bf69c009d28910aeece68a38dbe88b7e1bb6dba12e"},
+    {file = "setuptools-67.3.2-py3-none-any.whl", hash = "sha256:bb6d8e508de562768f2027902929f8523932fcd1fb784e6d573d2cafac995a48"},
+    {file = "setuptools-67.3.2.tar.gz", hash = "sha256:95f00380ef2ffa41d9bba85d95b27689d923c93dfbafed4aecd7cf988a25e012"},
 ]
 
 [package.extras]

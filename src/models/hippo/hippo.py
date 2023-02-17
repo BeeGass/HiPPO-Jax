@@ -9,6 +9,7 @@ from flax import linen as nn
 from jax.numpy.linalg import inv
 from jaxtyping import Array, Float, Float16, Float32, Float64
 from scipy import special as ss
+from scipy import signal
 
 from src.models.hippo.transition import TransMatrix
 
@@ -187,9 +188,7 @@ class HiPPOLSI(nn.Module):
                 discretized B matrix based on the given step size and alpha value
         """
         if alpha <= 1:
-            assert (
-                alpha == 0.0 or alpha == 0.5 or alpha == 1.0
-            ), "alpha must be 0, 0.5, or 1"
+            assert alpha in [0, 0.5, 1], "alpha must be 0, 0.5, or 1"
         else:
             assert (
                 alpha > 1 or type(alpha) == str
@@ -219,7 +218,8 @@ class HiPPOLSI(nn.Module):
                 [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
             )
             A_B = jax.scipy.linalg.expm(
-                A_B_square * (math.log(step + self.step_size) - math.log(step))
+                A_B_square
+                * (math.log((1 / step) + self.step_size) - math.log((1 / step)))
             )
 
             GBT_A = A_B[0:n, 0:n]
@@ -505,9 +505,7 @@ class HiPPOLTI(nn.Module):
                 discretized B matrix based on the given step size and alpha value
         """
         if alpha <= 1:
-            assert (
-                alpha == 0.0 or alpha == 0.5 or alpha == 1.0
-            ), "alpha must be 0, 0.5, or 1"
+            assert alpha in [0, 0.5, 1], "alpha must be 0, 0.5, or 1"
         else:
             assert (
                 alpha > 1 or type(alpha) == str
@@ -520,12 +518,19 @@ class HiPPOLTI(nn.Module):
         I = jnp.eye(A.shape[0])
 
         if alpha <= 1:  # Generalized Bilinear Transformation
-            step_size = 1 / step
+            # C = jnp.ones((1, A.shape[0]))
+            # D = jnp.zeros((1,))
+            step_size = step  # 1 / step
+            jax.debug.print("step: {x}", x=step)
+            jax.debug.print("step_size: {x}", x=step_size)
             part1 = I - (step_size * alpha * A)
             part2 = I + (step_size * (1 - alpha) * A)
 
             GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
             GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
+            # GBT_A, GBT_B, _, _, _ = signal.cont2discrete(
+            #     (A, B, C, D), dt=step, method="gbt", alpha=alpha
+            # )
 
         else:  # Zero-order Hold
             # refer to this for why this works
