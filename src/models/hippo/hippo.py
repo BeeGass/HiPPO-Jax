@@ -218,8 +218,7 @@ class HiPPOLSI(nn.Module):
                 [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
             )
             A_B = jax.scipy.linalg.expm(
-                A_B_square
-                * (math.log((1 / step) + self.step_size) - math.log((1 / step)))
+                A_B_square * (math.log(step + 1) - math.log(step))
             )
 
             GBT_A = A_B[0:n, 0:n]
@@ -518,19 +517,12 @@ class HiPPOLTI(nn.Module):
         I = jnp.eye(A.shape[0])
 
         if alpha <= 1:  # Generalized Bilinear Transformation
-            # C = jnp.ones((1, A.shape[0]))
-            # D = jnp.zeros((1,))
-            step_size = step  # 1 / step
-            jax.debug.print("step: {x}", x=step)
-            jax.debug.print("step_size: {x}", x=step_size)
+            step_size = step
             part1 = I - (step_size * alpha * A)
             part2 = I + (step_size * (1 - alpha) * A)
 
             GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
             GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
-            # GBT_A, GBT_B, _, _, _ = signal.cont2discrete(
-            #     (A, B, C, D), dt=step, method="gbt", alpha=alpha
-            # )
 
         else:  # Zero-order Hold
             # refer to this for why this works
