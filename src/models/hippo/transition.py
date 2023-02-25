@@ -1,10 +1,8 @@
 ## import packages
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Any, Tuple
 
 import jax.numpy as jnp
-from jax.numpy.linalg import inv
-from jaxtyping import Array, Float, Float16, Float32, Float64, UInt
-from opt_einsum import contract
+from jaxtyping import Array, Float
 from scipy import special as ss
 
 

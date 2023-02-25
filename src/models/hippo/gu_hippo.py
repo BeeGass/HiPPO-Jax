@@ -11,12 +11,10 @@ from scipy import signal
 from scipy import special as ss
 
 from src.models.hippo.gu_transition import HRTransMatrix
-from src.models.hippo.transition import TransMatrix
 from src.models.hippo.unroll import (
     basis,
     measure,
     variable_unroll_matrix,
-    variable_unroll_matrix_sequential,
 )
 
 
