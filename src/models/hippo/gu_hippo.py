@@ -10,7 +10,7 @@ from scipy import linalg as la
 from scipy import signal
 from scipy import special as ss
 
-from src.models.hippo.gu_transition import GuTransMatrix
+from src.models.hippo.gu_transition import HRTransMatrix
 from src.models.hippo.transition import TransMatrix
 from src.models.hippo.unroll import (
     basis,
@@ -20,7 +20,7 @@ from src.models.hippo.unroll import (
 )
 
 
-class gu_HiPPO_LSI(nn.Module):
+class HRHiPPO_LSI(nn.Module):
     """Vanilla HiPPO-LegS model (scale invariant instead of time invariant)"""
 
     def __init__(
@@ -38,7 +38,7 @@ class gu_HiPPO_LSI(nn.Module):
         """
         super().__init__()
         self.N = N
-        matrices = GuTransMatrix(
+        matrices = HRTransMatrix(
             N=N, measure=method, lambda_n=lambda_n, alpha=alpha, beta=beta
         )
         A = np.asarray(matrices.A, dtype=np.float32)
@@ -59,12 +59,6 @@ class gu_HiPPO_LSI(nn.Module):
                 )
                 B_stacked[t - 1] = la.solve_triangular(np.eye(N) - At, Bt, lower=True)
             elif discretization == 0.5:  # bilinear
-                # A_stacked[t - 1] = la.solve_triangular(
-                #     np.eye(N) - At / 2, np.eye(N) + At / 2, lower=True
-                # )
-                # B_stacked[t - 1] = la.solve_triangular(
-                #     np.eye(N) - At / 2, Bt, lower=True
-                # )
                 alpha = 0.5
                 A_stacked[t - 1] = np.linalg.lstsq(
                     np.eye(N) - (At * alpha), np.eye(N) + (At * alpha), rcond=None
@@ -80,12 +74,6 @@ class gu_HiPPO_LSI(nn.Module):
                 B_stacked[t - 1] = la.solve_triangular(
                     A, A_stacked[t - 1] @ B - B, lower=True
                 )
-
-                # A_stacked[t - 1] = la.expm(At)
-                # B_stacked[t - 1] = la.inv(A) @ (la.expm(At) - np.eye(A.shape[0])) @ B
-
-        # self.register_buffer('A_stacked', torch.Tensor(A_stacked)) # (max_length, N, N)
-        # self.register_buffer('B_stacked', torch.Tensor(B_stacked)) # (max_length, N)
 
         self.A_stacked = torch.Tensor(A_stacked.copy())  # (max_length, N, N)
         self.B_stacked = torch.Tensor(B_stacked.copy())  # (max_length, N)
@@ -151,7 +139,7 @@ class gu_HiPPO_LSI(nn.Module):
         return y
 
 
-class gu_HiPPO_LTI(nn.Module):
+class HRHiPPO_LTI(nn.Module):
     """Linear time invariant x' = Ax + Bu"""
 
     def __init__(
@@ -178,7 +166,7 @@ class gu_HiPPO_LTI(nn.Module):
         self.T = T
         self.c = c
 
-        matrices = GuTransMatrix(
+        matrices = HRTransMatrix(
             N=N, measure=method, lambda_n=lambda_n, alpha=alpha, beta=beta
         )
         A = np.asarray(matrices.A, dtype=np.float32)

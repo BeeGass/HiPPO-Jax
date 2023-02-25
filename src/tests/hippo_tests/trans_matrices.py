@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import pytest
 
-from src.models.hippo.gu_transition import GuLowRankMatrix, GuTransMatrix
+from src.models.hippo.gu_transition import GuLowRankMatrix, HRTransMatrix
 from src.models.hippo.transition import LowRankMatrix, TransMatrix
 from src.tests.hippo_tests.hippo_utils import (
     random_1_input,
@@ -240,7 +240,7 @@ def dplr_foud():
 @pytest.fixture
 def gu_legs_matrices():
     the_measure = "legs"
-    legs_matrices = GuTransMatrix(N=50, measure=the_measure)
+    legs_matrices = HRTransMatrix(N=50, measure=the_measure)
     return legs_matrices.A, legs_matrices.B
 
 
@@ -266,7 +266,7 @@ def gu_dplr_legs():
 @pytest.fixture
 def gu_legt_matrices():
     the_measure = "legt"
-    legt_matrices = GuTransMatrix(N=50, measure=the_measure, lambda_n=1.0)
+    legt_matrices = HRTransMatrix(N=50, measure=the_measure, lambda_n=1.0)
     return legt_matrices.A, legt_matrices.B
 
 
@@ -296,7 +296,7 @@ def gu_dplr_legt():
 @pytest.fixture
 def gu_legt_lmu_matrices():
     the_measure = "lmu"
-    lmu_matrices = GuTransMatrix(
+    lmu_matrices = HRTransMatrix(
         N=50, measure=the_measure, lambda_n=2.0, alpha=0.0, beta=1.0
     )
     return lmu_matrices.A, lmu_matrices.B
@@ -328,7 +328,7 @@ def gu_dplr_lmu():
 @pytest.fixture
 def gu_lagt_matrices():
     the_measure = "lagt"
-    lagt_matrices = GuTransMatrix(
+    lagt_matrices = HRTransMatrix(
         N=50,
         measure=the_measure,
         alpha=0.0,  # change resulting tilt through alpha and beta
@@ -373,7 +373,7 @@ def gu_dplr_lagt():
 @pytest.fixture
 def gu_fru_matrices():
     the_measure = "fru"
-    fru_matrices = GuTransMatrix(N=50, measure=the_measure)
+    fru_matrices = HRTransMatrix(N=50, measure=the_measure)
     return fru_matrices.A, fru_matrices.B
 
 
@@ -399,7 +399,7 @@ def gu_dplr_fru():
 @pytest.fixture
 def gu_fout_matrices():
     the_measure = "fout"
-    fout_matrices = GuTransMatrix(N=50, measure=the_measure)
+    fout_matrices = HRTransMatrix(N=50, measure=the_measure)
     return fout_matrices.A, fout_matrices.B
 
 
@@ -425,7 +425,7 @@ def gu_dplr_fout():
 @pytest.fixture
 def gu_foud_matrices():
     the_measure = "foud"
-    foud_matrices = GuTransMatrix(N=50, measure=the_measure)
+    foud_matrices = HRTransMatrix(N=50, measure=the_measure)
     return foud_matrices.A, foud_matrices.B
 
 

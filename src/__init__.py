@@ -1,5 +1,5 @@
-from src.models.hippo.gu_hippo import gu_HiPPO_LSI, gu_HiPPO_LTI
-from src.models.hippo.gu_transition import GuTransMatrix
+from src.models.hippo.gu_hippo import HRHiPPO_LSI, HRHiPPO_LTI
+from src.models.hippo.gu_transition import HRTransMatrix
 
 # HiPPO
 from src.models.hippo.hippo import HiPPOLTI, HiPPOLSI

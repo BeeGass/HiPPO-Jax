@@ -15,7 +15,7 @@ from scipy import special as ss
 from src.models.hippo.unroll import *
 
 
-class GuTransMatrix:
+class HRTransMatrix:
     def __init__(
         self,
         N: int,
@@ -61,16 +61,16 @@ class GuTransMatrix:
             else:
                 raise ValueError("Invalid lambda_n for HiPPO type 'legt' or 'lmu")
 
-            A, B = self.build_gu_LegT(N=N, lambda_n=lambda_n)
+            A, B = self.build_LegT(N=N, lambda_n=lambda_n)
 
         elif measure == "lagt":
-            A, B = self.build_gu_LagT(alpha=alpha, beta=beta, N=N)
+            A, B = self.build_LagT(alpha=alpha, beta=beta, N=N)
 
         elif measure == "legs":
-            A, B = self.build_gu_LegS(N=N)
+            A, B = self.build_LegS(N=N)
 
         elif measure in ["fout", "fru", "foud"]:
-            A, B = self.build_gu_Fourier(N=N, fourier_type=measure)
+            A, B = self.build_Fourier(N=N, fourier_type=measure)
 
         elif measure == "random":
             A = jnp.random.randn(N, N) / N
@@ -88,7 +88,7 @@ class GuTransMatrix:
 
     # Scaled Legendre (LegS), non-vectorized
     @staticmethod
-    def build_gu_LegS(N):
+    def build_LegS(N):
         """
         The, non-vectorized implementation of the, measure derived from the Scaled Legendre basis.
 
@@ -119,7 +119,7 @@ class GuTransMatrix:
 
     # Translated Legendre (LegT) - non-vectorized
     @staticmethod
-    def build_gu_LegT(N, lambda_n=1.0):
+    def build_LegT(N, lambda_n=1.0):
         """
         The, non-vectorized implementation of the, measure derived from the translated Legendre basis
 
@@ -160,7 +160,7 @@ class GuTransMatrix:
 
     # Translated Laguerre (LagT) - non-vectorized
     @staticmethod
-    def build_gu_LagT(alpha, beta, N):
+    def build_LagT(alpha, beta, N):
         """
         The, non-vectorized implementation of the, measure derived from the translated Laguerre basis.
 
@@ -192,7 +192,7 @@ class GuTransMatrix:
         return A, B
 
     @staticmethod
-    def build_gu_Fourier(N, fourier_type="fru"):
+    def build_Fourier(N, fourier_type="fru"):
         """
         Non-vectorized measure implementations derived from fourier basis.
 
@@ -268,7 +268,7 @@ class GuLowRankMatrix:
         self.N = N
         self.measure = measure
         self.rank = rank
-        matrices = GuTransMatrix(
+        matrices = HRTransMatrix(
             N=N, measure=measure, lambda_n=lambda_n, alpha=alpha, beta=beta
         )
 

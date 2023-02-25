@@ -21,9 +21,11 @@
 - [Simplified State Space Layers for Sequence Modeling](https://arxiv.org/abs/2208.04933) - S5
 - [Mega: Moving Average Equipped Gated Attention](https://arxiv.org/abs/2209.10655) - Mega
 - [Liquid Structural State-Space Models](https://arxiv.org/abs/2209.12951) - Liquid-S4
-- [Hungry Hungry HiPPOs](https://openreview.net/pdf?id=COZDy0WYGg) - S4 LLM
+- [Hungry Hungry HiPPOs](https://openreview.net/pdf?id=COZDy0WYGg) - H3 (S4 LLM)
 - [S4ND](https://arxiv.org/abs/2210.06583) - S4ND
 - [Efficient Long Sequence Modeling via State Space Augmented Transformer](https://arxiv.org/abs/2212.08136) S4 augmented transformer
+- [What Makes Convolutional Models Great on Long Sequence Modeling?](https://arxiv.org/abs/2210.09298) - SGConv
+- [Hyena Hierarchy: Towards Larger Convolutional Language Models](https://arxiv.org/abs/2302.10866) - Hyena
 
 **Applied SSMs:**
 
