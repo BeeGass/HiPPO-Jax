@@ -10,6 +10,7 @@ class DataProcessor:
         self.seed = seed
         self.data = data
         self.target = target
+        self.pipeline = []
 
     def one_hot(self) -> np.ndarray:
         """
