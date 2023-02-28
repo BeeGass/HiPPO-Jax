@@ -1,9 +1,10 @@
 from typing import Callable
-import optax
+
 import jax
+import optax
 import wandb
-from jax import numpy as jnp
 from flax.training import train_state
+from jax import numpy as jnp
 
 from src.train.task import Task
 
@@ -41,7 +42,7 @@ class HiPPOTrainer(Trainer):
         model = self.task.model
 
         # Get the optimizer
-        optimizer = self.task.optimizer
+        optimizer = self.task.optimizer.tx
 
         # Create a State
         return train_state.TrainState.create(
@@ -81,11 +82,23 @@ class HiPPOTrainer(Trainer):
 
     @jax.jit
     def step(
-        self, state: train_state.TrainState, batch: jnp.ndarray, loss_fn: Callable
+        self,
+        state: train_state.TrainState,
+        batch: jnp.ndarray,
     ):
         data, label = batch
 
-        loss, logits = loss_fn(state, params, data, label)
+        def loss_fn(params):
+            # jax.debug.print("params:\n{params}", params=params)
+
+            logits = state.apply_fn({"params": params}, carry=carry, input=data)
+
+            if preprocess_fn is not None:
+                label = preprocess_fn(label)
+
+            loss = self.task.loss.apply(logits, label)
+
+            return loss, logits
 
         gradient_fn = jax.value_and_grad(loss_fn, has_aux=True)
         (loss, logits), grads = gradient_fn(state.params)
