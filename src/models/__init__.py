@@ -1,3 +1,6 @@
+# Model
+from src.models.model import Model
+
 # HiPPO
 # Data Preprocessing
 from src.data.process import moving_window, rolling_window

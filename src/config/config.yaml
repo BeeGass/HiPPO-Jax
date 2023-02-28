@@ -1,5 +1,0 @@
-defaults:
-  - hyperparameters
-  - models/recurrent
-  - models/state_spaces
-  - data/dataset

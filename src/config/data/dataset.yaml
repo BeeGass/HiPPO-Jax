@@ -1,3 +1,0 @@
-dataset:
-  preprocess_data: "flatten"
-  preprocess_labels: "one hot"

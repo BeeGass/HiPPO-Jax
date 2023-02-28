@@ -10,9 +10,10 @@ from jaxtyping import Array, Float
 from scipy import special as ss
 
 from src.models.hippo.transition import TransMatrix
+from src.models.model import Model
 
 
-class HiPPOLSI(nn.Module):
+class HiPPOLSI(Model):
     """
     class that constructs a Linearly Scale Invariant (LSI) HiPPO model using the defined measure.
 
@@ -60,7 +61,7 @@ class HiPPOLSI(nn.Module):
     GBT_alpha: float = 0.5
     measure: str = "legs"
     dtype: Any = jnp.float32
-    unroll: bool = False
+    unroll: bool = True
 
     def setup(self):
         matrices = TransMatrix(
@@ -358,7 +359,7 @@ class HiPPOLSI(nn.Module):
         return y
 
 
-class HiPPOLTI(nn.Module):
+class HiPPOLTI(Model):
     """
     class that constructs a Linearly Time Invariant (LTI) HiPPO model using the defined measure.
 
@@ -620,6 +621,21 @@ class HiPPOLTI(nn.Module):
             return c_k.astype(dtype)
 
     def measure_fn(self, method: str, c: float = 0.0) -> Callable:
+        """
+        Returns a function that is used to measure the distance between the input sequence and the estimated coefficients
+
+        Args:
+            method (str):
+                The method used to measure the distance between the input sequence and the estimated coefficients
+
+            c (float):
+                The tilt of the function used to measure the distance between the input sequence and the estimated coefficients
+
+        Returns:
+            fn_tilted (Callable):
+                The function used to measure the distance between the input sequence and the estimated coefficients
+
+        """
 
         if method == "legs":
             fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
@@ -647,8 +663,36 @@ class HiPPOLTI(nn.Module):
         dtype: Any = jnp.float32,
     ) -> Float[Array, "seq_len N"]:
         """
-        vals: list of times (forward in time)
-        returns: shape (T, N) where T is length of vals
+        Creates the basis matrix (eval matrix) for the appropriate HiPPO method.
+
+        Args:
+            B (jnp.ndarray):
+                shape: (N, 1)
+                The HiPPO B matrix
+
+            method (str):
+                The HiPPO method to use
+
+            N (int):
+                The number of basis functions to use
+
+            vals (jnp.ndarray):
+                shape: (seq_len, )
+                The values to evaluate the basis functions at
+
+            c (float):
+                The constant to use for the tilted measure
+
+            truncate_measure (bool):
+                Whether or not to truncate the measure to the interval [0, 1]
+
+            dtype (Any):
+                The dtype to use for the basis matrix
+
+        Returns:
+            eval_matrix (jnp.ndarray):
+                shape: (seq_len, N)
+                The basis matrix
         """
 
         if method == "legs":
