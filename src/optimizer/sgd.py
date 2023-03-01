@@ -8,4 +8,6 @@ class SGD(Optimizer):
         super().__init__(lr=lr)
         self.momentum = momentum
         self.nesterov = nesterov
-        self.tx = optax.sgd(self.lr, momentum=self.momentum, nesterov=self.nesterov)
+        self.tx = optax.sgd(
+            learning_rate=self.lr, momentum=self.momentum, nesterov=self.nesterov
+        )

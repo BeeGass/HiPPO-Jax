@@ -9,7 +9,7 @@ from src.loss.loss import Loss
 class Huber(Loss):
     def __init__(self, delta: float = 1.0):
         self.delta = delta
-        self.loss_fn = jax.vmap(jnp.mean(optax.huber_loss), in_axes=(0, 0, None))
+        self.loss_fn = jax.vmap(optax.huber_loss, in_axes=(0, 0, None))
 
     def apply(
         self, y_pred: Float[Array, "batch ..."], y_true: Float[Array, "batch ..."]
@@ -23,4 +23,4 @@ class Huber(Loss):
         Returns:
             _type_: _description_
         """
-        return self.loss_fn(y_pred, y_true, self.delta)
+        return self.loss_fn(y_pred, y_true, self.delta).mean()

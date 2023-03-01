@@ -1,5 +1,0 @@
-_target_: src.dataset.image_dataset.MNISTDataset
-
-name: mnist
-path: "../../datasets/mnist_data"
-batch_size: 64

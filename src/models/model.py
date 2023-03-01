@@ -8,4 +8,4 @@ class Model(nn.Module):
     """
 
     def __call__(self, **args):
-        raise NotImplementedError
+        raise NotImplementedError("Model must implement __call__")

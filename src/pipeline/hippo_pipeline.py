@@ -1,11 +1,12 @@
 import numpy as np
 
+from src.pipeline.data_processor import DataProcessor
+
 
 class HiPPOPipeline(DataProcessor):
     """
     Class to manage data processing.
     """
 
-    def __init__(self, seed: int, data: np.ndarray, target: str):
-        super().__init__(seed, data, target)
+    def __init__(self):
         self.pipeline = []

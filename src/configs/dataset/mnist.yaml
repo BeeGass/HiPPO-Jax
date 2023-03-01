@@ -1,0 +1,5 @@
+_target_: src.datasets.mnist.MNISTDataset
+
+name: mnist
+path: "../../datasets/mnist_data"
+batch_size: 64

@@ -8,7 +8,7 @@ from src.loss.loss import Loss
 
 class MSE(Loss):
     def __init__(self):
-        self.loss_fn = jax.vmap(jnp.mean(optax.l2_loss), in_axes=(0, 0))
+        self.loss_fn = jax.vmap(optax.l2_loss, in_axes=(0, 0))
 
     def apply(
         self, y_pred: Float[Array, "batch ..."], y_true: Float[Array, "batch ..."]
@@ -22,4 +22,4 @@ class MSE(Loss):
         Returns:
             _type_: _description_
         """
-        return self.loss_fn(y_pred, y_true)
+        return self.loss_fn(y_pred, y_true).mean()

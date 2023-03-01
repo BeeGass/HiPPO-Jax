@@ -1,9 +1,0 @@
-N: 50
-step_size: 3e-3
-lambda_n: 1.0
-alpha: 0.0
-beta: 1.0
-GBT_alpha: 0.5
-measure: "fru"
-basis_size: 3
-unroll: False

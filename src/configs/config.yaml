@@ -1,0 +1,9 @@
+defaults:
+  - optimizer: sgd
+  - loss: cross_entropy
+  - pipeline: hippo_pipeline
+  - dataset: smnist
+  - model: hippo_lsi
+  - _self_
+
+_target_: src.train.task.Task

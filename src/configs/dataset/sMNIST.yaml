@@ -1,5 +1,0 @@
-_target_: src.dataset.image_dataset.sMNISTDataset
-
-name: smnist
-path: "../../datasets/smnist_data"
-batch_size: 64

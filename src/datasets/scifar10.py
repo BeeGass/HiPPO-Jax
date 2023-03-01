@@ -12,9 +12,7 @@ class sCIFAR10Dataset(Dataset):
             download=True,
             train=True,
             transform=transforms.Compose(
-                [
-                    transforms.ToTensor(),  # first, convert image to PyTorch tensor
-                ]
+                [transforms.ToTensor(), transforms.Lambda(lambda x: torch.flatten(x))]
             ),
         )
         test_dataset = datasets.CIFAR10(

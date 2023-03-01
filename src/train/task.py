@@ -13,9 +13,9 @@ class Task:
     Class to manage model training and feature extraction.
     """
 
-    seed: int
     optimizer: Optimizer
     loss: Loss
     pipeline: DataProcessor
     dataset: Dataset
     model: Model
+    seed: int = 1701

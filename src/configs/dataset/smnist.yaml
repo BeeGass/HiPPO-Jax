@@ -1,0 +1,5 @@
+_target_: src.datasets.smnist.sMNISTDataset
+
+name: smnist
+path: "../../datasets/smnist_data"
+batch_size: 64

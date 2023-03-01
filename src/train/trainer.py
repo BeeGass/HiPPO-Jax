@@ -15,7 +15,7 @@ class Trainer:
     def train(self, *args, **kwargs):
         raise NotImplementedError()
 
-    def epoch(self, *args, **kwargs):
+    def run(self, *args, **kwargs):
         raise NotImplementedError()
 
     def step(self, *args, **kwargs):

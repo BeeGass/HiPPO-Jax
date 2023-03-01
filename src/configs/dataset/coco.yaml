@@ -1,4 +1,4 @@
-_target_: src.dataset.image_dataset.CocoDataset
+_target_: src.datasets.coco.CocoDataset
 
 name: coco
 path: "../../datasets/coco_data"

@@ -1,4 +1,4 @@
-_target_: src.dataset.image_dataset.sCelebADataset
+_target_: src.datasets.sceleba.sCelebADataset
 
 name: sceleba
 path: "../../datasets/sceleba_data"
