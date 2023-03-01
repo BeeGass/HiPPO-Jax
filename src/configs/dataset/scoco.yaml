@@ -1,0 +1,5 @@
+_target_: src.dataset.image_dataset.sCocoDataset
+
+name: scoco
+path: "../../datasets/scoco_data"
+batch_size: 64

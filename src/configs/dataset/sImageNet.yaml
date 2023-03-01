@@ -1,0 +1,6 @@
+_target_: src.dataset.image_dataset.sImageNetDataset
+
+name: simagenet
+path: "../../datasets/simagenet_data"
+batch_size: 64
+#path: "https://www.image-net.org/download.php"

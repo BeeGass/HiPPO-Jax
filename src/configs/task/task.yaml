@@ -1,0 +1,9 @@
+defaults:
+  - seed: 1702
+  - optimizer: sgd
+  - loss: cross_entropy
+  - pipeline: hippo_pipeline
+  - dataset: smnist
+  - model: hippo_legs
+
+_target_: src.train.task.Task

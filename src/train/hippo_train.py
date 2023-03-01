@@ -37,16 +37,16 @@ class HiPPOTrainer(Trainer):
         state = None
 
         train_batch_metrics = []
-        for idx in range(batch_size):
-            batch = next(data_gen)
-            grads, state, metrics = self.step(state, batch)
+        for batch_idx, (train_data, train_labels) in enumerate(
+            self.task.dataset.train_loader
+        ):
+            grads, state, metrics = self.step(state, (train_data, train_labels))
             state = self.update_model(state, grads)
             train_batch_metrics.append(metrics)
 
         eval_batch_metrics = []
-        for idx in range(batch_size):
-            batch = next(data_gen)
-            metrics = self.eval(state, batch)
+        for test_data, test_labels in self.task.dataset.train_loader:
+            metrics = self.eval(state, (test_data, test_labels))
             eval_batch_metrics.append(metrics)
 
         return state, train_batch_metrics, eval_batch_metrics
@@ -56,7 +56,15 @@ class HiPPOTrainer(Trainer):
             state, train_batch_metrics, eval_batch_metrics = self.train(
                 batch_size, data_gen
             )
-            self.log_metrics(epoch, train_batch_metrics, eval_batch_metrics)
+            wandb.log(
+                {
+                    "Train Loss": train_batch_metrics["loss"],
+                    "Train Accuracy": train_batch_metrics["accuracy"],
+                    "Validation Loss": eval_batch_metrics["loss"],
+                    "Validation Accuracy": eval_batch_metrics["accuracy"],
+                },
+                step=epoch,
+            )
 
         return state
 
@@ -70,10 +78,11 @@ class HiPPOTrainer(Trainer):
 
         def loss_fn(params):
 
-            logits = state.apply_fn({"params": params}, carry=carry, input=data)
+            logits = state.apply_fn({"params": params}, f=data, init_state=None)
 
-            if preprocess_fn is not None:
-                label = preprocess_fn(label)
+            if self.task.pipeline.pipeline != []:
+                for fn in self.task.pipeline.pipeline:
+                    logits = fn(logits)
 
             loss = self.task.loss.apply(logits, label)
 
@@ -91,15 +100,3 @@ class HiPPOTrainer(Trainer):
         logits = state.apply_fn({"params": state.params}, data)
         metrics = compute_metrics(logits=logits, labels=label)
         return metrics
-
-    def log_metrics(self):
-        # Log Metrics to Weights & Biases
-        wandb.log(
-            {
-                "Train Loss": train_batch_metrics["loss"],
-                "Train Accuracy": train_batch_metrics["accuracy"],
-                "Validation Loss": eval_batch_metrics["loss"],
-                "Validation Accuracy": eval_batch_metrics["accuracy"],
-            },
-            step=epoch,
-        )

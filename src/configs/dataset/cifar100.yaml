@@ -1,0 +1,5 @@
+_target_: src.dataset.image_dataset.CIFAR100Dataset
+
+name: cifar100
+path: "../../datasets/cifar100_data"
+batch_size: 64
