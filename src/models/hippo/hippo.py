@@ -8,6 +8,7 @@ import jax.numpy as jnp
 from flax import linen as nn
 from jaxtyping import Array, Float
 from scipy import special as ss
+from src.utils.util import eval_legendre
 
 from src.models.hippo.transition import TransMatrix
 from src.models.model import Model
@@ -81,9 +82,7 @@ class HiPPOLSI(Model):
         self.eval_matrix = (
             (
                 (matrices.B)
-                * ss.eval_legendre(
-                    jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1
-                )
+                * eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
             ).T
         ).astype(self.dtype)
 
@@ -702,8 +701,7 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                base
-                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
+                base * eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
             ).T  # (L, N)
 
         elif method in ["legt", "lmu"]:
@@ -712,8 +710,7 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                base
-                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
+                base * eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
             ).T
         elif method == "lagt":
             _vals = vals[::-1]

@@ -31,3 +31,31 @@ def instantiate(config):
         config["_target_"] = _target_
 
     return obj()
+
+
+def eval_legendre(n, x):
+    if n == 0:
+        return np.ones_like(x)
+    elif n == 1:
+        return np.vstack((np.ones_like(x), x))
+    else:
+        L = np.zeros((n + 1, len(x)))
+        L[0] = np.ones_like(x)
+        L[1] = x
+        for i in range(2, n + 1):
+            L[i] = ((2 * i - 1) * x * L[i - 1] - (i - 1) * L[i - 2]) / i
+        return L
+
+
+def eval_legendre(n, x):
+    if n == 0:
+        return jnp.ones_like(x)
+    elif n == 1:
+        return jnp.vstack((jnp.ones_like(x), x))
+    else:
+        L = jnp.zeros((n + 1, len(x)))
+        L = L.at[0].set(jnp.ones_like(x))
+        L = L.at[1].set(x)
+        for i in range(2, n + 1):
+            L = L.at[i].set(((2 * i - 1) * x * L[i - 1] - (i - 1) * L[i - 2]) / i)
+        return L
