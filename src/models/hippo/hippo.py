@@ -8,7 +8,6 @@ import jax.numpy as jnp
 from flax import linen as nn
 from jaxtyping import Array, Float
 from scipy import special as ss
-from src.utils.util import eval_legendre
 
 from src.models.hippo.transition import TransMatrix
 from src.models.model import Model
@@ -82,7 +81,9 @@ class HiPPOLSI(Model):
         self.eval_matrix = (
             (
                 (matrices.B)
-                * eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
+                * ss.eval_legendre(
+                    jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1
+                )
             ).T
         ).astype(self.dtype)
 
@@ -430,7 +431,6 @@ class HiPPOLTI(Model):
 
         self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
         self.eval_matrix = self.basis(
-            B=self.B,
             method=self.measure,
             N=self.N,
             vals=self.vals,
@@ -653,7 +653,6 @@ class HiPPOLTI(Model):
 
     def basis(
         self,
-        B: Float[Array, "N input_size"],
         method: str,
         N: int,
         vals: Float[Array, "1"],
@@ -701,7 +700,8 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                base * eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
+                base
+                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
             ).T  # (L, N)
 
         elif method in ["legt", "lmu"]:
@@ -710,7 +710,8 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                base * eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
+                base
+                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
             ).T
         elif method == "lagt":
             _vals = vals[::-1]
@@ -718,7 +719,7 @@ class HiPPOLTI(Model):
                 jnp.expand_dims(jnp.arange(N), -1), 0, _vals
             )
             eval_matrix = (eval_matrix * jnp.exp(-_vals / 2)).T
-        elif method in ["fourier", "fru", "fout", "foud"]:
+        elif method in ["fourier", "fout"]:
             cos = 2**0.5 * jnp.cos(
                 2 * jnp.pi * jnp.arange(N // 2)[:, None] * (vals)
             )  # (N/2, T/dt)
@@ -759,9 +760,7 @@ class HiPPOLTI(Model):
                 The reconstructed input sequence
         """
         if evals is not None:
-            eval_matrix = self.basis(
-                B=self.B, method=self.measure, N=self.N, vals=evals
-            )
+            eval_matrix = self.basis(method=self.measure, N=self.N, vals=evals)
         else:
             eval_matrix = self.eval_matrix
 
