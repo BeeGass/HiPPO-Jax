@@ -18,7 +18,7 @@ def rolling_window(a: jnp.ndarray, window: int):
     return a[idx]
 
 
-def whitesignal(period, dt, freq, rms=0.5, batch_shape=()):
+def whitesignal(key, period, dt, freq, rms=0.5, batch_shape=()):
     """
     Produces output signal of length period / dt, band-limited to frequency freq
     Output shape (*batch_shape, period/dt)
@@ -36,20 +36,24 @@ def whitesignal(period, dt, freq, rms=0.5, batch_shape=()):
             f"{freq} must not exceed the Nyquist frequency for the given dt ({nyquist_cutoff:0.3f})"
         )
 
-    n_coefficients = int(np.ceil(period / dt / 2.0))
+    n_coefficients = int(jnp.ceil(period / dt / 2.0))
     shape = batch_shape + (n_coefficients + 1,)
-    sigma = rms * np.sqrt(0.5)
-    coefficients = 1j * np.random.normal(0.0, sigma, size=shape)
-    coefficients[..., -1] = 0.0
-    coefficients += np.random.normal(0.0, sigma, size=shape)
-    coefficients[..., 0] = 0.0
+    sigma = rms * jnp.sqrt(0.5)
+    coefficients = 1j * jax.random.normal(key, shape) * sigma
+    coefficients = jnp.array(coefficients)
+    coefficients = coefficients.at[..., -1].set(0.0)
+    coefficients += jax.random.normal(key, shape) * sigma
+    coefficients = jnp.array(coefficients)
+    coefficients = coefficients.at[..., 0].set(0.0)
 
-    set_to_zero = np.fft.rfftfreq(2 * n_coefficients, d=dt) > freq
+    set_to_zero = jnp.fft.rfftfreq(2 * n_coefficients, d=dt) > freq
     coefficients *= 1 - set_to_zero
-    power_correction = np.sqrt(1.0 - np.sum(set_to_zero, dtype=float) / n_coefficients)
+    power_correction = jnp.sqrt(
+        1.0 - jnp.sum(set_to_zero, dtype=jnp.float32) / n_coefficients
+    )
     if power_correction > 0.0:
         coefficients /= power_correction
-    coefficients *= np.sqrt(2 * n_coefficients)
-    signal = np.fft.irfft(coefficients, axis=-1)
+    coefficients *= jnp.sqrt(2 * n_coefficients)
+    signal = jnp.fft.irfft(coefficients, axis=-1)
     signal = signal - signal[..., :1]  # Start from 0
     return signal

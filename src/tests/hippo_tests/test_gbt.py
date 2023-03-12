@@ -160,8 +160,7 @@ def test_GBT_LSI_legs_FE(
     A, B = legs_matrices
 
     assert random_16_input.shape[0] == 16
-    assert random_16_input.shape[1] == 512
-    assert random_16_input.shape[2] == 1
+    assert random_16_input.shape[1] == 3000
 
     for i in range(1, L + 1):
         GBT_A, GBT_B = hippo_lsi_legs_fe.discretize(

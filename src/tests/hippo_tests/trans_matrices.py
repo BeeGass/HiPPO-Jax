@@ -238,63 +238,63 @@ def dplr_foud():
 # --- legs ---
 # ------------
 @pytest.fixture
-def gu_legs_matrices():
+def hr_legs_matrices():
     the_measure = "legs"
     legs_matrices = HRTransMatrix(N=50, measure=the_measure)
     return legs_matrices.A, legs_matrices.B
 
 
 @pytest.fixture
-def gu_nplr_legs():
+def hr_nplr_legs():
     the_measure = "legs"
     rank = 1
-    gu_nplr_legs = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
-    return gu_nplr_legs
+    hr_nplr_legs = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    return hr_nplr_legs
 
 
 @pytest.fixture
-def gu_dplr_legs():
+def hr_dplr_legs():
     the_measure = "legs"
     rank = 1
-    gu_dplr_legs = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
-    return gu_dplr_legs
+    hr_dplr_legs = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    return hr_dplr_legs
 
 
 # ------------
 # --- legt ---
 # ------------
 @pytest.fixture
-def gu_legt_matrices():
+def hr_legt_matrices():
     the_measure = "legt"
     legt_matrices = HRTransMatrix(N=50, measure=the_measure, lambda_n=1.0)
     return legt_matrices.A, legt_matrices.B
 
 
 @pytest.fixture
-def gu_nplr_legt():
+def hr_nplr_legt():
     the_measure = "legt"
     rank = 2
-    gu_nplr_legt = GuLowRankMatrix(
+    hr_nplr_legt = GuLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=False
     )
-    return gu_nplr_legt
+    return hr_nplr_legt
 
 
 @pytest.fixture
-def gu_dplr_legt():
+def hr_dplr_legt():
     the_measure = "legt"
     rank = 2
-    gu_dplr_legt = GuLowRankMatrix(
+    hr_dplr_legt = GuLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=True
     )
-    return gu_dplr_legt
+    return hr_dplr_legt
 
 
 # ------------
 # ---- lmu ---
 # ------------
 @pytest.fixture
-def gu_legt_lmu_matrices():
+def hr_legt_lmu_matrices():
     the_measure = "lmu"
     lmu_matrices = HRTransMatrix(
         N=50, measure=the_measure, lambda_n=2.0, alpha=0.0, beta=1.0
@@ -303,30 +303,30 @@ def gu_legt_lmu_matrices():
 
 
 @pytest.fixture
-def gu_nplr_lmu():
+def hr_nplr_lmu():
     the_measure = "lmu"
     rank = 2
-    gu_nplr_lmu = GuLowRankMatrix(
+    hr_nplr_lmu = GuLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=False
     )  # change lambda so resulting matrix is in the form of LMU
-    return gu_nplr_lmu
+    return hr_nplr_lmu
 
 
 @pytest.fixture
-def gu_dplr_lmu():
+def hr_dplr_lmu():
     the_measure = "lmu"
     rank = 2
-    gu_dplr_lmu = GuLowRankMatrix(
+    hr_dplr_lmu = GuLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=True
     )  # change lambda so resulting matrix is in the form of LMU
-    return gu_dplr_lmu
+    return hr_dplr_lmu
 
 
 # ------------
 # --- lagt ---
 # ------------
 @pytest.fixture
-def gu_lagt_matrices():
+def hr_lagt_matrices():
     the_measure = "lagt"
     lagt_matrices = HRTransMatrix(
         N=50,
@@ -338,10 +338,10 @@ def gu_lagt_matrices():
 
 
 @pytest.fixture
-def gu_nplr_lagt():
+def hr_nplr_lagt():
     the_measure = "lagt"
     rank = 1
-    gu_nplr_lagt = GuLowRankMatrix(
+    hr_nplr_lagt = GuLowRankMatrix(
         N=50,
         rank=rank,
         measure=the_measure,
@@ -349,14 +349,14 @@ def gu_nplr_lagt():
         beta=1.0,
         DPLR=False,
     )  # change resulting tilt through alpha and beta
-    return gu_nplr_lagt
+    return hr_nplr_lagt
 
 
 @pytest.fixture
-def gu_dplr_lagt():
+def hr_dplr_lagt():
     the_measure = "lagt"
     rank = 1
-    gu_dplr_lagt = GuLowRankMatrix(
+    hr_dplr_lagt = GuLowRankMatrix(
         N=50,
         rank=rank,
         measure=the_measure,
@@ -364,82 +364,82 @@ def gu_dplr_lagt():
         beta=1.0,
         DPLR=True,
     )  # change resulting tilt through alpha and beta
-    return gu_dplr_lagt
+    return hr_dplr_lagt
 
 
 # ------------
 # ---- fru ---
 # ------------
 @pytest.fixture
-def gu_fru_matrices():
+def hr_fru_matrices():
     the_measure = "fru"
     fru_matrices = HRTransMatrix(N=50, measure=the_measure)
     return fru_matrices.A, fru_matrices.B
 
 
 @pytest.fixture
-def gu_nplr_fru():
+def hr_nplr_fru():
     the_measure = "fru"
     rank = 1
-    gu_nplr_fru = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
-    return gu_nplr_fru
+    hr_nplr_fru = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    return hr_nplr_fru
 
 
 @pytest.fixture
-def gu_dplr_fru():
+def hr_dplr_fru():
     the_measure = "fru"
     rank = 1
-    gu_dplr_fru = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
-    return gu_dplr_fru
+    hr_dplr_fru = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    return hr_dplr_fru
 
 
 # ------------
 # --- fout ---
 # ------------
 @pytest.fixture
-def gu_fout_matrices():
+def hr_fout_matrices():
     the_measure = "fout"
     fout_matrices = HRTransMatrix(N=50, measure=the_measure)
     return fout_matrices.A, fout_matrices.B
 
 
 @pytest.fixture
-def gu_nplr_fout():
+def hr_nplr_fout():
     the_measure = "fout"
     rank = 1
-    gu_nplr_fout = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
-    return gu_nplr_fout
+    hr_nplr_fout = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    return hr_nplr_fout
 
 
 @pytest.fixture
-def gu_dplr_fout():
+def hr_dplr_fout():
     the_measure = "fout"
     rank = 1
-    gu_dplr_fout = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
-    return gu_dplr_fout
+    hr_dplr_fout = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    return hr_dplr_fout
 
 
 # ------------
 # --- foud ---
 # ------------
 @pytest.fixture
-def gu_foud_matrices():
+def hr_foud_matrices():
     the_measure = "foud"
     foud_matrices = HRTransMatrix(N=50, measure=the_measure)
     return foud_matrices.A, foud_matrices.B
 
 
 @pytest.fixture
-def gu_nplr_foud():
+def hr_nplr_foud():
     the_measure = "foud"
     rank = 1
-    gu_nplr_foud = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
-    return gu_nplr_foud
+    hr_nplr_foud = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    return hr_nplr_foud
 
 
 @pytest.fixture
-def gu_dplr_foud():
+def hr_dplr_foud():
     the_measure = "foud"
     rank = 1
-    gu_dplr_foud = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
-    return gu_dplr_foud
+    hr_dplr_foud = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    return hr_dplr_foud

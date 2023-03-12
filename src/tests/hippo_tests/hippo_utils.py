@@ -1,10 +1,7 @@
 import jax
-import jax.numpy as jnp
-import numpy as np
 import pytest
-from jax import vmap
 
-from src.data.process import moving_window, rolling_window
+from src.data.process import whitesignal
 
 # --- Random Keys
 
@@ -83,42 +80,54 @@ def big_N():
 @pytest.fixture
 def random_1_input(key_generator):
     batch_size = 1
-    data_size = 512
-    input_size = 1
+    period = 3
+    dt = 1e-3
+    freq = 3
 
-    # x = jax.random.randint(key_generator[8], (batch_size, data_size), 0, 255)
-    x = jax.random.uniform(key_generator[8], (batch_size, data_size))
-    return np.asarray(vmap(moving_window, in_axes=(0, None))(x, input_size))
+    return whitesignal(
+        key=key_generator[8], period=period, dt=dt, freq=freq, batch_shape=(batch_size,)
+    )
 
 
 @pytest.fixture
 def random_16_input(key_generator):
     batch_size = 16
-    data_size = 512
-    input_size = 1
+    period = 3
+    dt = 1e-3
+    freq = 3
 
-    # x = jax.random.randint(key_generator[9], (batch_size, data_size), 0, 255)
-    x = jax.random.uniform(key_generator[9], (batch_size, data_size))
-    return np.asarray(jax.vmap(moving_window, in_axes=(0, None))(x, input_size))
+    return whitesignal(
+        key=key_generator[9], period=period, dt=dt, freq=freq, batch_shape=(batch_size,)
+    )
 
 
 @pytest.fixture
 def random_32_input(key_generator):
     batch_size = 32
-    data_size = 512
-    input_size = 1
+    period = 3
+    dt = 1e-3
+    freq = 3
 
-    # x = jax.random.randint(key_generator[10], (batch_size, data_size), 0, 255)
-    x = jax.random.uniform(key_generator[10], (batch_size, data_size))
-    return np.asarray(vmap(moving_window, in_axes=(0, None))(x, input_size))
+    return whitesignal(
+        key=key_generator[10],
+        period=period,
+        dt=dt,
+        freq=freq,
+        batch_shape=(batch_size,),
+    )
 
 
 @pytest.fixture
 def random_64_input(key_generator):
     batch_size = 64
-    data_size = 512
-    input_size = 1
+    period = 3
+    dt = 1e-3
+    freq = 3
 
-    # x = jax.random.randint(key_generator[11], (batch_size, data_size), 0, 255)
-    x = jax.random.uniform(key_generator[11], (batch_size, data_size))
-    return np.asarray(vmap(moving_window, in_axes=(0, None))(x, input_size))
+    return whitesignal(
+        key=key_generator[11],
+        period=period,
+        dt=dt,
+        freq=freq,
+        batch_shape=(batch_size,),
+    )
