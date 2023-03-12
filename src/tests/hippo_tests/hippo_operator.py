@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import pytest
 
-from src.models.hippo.gu_hippo import HRHiPPO_LSI, HRHiPPO_LTI
+from src.models.hippo.hr_hippo import HRHiPPO_LSI, HRHiPPO_LTI
 from src.models.hippo.hippo import HiPPO, HiPPOLTI, HiPPOLSI
 from src.tests.hippo_tests.hippo_utils import (
     N2,

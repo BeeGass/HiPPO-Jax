@@ -429,14 +429,15 @@ class HiPPOLTI(Model):
 
         self.B = matrices.B
 
-        self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
-        self.eval_matrix = self.basis(
-            method=self.measure,
-            N=self.N,
-            vals=self.vals,
-            c=0.0,
-            dtype=self.dtype,
-        )  # (T/dt, N)
+        if self.measure in ["legs", "legt", "lmu", "lagt", "fout"]:
+            self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
+            self.eval_matrix = self.basis(
+                method=self.measure,
+                N=self.N,
+                vals=self.vals,
+                c=0.0,
+                dtype=self.dtype,
+            )  # (T/dt, N)
 
     def __call__(
         self,
