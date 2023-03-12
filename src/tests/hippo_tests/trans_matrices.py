@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import pytest
 
-from src.models.hippo.gu_transition import GuLowRankMatrix, HRTransMatrix
+from src.models.hippo.hr_transition import GuLowRankMatrix, HRTransMatrix
 from src.models.hippo.transition import LowRankMatrix, TransMatrix
 from src.tests.hippo_tests.hippo_utils import (
     random_1_input,
