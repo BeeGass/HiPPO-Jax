@@ -170,7 +170,8 @@ def test_hippo_legs_lti_fe_reconstruction(
     hippo = hippo_lti_legs_fe.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legs_fe(x_tensor, fast=False)
@@ -178,7 +179,8 @@ def test_hippo_legs_lti_fe_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legs_fe.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -217,6 +219,7 @@ def test_hippo_legs_lsi_fe_reconstruction(
 
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
+    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -227,22 +230,18 @@ def test_hippo_legs_lsi_fe_reconstruction(
         hr_cs, "seq_len batch N -> batch seq_len 1 N"
     )  # add input_size and swap batch and seq_len dimension for comparison
     hr_y = hr_hippo_lsi_legs_fe.reconstruct(hr_c)
+    print(f"hr_y shape: {hr_y.shape}")
     hr_y = einops.rearrange(
         hr_y, "seq_len batch seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
-    hr_c = jnp.asarray(hr_cs, dtype=jnp.float32)  # convert torch array to jax array
+    hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
     assert hr_c.shape == c.shape
     assert hr_y.shape == y.shape
 
-    assert c.shape == (3000, 16, 50)  # seq_len, batch_size, N
-    assert y.shape == (
-        16,
-        3000,
-        1,
-        3000,
-    )  # batch_size, number of iterations through seq_len, input_size, seq_len
+    assert c.shape == (16, 3000, 1, 50)  # batch_size, seq_len, input_size, N
+    assert y.shape == (16, 3000, 1, 3000)  # batch_size, seq_len, input_size, seq_len
 
     co_flag = True
     for i in range(c.shape[0]):
@@ -279,7 +278,8 @@ def test_hippo_legt_lti_fe_reconstruction(
     hippo = hippo_lti_legt_fe.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legt_fe(x_tensor, fast=False)
@@ -287,7 +287,8 @@ def test_hippo_legt_lti_fe_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legt_fe.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -330,7 +331,8 @@ def test_hippo_lmu_lti_fe_reconstruction(
     hippo = hippo_lti_lmu_fe.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lmu_fe(x_tensor, fast=False)
@@ -338,7 +340,8 @@ def test_hippo_lmu_lti_fe_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lmu_fe.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -381,7 +384,8 @@ def test_hippo_lagt_lti_fe_reconstruction(
     hippo = hippo_lti_lagt_fe.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lagt_fe(x_tensor, fast=False)
@@ -389,7 +393,8 @@ def test_hippo_lagt_lti_fe_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lagt_fe.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -432,7 +437,8 @@ def test_hippo_fout_lti_fe_reconstruction(
     hippo = hippo_lti_fout_fe.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_fout_fe(x_tensor, fast=False)
@@ -440,7 +446,8 @@ def test_hippo_fout_lti_fe_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_fout_fe.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -487,7 +494,8 @@ def test_hippo_legs_lti_be_reconstruction(
     hippo = hippo_lti_legs_be.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legs_be(x_tensor, fast=False)
@@ -495,7 +503,8 @@ def test_hippo_legs_lti_be_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legs_be.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -534,6 +543,7 @@ def test_hippo_legs_lsi_be_reconstruction(
 
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
+    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -544,22 +554,18 @@ def test_hippo_legs_lsi_be_reconstruction(
         hr_cs, "seq_len batch N -> batch seq_len 1 N"
     )  # add input_size and swap batch and seq_len dimension for comparison
     hr_y = hr_hippo_lsi_legs_be.reconstruct(hr_c)
+    print(f"hr_y shape: {hr_y.shape}")
     hr_y = einops.rearrange(
         hr_y, "seq_len batch seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
-    hr_c = jnp.asarray(hr_cs, dtype=jnp.float32)  # convert torch array to jax array
+    hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
     assert hr_c.shape == c.shape
     assert hr_y.shape == y.shape
 
-    assert c.shape == (3000, 16, 50)  # seq_len, batch_size, N
-    assert y.shape == (
-        16,
-        3000,
-        1,
-        3000,
-    )  # batch_size, number of iterations through seq_len, input_size, seq_len
+    assert c.shape == (16, 3000, 1, 50)  # batch_size, seq_len, input_size, N
+    assert y.shape == (16, 3000, 1, 3000)  # batch_size, seq_len, input_size, seq_len
 
     co_flag = True
     for i in range(c.shape[0]):
@@ -596,7 +602,8 @@ def test_hippo_legt_lti_be_reconstruction(
     hippo = hippo_lti_legt_be.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legt_be(x_tensor, fast=False)
@@ -604,7 +611,8 @@ def test_hippo_legt_lti_be_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legt_be.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -647,7 +655,8 @@ def test_hippo_lmu_lti_be_reconstruction(
     hippo = hippo_lti_lmu_be.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lmu_be(x_tensor, fast=False)
@@ -655,7 +664,8 @@ def test_hippo_lmu_lti_be_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lmu_be.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -698,7 +708,8 @@ def test_hippo_lagt_lti_be_reconstruction(
     hippo = hippo_lti_lagt_be.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lagt_be(x_tensor, fast=False)
@@ -706,7 +717,8 @@ def test_hippo_lagt_lti_be_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lagt_be.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -749,7 +761,8 @@ def test_hippo_fout_lti_be_reconstruction(
     hippo = hippo_lti_fout_be.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_fout_be(x_tensor, fast=False)
@@ -757,7 +770,8 @@ def test_hippo_fout_lti_be_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_fout_be.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -803,7 +817,8 @@ def test_hippo_legs_lti_bi_reconstruction(
     hippo = hippo_lti_legs_bi.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legs_bi(x_tensor, fast=False)
@@ -811,7 +826,8 @@ def test_hippo_legs_lti_bi_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legs_bi.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -850,6 +866,7 @@ def test_hippo_legs_lsi_bi_reconstruction(
 
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
+    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -860,22 +877,18 @@ def test_hippo_legs_lsi_bi_reconstruction(
         hr_cs, "seq_len batch N -> batch seq_len 1 N"
     )  # add input_size and swap batch and seq_len dimension for comparison
     hr_y = hr_hippo_lsi_legs_bi.reconstruct(hr_c)
+    print(f"hr_y shape: {hr_y.shape}")
     hr_y = einops.rearrange(
         hr_y, "seq_len batch seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
-    hr_c = jnp.asarray(hr_cs, dtype=jnp.float32)  # convert torch array to jax array
+    hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
     assert hr_c.shape == c.shape
     assert hr_y.shape == y.shape
 
-    assert c.shape == (3000, 16, 50)  # seq_len, batch_size, N
-    assert y.shape == (
-        16,
-        3000,
-        1,
-        3000,
-    )  # batch_size, number of iterations through seq_len, input_size, seq_len
+    assert c.shape == (16, 3000, 1, 50)  # batch_size, seq_len, input_size, N
+    assert y.shape == (16, 3000, 1, 3000)  # batch_size, seq_len, input_size, seq_len
 
     co_flag = True
     for i in range(c.shape[0]):
@@ -912,7 +925,8 @@ def test_hippo_legt_lti_bi_reconstruction(
     hippo = hippo_lti_legt_bi.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legt_bi(x_tensor, fast=False)
@@ -920,7 +934,8 @@ def test_hippo_legt_lti_bi_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legt_bi.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -963,7 +978,8 @@ def test_hippo_lmu_lti_bi_reconstruction(
     hippo = hippo_lti_lmu_bi.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lmu_bi(x_tensor, fast=False)
@@ -971,7 +987,8 @@ def test_hippo_lmu_lti_bi_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lmu_bi.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -1014,7 +1031,8 @@ def test_hippo_lagt_lti_bi_reconstruction(
     hippo = hippo_lti_lagt_bi.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lagt_bi(x_tensor, fast=False)
@@ -1022,7 +1040,8 @@ def test_hippo_lagt_lti_bi_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lagt_bi.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -1065,7 +1084,8 @@ def test_hippo_fout_lti_bi_reconstruction(
     hippo = hippo_lti_fout_bi.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_fout_bi(x_tensor, fast=False)
@@ -1073,7 +1093,8 @@ def test_hippo_fout_lti_bi_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_fout_bi.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -1120,7 +1141,8 @@ def test_hippo_legs_lti_zoh_reconstruction(
     hippo = hippo_lti_legs_zoh.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legs_zoh(x_tensor, fast=False)
@@ -1128,7 +1150,8 @@ def test_hippo_legs_lti_zoh_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legs_zoh.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -1167,6 +1190,7 @@ def test_hippo_legs_lsi_zoh_reconstruction(
 
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
+    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -1177,22 +1201,18 @@ def test_hippo_legs_lsi_zoh_reconstruction(
         hr_cs, "seq_len batch N -> batch seq_len 1 N"
     )  # add input_size and swap batch and seq_len dimension for comparison
     hr_y = hr_hippo_lsi_legs_zoh.reconstruct(hr_c)
+    print(f"hr_y shape: {hr_y.shape}")
     hr_y = einops.rearrange(
         hr_y, "seq_len batch seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
-    hr_c = jnp.asarray(hr_cs, dtype=jnp.float32)  # convert torch array to jax array
+    hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
     assert hr_c.shape == c.shape
     assert hr_y.shape == y.shape
 
-    assert c.shape == (3000, 16, 50)  # seq_len, batch_size, N
-    assert y.shape == (
-        16,
-        3000,
-        1,
-        3000,
-    )  # batch_size, number of iterations through seq_len, input_size, seq_len
+    assert c.shape == (16, 3000, 1, 50)  # batch_size, seq_len, input_size, N
+    assert y.shape == (16, 3000, 1, 3000)  # batch_size, seq_len, input_size, seq_len
 
     co_flag = True
     for i in range(c.shape[0]):
@@ -1229,7 +1249,8 @@ def test_hippo_legt_lti_zoh_reconstruction(
     hippo = hippo_lti_legt_zoh.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_legt_zoh(x_tensor, fast=False)
@@ -1237,7 +1258,8 @@ def test_hippo_legt_lti_zoh_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_legt_zoh.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -1280,7 +1302,8 @@ def test_hippo_lmu_lti_zoh_reconstruction(
     hippo = hippo_lti_lmu_zoh.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lmu_zoh(x_tensor, fast=False)
@@ -1288,7 +1311,8 @@ def test_hippo_lmu_lti_zoh_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lmu_zoh.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -1331,7 +1355,8 @@ def test_hippo_lagt_lti_zoh_reconstruction(
     hippo = hippo_lti_lagt_zoh.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_lagt_zoh(x_tensor, fast=False)
@@ -1339,7 +1364,8 @@ def test_hippo_lagt_lti_zoh_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_lagt_zoh.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 
@@ -1382,7 +1408,8 @@ def test_hippo_fout_lti_zoh_reconstruction(
     hippo = hippo_lti_fout_zoh.bind(params)
     c = hippo.__call__(f=x_jnp)
     y = hippo.reconstruct(c)
-    y = einops.rearrange(y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"y shape: {y.shape}")
+    y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
     _, hr_c = hr_hippo_lti_fout_zoh(x_tensor, fast=False)
@@ -1390,7 +1417,8 @@ def test_hippo_fout_lti_zoh_reconstruction(
         hr_c, "batch N -> batch 1 N"
     )  # add input_size dimension for comparison
     hr_y = hr_hippo_lti_fout_zoh.reconstruct(hr_c)
-    hr_y = einops.rearrange(hr_y, "batch seq_len input_len -> batch input_len seq_len")
+    print(f"hr_y shape: {hr_y.shape}")
+    hr_y = einops.rearrange(hr_y, "batch seq_len -> batch 1 seq_len")
     hr_c = jnp.asarray(hr_c, dtype=jnp.float32)  # convert torch array to jax array
     hr_y = jnp.asarray(hr_y, dtype=jnp.float32)  # convert torch array to jax array
 

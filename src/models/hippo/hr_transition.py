@@ -250,7 +250,7 @@ class HRTransMatrix:
         return A, B
 
 
-class GuLowRankMatrix:
+class HRLowRankMatrix:
     def __init__(
         self,
         N: int,

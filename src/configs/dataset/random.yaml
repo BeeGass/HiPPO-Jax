@@ -1,0 +1,10 @@
+_target_: src.datasets.random.WhiteSignalDataset
+
+name: random
+path: "../../datasets/random"
+period: 3
+dt: 1e-3
+freq: 3
+rms: 0.5
+num_samples: 1000
+batch_size: 32

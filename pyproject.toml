@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "s4mer-pkg"
+name = "hippo-pkg"
 packages = [
     { include = "src", from="." },
 ]
@@ -11,7 +11,7 @@ maintainers = [
 ]
 license = "GPL-3.0-or-later"
 readme = "README.md"
-repository = "https://github.com/Dana-Farber-AIOS/s4mer"
+repository = "https://github.com/Dana-Farber-AIOS/HiPPO-Jax"
 classifiers = [
     "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     "Operating System :: OS Independent",

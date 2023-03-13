@@ -7,38 +7,38 @@ import torch
 # implementation of HiPPO Operators
 # Gu's implementation of HiPPO Operators
 from src.tests.hippo_tests.hippo_operator import (
-    gu_hippo_lsi_legs_be,
-    gu_hippo_lsi_legs_bi,
-    gu_hippo_lsi_legs_fe,
-    gu_hippo_lsi_legs_zoh,
-    gu_hippo_lti_foud_be,
-    gu_hippo_lti_foud_bi,
-    gu_hippo_lti_foud_fe,
-    gu_hippo_lti_foud_zoh,
-    gu_hippo_lti_fout_be,
-    gu_hippo_lti_fout_bi,
-    gu_hippo_lti_fout_fe,
-    gu_hippo_lti_fout_zoh,
-    gu_hippo_lti_fru_be,
-    gu_hippo_lti_fru_bi,
-    gu_hippo_lti_fru_fe,
-    gu_hippo_lti_fru_zoh,
-    gu_hippo_lti_lagt_be,
-    gu_hippo_lti_lagt_bi,
-    gu_hippo_lti_lagt_fe,
-    gu_hippo_lti_lagt_zoh,
-    gu_hippo_lti_legs_be,
-    gu_hippo_lti_legs_bi,
-    gu_hippo_lti_legs_fe,
-    gu_hippo_lti_legs_zoh,
-    gu_hippo_lti_legt_be,
-    gu_hippo_lti_legt_bi,
-    gu_hippo_lti_legt_fe,
-    gu_hippo_lti_legt_zoh,
-    gu_hippo_lti_lmu_be,
-    gu_hippo_lti_lmu_bi,
-    gu_hippo_lti_lmu_fe,
-    gu_hippo_lti_lmu_zoh,
+    hr_hippo_lsi_legs_be,
+    hr_hippo_lsi_legs_bi,
+    hr_hippo_lsi_legs_fe,
+    hr_hippo_lsi_legs_zoh,
+    hr_hippo_lti_foud_be,
+    hr_hippo_lti_foud_bi,
+    hr_hippo_lti_foud_fe,
+    hr_hippo_lti_foud_zoh,
+    hr_hippo_lti_fout_be,
+    hr_hippo_lti_fout_bi,
+    hr_hippo_lti_fout_fe,
+    hr_hippo_lti_fout_zoh,
+    hr_hippo_lti_fru_be,
+    hr_hippo_lti_fru_bi,
+    hr_hippo_lti_fru_fe,
+    hr_hippo_lti_fru_zoh,
+    hr_hippo_lti_lagt_be,
+    hr_hippo_lti_lagt_bi,
+    hr_hippo_lti_lagt_fe,
+    hr_hippo_lti_lagt_zoh,
+    hr_hippo_lti_legs_be,
+    hr_hippo_lti_legs_bi,
+    hr_hippo_lti_legs_fe,
+    hr_hippo_lti_legs_zoh,
+    hr_hippo_lti_legt_be,
+    hr_hippo_lti_legt_bi,
+    hr_hippo_lti_legt_fe,
+    hr_hippo_lti_legt_zoh,
+    hr_hippo_lti_lmu_be,
+    hr_hippo_lti_lmu_bi,
+    hr_hippo_lti_lmu_fe,
+    hr_hippo_lti_lmu_zoh,
     hippo_lsi_legs_be,
     hippo_lsi_legs_bi,
     hippo_lsi_legs_fe,
@@ -104,27 +104,27 @@ from src.tests.hippo_tests.trans_matrices import (
     foud_matrices,
     fout_matrices,
     fru_matrices,
-    gu_dplr_foud,
-    gu_dplr_fout,
-    gu_dplr_fru,
-    gu_dplr_lagt,
-    gu_dplr_legs,
-    gu_dplr_legt,
-    gu_dplr_lmu,
-    gu_foud_matrices,
-    gu_fout_matrices,
-    gu_fru_matrices,
-    gu_lagt_matrices,
-    gu_legs_matrices,
-    gu_legt_lmu_matrices,
-    gu_legt_matrices,
-    gu_nplr_foud,
-    gu_nplr_fout,
-    gu_nplr_fru,
-    gu_nplr_lagt,
-    gu_nplr_legs,
-    gu_nplr_legt,
-    gu_nplr_lmu,
+    hr_dplr_foud,
+    hr_dplr_fout,
+    hr_dplr_fru,
+    hr_dplr_lagt,
+    hr_dplr_legs,
+    hr_dplr_legt,
+    hr_dplr_lmu,
+    hr_foud_matrices,
+    hr_fout_matrices,
+    hr_fru_matrices,
+    hr_lagt_matrices,
+    hr_legs_matrices,
+    hr_legt_lmu_matrices,
+    hr_legt_matrices,
+    hr_nplr_foud,
+    hr_nplr_fout,
+    hr_nplr_fru,
+    hr_nplr_lagt,
+    hr_nplr_legs,
+    hr_nplr_legt,
+    hr_nplr_lmu,
     lagt_matrices,
     legs_matrices,
     legt_lmu_matrices,
@@ -143,183 +143,183 @@ from src.tests.hippo_tests.trans_matrices import (
 # ----------------------------------------------------------------
 
 
-def test_nplr_legt(nplr_legt, gu_nplr_legt):
+def test_nplr_legt(nplr_legt, hr_nplr_legt):
     print("NPLR LEGT")
     A, B, P, S = nplr_legt.A, nplr_legt.B, nplr_legt.P, nplr_legt.S
-    gu_A, gu_B, gu_P, gu_S = (
-        jnp.asarray(gu_nplr_legt.A, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_legt.B, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_legt.P, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_legt.S, dtype=jnp.float32),
+    hr_A, hr_B, hr_P, hr_S = (
+        jnp.asarray(hr_nplr_legt.A, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_legt.B, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_legt.P, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_legt.S, dtype=jnp.float32),
     )
     print(f"\nA:\n{A}\n")
-    print(f"gu_A:\n{gu_A}\n")
-    assert jnp.allclose(A, gu_A, rtol=1e-04, atol=1e-06)
+    print(f"hr_A:\n{hr_A}\n")
+    assert jnp.allclose(A, hr_A, rtol=1e-04, atol=1e-06)
 
     print(f"B:\n{B}\n")
-    print(f"gu_B:\n{gu_B}\n")
-    assert jnp.allclose(B, gu_B, rtol=1e-04, atol=1e-06)
+    print(f"hr_B:\n{hr_B}\n")
+    assert jnp.allclose(B, hr_B, rtol=1e-04, atol=1e-06)
 
     print(f"P:\n{P}\n")
-    print(f"gu_P:\n{gu_P}\n")
-    assert jnp.allclose(P, gu_P, rtol=1e-04, atol=1e-06)
+    print(f"hr_P:\n{hr_P}\n")
+    assert jnp.allclose(P, hr_P, rtol=1e-04, atol=1e-06)
 
     print(f"S:\n{S}\n")
-    print(f"gu_S:\n{gu_S}\n")
-    assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
+    print(f"hr_S:\n{hr_S}\n")
+    assert jnp.allclose(S, hr_S, rtol=1e-04, atol=1e-06)
 
 
-def test_nplr_lmu(nplr_lmu, gu_nplr_lmu):
+def test_nplr_lmu(nplr_lmu, hr_nplr_lmu):
     print("NPLR LMU")
     A, B, P, S = nplr_lmu.A, nplr_lmu.B, nplr_lmu.P, nplr_lmu.S
-    gu_A, gu_B, gu_P, gu_S = (
-        jnp.asarray(gu_nplr_lmu.A, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_lmu.B, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_lmu.P, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_lmu.S, dtype=jnp.float32),
+    hr_A, hr_B, hr_P, hr_S = (
+        jnp.asarray(hr_nplr_lmu.A, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_lmu.B, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_lmu.P, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_lmu.S, dtype=jnp.float32),
     )
     print(f"\nA:\n{A}\n")
-    print(f"gu_A:\n{gu_A}\n")
-    assert jnp.allclose(A, gu_A, rtol=1e-04, atol=1e-06)
+    print(f"hr_A:\n{hr_A}\n")
+    assert jnp.allclose(A, hr_A, rtol=1e-04, atol=1e-06)
 
     print(f"B:\n{B}\n")
-    print(f"gu_B:\n{gu_B}\n")
-    assert jnp.allclose(B, gu_B, rtol=1e-04, atol=1e-06)
+    print(f"hr_B:\n{hr_B}\n")
+    assert jnp.allclose(B, hr_B, rtol=1e-04, atol=1e-06)
 
     print(f"P:\n{P}\n")
-    print(f"gu_P:\n{gu_P}\n")
-    assert jnp.allclose(P, gu_P, rtol=1e-04, atol=1e-06)
+    print(f"hr_P:\n{hr_P}\n")
+    assert jnp.allclose(P, hr_P, rtol=1e-04, atol=1e-06)
 
     print(f"S:\n{S}\n")
-    print(f"gu_S:\n{gu_S}\n")
-    assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
+    print(f"hr_S:\n{hr_S}\n")
+    assert jnp.allclose(S, hr_S, rtol=1e-04, atol=1e-06)
 
 
-def test_nplr_lagt(nplr_lagt, gu_nplr_lagt):
+def test_nplr_lagt(nplr_lagt, hr_nplr_lagt):
     print("NPLR LAGT")
     A, B, P, S = nplr_lagt.A, nplr_lagt.B, nplr_lagt.P, nplr_lagt.S
-    gu_A, gu_B, gu_P, gu_S = (
-        jnp.asarray(gu_nplr_lagt.A, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_lagt.B, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_lagt.P, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_lagt.S, dtype=jnp.float32),
+    hr_A, hr_B, hr_P, hr_S = (
+        jnp.asarray(hr_nplr_lagt.A, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_lagt.B, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_lagt.P, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_lagt.S, dtype=jnp.float32),
     )
     print(f"\nA:\n{A}\n")
-    print(f"gu_A:\n{gu_A}\n")
-    assert jnp.allclose(A, gu_A, rtol=1e-04, atol=1e-06)
+    print(f"hr_A:\n{hr_A}\n")
+    assert jnp.allclose(A, hr_A, rtol=1e-04, atol=1e-06)
 
     print(f"B:\n{B}\n")
-    print(f"gu_B:\n{gu_B}\n")
-    assert jnp.allclose(B, gu_B, rtol=1e-04, atol=1e-06)
+    print(f"hr_B:\n{hr_B}\n")
+    assert jnp.allclose(B, hr_B, rtol=1e-04, atol=1e-06)
 
     print(f"P:\n{P}\n")
-    print(f"gu_P:\n{gu_P}\n")
-    assert jnp.allclose(P, gu_P, rtol=1e-04, atol=1e-06)
+    print(f"hr_P:\n{hr_P}\n")
+    assert jnp.allclose(P, hr_P, rtol=1e-04, atol=1e-06)
 
     print(f"S:\n{S}\n")
-    print(f"gu_S:\n{gu_S}\n")
-    assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
+    print(f"hr_S:\n{hr_S}\n")
+    assert jnp.allclose(S, hr_S, rtol=1e-04, atol=1e-06)
 
 
-def test_nplr_legs(nplr_legs, gu_nplr_legs):
+def test_nplr_legs(nplr_legs, hr_nplr_legs):
     print("NPLR LEGS")
     A, B, P, S = nplr_legs.A, nplr_legs.B, nplr_legs.P, nplr_legs.S
-    gu_A, gu_B, gu_P, gu_S = (
-        jnp.asarray(gu_nplr_legs.A, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_legs.B, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_legs.P, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_legs.S, dtype=jnp.float32),
+    hr_A, hr_B, hr_P, hr_S = (
+        jnp.asarray(hr_nplr_legs.A, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_legs.B, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_legs.P, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_legs.S, dtype=jnp.float32),
     )
     print(f"\nA:\n{A}\n")
-    print(f"gu_A:\n{gu_A}\n")
-    assert jnp.allclose(A, gu_A, rtol=1e-04, atol=1e-06)
+    print(f"hr_A:\n{hr_A}\n")
+    assert jnp.allclose(A, hr_A, rtol=1e-04, atol=1e-06)
 
     print(f"B:\n{B}\n")
-    print(f"gu_B:\n{gu_B}\n")
-    assert jnp.allclose(B, gu_B, rtol=1e-04, atol=1e-06)
+    print(f"hr_B:\n{hr_B}\n")
+    assert jnp.allclose(B, hr_B, rtol=1e-04, atol=1e-06)
 
     print(f"P:\n{P}\n")
-    print(f"gu_P:\n{gu_P}\n")
-    assert jnp.allclose(P, gu_P, rtol=1e-04, atol=1e-06)
+    print(f"hr_P:\n{hr_P}\n")
+    assert jnp.allclose(P, hr_P, rtol=1e-04, atol=1e-06)
 
     print(f"S:\n{S}\n")
-    print(f"gu_S:\n{gu_S}\n")
-    assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
+    print(f"hr_S:\n{hr_S}\n")
+    assert jnp.allclose(S, hr_S, rtol=1e-04, atol=1e-06)
 
 
-def test_nplr_fru(nplr_fru, gu_nplr_fru):
+def test_nplr_fru(nplr_fru, hr_nplr_fru):
     print("NPLR FRU")
     A, B, P, S = nplr_fru.A, nplr_fru.B, nplr_fru.P, nplr_fru.S
-    gu_A, gu_B, gu_P, gu_S = (
-        jnp.asarray(gu_nplr_fru.A, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_fru.B, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_fru.P, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_fru.S, dtype=jnp.float32),
+    hr_A, hr_B, hr_P, hr_S = (
+        jnp.asarray(hr_nplr_fru.A, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_fru.B, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_fru.P, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_fru.S, dtype=jnp.float32),
     )
     print(f"\nA:\n{A}\n")
-    print(f"gu_A:\n{gu_A}\n")
-    assert jnp.allclose(A, gu_A, rtol=1e-04, atol=1e-06)
+    print(f"hr_A:\n{hr_A}\n")
+    assert jnp.allclose(A, hr_A, rtol=1e-04, atol=1e-06)
 
     print(f"B:\n{B}\n")
-    print(f"gu_B:\n{gu_B}\n")
-    assert jnp.allclose(B, gu_B, rtol=1e-04, atol=1e-06)
+    print(f"hr_B:\n{hr_B}\n")
+    assert jnp.allclose(B, hr_B, rtol=1e-04, atol=1e-06)
 
     print(f"P:\n{P}\n")
-    print(f"gu_P:\n{gu_P}\n")
-    assert jnp.allclose(P, gu_P, rtol=1e-04, atol=1e-06)
+    print(f"hr_P:\n{hr_P}\n")
+    assert jnp.allclose(P, hr_P, rtol=1e-04, atol=1e-06)
 
     print(f"S:\n{S}\n")
-    print(f"gu_S:\n{gu_S}\n")
-    assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
+    print(f"hr_S:\n{hr_S}\n")
+    assert jnp.allclose(S, hr_S, rtol=1e-04, atol=1e-06)
 
 
-def test_nplr_fout(nplr_fout, gu_nplr_fout):
+def test_nplr_fout(nplr_fout, hr_nplr_fout):
     print("NPLR FOUT")
     A, B, P, S = nplr_fout.A, nplr_fout.B, nplr_fout.P, nplr_fout.S
-    gu_A, gu_B, gu_P, gu_S = (
-        jnp.asarray(gu_nplr_fout.A, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_fout.B, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_fout.P, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_fout.S, dtype=jnp.float32),
+    hr_A, hr_B, hr_P, hr_S = (
+        jnp.asarray(hr_nplr_fout.A, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_fout.B, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_fout.P, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_fout.S, dtype=jnp.float32),
     )
     print(f"\nA:\n{A}\n")
-    print(f"gu_A:\n{gu_A}\n")
-    assert jnp.allclose(A, gu_A, rtol=1e-04, atol=1e-06)
+    print(f"hr_A:\n{hr_A}\n")
+    assert jnp.allclose(A, hr_A, rtol=1e-04, atol=1e-06)
 
     print(f"B:\n{B}\n")
-    print(f"gu_B:\n{gu_B}\n")
-    assert jnp.allclose(B, gu_B, rtol=1e-04, atol=1e-06)
+    print(f"hr_B:\n{hr_B}\n")
+    assert jnp.allclose(B, hr_B, rtol=1e-04, atol=1e-06)
 
     print(f"P:\n{P}\n")
-    print(f"gu_P:\n{gu_P}\n")
-    assert jnp.allclose(P, gu_P, rtol=1e-04, atol=1e-06)
+    print(f"hr_P:\n{hr_P}\n")
+    assert jnp.allclose(P, hr_P, rtol=1e-04, atol=1e-06)
 
     print(f"S:\n{S}\n")
-    print(f"gu_S:\n{gu_S}\n")
-    assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
+    print(f"hr_S:\n{hr_S}\n")
+    assert jnp.allclose(S, hr_S, rtol=1e-04, atol=1e-06)
 
 
-def test_nplr_foud(nplr_foud, gu_nplr_foud):
+def test_nplr_foud(nplr_foud, hr_nplr_foud):
     print("NPLR FOUD")
     A, B, P, S = nplr_foud.A, nplr_foud.B, nplr_foud.P, nplr_foud.S
-    gu_A, gu_B, gu_P, gu_S = (
-        jnp.asarray(gu_nplr_foud.A, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_foud.B, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_foud.P, dtype=jnp.float32),
-        jnp.asarray(gu_nplr_foud.S, dtype=jnp.float32),
+    hr_A, hr_B, hr_P, hr_S = (
+        jnp.asarray(hr_nplr_foud.A, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_foud.B, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_foud.P, dtype=jnp.float32),
+        jnp.asarray(hr_nplr_foud.S, dtype=jnp.float32),
     )
     print(f"\nA:\n{A}\n")
-    print(f"gu_A:\n{gu_A}\n")
-    assert jnp.allclose(A, gu_A, rtol=1e-04, atol=1e-06)
+    print(f"hr_A:\n{hr_A}\n")
+    assert jnp.allclose(A, hr_A, rtol=1e-04, atol=1e-06)
 
     print(f"B:\n{B}\n")
-    print(f"gu_B:\n{gu_B}\n")
-    assert jnp.allclose(B, gu_B, rtol=1e-04, atol=1e-06)
+    print(f"hr_B:\n{hr_B}\n")
+    assert jnp.allclose(B, hr_B, rtol=1e-04, atol=1e-06)
 
     print(f"P:\n{P}\n")
-    print(f"gu_P:\n{gu_P}\n")
-    assert jnp.allclose(P, gu_P, rtol=1e-04, atol=1e-06)
+    print(f"hr_P:\n{hr_P}\n")
+    assert jnp.allclose(P, hr_P, rtol=1e-04, atol=1e-06)
 
     print(f"S:\n{S}\n")
-    print(f"gu_S:\n{gu_S}\n")
-    assert jnp.allclose(S, gu_S, rtol=1e-04, atol=1e-06)
+    print(f"hr_S:\n{hr_S}\n")
+    assert jnp.allclose(S, hr_S, rtol=1e-04, atol=1e-06)

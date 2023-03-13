@@ -23,6 +23,5 @@ from src.models.rnn.rnn import (
 )
 
 # Utils
-from src.utils.ops import genlaguerre
 
 from ._version import __version__

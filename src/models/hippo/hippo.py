@@ -769,6 +769,8 @@ class HiPPOLTI(Model):
         if len(c.shape) == 3:
             c = einops.rearrange(c, "batch input_size N -> batch N input_size")
             y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
+            y = einops.rearrange(y, "batch seq_len 1 -> batch seq_len")
+            y = jax.vmap(jnp.flip, in_axes=(0, None))(y, 0)
         elif len(c.shape) == 4:
             c = einops.rearrange(
                 c, "batch seq_len input_size N -> batch seq_len N input_size"
@@ -776,6 +778,10 @@ class HiPPOLTI(Model):
             time_dot = jax.vmap(jnp.dot, in_axes=(None, 0))
             batch_time_dot = jax.vmap(time_dot, in_axes=(None, 0))
             y = batch_time_dot(eval_matrix, c)
+            y = einops.rearrange(
+                y, "batch seq_len 1 seq_len2 -> batch seq_len seq_len2"
+            )
+            y = jax.vmap(jax.vmap(jnp.flip, in_axes=(0, None)), in_axes=(0, None))(y, 0)
         else:
             raise ValueError(
                 "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"

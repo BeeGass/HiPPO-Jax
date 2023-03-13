@@ -4,7 +4,7 @@ from torchvision import datasets, transforms
 import numpy as np
 
 
-class WhiteSignalDataset:
+class WhiteSignal:
     def __init__(self, period, dt, freq, rms=0.5, batch_shape=(), num_samples=1000):
         self.period = period
         self.dt = dt
@@ -61,7 +61,7 @@ class WhiteSignalDataset:
         return signal
 
 
-class WhiteSignal(Dataset):
+class WhiteSignalDataset(Dataset):
     def __init__(
         self,
         name: str,

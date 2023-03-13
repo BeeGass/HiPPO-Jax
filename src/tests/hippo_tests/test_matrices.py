@@ -5,40 +5,40 @@ import pytest
 import torch
 
 # implementation of HiPPO Operators
-# Gu's implementation of HiPPO Operators
+# HR's implementation of HiPPO Operators
 from src.tests.hippo_tests.hippo_operator import (
-    gu_hippo_lsi_legs_be,
-    gu_hippo_lsi_legs_bi,
-    gu_hippo_lsi_legs_fe,
-    gu_hippo_lsi_legs_zoh,
-    gu_hippo_lti_foud_be,
-    gu_hippo_lti_foud_bi,
-    gu_hippo_lti_foud_fe,
-    gu_hippo_lti_foud_zoh,
-    gu_hippo_lti_fout_be,
-    gu_hippo_lti_fout_bi,
-    gu_hippo_lti_fout_fe,
-    gu_hippo_lti_fout_zoh,
-    gu_hippo_lti_fru_be,
-    gu_hippo_lti_fru_bi,
-    gu_hippo_lti_fru_fe,
-    gu_hippo_lti_fru_zoh,
-    gu_hippo_lti_lagt_be,
-    gu_hippo_lti_lagt_bi,
-    gu_hippo_lti_lagt_fe,
-    gu_hippo_lti_lagt_zoh,
-    gu_hippo_lti_legs_be,
-    gu_hippo_lti_legs_bi,
-    gu_hippo_lti_legs_fe,
-    gu_hippo_lti_legs_zoh,
-    gu_hippo_lti_legt_be,
-    gu_hippo_lti_legt_bi,
-    gu_hippo_lti_legt_fe,
-    gu_hippo_lti_legt_zoh,
-    gu_hippo_lti_lmu_be,
-    gu_hippo_lti_lmu_bi,
-    gu_hippo_lti_lmu_fe,
-    gu_hippo_lti_lmu_zoh,
+    hr_hippo_lsi_legs_be,
+    hr_hippo_lsi_legs_bi,
+    hr_hippo_lsi_legs_fe,
+    hr_hippo_lsi_legs_zoh,
+    hr_hippo_lti_foud_be,
+    hr_hippo_lti_foud_bi,
+    hr_hippo_lti_foud_fe,
+    hr_hippo_lti_foud_zoh,
+    hr_hippo_lti_fout_be,
+    hr_hippo_lti_fout_bi,
+    hr_hippo_lti_fout_fe,
+    hr_hippo_lti_fout_zoh,
+    hr_hippo_lti_fru_be,
+    hr_hippo_lti_fru_bi,
+    hr_hippo_lti_fru_fe,
+    hr_hippo_lti_fru_zoh,
+    hr_hippo_lti_lagt_be,
+    hr_hippo_lti_lagt_bi,
+    hr_hippo_lti_lagt_fe,
+    hr_hippo_lti_lagt_zoh,
+    hr_hippo_lti_legs_be,
+    hr_hippo_lti_legs_bi,
+    hr_hippo_lti_legs_fe,
+    hr_hippo_lti_legs_zoh,
+    hr_hippo_lti_legt_be,
+    hr_hippo_lti_legt_bi,
+    hr_hippo_lti_legt_fe,
+    hr_hippo_lti_legt_zoh,
+    hr_hippo_lti_lmu_be,
+    hr_hippo_lti_lmu_bi,
+    hr_hippo_lti_lmu_fe,
+    hr_hippo_lti_lmu_zoh,
     hippo_lsi_legs_be,
     hippo_lsi_legs_bi,
     hippo_lsi_legs_fe,
@@ -104,27 +104,27 @@ from src.tests.hippo_tests.trans_matrices import (
     foud_matrices,
     fout_matrices,
     fru_matrices,
-    gu_dplr_foud,
-    gu_dplr_fout,
-    gu_dplr_fru,
-    gu_dplr_lagt,
-    gu_dplr_legs,
-    gu_dplr_legt,
-    gu_dplr_lmu,
-    gu_foud_matrices,
-    gu_fout_matrices,
-    gu_fru_matrices,
-    gu_lagt_matrices,
-    gu_legs_matrices,
-    gu_legt_lmu_matrices,
-    gu_legt_matrices,
-    gu_nplr_foud,
-    gu_nplr_fout,
-    gu_nplr_fru,
-    gu_nplr_lagt,
-    gu_nplr_legs,
-    gu_nplr_legt,
-    gu_nplr_lmu,
+    hr_dplr_foud,
+    hr_dplr_fout,
+    hr_dplr_fru,
+    hr_dplr_lagt,
+    hr_dplr_legs,
+    hr_dplr_legt,
+    hr_dplr_lmu,
+    hr_foud_matrices,
+    hr_fout_matrices,
+    hr_fru_matrices,
+    hr_lagt_matrices,
+    hr_legs_matrices,
+    hr_legt_lmu_matrices,
+    hr_legt_matrices,
+    hr_nplr_foud,
+    hr_nplr_fout,
+    hr_nplr_fru,
+    hr_nplr_lagt,
+    hr_nplr_legs,
+    hr_nplr_legt,
+    hr_nplr_lmu,
     lagt_matrices,
     legs_matrices,
     legt_lmu_matrices,
@@ -147,85 +147,85 @@ from src.tests.hippo_tests.trans_matrices import (
 # ---------------
 
 
-def test_legt_matrices(legt_matrices, gu_legt_matrices):
+def test_legt_matrices(legt_matrices, hr_legt_matrices):
     print("HiPPO LEGT")
     A, B = legt_matrices
-    gu_A, gu_B = gu_legt_matrices
+    hr_A, hr_B = hr_legt_matrices
     print(f"\nA:\n{A}\n")
     print(f"B:\n{B}\n")
-    print(f"Gu's A:\n{gu_A}\n")
-    print(f"Gu's B:\n{gu_B}\n")
-    assert jnp.allclose(A, gu_A)
-    assert jnp.allclose(B, gu_B)
+    print(f"HR's A:\n{hr_A}\n")
+    print(f"HR's B:\n{hr_B}\n")
+    assert jnp.allclose(A, hr_A)
+    assert jnp.allclose(B, hr_B)
 
 
-def test_lmu_matrices(legt_lmu_matrices, gu_legt_lmu_matrices):
+def test_lmu_matrices(legt_lmu_matrices, hr_legt_lmu_matrices):
     print("HiPPO LMU")
     A, B = legt_lmu_matrices
-    gu_A, gu_B = gu_legt_lmu_matrices
+    hr_A, hr_B = hr_legt_lmu_matrices
     print(f"\nA:\n{A}\n")
     print(f"B:\n{B}\n")
-    print(f"Gu's A:\n{gu_A}\n")
-    print(f"Gu's B:\n{gu_B}\n")
-    assert jnp.allclose(A, gu_A)
-    assert jnp.allclose(B, gu_B)
+    print(f"HR's A:\n{hr_A}\n")
+    print(f"HR's B:\n{hr_B}\n")
+    assert jnp.allclose(A, hr_A)
+    assert jnp.allclose(B, hr_B)
 
 
-def test_lagt_matrices(lagt_matrices, gu_lagt_matrices):
+def test_lagt_matrices(lagt_matrices, hr_lagt_matrices):
     print("HiPPO LAGT")
     A, B = lagt_matrices
-    gu_A, gu_B = gu_lagt_matrices
+    hr_A, hr_B = hr_lagt_matrices
     print(f"\nA:\n{A}\n")
     print(f"B:\n{B}\n")
-    print(f"Gu's A:\n{gu_A}\n")
-    print(f"Gu's B:\n{gu_B}\n")
-    assert jnp.allclose(A, gu_A)
-    assert jnp.allclose(B, gu_B)
+    print(f"HR's A:\n{hr_A}\n")
+    print(f"HR's B:\n{hr_B}\n")
+    assert jnp.allclose(A, hr_A)
+    assert jnp.allclose(B, hr_B)
 
 
-def test_legs_matrices(legs_matrices, gu_legs_matrices):
+def test_legs_matrices(legs_matrices, hr_legs_matrices):
     print("HiPPO LEGS")
     A, B = legs_matrices
-    gu_A, gu_B = gu_legs_matrices
+    hr_A, hr_B = hr_legs_matrices
     print(f"\nA:\n{A}\n")
     print(f"B:\n{B}\n")
-    print(f"Gu's A:\n{gu_A}\n")
-    print(f"Gu's B:\n{gu_B}\n")
-    assert jnp.allclose(A, gu_A)
-    assert jnp.allclose(B, gu_B)
+    print(f"HR's A:\n{hr_A}\n")
+    print(f"HR's B:\n{hr_B}\n")
+    assert jnp.allclose(A, hr_A)
+    assert jnp.allclose(B, hr_B)
 
 
-def test_fru_matrices(fru_matrices, gu_fru_matrices):
+def test_fru_matrices(fru_matrices, hr_fru_matrices):
     print("HiPPO FRU")
     A, B = fru_matrices
-    gu_A, gu_B = gu_fru_matrices
+    hr_A, hr_B = hr_fru_matrices
     print(f"\nA:\n{A}\n")
     print(f"B:\n{B}\n")
-    print(f"Gu's A:\n{gu_A}\n")
-    print(f"Gu's B:\n{gu_B}\n")
-    assert jnp.allclose(A, gu_A)
-    assert jnp.allclose(B, gu_B)
+    print(f"HR's A:\n{hr_A}\n")
+    print(f"HR's B:\n{hr_B}\n")
+    assert jnp.allclose(A, hr_A)
+    assert jnp.allclose(B, hr_B)
 
 
-def test_fout_matrices(fout_matrices, gu_fout_matrices):
+def test_fout_matrices(fout_matrices, hr_fout_matrices):
     print("HiPPO FOUT")
     A, B = fout_matrices
-    gu_A, gu_B = gu_fout_matrices
+    hr_A, hr_B = hr_fout_matrices
     print(f"\nA:\n{A}\n")
     print(f"B:\n{B}\n")
-    print(f"Gu's A:\n{gu_A}\n")
-    print(f"Gu's B:\n{gu_B}\n")
-    assert jnp.allclose(A, gu_A)
-    assert jnp.allclose(B, gu_B)
+    print(f"HR's A:\n{hr_A}\n")
+    print(f"HR's B:\n{hr_B}\n")
+    assert jnp.allclose(A, hr_A)
+    assert jnp.allclose(B, hr_B)
 
 
-def test_foud_matrices(foud_matrices, gu_foud_matrices):
+def test_foud_matrices(foud_matrices, hr_foud_matrices):
     print("HiPPO FOUD")
     A, B = foud_matrices
-    gu_A, gu_B = gu_foud_matrices
+    hr_A, hr_B = hr_foud_matrices
     print(f"\nA:\n{A}\n")
     print(f"B:\n{B}\n")
-    print(f"Gu's A:\n{gu_A}\n")
-    print(f"Gu's B:\n{gu_B}\n")
-    assert jnp.allclose(A, gu_A)
-    assert jnp.allclose(B, gu_B)
+    print(f"HR's A:\n{hr_A}\n")
+    print(f"HR's B:\n{hr_B}\n")
+    assert jnp.allclose(A, hr_A)
+    assert jnp.allclose(B, hr_B)

@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import pytest
 
-from src.models.hippo.hr_transition import GuLowRankMatrix, HRTransMatrix
+from src.models.hippo.hr_transition import HRLowRankMatrix, HRTransMatrix
 from src.models.hippo.transition import LowRankMatrix, TransMatrix
 from src.tests.hippo_tests.hippo_utils import (
     random_1_input,
@@ -248,7 +248,7 @@ def hr_legs_matrices():
 def hr_nplr_legs():
     the_measure = "legs"
     rank = 1
-    hr_nplr_legs = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    hr_nplr_legs = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
     return hr_nplr_legs
 
 
@@ -256,7 +256,7 @@ def hr_nplr_legs():
 def hr_dplr_legs():
     the_measure = "legs"
     rank = 1
-    hr_dplr_legs = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    hr_dplr_legs = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
     return hr_dplr_legs
 
 
@@ -274,7 +274,7 @@ def hr_legt_matrices():
 def hr_nplr_legt():
     the_measure = "legt"
     rank = 2
-    hr_nplr_legt = GuLowRankMatrix(
+    hr_nplr_legt = HRLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=False
     )
     return hr_nplr_legt
@@ -284,7 +284,7 @@ def hr_nplr_legt():
 def hr_dplr_legt():
     the_measure = "legt"
     rank = 2
-    hr_dplr_legt = GuLowRankMatrix(
+    hr_dplr_legt = HRLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=1.0, DPLR=True
     )
     return hr_dplr_legt
@@ -306,7 +306,7 @@ def hr_legt_lmu_matrices():
 def hr_nplr_lmu():
     the_measure = "lmu"
     rank = 2
-    hr_nplr_lmu = GuLowRankMatrix(
+    hr_nplr_lmu = HRLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=False
     )  # change lambda so resulting matrix is in the form of LMU
     return hr_nplr_lmu
@@ -316,7 +316,7 @@ def hr_nplr_lmu():
 def hr_dplr_lmu():
     the_measure = "lmu"
     rank = 2
-    hr_dplr_lmu = GuLowRankMatrix(
+    hr_dplr_lmu = HRLowRankMatrix(
         N=50, rank=rank, measure=the_measure, lambda_n=2.0, DPLR=True
     )  # change lambda so resulting matrix is in the form of LMU
     return hr_dplr_lmu
@@ -341,7 +341,7 @@ def hr_lagt_matrices():
 def hr_nplr_lagt():
     the_measure = "lagt"
     rank = 1
-    hr_nplr_lagt = GuLowRankMatrix(
+    hr_nplr_lagt = HRLowRankMatrix(
         N=50,
         rank=rank,
         measure=the_measure,
@@ -356,7 +356,7 @@ def hr_nplr_lagt():
 def hr_dplr_lagt():
     the_measure = "lagt"
     rank = 1
-    hr_dplr_lagt = GuLowRankMatrix(
+    hr_dplr_lagt = HRLowRankMatrix(
         N=50,
         rank=rank,
         measure=the_measure,
@@ -381,7 +381,7 @@ def hr_fru_matrices():
 def hr_nplr_fru():
     the_measure = "fru"
     rank = 1
-    hr_nplr_fru = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    hr_nplr_fru = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
     return hr_nplr_fru
 
 
@@ -389,7 +389,7 @@ def hr_nplr_fru():
 def hr_dplr_fru():
     the_measure = "fru"
     rank = 1
-    hr_dplr_fru = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    hr_dplr_fru = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
     return hr_dplr_fru
 
 
@@ -407,7 +407,7 @@ def hr_fout_matrices():
 def hr_nplr_fout():
     the_measure = "fout"
     rank = 1
-    hr_nplr_fout = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    hr_nplr_fout = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
     return hr_nplr_fout
 
 
@@ -415,7 +415,7 @@ def hr_nplr_fout():
 def hr_dplr_fout():
     the_measure = "fout"
     rank = 1
-    hr_dplr_fout = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    hr_dplr_fout = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
     return hr_dplr_fout
 
 
@@ -433,7 +433,7 @@ def hr_foud_matrices():
 def hr_nplr_foud():
     the_measure = "foud"
     rank = 1
-    hr_nplr_foud = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
+    hr_nplr_foud = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=False)
     return hr_nplr_foud
 
 
@@ -441,5 +441,5 @@ def hr_nplr_foud():
 def hr_dplr_foud():
     the_measure = "foud"
     rank = 1
-    hr_dplr_foud = GuLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
+    hr_dplr_foud = HRLowRankMatrix(N=50, rank=rank, measure=the_measure, DPLR=True)
     return hr_dplr_foud

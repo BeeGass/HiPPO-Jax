@@ -237,6 +237,8 @@ class HRHiPPO_LTI(nn.Module):
         if len(c.shape) == 3:
             c = einops.rearrange(c, "batch input_size N -> batch N input_size")
             y = functorch.vmap(torch.matmul, in_dims=(None, 0))(eval_matrix.to(c), c)
+            y = einops.rearrange(y, "batch seq_len 1 -> batch seq_len")
+            y = functorch.vmap(torch.flip, in_dims=(0, None))(y, (0,))
         elif len(c.shape) == 4:
             c = einops.rearrange(
                 c, "seq_len batch input_size N -> batch seq_len N input_size"
@@ -244,6 +246,12 @@ class HRHiPPO_LTI(nn.Module):
             time_dot = functorch.vmap(torch.matmul, in_dims=(None, 0))
             batch_time_dot = functorch.vmap(time_dot, in_dims=(None, 0))
             y = batch_time_dot(eval_matrix.to(c), c)
+            y = einops.rearrange(
+                y, "batch seq_len 1 seq_len2 -> batch seq_len seq_len2"
+            )
+            y = functorch.vmap(
+                functorch.vmap(torch.flip, in_dims=(0, None)), in_dims=(0, None)
+            )(y, 0)
         else:
             raise ValueError(
                 "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
