@@ -175,10 +175,6 @@ params = hippo.init(key, f=x)
 c = hippo.apply(params, f=x)
 ```
 
-# Running Experiments
-
-There are several ways to run your own local `S4'former` experiments:
-
 # Contributing
 
 `HiPPO-Jax` is an open source project. Consider contributing to benefit the entire community!
