@@ -196,7 +196,7 @@ There are many ways to contribute to `HiPPO-Jax`, including:
 
 # License
 
-The GNU GPL v2 version of PathML is made available via Open Source licensing.
+The GNU GPL v2 version of HiPPO-Jax is made available via Open Source licensing.
 The user is free to use, modify, and distribute under the terms of the GNU General Public License version 2.
 
 Commercial license options are available also.
