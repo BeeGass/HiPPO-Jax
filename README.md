@@ -1,7 +1,6 @@
-# S4'mer
-<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Typical_State_Space_model.svg/472px-Typical_State_Space_model.svg.png width=600>
+# HiPPO-Jax
 
-[![black](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml/badge.svg)](https://github.com/Dana-Farber-AIOS/s4mer/actions/workflows/black.yml)
+<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Typical_State_Space_model.svg/472px-Typical_State_Space_model.svg.png width=600>
 
 | Branch | Test status   |
 | ------ | ------------- |
@@ -10,35 +9,8 @@
 
 TODO: Change banners from pathML's to VS4's
 
-This repo implements and benchmarks a number of drop-in replacements for attention:
-
-- [HiPPO](https://arxiv.org/pdf/2008.07669.pdf)
-- [HtTYH](https://arxiv.org/pdf/2206.12037.pdf)
-- [DSS](https://arxiv.org/pdf/2203.14343.pdf)
-- [GSS](https://arxiv.org/pdf/2206.13947.pdf)
-- [S4](https://arxiv.org/pdf/2111.00396.pdf)
-- [S4D](https://arxiv.org/pdf/2206.11893.pdf)
-- [S5](https://arxiv.org/abs/2208.04933)
-- [Mega](https://arxiv.org/abs/2209.10655)
-- [H3 Block](https://openreview.net/pdf?id=COZDy0WYGg)
-
-The data we used to benchmark this is:
-
-- [Cifar10](https://www.cs.toronto.edu/~kriz/cifar.html)
-- [Camelyon17](https://camelyon17.grand-challenge.org/)
-- [TIGER](https://tiger.grand-challenge.org/)
-- [PanNuke](https://jgamper.github.io/PanNukeDataset/)
-- [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/)
-- [PanNuke](https://jgamper.github.io/PanNukeDataset/)
-- [Mesmer](https://www.biorxiv.org/content/10.1101/2021.03.01.431313v2.full.pdf)
-- [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga)
-
-**View [documentation](https://pathml.readthedocs.io/en/latest/)**
-
-:construction: the `dev` branch is under active development, with experimental features, bug fixes, and refactors that may happen at any time!
-Stable versions are available as tagged releases on GitHub, or as versioned releases on PyPI
-
 ## Installation
+
 ---
 There are several ways to install S4mer:
 
@@ -52,6 +24,7 @@ Ensure your [CUDA drivers](https://docs.nvidia.com/cuda/cuda-installation-guide-
 Note: these instructions are for Linux. Commands may be different for other platforms.
 
 ### Installation option 1: poetry install
+
 ---
 
 1. Install [poetry](https://python-poetry.org/):
@@ -86,31 +59,37 @@ poetry install --with jax,torch,mltools,jupyter,additional,dataset
 ```
 
 ### Installation option 1: pip install
+
 ---
 
 1. Create and activate virtual environment
+
 ```bash
 conda create --name s4mer python=3.8
 conda activate s4mer
 ```
 
-2. Install dependencies 
+2. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Installation option 2: clone repo and install from source
+
 ---
 
 1. Clone repo:
 
 via HTTPS:
+
 ```bash
 git clone https://github.com/Dana-Farber-AIOS/s4mer.git
 cd s4mer
 ```
 
 via SSH
+
 ```bash
 git clone git@github.com:Dana-Farber-AIOS/s4mer.git
 cd s4mer
@@ -136,13 +115,13 @@ Thats it!
 ```python
 import jax.random as jr
 
-key1, key2, key3 = jr.split(jr.PRNGKey(0), 3)
+key, subkey = jr.split(jr.PRNGKey(0), 2)
 ```
 
 **HiPPO Matrices**
 
 ```python
-from s4mer.src.models.hippo.transition import TransMatrix
+from hippo_jax.src.models.hippo.transition import TransMatrix
 
 N = 100
 measure = "legs"
@@ -152,24 +131,56 @@ A = matrices.A
 B = matrices.B
 ```
 
-**HiPPO Operator**
+**HiPPO (LTI) Operator**
 
 ```python
-from s4mer.src.models.hippo.hippo import HiPPO
+from hippo_jax.src.models.hippo.hippo import HiPPOLTI
 
-N = 100
-gbt_type = 0.5
-L = 784 # length of data
+N = 50
+T = 3
+step = 1e-3
 measure = "legs"
+desc_val = 0.0
 
-hippo = HiPPO(
-    max_length=L,
-    step_size=1.0,
-    N=N,
-    GBT_alpha=gbt_type,
-    measure=measure,
-)
+hippo = HiPPOLTI(
+        N=N,
+        step_size=step,
+        GBT_alpha=desc_val,
+        measure=measure,
+        basis_size=T,
+        unroll=False,
+    )
 
+```
+
+**HiPPO (LTS) Operator**
+
+```python
+from hippo_jax.src.models.hippo.hippo import HiPPOLSI
+
+N = 50
+T = 3
+step = 1e-3
+L = int(T / step)
+measure = "legs"
+desc_val = 0.0
+
+hippo = HiPPOLSI(
+        N=N,
+        max_length=L,
+        step_size=step,
+        GBT_alpha=desc_val,
+        measure=measure,
+        unroll=True,
+    )
+
+```
+
+**Use right out of the box, no training needed**
+
+```python
+params = hippo.init(key, f=x)
+c = hippo.apply(params, f=x)
 ```
 
 # Running Experiments
@@ -178,11 +189,18 @@ There are several ways to run your own local `S4'former` experiments:
 
 # Contributing
 
-TODO: add contributing guide
+`HiPPO-Jax` is an open source project. Consider contributing to benefit the entire community!
 
-# Citing
+There are many ways to contribute to `HiPPO-Jax`, including:
 
-TODO: add citation guide
+- Submitting bug reports
+- Submitting feature requests
+- Writing documentation and examples
+- Fixing bugs
+- Writing code for new features
+- Sharing workflows
+- Sharing trained model parameters
+- Sharing `HiPPO-Jax` with colleagues, students, etc.
 
 # License
 
@@ -197,7 +215,7 @@ Questions? Comments? Suggestions? Get in touch!
 
 [bagass@wpi.edu](mailto:bagass@wpi.edu)
 
-<p align="center"> 
-<img style="vertical-align:middle" src=https://raw.githubusercontent.com/Dana-Farber-AIOS/pathml/master/docs/source/_static/images/dfci_cornell_joint_logos.png width="525"> 
+<p align="center">
+<img style="vertical-align:middle" src=https://raw.githubusercontent.com/Dana-Farber-AIOS/pathml/master/docs/source/_static/images/dfci_cornell_joint_logos.png width="525">
 <img style="vertical-align:middle" src=https://www.wpi.edu/sites/default/files/inline-image/Offices/Marketing-Communications/WPI_Inst_Prim_FulClr_PREVIEW.png?1670371200029 width=200>
-</p> 
+</p>
