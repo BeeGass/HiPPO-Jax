@@ -2,13 +2,6 @@
 
 <img src=https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Typical_State_Space_model.svg/472px-Typical_State_Space_model.svg.png width=600>
 
-| Branch | Test status   |
-| ------ | ------------- |
-| master | ![tests](https://github.com/Dana-Farber-AIOS/pathml/actions/workflows/tests-conda.yml/badge.svg?branch=master) |
-| dev    | ![tests](https://github.com/Dana-Farber-AIOS/pathml/actions/workflows/tests-conda.yml/badge.svg?branch=dev) |
-
-TODO: Change banners from pathML's to VS4's
-
 ## Installation
 
 ---
