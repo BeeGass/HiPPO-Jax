@@ -76,15 +76,15 @@ pip install -r requirements.txt
 via HTTPS:
 
 ```bash
-git clone https://github.com/Dana-Farber-AIOS/hippo_jax.git
-cd hippo_jax
+git clone https://github.com/Dana-Farber-AIOS/HiPPO-Jax.git
+cd HiPPO-Jax
 ```
 
 via SSH
 
 ```bash
-git clone git@github.com:Dana-Farber-AIOS/hippo_jax.git
-cd hippo_jax
+git clone git@github.com:Dana-Farber-AIOS/HiPPO-Jax.git
+cd HiPPO-Jax
 ```
 
 2. Create conda environment:
