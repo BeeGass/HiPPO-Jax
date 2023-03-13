@@ -4,7 +4,7 @@
 
 ## Installation
 
-There are several ways to install S4mer:
+There are several ways to install HiPPO-Jax:
 
 1. Use a package manager
     1. poetry install (recommended for users)
@@ -57,8 +57,8 @@ poetry install --with jax,torch,mltools,jupyter,additional,dataset
 1. Create and activate virtual environment
 
 ```bash
-conda create --name s4mer python=3.8
-conda activate s4mer
+conda create --name hippo_jax python=3.8
+conda activate hippo_jax
 ```
 
 2. Install dependencies
@@ -76,25 +76,25 @@ pip install -r requirements.txt
 via HTTPS:
 
 ```bash
-git clone https://github.com/Dana-Farber-AIOS/s4mer.git
-cd s4mer
+git clone https://github.com/Dana-Farber-AIOS/hippo_jax.git
+cd hippo_jax
 ```
 
 via SSH
 
 ```bash
-git clone git@github.com:Dana-Farber-AIOS/s4mer.git
-cd s4mer
+git clone git@github.com:Dana-Farber-AIOS/hippo_jax.git
+cd hippo_jax
 ```
 
 2. Create conda environment:
 
 ```bash
 conda env create -f requirements.txt
-conda activate s4mer
+conda activate hippo_jax
 ```
 
-3. Install `S4mer` from source:
+3. Install `Hippo-Jax` from source:
 
 ```bash
 pip install -e .
