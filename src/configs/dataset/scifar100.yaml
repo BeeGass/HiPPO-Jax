@@ -1,0 +1,5 @@
+_target_: src.datasets.scifar100.sCIFAR100Dataset
+
+name: scifar100
+path: "../../datasets/scifar100_data"
+batch_size: 64

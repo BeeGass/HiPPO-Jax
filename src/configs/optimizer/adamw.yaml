@@ -1,0 +1,5 @@
+_target_: src.optimizer.adamw.Adamw
+# _name_: adamw
+lr: 0.001 # Initial learning rate
+weight_decay: 0.00 # Weight decay
+beta: [0.9, 0.999]

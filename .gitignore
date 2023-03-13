@@ -1,0 +1,11 @@
+examples/notebooks/notebooks-py/data/MNIST/raw/t10k-images-idx3-ubyte
+examples/notebooks/notebooks-py/data/MNIST/raw/t10k-images-idx3-ubyte.gz
+examples/notebooks/notebooks-py/data/MNIST/raw/t10k-labels-idx1-ubyte
+examples/notebooks/notebooks-py/data/MNIST/raw/t10k-labels-idx1-ubyte.gz
+examples/notebooks/notebooks-py/data/MNIST/raw/train-images-idx3-ubyte
+examples/notebooks/notebooks-py/data/MNIST/raw/train-images-idx3-ubyte.gz
+examples/notebooks/notebooks-py/data/MNIST/raw/train-labels-idx1-ubyte
+examples/notebooks/notebooks-py/data/MNIST/raw/train-labels-idx1-ubyte.gz
+examples/notebooks/notebooks-py/gifs/
+outputs/
+.pytest_cache/

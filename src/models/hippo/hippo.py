@@ -1,688 +1,883 @@
 ## import packages
+import math
+from typing import Any, Callable, List, Optional, Tuple, Union
+
+import einops
 import jax
 import jax.numpy as jnp
-
 from flax import linen as nn
-
-from jax.nn.initializers import lecun_normal, uniform
-from jax.numpy.linalg import eig, inv, matrix_power
-from jax.scipy.signal import convolve
-
-import os
-import requests
-
-from scipy import linalg as la
-from scipy import signal
+from jaxtyping import Array, Float
 from scipy import special as ss
 
-## setup JAX to use TPUs if available
-try:
-    url = (
-        "http:"
-        + os.environ["TPU_NAME"].split(":")[1]
-        + ":8475/requestversion/tpu_driver_nightly"
-    )
-    resp = requests.post(url)
-    jax.config.FLAGS.jax_xla_backend = "tpu_driver"
-    jax.config.FLAGS.jax_backend_target = os.environ["TPU_NAME"]
-except:
-    pass
+from src.models.hippo.transition import TransMatrix
+from src.models.model import Model
 
 
-def make_HiPPO(
-    N, v="nv", measure="legs", lambda_n=1, fourier_type="fru", alpha=0, beta=1
-):
+class HiPPOLSI(Model):
     """
-    Instantiates the HiPPO matrix of a given order using a particular measure.
-    Args:
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-        v (str): choose between this repo's implementation or hazy research's implementation.
-        measure (str):
-            choose between
-                - HiPPO w/ Translated Legendre (LegT) - legt
-                - HiPPO w/ Translated Laguerre (LagT) - lagt
-                - HiPPO w/ Scaled Legendre (LegS) - legs
-                - HiPPO w/ Fourier basis - fourier
-                    - FRU: Fourier Recurrent Unit
-                    - FouT: Translated Fourier
-        lambda_n (int): The amount of tilt applied to the HiPPO-LegS basis, determines between LegS and LMU.
-        fourier_type (str): chooses between the following:
-            - FRU: Fourier Recurrent Unit - fru
-            - FouT: Translated Fourier - fout
-            - FourD: Fourier Decay - fourd
-        alpha (float): The order of the Laguerre basis.
-        beta (float): The scale of the Laguerre basis.
-
-    Returns:
-        A (jnp.ndarray): The HiPPO matrix multiplied by -1.
-        B (jnp.ndarray): The other corresponding state space matrix.
-    """
-    A = None
-    B = None
-    if measure == "legt":
-        if v == "nv":
-            A, B = build_LegT(N=N, lambda_n=lambda_n)
-        else:
-            A, B = build_LegT_V(N=N, lambda_n=lambda_n)
-
-    elif measure == "lagt":
-        if v == "nv":
-            A, B = build_LagT(alpha=alpha, beta=beta, N=N)
-        else:
-            A, B = build_LagT_V(alpha=alpha, beta=beta, N=N)
-
-    elif measure == "legs":
-        if v == "nv":
-            A, B = build_LegS(N=N)
-        else:
-            A, B = build_LegS_V(N=N)
-
-    elif measure == "fourier":
-        if v == "nv":
-            A, B = build_Fourier(N=N, fourier_type=fourier_type)
-        else:
-            A, B = build_Fourier_V(N=N, fourier_type=fourier_type)
-
-    elif measure == "random":
-        A = jnp.random.randn(N, N) / N
-        B = jnp.random.randn(N, 1)
-
-    elif measure == "diagonal":
-        A = -jnp.diag(jnp.exp(jnp.random.randn(N)))
-        B = jnp.random.randn(N, 1)
-
-    else:
-        raise ValueError("Invalid HiPPO type")
-
-    A_copy = A.copy()
-    B_copy = B.copy()
-
-    return jnp.array(A_copy), B_copy
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Translated Legendre (LegT) - vectorized
-def build_LegT_V(N, lambda_n=1):
-    """
-    The, vectorized implementation of the, measure derived from the translated Legendre basis.
+    class that constructs a Linearly Scale Invariant (LSI) HiPPO model using the defined measure.
 
     Args:
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-        legt_type (str): Choice between the two different tilts of basis.
-            - legt: translated Legendre - 'legt'
-            - lmu: Legendre Memory Unit - 'lmu'
 
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-    """
-    q = jnp.arange(N, dtype=jnp.float64)
-    k, n = jnp.meshgrid(q, q)
-    case = jnp.power(-1.0, (n - k))
-    A = None
-    B = None
+        N (int):
+            order of the HiPPO projection, aka the number of coefficients to describe the matrix
 
-    if lambda_n == 1:
-        A_base = -jnp.sqrt(2 * n + 1) * jnp.sqrt(2 * k + 1)
-        pre_D = jnp.sqrt(jnp.diag(2 * q + 1))
-        B = D = jnp.diag(pre_D)[:, None]
-        A = jnp.where(
-            k <= n, A_base, A_base * case
-        )  # if n >= k, then case_2 * A_base is used, otherwise A_base
+        max_length (int):
+            maximum sequence length to be input
 
-    elif lambda_n == 2:  # (jnp.sqrt(2*n+1) * jnp.power(-1, n)):
-        A_base = -(2 * n + 1)
-        B = jnp.diag((2 * q + 1) * jnp.power(-1, n))[:, None]
-        A = jnp.where(
-            k <= n, A_base * case, A_base
-        )  # if n >= k, then case_2 * A_base is used, otherwise A_base
+        step_size (float):
+            step size used for descretization
 
-    return A, B
-
-
-# Translated Legendre (LegT) - non-vectorized
-def build_LegT(N, legt_type="legt"):
-    """
-    The, non-vectorized implementation of the, measure derived from the translated Legendre basis
-
-    Args:
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-        legt_type (str): Choice between the two different tilts of basis.
-            - legt: translated Legendre - 'legt'
-            - lmu: Legendre Memory Unit - 'lmu'
-
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-    """
-    Q = jnp.arange(N, dtype=jnp.float64)
-    pre_R = 2 * Q + 1
-    k, n = jnp.meshgrid(Q, Q)
-
-    if legt_type == "legt":
-        R = jnp.sqrt(pre_R)
-        A = R[:, None] * jnp.where(n < k, (-1.0) ** (n - k), 1) * R[None, :]
-        B = R[:, None]
-        A = -A
-
-        # Halve again for timescale correctness
-        # A, B = A/2, B/2
-        # A *= 0.5
-        # B *= 0.5
-
-    elif legt_type == "lmu":
-        R = pre_R[:, None]
-        A = jnp.where(n < k, -1, (-1.0) ** (n - k + 1)) * R
-        B = (-1.0) ** Q[:, None] * R
-
-    return A, B
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Translated Laguerre (LagT) - non-vectorized
-def build_LagT_V(alpha, beta, N):
-    """
-    The, vectorized implementation of the, measure derived from the translated Laguerre basis.
-
-    Args:
-        alpha (float): The order of the Laguerre basis.
-        beta (float): The scale of the Laguerre basis.
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-    """
-    L = jnp.exp(
-        0.5 * (ss.gammaln(jnp.arange(N) + alpha + 1) - ss.gammaln(jnp.arange(N) + 1))
-    )
-    inv_L = 1.0 / L[:, None]
-    pre_A = (jnp.eye(N) * ((1 + beta) / 2)) + jnp.tril(jnp.ones((N, N)), -1)
-    pre_B = ss.binom(alpha + jnp.arange(N), jnp.arange(N))[:, None]
-
-    A = -inv_L * pre_A * L[None, :]
-    B = (
-        jnp.exp(-0.5 * ss.gammaln(1 - alpha))
-        * jnp.power(beta, (1 - alpha) / 2)
-        * inv_L
-        * pre_B
-    )
-
-    return A, B
-
-
-# Translated Laguerre (LagT) - non-vectorized
-def build_LagT(alpha, beta, N):
-    """
-    The, non-vectorized implementation of the, measure derived from the translated Laguerre basis.
-
-    Args:
-        alpha (float): The order of the Laguerre basis.
-        beta (float): The scale of the Laguerre basis.
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-    """
-    A = -jnp.eye(N) * (1 + beta) / 2 - jnp.tril(jnp.ones((N, N)), -1)
-    B = ss.binom(alpha + jnp.arange(N), jnp.arange(N))[:, None]
-
-    L = jnp.exp(
-        0.5 * (ss.gammaln(jnp.arange(N) + alpha + 1) - ss.gammaln(jnp.arange(N) + 1))
-    )
-    A = (1.0 / L[:, None]) * A * L[None, :]
-    B = (
-        (1.0 / L[:, None])
-        * B
-        * jnp.exp(-0.5 * ss.gammaln(1 - alpha))
-        * beta ** ((1 - alpha) / 2)
-    )
-
-    return A, B
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Scaled Legendre (LegS) vectorized
-def build_LegS_V(N):
-    """
-    The, vectorized implementation of the, measure derived from the Scaled Legendre basis.
-
-    Args:
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-    """
-    q = jnp.arange(N, dtype=jnp.float64)
-    k, n = jnp.meshgrid(q, q)
-    pre_D = jnp.sqrt(jnp.diag(2 * q + 1))
-    B = D = jnp.diag(pre_D)[:, None]
-
-    A_base = (-jnp.sqrt(2 * n + 1)) * jnp.sqrt(2 * k + 1)
-    case_2 = (n + 1) / (2 * n + 1)
-
-    A = jnp.where(n > k, A_base, 0.0)  # if n > k, then A_base is used, otherwise 0
-    A = jnp.where(
-        n == k, (A_base * case_2), A
-    )  # if n == k, then A_base is used, otherwise A
-
-    return A, B
-
-
-# Scaled Legendre (LegS), non-vectorized
-def build_LegS(N):
-    """
-    The, non-vectorized implementation of the, measure derived from the Scaled Legendre basis.
-
-    Args:
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-    """
-    q = jnp.arange(
-        N, dtype=jnp.float64
-    )  # q represents the values 1, 2, ..., N each column has
-    k, n = jnp.meshgrid(q, q)
-    r = 2 * q + 1
-    M = -(jnp.where(n >= k, r, 0) - jnp.diag(q))  # represents the state matrix M
-    D = jnp.sqrt(
-        jnp.diag(2 * q + 1)
-    )  # represents the diagonal matrix D $D := \text{diag}[(2n+1)^{\frac{1}{2}}]^{N-1}_{n=0}$
-    A = D @ M @ jnp.linalg.inv(D)
-    B = jnp.diag(D)[:, None]
-    B = (
-        B.copy()
-    )  # Otherwise "UserWarning: given NumPY array is not writeable..." after torch.as_tensor(B)
-
-    return A, B
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Fourier Basis OPs and functions - vectorized
-def build_Fourier_V(N, fourier_type="fru"):
-    """
-    Vectorized measure implementations derived from fourier basis.
-
-    Args:
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-        fourier_type (str): The type of Fourier measure.
-            - FRU: Fourier Recurrent Unit - fru
-            - FouT: truncated Fourier - fout
-            - fouD: decayed Fourier - foud
-
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-
-    """
-    q = jnp.arange((N // 2) * 2, dtype=jnp.float64)
-    k, n = jnp.meshgrid(q, q)
-
-    n_odd = n % 2 == 0
-    k_odd = k % 2 == 0
-
-    case_1 = (n == k) & (n == 0)
-    case_2_3 = ((k == 0) & (n_odd)) | ((n == 0) & (k_odd))
-    case_4 = (n_odd) & (k_odd)
-    case_5 = (n - k == 1) & (k_odd)
-    case_6 = (k - n == 1) & (n_odd)
-
-    A = None
-    B = None
-
-    if fourier_type == "fru":  # Fourier Recurrent Unit (FRU) - vectorized
-        A = jnp.diag(
-            jnp.stack([jnp.zeros(N // 2), jnp.zeros(N // 2)], axis=-1).reshape(-1)
-        )
-        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
-        q = jnp.arange((N // 2) * 2, dtype=jnp.float64)
-
-        A = jnp.where(
-            case_1,
-            -1.0,
-            jnp.where(
-                case_2_3,
-                -jnp.sqrt(2),
-                jnp.where(
-                    case_4,
-                    -2,
-                    jnp.where(
-                        case_5,
-                        jnp.pi * (n // 2),
-                        jnp.where(case_6, -jnp.pi * (k // 2), 0.0),
-                    ),
-                ),
-            ),
-        )
-
-        B = B.at[::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-
-    elif fourier_type == "fout":  # truncated Fourier (FouT) - vectorized
-        A = jnp.diag(
-            jnp.stack([jnp.zeros(N // 2), jnp.zeros(N // 2)], axis=-1).reshape(-1)
-        )
-        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
-        k, n = jnp.meshgrid(q, q)
-        n_odd = n % 2 == 0
-        k_odd = k % 2 == 0
-
-        A = jnp.where(
-            case_1,
-            -1.0,
-            jnp.where(
-                case_2_3,
-                -jnp.sqrt(2),
-                jnp.where(
-                    case_4,
-                    -2,
-                    jnp.where(
-                        case_5,
-                        jnp.pi * (n // 2),
-                        jnp.where(case_6, -jnp.pi * (k // 2), 0.0),
-                    ),
-                ),
-            ),
-        )
-
-        B = B.at[::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-
-        A = 2 * A
-        B = 2 * B
-
-    elif fourier_type == "fourd":
-        A = jnp.diag(
-            jnp.stack([jnp.zeros(N // 2), jnp.zeros(N // 2)], axis=-1).reshape(-1)
-        )
-        B = jnp.zeros(A.shape[1], dtype=jnp.float64)
-
-        A = jnp.where(
-            case_1,
-            -1.0,
-            jnp.where(
-                case_2_3,
-                -jnp.sqrt(2),
-                jnp.where(
-                    case_4,
-                    -2,
-                    jnp.where(
-                        case_5,
-                        2 * jnp.pi * (n // 2),
-                        jnp.where(case_6, 2 * -jnp.pi * (k // 2), 0.0),
-                    ),
-                ),
-            ),
-        )
-
-        B = B.at[::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-
-        A = 0.5 * A
-        B = 0.5 * B
-
-    B = B[:, None]
-
-    return A, B
-
-
-def build_Fourier(N, fourier_type="fru"):
-    """
-    Non-vectorized measure implementations derived from fourier basis.
-
-    Args:
-        N (int): Order of coefficients to describe the orthogonal polynomial that is the HiPPO projection.
-        fourier_type (str): The type of Fourier measure.
-            - FRU: Fourier Recurrent Unit - fru
-            - FouT: truncated Fourier - fout
-            - fouD: decayed Fourier - foud
-
-    Returns:
-        A (jnp.ndarray): The A HiPPO matrix.
-        B (jnp.ndarray): The B HiPPO matrix.
-    """
-    freqs = jnp.arange(N // 2)
-
-    if fourier_type == "fru":  # Fourier Recurrent Unit (FRU) - non-vectorized
-        d = jnp.stack([jnp.zeros(N // 2), freqs], axis=-1).reshape(-1)[1:]
-        A = jnp.pi * (-jnp.diag(d, 1) + jnp.diag(d, -1))
-
-        B = jnp.zeros(A.shape[1])
-        B = B.at[0::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-
-        A = A - B[:, None] * B[None, :]
-        B = B[:, None]
-
-    elif fourier_type == "fout":  # truncated Fourier (FouT) - non-vectorized
-        freqs *= 2
-        d = jnp.stack([jnp.zeros(N // 2), freqs], axis=-1).reshape(-1)[1:]
-        A = jnp.pi * (-jnp.diag(d, 1) + jnp.diag(d, -1))
-
-        B = jnp.zeros(A.shape[1])
-        B = B.at[0::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-
-        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
-        A = A - B[:, None] * B[None, :] * 2
-        B = B[:, None] * 2
-
-    elif fourier_type == "fourd":
-        d = jnp.stack([jnp.zeros(N // 2), freqs], axis=-1).reshape(-1)[1:]
-        A = jnp.pi * (-jnp.diag(d, 1) + jnp.diag(d, -1))
-
-        B = jnp.zeros(A.shape[1])
-        B = B.at[0::2].set(jnp.sqrt(2))
-        B = B.at[0].set(1)
-
-        # Subtract off rank correction - this corresponds to the other endpoint u(t-1) in this case
-        A = A - 0.5 * B[:, None] * B[None, :]
-        B = 0.5 * B[:, None]
-
-    return A, B
-
-
-class HiPPO(nn.Module):
-    """
-    class that constructs HiPPO model using the defined measure.
-
-    Args:
-        N (int): order of the HiPPO projection, aka the number of coefficients to describe the matrix
-        max_length (int): maximum sequence length to be input
-        measure (str): the measure used to define which way to instantiate the HiPPO matrix
-        step (float): step size used for descretization
-        GBT_alpha (float): represents which descretization transformation to use based off the alpha value
-        seq_L (int): length of the sequence to be used for training
-        v (str): choice of vectorized or non-vectorized function instantiation
-            - 'v': vectorized
-            - 'nv': non-vectorized
-        lambda_n (float): value associated with the tilt of legt
+        lambda_n (float):
+            value associated with the tilt of legt
             - 1: tilt on legt
             - \sqrt(2n+1)(-1)^{N}: tilt associated with the legendre memory unit (LMU)
-        fourier_type (str): choice of fourier measures
-            - fru: fourier recurrent unit measure (FRU) - 'fru'
-            - fout: truncated Fourier (FouT) - 'fout'
-            - fourd: decaying fourier transform - 'fourd'
-        alpha (float): The order of the Laguerre basis.
-        beta (float): The scale of the Laguerre basis.
+
+        alpha (float):
+            The order of the Laguerre basis.
+
+        beta (float):
+            The scale of the Laguerre basis.
+
+        GBT_alpha (float):
+            represents which descretization transformation to use based off the alpha value
+
+        measure (str):
+            the measure used to define which way to instantiate the HiPPO matrix
+
+        dtype (jnp.float):
+            represents the float precision of the class
+
+        unroll (bool):
+            shows the rolled out coefficients over time/scale
     """
 
     N: int
-    max_length: int
-    measure: str
-    step: float
-    GBT_alpha: float
-    seq_L: int
-    v: str
-    lambda_n: float
-    fourier_type: str
-    alpha: float
-    beta: float
+    max_length: int = 1024
+    step_size: float = 1.0
+    lambda_n: float = 1.0
+    alpha: float = 0.0
+    beta: float = 1.0
+    GBT_alpha: float = 0.5
+    measure: str = "legs"
+    dtype: Any = jnp.float32
+    unroll: bool = True
 
     def setup(self):
-        A, B = make_HiPPO(
+        matrices = TransMatrix(
             N=self.N,
-            v=self.v,
             measure=self.measure,
             lambda_n=self.lambda_n,
-            fourier_type=self.fourier_type,
             alpha=self.alpha,
             beta=self.beta,
+            dtype=self.dtype,
         )
 
-        self.A = A
-        self.B = B  # .squeeze(-1)
-        self.C = jnp.ones((1, self.N)).squeeze(0)
-        self.D = jnp.zeros((1,))
+        self.GBT_A_list, self.GBT_B_list = self.temporal_GBT(
+            matrices.A, matrices.B, dtype=self.dtype
+        )
 
-        if self.measure == "legt":
-            L = self.seq_L
-            vals = jnp.arange(0.0, 1.0, L)
-            n = jnp.arange(self.N)[:, None]
-            x = 1 - 2 * vals
-            self.eval_matrix = ss.eval_legendre(n, x).T
-
-        elif self.measure == "legs":
-            L = self.max_length
-            vals = jnp.linspace(0.0, 1.0, L)
-            n = jnp.arange(self.N)[:, None]
-            x = 2 * vals - 1
-            self.eval_matrix = (
-                B[:, None]
-                * jax.scipy.special.lpmn_values(
-                    m=self.N - 1, n=self.N - 1, z=x, is_normalized=False
+        vals = jnp.linspace(0.0, 1.0, self.max_length)
+        self.eval_matrix = (
+            (
+                (matrices.B)
+                * ss.eval_legendre(
+                    jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1
                 )
-            ).T  # ss.eval_legendre(n, x)).T
-        else:
-            raise ValueError("invalid measure")
+            ).T
+        ).astype(self.dtype)
 
-    def __call__(self, u, init_state=None, kernel=False):
+    def __call__(
+        self,
+        f: Float[Array, "#batch seq_len input_size"],
+        init_state: Optional[Float[Array, "#batch input_size N"]] = None,
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ]:
 
-        if not kernel:
-            if init_state is None:
-                init_state = jnp.zeros((self.N,))
+        if init_state is None:
+            init_state = jnp.zeros((f.shape[0], 1, self.N))
 
-            Ab, Bb, Cb, Db = self.collect_SSM_vars(
-                self.A, self.B, self.C, self.D, u, alpha=self.GBT_alpha
-            )
-            c_k = self.scan_SSM(Ab, Bb, Cb, Db, u, x0=init_state)[1]
-        else:
-            Ab, Bb, Cb, Db = self.discretize(
-                self.A, self.B, self.C, self.D, step=self.step, alpha=self.GBT_alpha
-            )
-            c_k = self.causal_convolution(
-                u, self.K_conv(Ab, Bb, Cb, Db, L=self.max_length)
-            )
+        c_k = self.recurrence(
+            A=self.GBT_A_list,
+            B=self.GBT_B_list,
+            c_0=init_state,
+            f=f,
+            dtype=self.dtype,
+        )
 
         return c_k
 
-    def reconstruct(self, c):
+    def temporal_GBT(
+        self, A: Float[Array, "N N"], B: Float[Array, "N input_size"], dtype=jnp.float32
+    ) -> Tuple[List[Float[Array, "N N"]], List[Float[Array, "N input_size"]]]:
         """
-        Uses coeffecients to reconstruct the signal
+        Creates the list of discretized GBT matrices for the given step size
 
         Args:
-            c (jnp.ndarray): coefficients of the HiPPO projection
+            A (jnp.ndarray):
+                shape: (N, N)
+                matrix to be discretized
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                matrix to be discretized
+
+            dtype (jnp.float):
+                type of float precision to be used
 
         Returns:
-            reconstructed signal
-        """
-        return (self.eval_matrix @ jnp.expand_dims(c, -1)).squeeze(-1)
+            GBT_a_list (list):
+                list of discretized A matrices across all time steps
 
-    def discretize(self, A, B, C, D, step, alpha=0.5):
+            GBT_b_list (list):
+                list of discretized B matrices across all time steps
         """
-        function used for discretizing the HiPPO matrix
+        GBT_a_list = []
+        GBT_b_list = []
+        for i in range(1, self.max_length + 1):
+            GBT_A, GBT_B = self.discretize(
+                A, B, step=i, alpha=self.GBT_alpha, dtype=dtype
+            )
+            GBT_a_list.append(GBT_A)
+            GBT_b_list.append(GBT_B)
+
+        return GBT_a_list, GBT_b_list
+
+    def discretize(
+        self,
+        A: Float[Array, "N N"],
+        B: Float[Array, "N input_size"],
+        step: float,
+        alpha: Union[float, str] = 0.5,
+        dtype: Any = jnp.float32,
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N 1"]]:
+        """
+        Function used for discretizing the HiPPO A and B matrices
 
         Args:
-            A (jnp.ndarray): matrix to be discretized
-            B (jnp.ndarray): matrix to be discretized
-            C (jnp.ndarray): matrix to be discretized
-            D (jnp.ndarray): matrix to be discretized
-            step (float): step size used for discretization
-            alpha (float, optional): used for determining which generalized bilinear transformation to use
+            A (jnp.ndarray):
+                shape: (N, N)
+                matrix to be discretized
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                matrix to be discretized
+
+            step (float):
+                step size used for discretization
+
+            alpha (float, optional):
+                used for determining which generalized bilinear transformation to use
                 - forward Euler corresponds to α = 0,
                 - backward Euler corresponds to α = 1,
                 - bilinear corresponds to α = 0.5,
                 - Zero-order Hold corresponds to α > 1
+
+            dtype (jnp.float):
+                type of float precision to be used
+
+        Returns:
+            GBT_A (jnp.ndarray):
+                shape: (N, N)
+                discretized A matrix based on the given step size and alpha value
+
+            GBT_B (jnp.ndarray):
+                shape: (N, 1)
+                discretized B matrix based on the given step size and alpha value
         """
+        if alpha <= 1:
+            assert alpha in [0, 0.5, 1], "alpha must be 0, 0.5, or 1"
+        else:
+            assert (
+                alpha > 1 or type(alpha) == str
+            ), "alpha must be greater than 1 for zero-order hold"
+            if type(alpha) == str:
+                assert (
+                    alpha == "zoh"
+                ), "if alpha is a string, it must be defined as 'zoh' for zero-order hold"
+
         I = jnp.eye(A.shape[0])
-        GBT = jnp.linalg.inv(I - (step * alpha * A))
-        GBT_A = GBT @ (I + (step * (1 - alpha) * A))
-        GBT_B = (step * GBT) @ B
 
-        if alpha > 1:  # Zero-order Hold
-            GBT_A = jax.scipy.linalg.expm(step * A)
-            GBT_B = (jnp.linalg.inv(A) @ (jax.scipy.linalg.expm(step * A) - I)) @ B
+        if alpha <= 1:  # Generalized Bilinear Transformation
+            step_size = 1 / step
+            part1 = I - (step_size * alpha * A)
+            part2 = I + (step_size * (1 - alpha) * A)
 
-        return GBT_A, GBT_B, C, D
+            GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
+            GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
 
-    def collect_SSM_vars(self, A, B, C, D, u, alpha=0.5):
+        else:  # Zero-order Hold
+            # refer to this for why this works
+            # https://en.wikipedia.org/wiki/Discretization#:~:text=A%20clever%20trick%20to%20compute%20Ad%20and%20Bd%20in%20one%20step%20is%20by%20utilizing%20the%20following%20property
+
+            n = A.shape[0]
+            b_n = B.shape[1]
+            A_B_square = jnp.block(
+                [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
+            )
+            A_B = jax.scipy.linalg.expm(
+                A_B_square * (math.log(step + 1) - math.log(step))
+            )
+
+            GBT_A = A_B[0:n, 0:n]
+            GBT_B = A_B[0:-b_n, -b_n:]
+
+        return GBT_A.astype(dtype), GBT_B.astype(dtype)
+
+    def recurrence(
+        self,
+        A: List[Float[Array, "N N"]],
+        B: List[Float[Array, "N input_size"]],
+        c_0: Float[Array, "#batch input_size N"],
+        f: Float[Array, "#batch seq_len input_size"],
+        dtype: Any = jnp.float32,
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ]:
         """
-        turns the continuos HiPPO matrix components into discrete ones
+        Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
 
         Args:
-            A (jnp.ndarray): matrix to be discretized
-            B (jnp.ndarray): matrix to be discretized
-            C (jnp.ndarray): matrix to be discretized
-            D (jnp.ndarray): matrix to be discretized
-            u (jnp.ndarray): input signal
-            alpha (float, optional): used for determining which generalized bilinear transformation to use
+            A (jnp.ndarray):
+                shape: (N, N)
+                The list of discretized A matrices
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                The list of discretized B matrices
+
+            c_0 (jnp.ndarray):
+                shape: (batch size, input length, N)
+                the initial hidden state (i.e. the initial coefficients)
+
+            f (jnp.ndarray):
+                shape: (sequence length, 1)
+                the input sequence
+
 
         Returns:
-            Ab (jnp.ndarray): discrete form of the HiPPO matrix
-            Bb (jnp.ndarray): discrete form of the HiPPO matrix
-            Cb (jnp.ndarray): discrete form of the HiPPO matrix
-            Db (jnp.ndarray): discrete form of the HiPPO matrix
+            c_s (list[jnp.ndarray]]):
+                shape: (batch size, sequence length, input length, N)
+                List of the vector of estimated coefficients representing the function, f(t), at each time step
+
+            c_s[-1] (jnp.ndarray):
+                shape: (batch size, sequence length, input length, N)
+                Vector of the estimated coefficients representing the function, f(t), at the last time step
         """
-        L = u.shape[0]
-        N = A.shape[0]
-        assert (
-            L == self.seq_L
-        ), f"sequence length must match, currently {L} != {self.seq_L}"
-        assert N == self.N, f"Order number must match, currently {N} != {self.N}"
 
-        Ab, Bb, Cb, Db = self.discretize(A, B, C, D, step=1.0 / L, alpha=alpha)
+        c_s = []
 
-        return Ab, Bb, Cb, Db
+        c_k = c_0.copy()
+        for i in range(f.shape[1]):
+            c_k = jax.vmap(self.hippo_op, in_axes=(None, None, 0, 0))(
+                A[i], B[i], c_k, f[:, i, :]
+            )
+            c_s.append((c_k.copy()).astype(dtype))
 
-    def scan_SSM(self, Ab, Bb, Cb, Db, u, x0):
+        if self.unroll:
+            return (
+                einops.rearrange(
+                    c_s, "seq_len batch input_size N -> batch seq_len input_size N"
+                )
+            ).astype(
+                dtype
+            )  # list of hidden states
+        else:
+            return (c_s[-1]).astype(dtype)
+
+    def hippo_op(
+        self,
+        Ad: Float[Array, "N N"],
+        Bd: Float[Array, "N input_size"],
+        c_k_i: Float[Array, "#batch input_size N"],
+        f_k: Float[Array, "#batch seq_len input_size"],
+    ) -> Float[Array, "#batch input_size N"]:
         """
-        This is for returning the discretized hidden state often needed for an RNN.
+        The HiPPO operator, that is used to perform the recurrence of the HiPPO model
+
         Args:
-            Ab (jnp.ndarray): the discretized A matrix
-            Bb (jnp.ndarray): the discretized B matrix
-            Cb (jnp.ndarray): the discretized C matrix
-            u (jnp.ndarray): the input sequence
-            x0 (jnp.ndarray): the initial hidden state
+            Ad (jnp.ndarray):
+                shape: (N, N)
+                discretized A matrix
+
+            Bd (jnp.ndarray):
+                shape: (N, 1)
+                discretized B matrix
+
+            c_k_i:
+                shape: (input length, N)
+                previous hidden state
+
+            f_k:
+                shape: (input_size, )
+                value of input sequence at time step k
+
         Returns:
-            the next hidden state (aka coefficients representing the function, f(t))
+            c_k (jnp.ndarray):
+                shape: (input length, N)
+                Vector of the estimated coefficients, given the history of the function/sequence up to time step k.
         """
 
-        def step(x_k_1, u_k):
+        c_k = (jnp.dot(c_k_i, Ad.T)) + (Bd.T * f_k)
+
+        return c_k
+
+    def reconstruct(
+        self, c: Float[Array, "#batch input_size N"]
+    ) -> Float[Array, "#batch seq_len input_size"]:
+        """reconstructs the input sequence from the estimated coefficients and the evaluation matrix
+
+        Args:
+            c (jnp.ndarray):
+                shape: (batch size, input length, N)
+                Vector of the estimated coefficients, given the history of the function/sequence
+
+        Returns:
+            y (jnp.ndarray):
+                shape: (batch size, input length, input size)
+                The reconstructed input sequence
+        """
+        eval_matrix = self.eval_matrix
+
+        y = None
+        if len(c.shape) == 3:
+            c = einops.rearrange(c, "batch input_size N -> batch N input_size")
+            y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
+        elif len(c.shape) == 4:
+            c = einops.rearrange(
+                c, "batch seq_len input_size N -> batch seq_len N input_size"
+            )
+            time_dot = jax.vmap(jnp.dot, in_axes=(None, 0))
+            batch_time_dot = jax.vmap(time_dot, in_axes=(None, 0))
+            y = batch_time_dot(eval_matrix, c)
+        else:
+            raise ValueError(
+                "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
+            )
+
+        return y
+
+
+class HiPPOLTI(Model):
+    """
+    class that constructs a Linearly Time Invariant (LTI) HiPPO model using the defined measure.
+
+    Args:
+
+        N (int):
+            Order of the HiPPO projection, aka the number of coefficients to describe the matrix
+
+        step_size (float):
+            Step size used for descretization
+
+        lambda_n (float):
+            Value associated with the tilt of legt
+            - 1: tilt on legt
+            - \sqrt(2n+1)(-1)^{N}: tilt associated with the legendre memory unit (LMU)
+
+        alpha (float):
+            The order of the Laguerre basis.
+
+        beta (float):
+            The scale of the Laguerre basis.
+
+        GBT_alpha (float):
+            Represents which descretization transformation to use based off the alpha value
+
+        measure (str):
+            The measure used to define which way to instantiate the HiPPO matrix
+
+        basis_size (float):
+            The intended maximum value of the basis function for the coefficients to be projected onto
+
+        dtype (jnp.float):
+            Represents the float precision of the class
+
+        unroll (bool):
+            Shows the rolled out coefficients over time/scale
+    """
+
+    N: int
+    step_size: float = 1.0
+    lambda_n: float = 1.0
+    alpha: float = 0.0
+    beta: float = 1.0
+    GBT_alpha: float = 0.5
+    measure: str = "legs"
+    basis_size: float = 1.0
+    dtype: Any = jnp.float32
+    unroll: bool = False
+
+    def setup(self) -> None:
+        matrices = TransMatrix(
+            N=self.N,
+            measure=self.measure,
+            lambda_n=self.lambda_n,
+            alpha=self.alpha,
+            beta=self.beta,
+            dtype=self.dtype,
+        )
+
+        self.Ad, self.Bd = self.discretize(
+            A=matrices.A,
+            B=matrices.B,
+            step=self.step_size,
+            alpha=self.GBT_alpha,
+            dtype=self.dtype,
+        )
+
+        self.B = matrices.B
+
+        if self.measure in ["legs", "legt", "lmu", "lagt", "fout"]:
+            self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
+            self.eval_matrix = self.basis(
+                method=self.measure,
+                N=self.N,
+                vals=self.vals,
+                c=0.0,
+                dtype=self.dtype,
+            )  # (T/dt, N)
+
+    def __call__(
+        self,
+        f: Float[Array, "#batch seq_len input_size"],
+        init_state: Optional[Float[Array, "#batch input_size N"]] = None,
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ]:
+
+        if init_state is None:
+            init_state = jnp.zeros((f.shape[0], 1, self.N))
+
+        c_k = self.recurrence(
+            Ad=self.Ad,
+            Bd=self.Bd,
+            c_0=init_state,
+            f=f,
+            dtype=self.dtype,
+        )
+
+        return c_k
+
+    def discretize(
+        self,
+        A: Float[Array, "N N"],
+        B: Float[Array, "N input_size"],
+        step: float,
+        alpha: Union[float, str] = 0.5,
+        dtype: Any = jnp.float32,
+    ) -> Tuple[Float[Array, "N N"], Float[Array, "N input_size"]]:
+        """
+        Function used for discretizing the HiPPO A and B matrices
+
+        Args:
+            A (jnp.ndarray):
+                shape: (N, N)
+                matrix to be discretized
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                matrix to be discretized
+
+            step (float):
+                step size used for discretization
+
+            alpha (float, optional):
+                used for determining which generalized bilinear transformation to use
+                - forward Euler corresponds to α = 0,
+                - backward Euler corresponds to α = 1,
+                - bilinear corresponds to α = 0.5,
+                - Zero-order Hold corresponds to α > 1
+
+            dtype (jnp.float):
+                type of float precision to be used
+
+        Returns:
+            GBT_A (jnp.ndarray):
+                shape: (N, N)
+                discretized A matrix based on the given step size and alpha value
+
+            GBT_B (jnp.ndarray):
+                shape: (N, 1)
+                discretized B matrix based on the given step size and alpha value
+        """
+        if alpha <= 1:
+            assert alpha in [0, 0.5, 1], "alpha must be 0, 0.5, or 1"
+        else:
+            assert (
+                alpha > 1 or type(alpha) == str
+            ), "alpha must be greater than 1 for zero-order hold"
+            if type(alpha) == str:
+                assert (
+                    alpha == "zoh"
+                ), "if alpha is a string, it must be defined as 'zoh' for zero-order hold"
+
+        I = jnp.eye(A.shape[0])
+
+        if alpha <= 1:  # Generalized Bilinear Transformation
+            step_size = step
+            part1 = I - (step_size * alpha * A)
+            part2 = I + (step_size * (1 - alpha) * A)
+
+            GBT_A = jnp.linalg.lstsq(part1, part2, rcond=None)[0]
+            GBT_B = jnp.linalg.lstsq(part1, (step_size * B), rcond=None)[0]
+
+        else:  # Zero-order Hold
+            # refer to this for why this works
+            # https://en.wikipedia.org/wiki/Discretization#:~:text=A%20clever%20trick%20to%20compute%20Ad%20and%20Bd%20in%20one%20step%20is%20by%20utilizing%20the%20following%20property
+
+            n = A.shape[0]
+            b_n = B.shape[1]
+            A_B_square = jnp.block(
+                [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
+            )
+            A_B = jax.scipy.linalg.expm(A_B_square * self.step_size)
+
+            GBT_A = A_B[0:n, 0:n]
+            GBT_B = A_B[0:-b_n, -b_n:]
+
+        return GBT_A.astype(dtype), GBT_B.astype(dtype)
+
+    def recurrence(
+        self,
+        Ad: Float[Array, "N N"],
+        Bd: Float[Array, "N input_size"],
+        c_0: Float[Array, "#batch input_size N"],
+        f: Float[Array, "#batch seq_len input_size"],
+        dtype: Any = jnp.float32,
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ]:
+        """
+        Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
+
+        Args:
+            A (jnp.ndarray):
+                shape: (N, N)
+                The discretized A matrix weighted by the step size
+
+            B (jnp.ndarray):
+                shape: (N, 1)
+                The discretized A matrix weighted by the step size
+
+            c_0 (jnp.ndarray):
+                shape: (batch size, input length, N)
+                the initial hidden state (i.e. the initial coefficients)
+
+            f (jnp.ndarray):
+                shape: (sequence length, 1)
+                the input sequence
+
+
+        Returns:
+            c_s (list[jnp.ndarray]]):
+                shape: (batch size, sequence length, input length, N)
+                List of the vector of estimated coefficients representing the function, f(t), at each time step
+
+            c_k (jnp.ndarray):
+                shape: (batch size, sequence length, input length, N)
+                Vector of the estimated coefficients representing the function, f(t), at the last time step
+        """
+
+        def hippo_op(
+            c_k_i: Float[Array, "#batch input_size N"],
+            f_k: Float[Array, "#batch seq_len input_size"],
+        ) -> Tuple[
+            Float[Array, "#batch seq_len input_size N"],
+            Float[Array, "#batch input_size N"],
+        ]:
             """
             Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
+
             Args:
-                x_k_1: previous hidden state
-                u_k: output from function f at, descritized, time step, k.
+                c_k_i:
+                shape: (input length, N)
+                previous hidden state
+
+            f_k:
+                shape: (input_size, )
+                value of input sequence at time step k
 
             Returns:
-                x_k: current hidden state
-                y_k: current output of hidden state applied to Cb (sorry for being vague, I just dont know yet)
+                c_k (jnp.ndarray):
+                    shape: (input length, N)
+                    Vector of the estimated coefficients, given the history of the function/sequence up to time step k.
+
+                c_k (list[jnp.ndarray]):
+                    shape: (input length, N)
+                    List of the vector of estimated coefficients representing the function, f(t), at each time step
             """
-            part1_x_k = Ab @ x_k_1
-            part2_x_k = Bb @ u_k
-            x_k = part1_x_k + part2_x_k
 
-            part1_y_k = Cb @ x_k
-            part2_y_k = Db @ u_k
-            y_k = part1_y_k + part2_y_k
+            c_k = (jnp.dot(c_k_i, Ad.T)) + (Bd.T * f_k)
 
-            # x_k = (Ab @ x_k_1) + (Bb @ u_k)
-            # y_k = (Cb @ x_k) + (Db @ u_k)
+            return c_k, c_k
 
-            return x_k, y_k
+        c_k, c_s = jax.vmap(jax.lax.scan, in_axes=(None, 0, 0))(hippo_op, c_0, f)
 
-        return jax.lax.scan(step, x0, u)
+        if self.unroll:
+            return c_s.astype(dtype)
+        else:
+            return c_k.astype(dtype)
+
+    def measure_fn(self, method: str, c: float = 0.0) -> Callable:
+        """
+        Returns a function that is used to measure the distance between the input sequence and the estimated coefficients
+
+        Args:
+            method (str):
+                The method used to measure the distance between the input sequence and the estimated coefficients
+
+            c (float):
+                The tilt of the function used to measure the distance between the input sequence and the estimated coefficients
+
+        Returns:
+            fn_tilted (Callable):
+                The function used to measure the distance between the input sequence and the estimated coefficients
+
+        """
+
+        if method == "legs":
+            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
+        elif method in ["legt", "lmu"]:
+            fn = lambda x: jnp.heaviside(x, 0.0) * jnp.heaviside(1.0 - x, 0.0)
+        elif method == "lagt":
+            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.exp(-x)
+        elif method in ["fourier", "fru", "fout", "foud"]:
+            fn = lambda x: jnp.heaviside(x, 1.0) * jnp.heaviside(1.0 - x, 1.0)
+        else:
+            raise NotImplementedError
+
+        fn_tilted = lambda x: jnp.exp(c * x) * fn(x)
+
+        return fn_tilted
+
+    def basis(
+        self,
+        method: str,
+        N: int,
+        vals: Float[Array, "1"],
+        c: float = 0.0,
+        truncate_measure: bool = True,
+        dtype: Any = jnp.float32,
+    ) -> Float[Array, "seq_len N"]:
+        """
+        Creates the basis matrix (eval matrix) for the appropriate HiPPO method.
+
+        Args:
+            B (jnp.ndarray):
+                shape: (N, 1)
+                The HiPPO B matrix
+
+            method (str):
+                The HiPPO method to use
+
+            N (int):
+                The number of basis functions to use
+
+            vals (jnp.ndarray):
+                shape: (seq_len, )
+                The values to evaluate the basis functions at
+
+            c (float):
+                The constant to use for the tilted measure
+
+            truncate_measure (bool):
+                Whether or not to truncate the measure to the interval [0, 1]
+
+            dtype (Any):
+                The dtype to use for the basis matrix
+
+        Returns:
+            eval_matrix (jnp.ndarray):
+                shape: (seq_len, N)
+                The basis matrix
+        """
+
+        if method == "legs":
+            _vals = jnp.exp(-vals)
+            base = (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(
+                N
+            )  # unscaled, untranslated legendre polynomial matrix
+            base = einops.rearrange(base, "N -> N 1")
+            eval_matrix = (
+                base
+                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
+            ).T  # (L, N)
+
+        elif method in ["legt", "lmu"]:
+            base = (2 * jnp.arange(N) + 1) ** 0.5 * (-1) ** jnp.arange(
+                N
+            )  # unscaled, untranslated legendre polynomial matrix
+            base = einops.rearrange(base, "N -> N 1")
+            eval_matrix = (
+                base
+                * ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
+            ).T
+        elif method == "lagt":
+            _vals = vals[::-1]
+            eval_matrix = ss.eval_genlaguerre(
+                jnp.expand_dims(jnp.arange(N), -1), 0, _vals
+            )
+            eval_matrix = (eval_matrix * jnp.exp(-_vals / 2)).T
+        elif method in ["fourier", "fout"]:
+            cos = 2**0.5 * jnp.cos(
+                2 * jnp.pi * jnp.arange(N // 2)[:, None] * (vals)
+            )  # (N/2, T/dt)
+            sin = 2**0.5 * jnp.sin(
+                2 * jnp.pi * jnp.arange(N // 2)[:, None] * (vals)
+            )  # (N/2, T/dt)
+            cos = cos.at[0].set(cos[0] / 2**0.5)
+            eval_matrix = jnp.stack([cos.T, sin.T], axis=-1).reshape(-1, N)  # (T/dt, N)
+        else:
+            raise NotImplementedError(f"method {method} not implemented")
+
+        if truncate_measure:
+            tilting_fn = self.measure_fn(method, c=c)
+            val = tilting_fn(vals)
+            eval_matrix = eval_matrix.at[val == 0.0].set(0.0)
+
+        p = eval_matrix * jnp.exp(-c * vals)[:, None]  # [::-1, None]
+
+        return p.astype(dtype)
+
+    def reconstruct(
+        self, c: Float[Array, "#batch input_size N"], evals=None
+    ) -> Float[Array, "#batch seq_len input_size"]:
+        """reconstructs the input sequence from the estimated coefficients and the evaluation matrix
+
+        Args:
+            c (jnp.ndarray):
+                shape: (batch size, input length, N)
+                Vector of the estimated coefficients, given the history of the function/sequence
+
+            evals (jnp.ndarray, optional):
+                shape: ()
+                Vector of the evaluation points. Defaults to None.
+
+        Returns:
+            y (jnp.ndarray):
+                shape: (batch size, input length, input size)
+                The reconstructed input sequence
+        """
+        if evals is not None:
+            eval_matrix = self.basis(method=self.measure, N=self.N, vals=evals)
+        else:
+            eval_matrix = self.eval_matrix
+
+        y = None
+        if len(c.shape) == 3:
+            c = einops.rearrange(c, "batch input_size N -> batch N input_size")
+            y = jax.vmap(jnp.dot, in_axes=(None, 0))(eval_matrix, c)
+            y = einops.rearrange(y, "batch seq_len 1 -> batch seq_len")
+            y = jax.vmap(jnp.flip, in_axes=(0, None))(y, 0)
+        elif len(c.shape) == 4:
+            c = einops.rearrange(
+                c, "batch seq_len input_size N -> batch seq_len N input_size"
+            )
+            time_dot = jax.vmap(jnp.dot, in_axes=(None, 0))
+            batch_time_dot = jax.vmap(time_dot, in_axes=(None, 0))
+            y = batch_time_dot(eval_matrix, c)
+            y = einops.rearrange(
+                y, "batch seq_len 1 seq_len2 -> batch seq_len seq_len2"
+            )
+            y = jax.vmap(jax.vmap(jnp.flip, in_axes=(0, None)), in_axes=(0, None))(y, 0)
+        else:
+            raise ValueError(
+                "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
+            )
+
+        return y
+
+
+class DLPR_HiPPO:
+    def __init__(self) -> None:
+        pass
+
+    def discrete_DPLR(self, Lambda, P, Q, B, C, step, L):
+        """
+        A_bar = (I - (step/2) \dot A)^{-1} (I + (step/2) \dot A)
+        B_bar = (I - (step/2) \dot A)^{-1} (step/2) \dot B
+
+        we can reconstruct the A_bar terms to more closely resemble euler methods
+        $$
+        \begin{align}
+            (I - (step/2) \dot A) &= I + (step/2)(\Lambda - PQ^{*}) \\
+            (I - (step/2) \dot A) &= step/2 [(step/2) \dot I + (\Lambda - PQ^{*})] \\
+            (I - (step/2) \dot A) &= \step/2 \dot A_{0}
+        \end{align}
+        $$
+
+
+        Same goes for backward Euler but using the woodbury identity, where $D = ((2/step) - \Lambda)^{-1}$
+        $$
+        \begin{align}
+            (I - (step/2) \dot A)^{-1} &= (I - (step/2)(\Lambda - PQ^{*}))^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)[(2/step) - \Lambda + PQ^{*}]^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)[D - DP(1 + Q^{*}DP)^{-1} Q^{*}D]^{-1} \\
+            (I - (step/2) \dot A)^{-1} &= (2/step)A_{1} \\
+        \end{align}
+        $$
+
+        making the discrete ssm:
+        $$
+        \begin{align}
+            x_{k} &= \Bar{A}x_{k-1} + \Bar{B}u_{k} \\
+                  &= A_{1}A_{0}x_{k-1} + 2A_{1}B_{0}u_{k} \\
+            y_{k} &= Cx_{k} + Du_{k}
+        \end{align}
+        $$
+
+        Args:
+            Lambda ([type]): [description]
+            P ([type]): [description]
+            Q ([type]): [description]
+            B ([type]): [description]
+            C ([type]): [description]
+            step ([type]): [description]
+            L ([type]): [description]
+
+        Returns:
+            Ab ([type]): [description]
+            Bb ([type]): [description]
+            Cb ([type]): [description]
+        """
+
+        # Convert parameters to matrices
+        B = B[:, jnp.newaxis]
+        Ct = C[jnp.newaxis, :]
+
+        N = Lambda.shape[0]
+        A = jnp.diag(Lambda) - P[:, jnp.newaxis] @ Q[:, jnp.newaxis].conj().T
+        I = jnp.eye(N)
+
+        # Forward Euler
+        A0 = (2.0 / step) * I + A
+
+        # Backward Euler
+        D = jnp.diag(1.0 / ((2.0 / step) - Lambda))
+        Qc = Q.conj().T.reshape(1, -1)
+        P2 = P.reshape(-1, 1)
+        A1 = D - (D @ P2 * (1.0 / (1 + (Qc @ D @ P2))) * Qc @ D)
+
+        # A bar and B bar
+        Ab = A1 @ A0
+        Bb = 2 * A1 @ B
+
+        # Recover Cbar from Ct
+        Cb = Ct @ jnp.linalg.inv(I - jnp.linalg.matrix_power(Ab, L)).conj()
+        return Ab, Bb, Cb.conj()
+
+    def initial_C(self, measure, N, dtype=jnp.float32):
+        """Return C that captures the other endpoint in the HiPPO approximation"""
+
+        if measure == "legt":
+            C = (jnp.arange(N, dtype=dtype) * 2 + 1) ** 0.5 * (-1) ** jnp.arange(N)
+        elif measure == "fourier":
+            C = jnp.zeros(N)
+            C[0::2] = 2**0.5
+            C[0] = 1
+        else:
+            C = jnp.zeros(N, dtype=dtype)  # (N)
+
+        return C

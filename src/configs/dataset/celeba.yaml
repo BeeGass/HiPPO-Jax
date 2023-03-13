@@ -1,0 +1,5 @@
+_target_: src.datasets.celeba.CelebADataset
+
+name: celeba
+path: "../../datasets/celeba_data"
+batch_size: 64

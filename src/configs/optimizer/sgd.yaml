@@ -1,0 +1,6 @@
+_target_: src.optimizer.sgd.SGD
+#_name_: sgd
+
+lr: 0.001 # Initial learning rate
+momentum: 0.9
+nesterov: False

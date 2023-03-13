@@ -1,0 +1,5 @@
+_target_: src.datasets.cifar10.CIFAR10Dataset
+
+name: cifar10
+path: "../../datasets/cifar10_data"
+batch_size: 64

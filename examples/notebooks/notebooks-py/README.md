@@ -11,6 +11,7 @@
 
 - [Diagonal State Spaces are as Effective as Structured State Spaces](https://arxiv.org/pdf/2203.14343.pdf) - DSS
 - [Long Range Language Modeling via Gated State Spaces](https://arxiv.org/pdf/2206.13947.pdf) - GSS
+- [Simplifying and Understanding State Space Models with Diagonal Linear RNNs](https://arxiv.org/abs/2212.00768) - DLR
 
 **S4:**
 
@@ -18,6 +19,13 @@
 - [On the Parameterization and Initialization of Diagonal State Space Models](https://arxiv.org/pdf/2206.11893.pdf) - S4D
 - [Towards a General Purpose CNN for Long Range Dependencies in N-D](https://arxiv.org/abs/2206.03398?s=09) - CCNN
 - [Simplified State Space Layers for Sequence Modeling](https://arxiv.org/abs/2208.04933) - S5
+- [Mega: Moving Average Equipped Gated Attention](https://arxiv.org/abs/2209.10655) - Mega
+- [Liquid Structural State-Space Models](https://arxiv.org/abs/2209.12951) - Liquid-S4
+- [Hungry Hungry HiPPOs](https://openreview.net/pdf?id=COZDy0WYGg) - H3 (S4 LLM)
+- [S4ND](https://arxiv.org/abs/2210.06583) - S4ND
+- [Efficient Long Sequence Modeling via State Space Augmented Transformer](https://arxiv.org/abs/2212.08136) S4 augmented transformer
+- [What Makes Convolutional Models Great on Long Sequence Modeling?](https://arxiv.org/abs/2210.09298) - SGConv
+- [Hyena Hierarchy: Towards Larger Convolutional Language Models](https://arxiv.org/abs/2302.10866) - Hyena
 
 **Applied SSMs:**
 

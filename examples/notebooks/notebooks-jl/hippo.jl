@@ -12,10 +12,10 @@ Create an orthogonal state-space model `sys::StateSpace{Continuous, T}` derived 
 function legt_ss end
 
 function legt_ss(T::Type{<:AbstractFloat}, dim::Integer, theta::Real=1)
-    A, B = setprecision(precision(T)*2) do 
+    A, B = setprecision(precision(T) * 2) do
         B = sqrt.(big.(1:2:dim+dim))
-        A = -flipsign.(convert(Matrix{T},(inv(big(theta)) .* B * B')),((-one(Int8)) .^ triu([1:dim;] .- [1:dim;]')))
-        return A, convert(Vector{T},B)
+        A = -flipsign.(convert(Matrix{T}, (inv(big(theta)) .* B * B')), ((-one(Int8)) .^ triu([1:dim;] .- [1:dim;]')))
+        return A, convert(Vector{T}, B)
     end
 
     legt = ss(A, B, Matrix(I, dim, dim), 0)
@@ -85,10 +85,10 @@ Create an orthogonal state-space model `sys::StateSpace{Continuous, T}` derived 
 function fout_ss end
 
 function fout_ss(T::Type{<:AbstractFloat}, dim::Integer, theta::Real=1)
-    
+
     # Construct the normal component of the system/state transition matrix
-    d = pi*[zeros(Int64,div(dim,2)) [0:2:dim-1;]]'[2:dim] * theta
-    normal = Tridiagonal(d,zeros(dim),-d) # Use a Tridiagonal view to prevent creating a dense matrix
+    d = pi * [zeros(Int64, div(dim, 2)) [0:2:dim-1;]]'[2:dim] * theta
+    normal = Tridiagonal(d, zeros(dim), -d) # Use a Tridiagonal view to prevent creating a dense matrix
 
     # Construct the low-rank component of the system/state transition matrix
     low_rank = zeros(dim)
@@ -96,11 +96,11 @@ function fout_ss(T::Type{<:AbstractFloat}, dim::Integer, theta::Real=1)
     low_rank[1] = √2
 
     # Constuct A from normal and low-rank
-    A = T.(normal .- low_rank .* low_rank' .* theta) 
-    A[1,1] = T(-2.0 * theta) # Fix (√2.0)² ≠ 2.0
-    
+    A = T.(normal .- low_rank .* low_rank' .* theta)
+    A[1, 1] = T(-2.0 * theta) # Fix (√2.0)² ≠ 2.0
+
     # Copy B from A for efficency and numerics
-    B = -copy(A[1,:]) 
+    B = -copy(A[1, :])
 
     return ss(A, B, Matrix(I, dim, dim), 0)
 end
@@ -117,10 +117,10 @@ fout_ss(dim::Integer, theta::Real=1) = fout_ss(Float64, dim, theta)
 function foud_ss end
 
 function foud_ss(T::Type{<:AbstractFloat}, dim::Integer)
-    d = T.(pi*([zeros(div(dim,2)) [0:2:dim-1;]]'[:])[2:dim])
-    A = Tridiagonal(d,fill(T(-1//2),dim,),-d)
+    d = T.(pi * ([zeros(div(dim, 2)) [0:2:dim-1;]]'[:])[2:dim])
+    A = Tridiagonal(d, fill(T(-1 // 2), dim,), -d)
 
-    B = zeros(T,dim)
+    B = zeros(T, dim)
     B[1:2:dim] .= T(√2)
     B[1] = one(T)
 
@@ -129,3 +129,56 @@ function foud_ss(T::Type{<:AbstractFloat}, dim::Integer)
 end
 
 foud_ss(dim::Integer) = foud_ss(Float64, dim)
+
+function chebyshev_polys(order)
+    polys = zeros(Int64, order, order)
+    polys[begin, begin] = 1
+    polys[begin+1, begin+1] = 1
+
+    T_previous = @view polys[begin, :]
+    T_current = @view polys[begin+1, :]
+
+    for T_next in eachrow(@view polys[begin+2:end, :])
+        circshift!(T_next, T_current, (1,))
+        T_next .*= 2
+        T_next .-= T_previous
+
+        T_previous = T_current
+        T_current = T_next
+    end
+
+    return polys
+end
+
+polys = chebyshev_polys(16)
+
+d_polys = zeros(eltype(polys), size(polys));
+d_polys[:, begin:end-1] .= @view polys[:, begin+1:end];
+d_polys .*= transpose((1:size(d_polys, 1)))
+
+function legendre_polys!(polys::AbstractMatrix{<:Real})
+    polys[begin, begin] = 1
+    polys[begin+1, begin+1] = 1
+
+    T_previous = @view polys[begin, :]
+    T_current = @view polys[begin+1, :]
+
+    for (n, T_next) in enumerate(eachrow(@view polys[begin+2:end, :]))
+        circshift!(T_next, T_current, (1,))
+        T_next .*= 2 .* n .+ 1
+        T_next .-= n .* T_previous
+        T_next ./= n .+ 1
+
+        T_previous = T_current
+        T_current = T_next
+    end
+end
+
+function legendre_polys(T::Type{<:Real}, order::Integer)
+    polys = zeros(T, (order, order))
+    legendre_polys!(polys)
+    return polys
+end
+
+A = legendre_polys(Rational{Int32}, 16);
+display(A * (transpose([-1, -1 // 2, 0, 1 // 2, 1]) .^ (Base.OneTo(size(A, 1)) .- 1)));
