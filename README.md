@@ -4,7 +4,6 @@
 
 ## Installation
 
----
 There are several ways to install S4mer:
 
 1. Use a package manager
