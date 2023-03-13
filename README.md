@@ -2,6 +2,8 @@
 
 <img src=https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Typical_State_Space_model.svg/472px-Typical_State_Space_model.svg.png width=600>
 
+This repo uses ideas and code that can be both found at [HazyResearch/state-spaces](https://github.com/HazyResearch/state-spaces). This code base implements the ideas and code in jax. 
+
 ## Installation
 
 There are several ways to install HiPPO-Jax:
