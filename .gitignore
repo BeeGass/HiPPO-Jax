@@ -9,3 +9,6 @@ examples/notebooks/notebooks-py/data/MNIST/raw/train-labels-idx1-ubyte.gz
 examples/notebooks/notebooks-py/gifs/
 outputs/
 .pytest_cache/
+s4mer.egg.info/
+.vscode/
+.DS_Store
