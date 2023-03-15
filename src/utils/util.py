@@ -2,6 +2,7 @@ from typing import Any, Callable, Mapping, Optional
 import functools
 import hydra
 import numpy as np
+import jax
 from jax import numpy as jnp
 from omegaconf import DictConfig
 
@@ -37,91 +38,131 @@ def instantiate(config: Optional[DictConfig]) -> Any:
     return obj()
 
 
-def eval_legendre(n: int, x: np.ndarray) -> np.ndarray:
+def legendre_recurrence(n, x, max_n):
     """
-    Evaluates the first n Legendre polynomials at the points in x.
+    Computes the Legendre polynomial of degree n at point x using the recurrence relation.
 
-    Parameters
-    ----------
-    n : int
-        The number of Legendre polynomials to evaluate. Must be a positive
-        integer.
-    x : np.ndarray
-        The points at which to evaluate the Legendre polynomials.
+    Args:
+    n: int, the degree of the Legendre polynomial.
+    x: float, the point at which to evaluate the polynomial.
+    max_n: int, the maximum degree of n in the batch.
 
-    Returns
-    -------
-    L : np.ndarray
-        An array of shape (n + 1, len(x)) containing the first n + 1 Legendre
-        polynomials evaluated at x.
-
-    Raises
-    ------
-    ValueError
-        If n is not a positive integer.
-    TypeError
-        If n is not an integer.
+    Returns:
+    The value of the Legendre polynomial of degree n at point x.
     """
-    # Check that n is a positive integer
-    if n < 0:
-        raise ValueError("n must be a positive integer")
-    elif not isinstance(n, int):
-        raise TypeError("n must be a positive integer")
-    # If n is 0, return a 1D array of 1s
-    elif n == 0:
-        return np.ones_like(x)
-    # If n is 1, return a 2D array with the first row containing 1s and the
-    # second row containing the values in x
-    elif n == 1:
-        return np.vstack((np.ones_like(x), x))
-    # Otherwise, use the recurrence relation to evaluate the Legendre
-    # polynomials
+    # Initialize the array to store the Legendre polynomials for all degrees from 0 to max_n
+    p = jnp.zeros((max_n + 1,) + x.shape)
+    p = p.at[0].set(1.0)  # Set the 0th degree Legendre polynomial
+    p = p.at[1].set(x)  # Set the 1st degree Legendre polynomial
+
+    # Compute the Legendre polynomials for degrees 2 to max_n using the recurrence relation
+    def body_fun(i, p):
+        p_i = ((2 * i - 1) * x * p[i - 1] - (i - 1) * p[i - 2]) / i
+        return p.at[i].set(p_i)
+
+    p = jax.lax.fori_loop(2, max_n + 1, body_fun, p)
+
+    return p[n]
+
+
+def genlaguerre_recurrence(n, alpha, x, max_n):
+    """
+    Computes the generalized Laguerre polynomial of degree n with parameter alpha at point x using the recurrence relation.
+
+    Args:
+    n: int, the degree of the generalized Laguerre polynomial.
+    alpha: float, the parameter of the generalized Laguerre polynomial.
+    x: float, the point at which to evaluate the polynomial.
+    max_n: int, the maximum degree of n in the batch.
+
+    Returns:
+    The value of the generalized Laguerre polynomial of degree n with parameter alpha at point x.
+    """
+    # Initialize the array to store the generalized Laguerre polynomials for all degrees from 0 to max_n
+    p = jnp.zeros((max_n + 1,) + x.shape)
+    p = p.at[0].set(1.0)  # Set the 0th degree generalized Laguerre polynomial
+
+    # Compute the generalized Laguerre polynomials for degrees 1 to max_n using the recurrence relation
+    def body_fun(i, p):
+        p_i = ((2 * i + alpha - 1 - x) * p[i - 1] - (i + alpha - 1) * p[i - 2]) / i
+        return p.at[i].set(p_i)
+
+    p = jax.lax.fori_loop(1, max_n + 1, body_fun, p)
+
+    return p[n]
+
+
+def eval_legendre(n, x, out=None):
+    """
+    Evaluates the Legendre polynomials of degrees specified in the input array n at the points specified in the input array x.
+
+    Args:
+    n: array-like, the degrees of the Legendre polynomials.
+    x: array-like, the points at which to evaluate the polynomials.
+    out: optional, an output array to store the results.
+
+    Returns:
+    An array containing the Legendre polynomial values of the specified degrees at the specified points.
+    """
+    n = jnp.asarray(n)
+    x = jnp.asarray(x)
+    max_n = n.max()
+
+    if n.ndim == 1 and x.ndim == 1:
+        p = jax.vmap(
+            lambda ni: jax.vmap(lambda xi: legendre_recurrence(ni, xi, max_n))(x)
+        )(n)
+        p = jnp.diagonal(
+            p
+        )  # Get the diagonal elements to match the scipy.special.eval_legendre output
     else:
-        L = np.zeros((n + 1, len(x)))
-        L[0] = np.ones_like(x)
-        L[1] = x
-        for i in range(2, n + 1):
-            L[i] = ((2 * i - 1) * x * L[i - 1] - (i - 1) * L[i - 2]) / i
-        return L
+        p = jax.vmap(
+            lambda ni: jax.vmap(lambda xi: legendre_recurrence(ni, xi, max_n))(x)
+        )(n)
 
-
-def eval_legendre(n: int, x: jnp.ndarray) -> jnp.ndarray:
-    """
-    This function evaluates the first n Legendre polynomials at the points x.
-
-    Parameters
-    ----------
-    n : int
-        Number of Legendre polynomials to evaluate
-    x : jnp.ndarray
-        Points at which to evaluate the Legendre polynomials
-
-    Returns
-    -------
-    L : jnp.ndarray
-        Array containing the first n Legendre polynomials evaluated at x
-    """
-    # Make sure n is a non-negative integer
-    if not isinstance(n, int) or n < 0:
-        raise TypeError("n must be a non-negative integer")
-    # Make sure x is a real vector
-    if x.ndim != 1:
-        raise TypeError("x must be a real vector")
-    # If n is 0, return a vector of ones
-    if n == 0:
-        return jnp.ones_like(x)
-    # If n is 1, return a 2-by-n array consisting of ones and x
-    elif n == 1:
-        return jnp.vstack((jnp.ones_like(x), x))
-    # If n is greater than 1, use the recurrence relation to construct the Legendre polynomials
+    if out is not None:
+        out = jnp.asarray(out)
+        out = jnp.copy(p, out=out)
+        return out
     else:
-        # Initialize an (n + 1) by n array of zeros
-        L = jnp.zeros((n + 1, len(x)))
-        # Set the first row to be ones
-        L = L.at[0].set(jnp.ones_like(x))
-        # Set the second row to be x
-        L = L.at[1].set(x)
-        # Use a for loop to compute the remaining rows of L
-        for i in range(2, n + 1):
-            L = L.at[i].set(((2 * i - 1) * x * L[i - 1] - (i - 1) * L[i - 2]) / i)
-        return L
+        return jnp.squeeze(p)
+
+def eval_genlaguerre(n, alpha, x, out=None):
+    """
+    Evaluates the generalized Laguerre polynomials of degrees specified in the input array n with parameter alpha at the points specified in the input array x.
+
+    Args:
+    n: array-like, the degrees of the generalized Laguerre polynomials.
+    alpha: float, the parameter of the generalized Laguerre polynomials.
+    x: array-like, the points at which to evaluate the polynomials.
+    out: optional, an output array to store the results.
+
+    Returns:
+    An array containing the generalized Laguerre polynomial values of the specified degrees with parameter alpha at the specified points.
+    """
+    n = jnp.asarray(n)
+    x = jnp.asarray(x)
+    max_n = n.max()
+
+    if n.ndim == 1 and x.ndim == 1:
+        p = jax.vmap(
+            lambda ni: jax.vmap(
+                lambda xi: genlaguerre_recurrence(ni, alpha, xi, max_n)
+            )(x)
+        )(n)
+        p = jnp.diagonal(
+            p
+        )  # Get the diagonal elements to match the scipy.signal.eval_genlaguerre output
+    else:
+        p = jax.vmap(
+            lambda ni: jax.vmap(
+                lambda xi: genlaguerre_recurrence(ni, alpha, xi, max_n)
+            )(x)
+        )(n)
+
+    if out is not None:
+        out = jnp.asarray(out)
+        out = jnp.copy(p, out=out)
+        return out
+    else:
+        return jnp.squeeze(p)

@@ -167,10 +167,7 @@ def test_hippo_legs_lti_fe_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legs_fe.init(legs_key, f=x_jnp)
-    hippo = hippo_lti_legs_fe.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legs_fe.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -215,11 +212,8 @@ def test_hippo_legs_lsi_fe_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lsi_legs_fe.init(legs_key, f=x_jnp)
-    hippo = hippo_lsi_legs_fe.bind(params)
+    c, y = hippo_lsi_legs_fe.apply(params, f=x_jnp)
 
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -275,10 +269,7 @@ def test_hippo_legt_lti_fe_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legt_fe.init(legt_key, f=x_jnp)
-    hippo = hippo_lti_legt_fe.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legt_fe.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -328,10 +319,7 @@ def test_hippo_lmu_lti_fe_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lmu_fe.init(lmu_key, f=x_jnp)
-    hippo = hippo_lti_lmu_fe.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lmu_fe.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -381,10 +369,7 @@ def test_hippo_lagt_lti_fe_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lagt_fe.init(lagt_key, f=x_jnp)
-    hippo = hippo_lti_lagt_fe.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lagt_fe.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -434,10 +419,7 @@ def test_hippo_fout_lti_fe_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_fout_fe.init(fout_key, f=x_jnp)
-    hippo = hippo_lti_fout_fe.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_fout_fe.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -491,10 +473,7 @@ def test_hippo_legs_lti_be_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legs_be.init(legs_key, f=x_jnp)
-    hippo = hippo_lti_legs_be.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legs_be.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -539,11 +518,8 @@ def test_hippo_legs_lsi_be_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lsi_legs_be.init(legs_key, f=x_jnp)
-    hippo = hippo_lsi_legs_be.bind(params)
+    c, y = hippo_lsi_legs_be.apply(params, f=x_jnp)
 
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -599,10 +575,7 @@ def test_hippo_legt_lti_be_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legt_be.init(legt_key, f=x_jnp)
-    hippo = hippo_lti_legt_be.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legt_be.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -652,10 +625,7 @@ def test_hippo_lmu_lti_be_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lmu_be.init(lmu_key, f=x_jnp)
-    hippo = hippo_lti_lmu_be.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lmu_be.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -705,10 +675,7 @@ def test_hippo_lagt_lti_be_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lagt_be.init(lagt_key, f=x_jnp)
-    hippo = hippo_lti_lagt_be.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lagt_be.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -758,10 +725,7 @@ def test_hippo_fout_lti_be_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_fout_be.init(fout_key, f=x_jnp)
-    hippo = hippo_lti_fout_be.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_fout_be.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -814,10 +778,7 @@ def test_hippo_legs_lti_bi_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legs_bi.init(legs_key, f=x_jnp)
-    hippo = hippo_lti_legs_bi.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legs_bi.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -862,11 +823,8 @@ def test_hippo_legs_lsi_bi_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lsi_legs_bi.init(legs_key, f=x_jnp)
-    hippo = hippo_lsi_legs_bi.bind(params)
+    c, y = hippo_lsi_legs_bi.apply(params, f=x_jnp)
 
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -922,10 +880,7 @@ def test_hippo_legt_lti_bi_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legt_bi.init(legt_key, f=x_jnp)
-    hippo = hippo_lti_legt_bi.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legt_bi.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -975,10 +930,7 @@ def test_hippo_lmu_lti_bi_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lmu_bi.init(lmu_key, f=x_jnp)
-    hippo = hippo_lti_lmu_bi.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lmu_bi.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -1028,10 +980,7 @@ def test_hippo_lagt_lti_bi_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lagt_bi.init(lagt_key, f=x_jnp)
-    hippo = hippo_lti_lagt_bi.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lagt_bi.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -1081,10 +1030,7 @@ def test_hippo_fout_lti_bi_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_fout_bi.init(fout_key, f=x_jnp)
-    hippo = hippo_lti_fout_bi.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_fout_bi.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -1138,10 +1084,7 @@ def test_hippo_legs_lti_zoh_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legs_zoh.init(legs_key, f=x_jnp)
-    hippo = hippo_lti_legs_zoh.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legs_zoh.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -1186,11 +1129,8 @@ def test_hippo_legs_lsi_zoh_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lsi_legs_zoh.init(legs_key, f=x_jnp)
-    hippo = hippo_lsi_legs_zoh.bind(params)
+    c, y = hippo_lsi_legs_zoh.apply(params, f=x_jnp)
 
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
     y = einops.rearrange(
         y, "batch seq_len seq_len2 input_len -> batch seq_len input_len seq_len2"
     )
@@ -1246,10 +1186,7 @@ def test_hippo_legt_lti_zoh_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_legt_zoh.init(legt_key, f=x_jnp)
-    hippo = hippo_lti_legt_zoh.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_legt_zoh.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -1299,10 +1236,7 @@ def test_hippo_lmu_lti_zoh_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lmu_zoh.init(lmu_key, f=x_jnp)
-    hippo = hippo_lti_lmu_zoh.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lmu_zoh.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -1352,10 +1286,7 @@ def test_hippo_lagt_lti_zoh_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_lagt_zoh.init(lagt_key, f=x_jnp)
-    hippo = hippo_lti_lagt_zoh.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_lagt_zoh.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")
@@ -1405,10 +1336,7 @@ def test_hippo_fout_lti_zoh_reconstruction(
     )  # add input_size dimension
 
     params = hippo_lti_fout_zoh.init(fout_key, f=x_jnp)
-    hippo = hippo_lti_fout_zoh.bind(params)
-    c = hippo.__call__(f=x_jnp)
-    y = hippo.reconstruct(c)
-    print(f"y shape: {y.shape}")
+    c, y = hippo_lti_fout_zoh.apply(params, f=x_jnp)
     y = einops.rearrange(y, "batch seq_len -> batch 1 seq_len")
 
     x_tensor = einops.rearrange(x_tensor, "batch seq_len -> seq_len batch")

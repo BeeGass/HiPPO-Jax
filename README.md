@@ -115,7 +115,7 @@ key, subkey = jr.split(jr.PRNGKey(0), 2)
 **HiPPO Matrices**
 
 ```python
-from hippo_jax.src.models.hippo.transition import TransMatrix
+from src.models.hippo.transition import TransMatrix
 
 N = 100
 measure = "legs"
@@ -150,7 +150,7 @@ hippo = HiPPOLTI(
 **HiPPO (LTS) Operator**
 
 ```python
-from hippo_jax.src.models.hippo.hippo import HiPPOLSI
+from src.models.hippo.hippo import HiPPOLSI
 
 N = 50
 T = 3
@@ -174,7 +174,7 @@ hippo = HiPPOLSI(
 
 ```python
 params = hippo.init(key, f=x)
-c = hippo.apply(params, f=x)
+c, y = hippo.apply(params, f=x)
 ```
 
 # Contributing
