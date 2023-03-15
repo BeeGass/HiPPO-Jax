@@ -147,7 +147,7 @@ hippo = HiPPOLTI(
 
 ```
 
-**HiPPO (LTS) Operator**
+**HiPPO (LSI) Operator**
 
 ```python
 from src.models.hippo.hippo import HiPPOLSI
