@@ -26,6 +26,7 @@
 - [Efficient Long Sequence Modeling via State Space Augmented Transformer](https://arxiv.org/abs/2212.08136) S4 augmented transformer
 - [What Makes Convolutional Models Great on Long Sequence Modeling?](https://arxiv.org/abs/2210.09298) - SGConv
 - [Hyena Hierarchy: Towards Larger Convolutional Language Models](https://arxiv.org/abs/2302.10866) - Hyena
+- [Resurrecting Recurrent Neural Networks for Long Sequences](https://arxiv.org/abs/2303.06349)
 
 **Applied SSMs:**
 
