@@ -11,7 +11,7 @@ from scipy import special as ss
 
 from src.models.hippo.transition import TransMatrix
 from src.models.model import Model
-from src.utils.util import eval_legendre, eval_genlaguerre
+from src.utils.util import eval_legendre, eval_legendre_old, eval_genlaguerre
 
 
 class HiPPOLSI(Model):
@@ -81,8 +81,8 @@ class HiPPOLSI(Model):
         vals = jnp.linspace(0.0, 1.0, self.max_length)
         self.eval_matrix = (
             (
-                (matrices.B)
-                * eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
+                eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
+                * (matrices.B)
             ).T
         ).astype(self.dtype)
 
@@ -709,7 +709,7 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                base * eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
+                eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals) * base
             ).T  # (L, N)
 
         elif method in ["legt", "lmu"]:
@@ -718,8 +718,9 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                base * eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
+                eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1) * base
             ).T
+
         elif method == "lagt":
             _vals = vals[::-1]
             eval_matrix = eval_genlaguerre(jnp.expand_dims(jnp.arange(N), -1), 0, _vals)

@@ -128,7 +128,7 @@ B = matrices.B
 **HiPPO (LTI) Operator**
 
 ```python
-from hippo_jax.src.models.hippo.hippo import HiPPOLTI
+from src.models.hippo.hippo import HiPPOLTI
 
 N = 50
 T = 3
