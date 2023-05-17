@@ -11,7 +11,6 @@ from scipy import special as ss
 
 from src.models.hippo.transition import TransMatrix
 from src.models.model import Model
-from src.utils.util import eval_legendre, eval_legendre_old, eval_genlaguerre
 
 
 class HiPPOLSI(Model):
@@ -81,7 +80,11 @@ class HiPPOLSI(Model):
         vals = jnp.linspace(0.0, 1.0, self.max_length)
         self.eval_matrix = (
             (
-                eval_legendre(jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1)
+                jax.lax.stop_gradient(
+                    ss.eval_legendre(
+                        jnp.expand_dims(jnp.arange(self.N), -1), 2 * vals - 1
+                    )
+                )
                 * (matrices.B)
             ).T
         ).astype(self.dtype)
@@ -90,8 +93,9 @@ class HiPPOLSI(Model):
         self,
         f: Float[Array, "#batch seq_len input_size"],
         init_state: Optional[Float[Array, "#batch input_size N"]] = None,
-    ) -> Union[
-        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ) -> Tuple[
+        Float[Array, "#batch seq_len input_size N"],
+        Optional[Float[Array, "#batch input_size N"]],
     ]:
 
         if init_state is None:
@@ -136,16 +140,14 @@ class HiPPOLSI(Model):
             GBT_b_list (list):
                 list of discretized B matrices across all time steps
         """
-        GBT_a_list = []
-        GBT_b_list = []
-        for i in range(1, self.max_length + 1):
-            GBT_A, GBT_B = self.discretize(
-                A, B, step=i, alpha=self.GBT_alpha, dtype=dtype
-            )
-            GBT_a_list.append(GBT_A)
-            GBT_b_list.append(GBT_B)
+        time = jnp.arange(1, (self.max_length + 1), 1, dtype=int)
+        time = time[:, None]
 
-        return GBT_a_list, GBT_b_list
+        GBT_A_stacked, GBT_B_stacked = jax.vmap(
+            self.discretize, in_axes=(None, None, 0, None, None)
+        )(A, B, time, self.GBT_alpha, dtype)
+
+        return GBT_A_stacked, GBT_B_stacked
 
     def discretize(
         self,
@@ -220,7 +222,7 @@ class HiPPOLSI(Model):
                 [[A, B], [jnp.zeros((b_n, n)), jnp.zeros((b_n, b_n))]]
             )
             A_B = jax.scipy.linalg.expm(
-                A_B_square * (math.log(step + 1) - math.log(step))
+                A_B_square * (jnp.log(step + 1) - jnp.log(step))
             )
 
             GBT_A = A_B[0:n, 0:n]
@@ -230,53 +232,70 @@ class HiPPOLSI(Model):
 
     def recurrence(
         self,
-        A: List[Float[Array, "N N"]],
-        B: List[Float[Array, "N input_size"]],
+        A: Float[Array, "seq_len N N"],
+        B: Float[Array, "seq_len N input_size"],
         c_0: Float[Array, "#batch input_size N"],
         f: Float[Array, "#batch seq_len input_size"],
         dtype: Any = jnp.float32,
-    ) -> Union[
-        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
-    ]:
+    ) -> Float[Array, "#batch seq_len input_size N"]:
         """
         Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
 
         Args:
             A (jnp.ndarray):
-                shape: (N, N)
-                The list of discretized A matrices
+                shape: (seq_len, N, N)
+                The stack of discretized A matrices
 
             B (jnp.ndarray):
-                shape: (N, 1)
-                The list of discretized B matrices
+                shape: (seq_len, N, 1)
+                The stack of discretized B matrices
 
             c_0 (jnp.ndarray):
-                shape: (batch size, input length, N)
+                shape: (batch_size, input_length, N)
                 the initial hidden state (i.e. the initial coefficients)
 
             f (jnp.ndarray):
-                shape: (sequence length, 1)
+                shape: (batch_size, seq_len, 1)
                 the input sequence
 
 
         Returns:
-            c_s (list[jnp.ndarray]]):
-                shape: (batch size, sequence length, input length, N)
+            c_s (jnp.ndarray):
+                shape: (batch size, sequence length, input_length, N)
                 List of the vector of estimated coefficients representing the function, f(t), at each time step
 
             c_s[-1] (jnp.ndarray):
-                shape: (batch size, sequence length, input length, N)
+                shape: (batch size, input_length, N)
                 Vector of the estimated coefficients representing the function, f(t), at the last time step
         """
 
-        c_s = []
+        # c_s = []
 
-        c_k = c_0.copy()
-        for i in range(f.shape[1]):
+        # c_k = c_0.copy()
+        # for i in range(f.shape[1]):
+        #     c_k = jax.vmap(self.hippo_op, in_axes=(None, None, 0, 0))(
+        #         A[i], B[i], c_k, f[:, i, :]
+        #     )
+        #     c_s.append((c_k.copy()).astype(dtype))
+
+        # if self.unroll:
+        #     return (
+        #         einops.rearrange(
+        #             c_s, "seq_len batch input_size N -> batch seq_len input_size N"
+        #         )
+        #     ).astype(
+        #         dtype
+        #     )  # list of hidden states
+        # else:
+        #     return (c_s[-1]).astype(dtype)
+
+        def scan_fn(c_k, i):
             c_k = jax.vmap(self.hippo_op, in_axes=(None, None, 0, 0))(
                 A[i], B[i], c_k, f[:, i, :]
             )
-            c_s.append((c_k.copy()).astype(dtype))
+            return c_k, c_k
+
+        c_k, c_s = jax.lax.scan(f=scan_fn, init=c_0, xs=jnp.arange(f.shape[1]))
 
         if self.unroll:
             return (
@@ -287,7 +306,7 @@ class HiPPOLSI(Model):
                 dtype
             )  # list of hidden states
         else:
-            return (c_s[-1]).astype(dtype)
+            return (c_k).astype(dtype)
 
     def hippo_op(
         self,
@@ -351,9 +370,9 @@ class HiPPOLSI(Model):
             c = einops.rearrange(
                 c, "batch seq_len input_size N -> batch seq_len N input_size"
             )
-            time_dot = jax.vmap(jnp.dot, in_axes=(None, 0))
-            batch_time_dot = jax.vmap(time_dot, in_axes=(None, 0))
-            y = batch_time_dot(eval_matrix, c)
+            batch_time_dot = jax.vmap(jnp.dot, in_axes=(None, 0))
+            time_dot = jax.vmap(batch_time_dot, in_axes=(None, 0))
+            y = time_dot(eval_matrix, c)
         else:
             raise ValueError(
                 "c must be of shape (batch size, input length, N) or (batch seq_len input_size N)"
@@ -709,7 +728,10 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals) * base
+                jax.lax.stop_gradient(
+                    ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 1 - 2 * _vals)
+                )
+                * base
             ).T  # (L, N)
 
         elif method in ["legt", "lmu"]:
@@ -718,12 +740,17 @@ class HiPPOLTI(Model):
             )  # unscaled, untranslated legendre polynomial matrix
             base = einops.rearrange(base, "N -> N 1")
             eval_matrix = (
-                eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1) * base
+                jax.lax.stop_gradient(
+                    ss.eval_legendre(jnp.expand_dims(jnp.arange(N), -1), 2 * vals - 1)
+                )
+                * base
             ).T
 
         elif method == "lagt":
             _vals = vals[::-1]
-            eval_matrix = eval_genlaguerre(jnp.expand_dims(jnp.arange(N), -1), 0, _vals)
+            eval_matrix = jax.lax.stop_gradient(
+                ss.eval_genlaguerre(jnp.expand_dims(jnp.arange(N), -1), 0, _vals)
+            )
             eval_matrix = (eval_matrix * jnp.exp(-_vals / 2)).T
         elif method in ["fourier", "fout"]:
             cos = 2**0.5 * jnp.cos(

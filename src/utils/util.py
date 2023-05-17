@@ -4,6 +4,7 @@ import hydra
 import numpy as np
 import jax
 from jax import numpy as jnp
+from jaxtyping import Array, Float, Int
 from omegaconf import DictConfig
 
 # This is a modified version of hydra.utils.instantiate
@@ -38,7 +39,45 @@ def instantiate(config: Optional[DictConfig]) -> Any:
     return obj()
 
 
-def legendre_recurrence(n, x, n_max):
+@jax.jit
+def normalize(x: Float[Array, "n"]) -> Float[Array, "n"]:
+    """
+    Normalize a JAX array to the range [-1, 1] using min-max normalization.
+
+    The formula used for normalization is:
+    normalized_x = (2 * (x - min_value) / (max_value - min_value)) - 1
+
+    This function is just-in-time (JIT) compiled for improved performance.
+
+    Args:
+        x : jnp.ndarray
+            The JAX array to be normalized.
+
+    Returns:
+        jnp.ndarray
+            The normalized JAX array in the range [-1, 1].
+
+    Raises:
+        ZeroDivisionError
+            If max_value equals min_value in the input data, a ZeroDivisionError is raised due to the division in the normalization formula.
+
+    Note:
+        Make sure the x doesn't contain extreme outliers as it can distort the normalized values.
+
+    Example:
+        >>> x = jnp.array([1, 2, 3, 4, 5])
+        >>> print(normalize_x(x))
+        DeviceArray([-1. , -0.5,  0. ,  0.5,  1. ], dtype=float32)
+    """
+    min_value = jnp.min(x)
+    max_value = jnp.max(x)
+    normalized_x = (2 * (x - min_value) / (max_value - min_value)) - 1
+    return normalized_x
+
+
+def legendre_recurrence(
+    n: Int[Array, "n"], x: Float[Array, "m"], n_max: Int[Array, ""]
+) -> Float[Array, "n m"]:
     """
     Compute the Legendre polynomials up to degree n_max at a given point or array of points x.
 
@@ -46,19 +85,19 @@ def legendre_recurrence(n, x, n_max):
     are orthogonal on the interval [-1,1] and are used in a wide array of scientific and mathematical applications.
     This function returns a series of Legendre polynomials evaluated at the point(s) x, up to the degree n_max.
 
-    Parameters:
-    n_max (int): The highest degree of Legendre polynomial to compute. Must be a non-negative integer.
-    x (jnp.ndarray): The point(s) at which the Legendre polynomials are to be evaluated. Can be a single
-                     point (float) or an array of points.
+    Args:
+        n_max (int): The highest degree of Legendre polynomial to compute. Must be a non-negative integer.
+        x (jnp.ndarray): The point(s) at which the Legendre polynomials are to be evaluated. Can be a single
+                        point (float) or an array of points.
 
     Returns:
-    jnp.ndarray: A sequence of Legendre polynomial values of shape (n_max+1,) + x.shape, evaluated at point(s) x.
-                 The i-th entry of the output array corresponds to the Legendre polynomial of degree i.
+        jnp.ndarray: A sequence of Legendre polynomial values of shape (n_max+1,) + x.shape, evaluated at point(s) x.
+                    The i-th entry of the output array corresponds to the Legendre polynomial of degree i.
 
     Notes:
-    The first two Legendre polynomials are initialized as P_0(x) = 1 and P_1(x) = x. The subsequent polynomials
-    are computed using the recurrence relation:
-    P_{n+1}(x) = ((2n + 1) * x * P_n(x) - n * P_{n-1}(x)) / (n + 1).
+        The first two Legendre polynomials are initialized as P_0(x) = 1 and P_1(x) = x. The subsequent polynomials
+        are computed using the recurrence relation:
+        P_{n+1}(x) = ((2n + 1) * x * P_n(x) - n * P_{n-1}(x)) / (n + 1).
     """
 
     p_init = jnp.zeros((2,) + x.shape)
@@ -79,17 +118,19 @@ def legendre_recurrence(n, x, n_max):
     return p_n[n]
 
 
-def legendre_recurrence_old(n, x, max_n):
+def legendre_recurrence_old(
+    n: Int[Array, "n"], x: Float[Array, "m"], max_n: Int[Array, ""]
+) -> Float[Array, "n m"]:
     """
     Computes the Legendre polynomial of degree n at point x using the recurrence relation.
 
     Args:
-    n: int, the degree of the Legendre polynomial.
-    x: float, the point at which to evaluate the polynomial.
-    max_n: int, the maximum degree of n in the batch.
+        n: int, the degree of the Legendre polynomial.
+        x: float, the point at which to evaluate the polynomial.
+        max_n: int, the maximum degree of n in the batch.
 
     Returns:
-    The value of the Legendre polynomial of degree n at point x.
+        The value of the Legendre polynomial of degree n at point x.
     """
 
     # Initialize the array to store the Legendre polynomials for all degrees from 0 to max_n
@@ -102,23 +143,28 @@ def legendre_recurrence_old(n, x, max_n):
         p_i = ((2 * i - 1) * x * p[i - 1] - (i - 1) * p[i - 2]) / i
         return p.at[i].set(p_i)
 
-    p = jax.lax.fori_loop(2, max_n + 1, body_fun, p)
+    p = jax.lax.fori_loop(lower=2, upper=(max_n + 1), body_fun=body_fun, init_val=p)
 
     return p[n]
 
 
-def genlaguerre_recurrence(n, alpha, x, max_n):
+def genlaguerre_recurrence(
+    n: Int[Array, "n"],
+    alpha: Float[Array, ""],
+    x: Float[Array, "m"],
+    max_n: Int[Array, ""],
+) -> Float[Array, "n m"]:
     """
     Computes the generalized Laguerre polynomial of degree n with parameter alpha at point x using the recurrence relation.
 
     Args:
-    n: int, the degree of the generalized Laguerre polynomial.
-    alpha: float, the parameter of the generalized Laguerre polynomial.
-    x: float, the point at which to evaluate the polynomial.
-    max_n: int, the maximum degree of n in the batch.
+        n: int, the degree of the generalized Laguerre polynomial.
+        alpha: float, the parameter of the generalized Laguerre polynomial.
+        x: float, the point at which to evaluate the polynomial.
+        max_n: int, the maximum degree of n in the batch.
 
     Returns:
-    The value of the generalized Laguerre polynomial of degree n with parameter alpha at point x.
+        The value of the generalized Laguerre polynomial of degree n with parameter alpha at point x.
     """
     # Initialize the array to store the generalized Laguerre polynomials for all degrees from 0 to max_n
     p = jnp.zeros((max_n + 1,) + x.shape)
@@ -134,7 +180,7 @@ def genlaguerre_recurrence(n, alpha, x, max_n):
     return p[n]
 
 
-def eval_legendre(n, x):
+def eval_legendre(n: Int[Array, "n"], x: Float[Array, "m"]) -> Float[Array, "n m"]:
     """
     Evaluate Legendre polynomials of specified degrees at provided point(s).
 
@@ -175,17 +221,19 @@ def eval_legendre(n, x):
     return jnp.squeeze(p)
 
 
-def eval_legendre_old(n, x, out=None):
+def eval_legendre_old(
+    n: Int[Array, "n"], x: Float[Array, "m"], out: Float[Array, "n m"] = None
+) -> Float[Array, "n m"]:
     """
     Evaluates the Legendre polynomials of degrees specified in the input array n at the points specified in the input array x.
 
     Args:
-    n: array-like, the degrees of the Legendre polynomials.
-    x: array-like, the points at which to evaluate the polynomials.
-    out: optional, an output array to store the results.
+        n: array-like, the degrees of the Legendre polynomials.
+        x: array-like, the points at which to evaluate the polynomials.
+        out: optional, an output array to store the results.
 
     Returns:
-    An array containing the Legendre polynomial values of the specified degrees at the specified points.
+        An array containing the Legendre polynomial values of the specified degrees at the specified points.
     """
     n = jnp.asarray(n)
     x = jnp.asarray(x)
@@ -211,18 +259,23 @@ def eval_legendre_old(n, x, out=None):
         return jnp.squeeze(p)
 
 
-def eval_genlaguerre(n, alpha, x, out=None):
+def eval_genlaguerre(
+    n: Int[Array, "n"],
+    alpha: Float[Array, ""],
+    x: Float[Array, "m"],
+    out: Float[Array, "n m"] = None,
+) -> Float[Array, "n m"]:
     """
     Evaluates the generalized Laguerre polynomials of degrees specified in the input array n with parameter alpha at the points specified in the input array x.
 
     Args:
-    n: array-like, the degrees of the generalized Laguerre polynomials.
-    alpha: float, the parameter of the generalized Laguerre polynomials.
-    x: array-like, the points at which to evaluate the polynomials.
-    out: optional, an output array to store the results.
+        n: array-like, the degrees of the generalized Laguerre polynomials.
+        alpha: float, the parameter of the generalized Laguerre polynomials.
+        x: array-like, the points at which to evaluate the polynomials.
+        out: optional, an output array to store the results.
 
     Returns:
-    An array containing the generalized Laguerre polynomial values of the specified degrees with parameter alpha at the specified points.
+        An array containing the generalized Laguerre polynomial values of the specified degrees with parameter alpha at the specified points.
     """
     n = jnp.asarray(n)
     x = jnp.asarray(x)
