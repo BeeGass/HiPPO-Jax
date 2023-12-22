@@ -189,16 +189,7 @@ class HiPPOLSI(Model):
                 shape: (N, 1)
                 discretized B matrix based on the given step size and alpha value
         """
-        if alpha <= 1:
-            assert alpha in [0, 0.5, 1], "alpha must be 0, 0.5, or 1"
-        else:
-            assert (
-                alpha > 1 or type(alpha) == str
-            ), "alpha must be greater than 1 for zero-order hold"
-            if type(alpha) == str:
-                assert (
-                    alpha == "zoh"
-                ), "if alpha is a string, it must be defined as 'zoh' for zero-order hold"
+        assert alpha in [0, 0.5, 1, 2], "alpha must be 0, 0.5, 1, 2"
 
         I = jnp.eye(A.shape[0])
 
