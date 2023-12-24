@@ -6,11 +6,29 @@ from src.models.hippo.hr_transition import HRTransMatrix
 
 # HiPPO
 from src.models.hippo.hippo import HiPPOLTI, HiPPOLSI
-from src.models.hippo.transition import TransMatrix
+from src.models.hippo.cells import HiPPOLSICell, HiPPOLTICell, HiPPO
+from src.models.hippo.transition import (
+    initializer,
+    legs,
+    legs_initializer,
+    legt,
+    legt_initializer,
+    lmu,
+    lmu_initializer,
+    lagt,
+    lagt_initializer,
+    fru,
+    fru_initializer,
+    fout,
+    fout_initializer,
+    foud,
+    foud_initializer,
+    chebt,
+    chebt_initializer,
+)
 from src.models.hippo.unroll import *
 
 # RNN
 
 # Utils
-
 from ._version import __version__

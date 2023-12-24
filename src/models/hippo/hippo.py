@@ -1,15 +1,32 @@
 ## import packages
-import math
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
+import numpy as np
 import einops
 import jax
 import jax.numpy as jnp
 from flax import linen as nn
-from jaxtyping import Array, Float
+from jaxtyping import Array, Float, Int
 from scipy import special as ss
 
-from src.models.hippo.transition import TransMatrix
+from src.models.hippo.transition import (
+    legs,
+    legs_initializer,
+    legt,
+    legt_initializer,
+    lmu,
+    lmu_initializer,
+    lagt,
+    lagt_initializer,
+    fru,
+    fru_initializer,
+    fout,
+    fout_initializer,
+    foud,
+    foud_initializer,
+    chebt,
+    chebt_initializer,
+)
 from src.models.model import Model
 
 
@@ -62,8 +79,9 @@ class HiPPOLSI(Model):
     measure: str = "legs"
     dtype: Any = jnp.float32
     unroll: bool = True
+    recon: bool = False
 
-    def setup(self):
+    def setup(self) -> None:
         matrices = TransMatrix(
             N=self.N,
             measure=self.measure,
@@ -73,9 +91,11 @@ class HiPPOLSI(Model):
             dtype=self.dtype,
         )
 
-        self.GBT_A_list, self.GBT_B_list = self.temporal_GBT(
+        GBT_A_stacked, GBT_B_stacked = self.temporal_GBT(
             matrices.A, matrices.B, dtype=self.dtype
         )
+        self.GBT_A_stacked = self.param("Ad", lambda _: GBT_A_stacked)
+        self.GBT_B_stacked = self.param("Bd", lambda _: GBT_B_stacked)
 
         vals = jnp.linspace(0.0, 1.0, self.max_length)
         self.eval_matrix = (
@@ -94,30 +114,39 @@ class HiPPOLSI(Model):
         f: Float[Array, "#batch seq_len input_size"],
         init_state: Optional[Float[Array, "#batch input_size N"]] = None,
     ) -> Tuple[
-        Float[Array, "#batch seq_len input_size N"],
-        Optional[Float[Array, "#batch input_size N"]],
+        Union[
+            Float[Array, "#batch seq_len input_size N"],
+            Float[Array, "#batch input_size N"],
+        ],
+        Union[
+            Float[Array, "#batch input_size N"],
+            Float[Array, "#batch seq_len input_size N"],
+        ],
     ]:
 
         if init_state is None:
             init_state = jnp.zeros((f.shape[0], 1, self.N))
 
         c_k = self.recurrence(
-            A=self.GBT_A_list,
-            B=self.GBT_B_list,
+            A=self.GBT_A_stacked,
+            B=self.GBT_B_stacked,
             c_0=init_state,
             f=f,
             dtype=self.dtype,
         )
-        if self.measure in ["legs", "legt", "lmu", "lagt", "fout"]:
-            y = self.reconstruct(c_k)
-            return c_k, y
 
+        if self.recon:
+            if self.measure in ["legs", "legt", "lmu", "lagt", "fout"]:
+                y = self.reconstruct(c_k)
+                return c_k, y
+            else:
+                return c_k, c_k
         else:
             return c_k, c_k
 
     def temporal_GBT(
         self, A: Float[Array, "N N"], B: Float[Array, "N input_size"], dtype=jnp.float32
-    ) -> Tuple[List[Float[Array, "N N"]], List[Float[Array, "N input_size"]]]:
+    ) -> Tuple[Float[Array, "time N N"], Float[Array, "time N input_size"]]:
         """
         Creates the list of discretized GBT matrices for the given step size
 
@@ -134,11 +163,11 @@ class HiPPOLSI(Model):
                 type of float precision to be used
 
         Returns:
-            GBT_a_list (list):
-                list of discretized A matrices across all time steps
+            GBT_A_stacked (jnp.ndarray):
+                stack of discretized A matrices across all time steps
 
-            GBT_b_list (list):
-                list of discretized B matrices across all time steps
+            GBT_B_stacked (jnp.ndarray):
+                stack of discretized B matrices across all time steps
         """
         time = jnp.arange(1, (self.max_length + 1), 1, dtype=int)
         time = time[:, None]
@@ -237,7 +266,9 @@ class HiPPOLSI(Model):
         c_0: Float[Array, "#batch input_size N"],
         f: Float[Array, "#batch seq_len input_size"],
         dtype: Any = jnp.float32,
-    ) -> Float[Array, "#batch seq_len input_size N"]:
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ]:
         """
         Performs the recurrence of the HiPPO model using the discretized HiPPO A and B matrices as well as the HiPPO operator
 
@@ -268,26 +299,6 @@ class HiPPOLSI(Model):
                 shape: (batch size, input_length, N)
                 Vector of the estimated coefficients representing the function, f(t), at the last time step
         """
-
-        # c_s = []
-
-        # c_k = c_0.copy()
-        # for i in range(f.shape[1]):
-        #     c_k = jax.vmap(self.hippo_op, in_axes=(None, None, 0, 0))(
-        #         A[i], B[i], c_k, f[:, i, :]
-        #     )
-        #     c_s.append((c_k.copy()).astype(dtype))
-
-        # if self.unroll:
-        #     return (
-        #         einops.rearrange(
-        #             c_s, "seq_len batch input_size N -> batch seq_len input_size N"
-        #         )
-        #     ).astype(
-        #         dtype
-        #     )  # list of hidden states
-        # else:
-        #     return (c_s[-1]).astype(dtype)
 
         def scan_fn(c_k, i):
             c_k = jax.vmap(self.hippo_op, in_axes=(None, None, 0, 0))(
@@ -346,8 +357,15 @@ class HiPPOLSI(Model):
         return c_k
 
     def reconstruct(
-        self, c: Float[Array, "#batch input_size N"]
-    ) -> Float[Array, "#batch seq_len input_size"]:
+        self,
+        c: Union[
+            Float[Array, "#batch input_size N"],
+            Float[Array, "#batch seq_len input_size N"],
+        ],
+    ) -> Union[
+        Float[Array, "#batch seq_len input_size"],
+        Float[Array, "#batch time seq_len input_size"],
+    ]:
         """reconstructs the input sequence from the estimated coefficients and the evaluation matrix
 
         Args:
@@ -430,6 +448,7 @@ class HiPPOLTI(Model):
     basis_size: float = 1.0
     dtype: Any = jnp.float32
     unroll: bool = False
+    recon: bool = False
 
     def setup(self) -> None:
         matrices = TransMatrix(
@@ -441,7 +460,7 @@ class HiPPOLTI(Model):
             dtype=self.dtype,
         )
 
-        self.Ad, self.Bd = self.discretize(
+        Ad, Bd = self.discretize(
             A=matrices.A,
             B=matrices.B,
             step=self.step_size,
@@ -449,7 +468,8 @@ class HiPPOLTI(Model):
             dtype=self.dtype,
         )
 
-        self.B = matrices.B
+        self.Ad = self.param("Ad", lambda _: Ad)
+        self.Bd = self.param("Bd", lambda _: Bd)
 
         if self.measure in ["legs", "legt", "lmu", "lagt", "fout"]:
             self.vals = jnp.arange(0.0, self.basis_size, self.step_size)
@@ -465,8 +485,15 @@ class HiPPOLTI(Model):
         self,
         f: Float[Array, "#batch seq_len input_size"],
         init_state: Optional[Float[Array, "#batch input_size N"]] = None,
-    ) -> Union[
-        Float[Array, "#batch seq_len input_size N"], Float[Array, "#batch input_size N"]
+    ) -> Tuple[
+        Union[
+            Float[Array, "#batch seq_len input_size N"],
+            Float[Array, "#batch input_size N"],
+        ],
+        Union[
+            Float[Array, "#batch input_size N"],
+            Float[Array, "#batch seq_len input_size N"],
+        ],
     ]:
 
         if init_state is None:
@@ -480,10 +507,12 @@ class HiPPOLTI(Model):
             dtype=self.dtype,
         )
 
-        if self.measure in ["legs", "legt", "lmu", "lagt", "fout"]:
-            y = self.reconstruct(c_k)
-            return c_k, y
-
+        if self.recon:
+            if self.measure in ["legs", "legt", "lmu", "lagt", "fout"]:
+                y = self.reconstruct(c_k)
+                return c_k, y
+            else:
+                return c_k, c_k
         else:
             return c_k, c_k
 
@@ -611,8 +640,8 @@ class HiPPOLTI(Model):
             c_k_i: Float[Array, "#batch input_size N"],
             f_k: Float[Array, "#batch seq_len input_size"],
         ) -> Tuple[
-            Float[Array, "#batch seq_len input_size N"],
             Float[Array, "#batch input_size N"],
+            Float[Array, "#batch seq_len input_size N"],
         ]:
             """
             Get descretized coefficients of the hidden state by applying HiPPO matrix to input sequence, u_k, and previous hidden state, x_k_1.
